@@ -119,6 +119,7 @@ export type HearthisSourceAdapter = SearchAdapterBase & {
   importTracks(
     destinationId: string,
     tracks: HearthisTrack[],
+    options?: { importCoverArt?: boolean },
   ): Promise<HearthisImportResult>;
 };
 

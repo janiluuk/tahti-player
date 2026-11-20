@@ -19,7 +19,11 @@ import {
 } from './collections-create.mjs';
 import { fetchCollections } from './collections-list.mjs';
 import { largestCover } from './hearthis-download-set.mjs';
-import { sanitizePathSegment } from './hearthis-paths.mjs';
+import {
+  sanitizePathSegment,
+  splitAlbumSetTitle,
+  withCleanImportTitles,
+} from './hearthis-paths.mjs';
 import {
   fetchHearthisCatalog,
   selectOwnTracks,
@@ -34,6 +38,7 @@ import {
   uploadBlocker,
   uploadPendingRows,
 } from './hearthis-sounds.mjs';
+import { applyTrackCovers } from './hearthis-sync-artwork.mjs';
 
 export const DEFAULT_PROCESSING_WAIT_SEC = 600;
 const POLL_MS = 5000;
@@ -82,7 +87,20 @@ export function buildCollectionPlan(
     tracks,
     'Set',
   );
-  const collectionName = (name || catalog.set?.title || catalog.permalink)
+  const setTitle = catalog.set?.title || catalog.permalink || '';
+  const cleaned = withCleanImportTitles(planned, setTitle, owner);
+  const split = splitAlbumSetTitle(setTitle, owner || 'Unknown');
+  // "Yaniho - Euphorizer EP" → collection "Euphorizer EP"; plain set titles stay.
+  const defaultName =
+    split.artist &&
+    split.album &&
+    split.album !== setTitle &&
+    new RegExp(`^${escapeRegExpLite(split.artist)}\\s+-\\s+`, 'i').test(
+      setTitle,
+    )
+      ? split.album
+      : setTitle;
+  const collectionName = (name || defaultName)
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, MAX_COLLECTION_NAME);
@@ -103,8 +121,12 @@ export function buildCollectionPlan(
         null,
     ),
     excludedOthers,
-    tracks: planned,
+    tracks: cleaned,
   };
+}
+
+function escapeRegExpLite(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 async function fetchOwnCollection(config, slug) {
@@ -255,6 +277,7 @@ export async function hearthisToCollection(
     private: isPrivate = false,
     tracks = null,
     flac = false,
+    coverArt = true,
     waitSec = DEFAULT_PROCESSING_WAIT_SEC,
     log = () => {},
   } = {},
@@ -355,6 +378,11 @@ export async function hearthisToCollection(
     ledger: known.ledger,
     log,
   });
+  if (coverArt) {
+    result.trackCovers = await applyTrackCovers(config, rows, plan.tracks, {
+      log,
+    });
+  }
   for (const row of rows) {
     if (row.status === 'failed') {
       row.item = 'skipped';

@@ -49,9 +49,10 @@ test('Branding has no second "Artist branding" heading', async ({ page }) => {
 
 test('Tahti Radio rotation lists each track artist', async ({ page }) => {
   await signInAsBoard(page);
-  await page.goto('/admin/radio');
+  await page.goto('/admin/radio?tab=playlist');
   const main = page.getByRole('main');
   await expect(main.getByText('Night Transit').first()).toBeVisible();
+  await expect(main.getByText('Aino Virta').first()).toBeVisible();
   await expect(main.getByText('Tahti Radio submissions')).toHaveCount(0);
 });
 

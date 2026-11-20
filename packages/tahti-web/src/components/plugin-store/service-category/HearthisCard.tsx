@@ -16,7 +16,6 @@ import {
   Input,
   MediaArtwork,
   PluginStoreItem,
-  Select,
   TabLabel,
   Tabs,
   Toggle,
@@ -50,12 +49,15 @@ import type { ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
 import { HearthisConnectForm } from './HearthisConnectForm';
 import {
+  HearthisImportDestination,
+  NEW_PLAYLIST_DESTINATION,
+} from './HearthisImportDestination';
+import {
   collectionImportMessage,
   playlistImportMessage,
 } from './hearthisImportMessages';
 import { readImportedIds, writeImportedIds } from './hearthisImports';
 
-const NEW_PLAYLIST_DESTINATION = '__new_playlist__';
 const LIBRARY_TABS = ['tracks', 'sets', 'collections', 'search'] as const;
 
 export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
@@ -83,6 +85,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
   >([]);
   const [destinationId, setDestinationId] = useState('');
   const [newDestinationName, setNewDestinationName] = useState('');
+  const [importCoverArt, setImportCoverArt] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -289,6 +292,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       const result = await hearthisSourceAdapter.importTracks(
         resolvedDestinationId,
         pendingTracks,
+        { importCoverArt },
       );
       setSelected(new Set());
       markImported(result.items.map((item) => item.trackId));
@@ -363,6 +367,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       const result = await hearthisSourceAdapter.importTracks(
         created.data.id,
         pendingTracks,
+        { importCoverArt },
       );
       markImported(result.items.map((item) => item.trackId));
       if (coverUrl) {
@@ -555,68 +560,28 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           )}
 
           {tab !== 'collections' && (
-            <div className="border-border bg-background-secondary/40 flex flex-wrap items-center gap-2 rounded-lg border p-3">
-              <Select
-                aria-label={t('hearthisCardStates.destinationPlaylist')}
-                className="min-w-0 flex-1 basis-40"
-                options={[
-                  { id: '', label: t('hearthisCard.destination') },
-                  {
-                    id: NEW_PLAYLIST_DESTINATION,
-                    label: t('hearthisCard.new'),
-                  },
-                  ...playlistDestinations.map((c) => ({
-                    id: c.id ?? c.slug,
-                    label: c.name,
-                  })),
-                ]}
-                value={destinationId}
-                onValueChange={setDestinationId}
-              />
-              {destinationId === NEW_PLAYLIST_DESTINATION ? (
-                <Input
-                  size="sm"
-                  value={newDestinationName}
-                  onChange={(e) => setNewDestinationName(e.target.value)}
-                  aria-label={t('hearthisCardStates.newPlaylistName')}
-                  placeholder={t('hearthisCardStates.playlistName')}
-                  className="min-w-0 flex-1 basis-40"
-                />
-              ) : null}
-              <Button
-                size="sm"
-                variant="secondary"
-                disabled={visibleTracks.length === 0}
-                onClick={() =>
-                  setSelected(
-                    new Set(
-                      visibleTracks
-                        .filter((track) => !importedIds.has(track.id))
-                        .map((track) => track.id),
-                    ),
-                  )
-                }
-              >
-                <CheckSquareIcon size={15} className="mr-1.5" aria-hidden />
-                {t('hearthisCardStates.selectAll')}
-              </Button>
-              <Button
-                size="sm"
-                disabled={
-                  busy ||
-                  !destinationId ||
-                  (destinationId === NEW_PLAYLIST_DESTINATION &&
-                    !newDestinationName.trim()) ||
-                  selected.size === 0
-                }
-                onClick={() => void importSelection()}
-              >
-                <DownloadIcon size={15} className="mr-1.5" aria-hidden />
-                {t('hearthisCardBatch34.importSelected', {
-                  count: selected.size,
-                })}
-              </Button>
-            </div>
+            <HearthisImportDestination
+              playlistDestinations={playlistDestinations}
+              destinationId={destinationId}
+              onDestinationIdChange={setDestinationId}
+              newDestinationName={newDestinationName}
+              onNewDestinationNameChange={setNewDestinationName}
+              visibleTrackCount={visibleTracks.length}
+              selectedCount={selected.size}
+              busy={busy}
+              importCoverArt={importCoverArt}
+              onImportCoverArtChange={setImportCoverArt}
+              onSelectAll={() =>
+                setSelected(
+                  new Set(
+                    visibleTracks
+                      .filter((track) => !importedIds.has(track.id))
+                      .map((track) => track.id),
+                  ),
+                )
+              }
+              onImport={() => void importSelection()}
+            />
           )}
 
           {showLibraryError ? (

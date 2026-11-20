@@ -38,9 +38,11 @@ import {
   runHearthisDownloadSet,
 } from './commands/hearthis-download-set.mjs';
 import { runHearthisImportEmbeds } from './commands/hearthis-import-embeds.mjs';
+import { runHearthisImportSets } from './commands/hearthis-import-sets.mjs';
 import { runHearthisRelease } from './commands/hearthis-release.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
+import { runHearthisSyncArtwork } from './commands/hearthis-sync-artwork.mjs';
 import {
   fetchHearthisUserSets,
   filterSetsByTitle,
@@ -465,6 +467,39 @@ Needs a token with the write scope.
       }),
   },
   {
+    path: ['hearthis', 'sync-artwork'],
+    usage:
+      'tahti hearthis sync-artwork [--user <handle>] [--no-cover-art] [--no-backdrop] [--avatar] [--dry-run] [--json]',
+    summary:
+      'Import cover art (and profile backdrop) from hearthis.at onto matching library sounds',
+    details: `For each of your hearthis.at tracks that already exists in the Tahti library,
+rehosts the track cover onto the sound (POST /api/me/sound/:id/banner/from-url).
+Also sets the profile backdrop from the hearthis.at background image. Cover art
+and backdrop are on by default; pass --no-cover-art or --no-backdrop to skip.
+  --user <handle>   hearthis.at handle (default: the one on your Tahti profile)
+  --no-cover-art    Skip per-track covers
+  --no-backdrop     Skip the profile backdrop
+  --avatar          Also set the profile picture from hearthis.at
+  --dry-run         Show what would change without writing`,
+    options: {
+      ...JSON_OPTION,
+      user: { type: 'string' },
+      'no-cover-art': { type: 'boolean', default: false },
+      'no-backdrop': { type: 'boolean', default: false },
+      avatar: { type: 'boolean', default: false },
+      'dry-run': { type: 'boolean', default: false },
+    },
+    run: (config, { values }) =>
+      runHearthisSyncArtwork(config, {
+        json: values.json,
+        dryRun: values['dry-run'],
+        coverArt: !values['no-cover-art'],
+        backdrop: !values['no-backdrop'],
+        avatar: values.avatar,
+        handle: values.user || null,
+      }),
+  },
+  {
     path: ['hearthis', 'sets'],
     usage: 'tahti hearthis sets [--json]',
     summary: 'List your hearthis.at Sets (playlists / album-like groups)',
@@ -660,7 +695,7 @@ paths that already exist (unless --force).
   {
     path: ['hearthis', 'release'],
     usage:
-      'tahti hearthis release <set-or-track-url> [--out <dir>] [--ledger <path>] [--title <t>] [--type <t>] [--date <YYYY-MM-DD>] [--tracks <list>] [--flac] [--force-new] [--dry-run] [--json]',
+      'tahti hearthis release <set-or-track-url> [--out <dir>] [--ledger <path>] [--title <t>] [--type <t>] [--date <YYYY-MM-DD>] [--tracks <list>] [--flac] [--no-cover-art] [--force-new] [--dry-run] [--json]',
     summary: 'Re-make a hearthis.at Set or track as a draft Tahti release',
     details: `Reads the Set (GET /api/v1/imports/hearthis/sets/:permalink/tracks) or the
 single track (hearthis.at's public API), downloads the original audio of the
@@ -668,10 +703,11 @@ tracks uploaded by the Set's owner into <out> like \`hearthis download-set
 --own\`, uploads each file as a sound in Set order, then creates a draft
 release from those sounds (POST /api/me/releases), sets the Set cover
 (POST /api/me/releases/:id/artwork/from-url) and prints the release URL.
-Title, description, release date (earliest track date), genre and track order
-come from hearthis.at; each sound gets the track's genre, tags, BPM and
-description. A single track becomes a one-track single. The new tracks play
-the uploaded audio; no hearthis.at embed is created.
+Each sound also gets its track cover by default (POST …/banner/from-url);
+pass --no-cover-art to skip that. Title, description, release date (earliest
+track date), genre and track order come from hearthis.at; each sound gets the
+track's genre, tags, BPM and description. A single track becomes a one-track
+single. The new tracks play the uploaded audio; no hearthis.at embed is created.
 A track already uploaded by an earlier release or collection run (the upload
 ledger) or already in your library (exported to hearthis.at as that track, or
 an upload with the same title and length within 2 s) is reused, not uploaded
@@ -688,6 +724,7 @@ reports the release instead of creating it twice.
   --date <YYYY-MM-DD>  Release date
   --tracks <list>      Only these positions among the owner's tracks, e.g. 1,3-5
   --flac               Convert WAV/AIFF downloads to FLAC with ffmpeg first
+  --no-cover-art       Skip rehosting each track's cover onto the sound
   --force-new          Create the release even when one has the same title
   --dry-run            Show the release and tracks without downloading,
                        uploading or creating anything
@@ -702,6 +739,7 @@ on an api.<host> address.`,
       date: { type: 'string' },
       tracks: { type: 'string' },
       flac: { type: 'boolean', default: false },
+      'no-cover-art': { type: 'boolean', default: false },
       'force-new': { type: 'boolean', default: false },
       'dry-run': { type: 'boolean', default: false },
     },
@@ -716,6 +754,7 @@ on an api.<host> address.`,
         date: values.date || null,
         tracks: values.tracks || null,
         flac: values.flac,
+        coverArt: !values['no-cover-art'],
         forceNew: values['force-new'],
         dryRun: values['dry-run'],
       }),
@@ -723,7 +762,7 @@ on an api.<host> address.`,
   {
     path: ['hearthis', 'collection'],
     usage:
-      'tahti hearthis collection <set-url-or-permalink> [--out <dir>] [--ledger <path>] [--name <t>] [--slug <s>] [--type <t>] [--private | --visibility <v>] [--tracks <list>] [--flac] [--wait <seconds>] [--strict] [--dry-run] [--json]',
+      'tahti hearthis collection <set-url-or-permalink> [--out <dir>] [--ledger <path>] [--name <t>] [--slug <s>] [--type <t>] [--private | --visibility <v>] [--tracks <list>] [--flac] [--no-cover-art] [--wait <seconds>] [--strict] [--dry-run] [--json]',
     summary:
       'Re-make a hearthis.at Set as a Tahti collection, uploading each track once',
     details: `Reads the Set, reuses a Tahti sound for every track that already has one
@@ -732,7 +771,8 @@ that track, or an upload with the same title and length within 2 s), downloads
 and uploads the rest like \`hearthis release\`, creates the collection
 (POST /api/me/collections, cover from the Set artwork via
 POST /api/me/collections/:slug/cover/from-url) and adds the sounds in Set
-order. Only tracks uploaded by the Set's owner are included. A track that is
+order. Each sound also gets its track cover by default; pass --no-cover-art
+to skip. Only tracks uploaded by the Set's owner are included. A track that is
 not downloadable, or fails to download or upload, is skipped and listed;
 the run exits with 1 so you notice. The collection slug is kept in
 <out>/.tahti-collection-<permalink>.json: a rerun never creates a second
@@ -748,6 +788,7 @@ collection with the same name stops the run (fill it with --slug).
   --visibility <v>     public, unlisted or draft (default: public)
   --tracks <list>      Only these positions among the owner's tracks, e.g. 1,3-5
   --flac               Convert WAV/AIFF downloads to FLAC with ffmpeg first
+  --no-cover-art       Skip rehosting each track's cover onto the sound
   --wait <seconds>     How long to wait for new uploads to finish processing
                        before adding them (default: ${DEFAULT_PROCESSING_WAIT_SEC}; 0 adds right away,
                        tracks still processing are added on the next run)
@@ -766,6 +807,7 @@ collection with the same name stops the run (fill it with --slug).
       visibility: { type: 'string' },
       tracks: { type: 'string' },
       flac: { type: 'boolean', default: false },
+      'no-cover-art': { type: 'boolean', default: false },
       wait: { type: 'string' },
       strict: { type: 'boolean', default: false },
       'dry-run': { type: 'boolean', default: false },
@@ -783,9 +825,56 @@ collection with the same name stops the run (fill it with --slug).
         visibility: values.visibility || null,
         tracks: values.tracks || null,
         flac: values.flac,
+        coverArt: !values['no-cover-art'],
         wait: values.wait,
         strict: values.strict,
         dryRun: values['dry-run'],
+      }),
+  },
+  {
+    path: ['hearthis', 'import-sets'],
+    usage:
+      'tahti hearthis import-sets --from-user <handle> [--out <dir>] [--match <regex>] [--no-cover-art] [--skip-embeds] [--wait <seconds>] [--force] [--dry-run] [--json]',
+    summary:
+      'Import every hearthis.at Set of an account as Tahti collections (local audio + cover art)',
+    details: `One-liner for a full discography import. Lists every Set on hearthis.at for
+--from-user, downloads downloadable tracks into a shared ledger under --out,
+creates one Tahti collection per Set (title, description, cover), rehosts each
+track's cover, and adds the sounds in Set order. Smaller Sets run first.
+Resumable: finished Sets are recorded in <out>/.tahti-hearthis-import-sets.json
+and skipped on the next run unless --force.
+  --from-user <h>   hearthis.at handle (required), e.g. yaniho
+  --out <dir>       Download + ledger + state folder (default: .)
+  --match <regex>   Only Sets whose title matches (case-insensitive)
+  --no-cover-art    Skip rehosting each track's cover onto the sound
+  --skip-embeds     Do not convert existing hearthis.at embeds first
+  --wait <seconds>  Processing wait per Set (default: ${DEFAULT_PROCESSING_WAIT_SEC})
+  --force           Re-import Sets already marked done in the state file
+  --dry-run         Show the queue without downloading or writing`,
+    options: {
+      ...JSON_OPTION,
+      'from-user': { type: 'string' },
+      out: { type: 'string' },
+      match: { type: 'string' },
+      'no-cover-art': { type: 'boolean', default: false },
+      'skip-embeds': { type: 'boolean', default: false },
+      wait: { type: 'string' },
+      force: { type: 'boolean', default: false },
+      'dry-run': { type: 'boolean', default: false },
+    },
+    run: (config, { values }) =>
+      runHearthisImportSets(config, {
+        fromUser: values['from-user'] || null,
+        outDir: values.out || '.',
+        match: values.match || null,
+        coverArt: !values['no-cover-art'],
+        convertEmbeds: !values['skip-embeds'],
+        wait: values.wait
+          ? Number.parseInt(values.wait, 10)
+          : DEFAULT_PROCESSING_WAIT_SEC,
+        force: values.force,
+        dryRun: values['dry-run'],
+        json: values.json,
       }),
   },
   {

@@ -15133,6 +15133,7 @@
       "createdCoversFailed": "Created “{{name}}” with {{imported}} items; {{covers}} could not be stored.",
       "createdCompleted": "Import completed — created “{{name}}” with {{items}}.",
       "importSelected": "Import selected ({{count}})",
+      "importCoverArt": "Import cover art",
       "selectItem": "Select {{title}}",
       "importAsCollectionNamed": "Import {{title}} as collection",
       "preview": "Preview",

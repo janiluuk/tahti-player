@@ -11,6 +11,7 @@ import {
   sanitizePathSegment,
   splitAlbumSetTitle,
   trackFileStem,
+  withCleanImportTitles,
 } from './hearthis-paths.mjs';
 
 describe('sanitizePathSegment', () => {
@@ -94,6 +95,12 @@ describe('album and set layouts', () => {
       cleanAlbumTrackTitle('Yaniho - Revitalize LP - 05 - Lights out', album),
     ).toBe('Lights out');
     expect(
+      cleanAlbumTrackTitle('Yaniho - Euphorizer EP - 01 - intro', {
+        artist: 'Yaniho',
+        album: 'Euphorizer EP',
+      }),
+    ).toBe('intro');
+    expect(
       cleanAlbumTrackTitle(
         'Yaniho, Acraze  - Revitalize LP - 02 - Do It To It (demo #1)',
         album,
@@ -111,6 +118,37 @@ describe('album and set layouts', () => {
     expect(cleanAlbumTrackTitle('XPRMNT LP - 08.5 - Gray matter', album)).toBe(
       'Gray matter',
     );
+    expect(
+      cleanAlbumTrackTitle('Yaniho - Chilled sets - 03 - Warmup', {
+        artist: 'Yaniho',
+        album: 'Chilled sets',
+      }),
+    ).toBe('Warmup');
+  });
+
+  it('cleans import track titles from the Set name and keeps sourceTitle', () => {
+    const [intro, mid] = withCleanImportTitles(
+      [
+        {
+          id: '1',
+          title: 'Yaniho - Euphorizer EP - 01 - intro',
+          position: 1,
+        },
+        {
+          id: '2',
+          title: 'Yaniho - Euphorizer EP - 02 - Midway',
+          position: 2,
+        },
+      ],
+      'Yaniho - Euphorizer EP',
+      'yaniho',
+    );
+    expect(intro).toMatchObject({
+      title: 'intro',
+      sourceTitle: 'Yaniho - Euphorizer EP - 01 - intro',
+      position: 1,
+    });
+    expect(mid.title).toBe('Midway');
   });
 
   it('builds album and set paths', () => {

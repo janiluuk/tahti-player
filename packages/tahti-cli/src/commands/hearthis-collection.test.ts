@@ -115,6 +115,7 @@ describe('hearthisToCollection', () => {
 
     const run = await runHearthisCollection(CONFIG, SET_URL, {
       outDir: dir,
+      coverArt: false,
       log: () => {},
     });
 

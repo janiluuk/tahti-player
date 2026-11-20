@@ -1,6 +1,6 @@
 import { CliError } from '../api-client.mjs';
 import { largestCover, parseTrackSelection } from './hearthis-download-set.mjs';
-import { resolveSetOwner } from './hearthis-paths.mjs';
+import { resolveSetOwner, withCleanImportTitles } from './hearthis-paths.mjs';
 import {
   fetchHearthisSetTracks,
   parseHearthisSetPermalink,
@@ -232,7 +232,15 @@ export function buildReleasePlan(
       `${planned.length} tracks is more than a release holds (${MAX_RELEASE_TRACKS}). Pick some with --tracks, e.g. --tracks 1-${MAX_RELEASE_TRACKS}.`,
     );
   }
-  const first = planned[0];
+  const setTitle = catalog.set?.title || catalog.permalink || '';
+  const cleaned =
+    catalog.kind === 'set'
+      ? withCleanImportTitles(planned, setTitle, owner)
+      : planned.map((track) => ({
+          ...track,
+          sourceTitle: track.sourceTitle ?? track.title,
+        }));
+  const first = cleaned[0];
   const releaseTitle = (
     title ||
     catalog.set?.title ||
@@ -243,14 +251,14 @@ export function buildReleasePlan(
     .trim()
     .slice(0, 200);
   const releaseType = (
-    type ?? defaultReleaseType(planned.length)
+    type ?? defaultReleaseType(cleaned.length)
   ).toUpperCase();
   if (!RELEASE_TYPES.includes(releaseType)) {
     throw new CliError(
       `Invalid --type "${type}". Expected one of: ${RELEASE_TYPES.map((t) => t.toLowerCase()).join(', ')}.`,
     );
   }
-  const trackDates = planned
+  const trackDates = cleaned
     .map((track) => datePart(track.releaseDate))
     .filter(Boolean)
     .sort();
@@ -265,7 +273,7 @@ export function buildReleasePlan(
   )
     .trim()
     .slice(0, MAX_RELEASE_DESCRIPTION);
-  const genre = mostCommon(planned.map((track) => track.genre));
+  const genre = mostCommon(cleaned.map((track) => track.genre));
   return {
     source: catalog.url,
     kind: catalog.kind,
@@ -282,7 +290,7 @@ export function buildReleasePlan(
         null,
     ),
     excludedOthers: others,
-    tracks: planned,
+    tracks: cleaned,
   };
 }
 

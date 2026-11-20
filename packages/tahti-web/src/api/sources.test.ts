@@ -57,6 +57,31 @@ describe('importHearthisTracks', () => {
       }),
     );
   });
+
+  it('skips cover art when importCoverArt is false', async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          soundId: 'archive-2',
+          track: { coverUrl: track.coverUrl },
+        }),
+        { status: 201, headers: { 'Content-Type': 'application/json' } },
+      ),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await importHearthisTracks('collection-1', [track], {
+      importCoverArt: false,
+    });
+
+    expect(result).toEqual({
+      imported: 1,
+      failed: 0,
+      artworkFailed: 0,
+      items: [{ trackId: 'hearthis-track', soundId: 'archive-2' }],
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('importSoundcloudTracks', () => {

@@ -23,6 +23,7 @@ import {
   uploadBlocker,
   uploadPendingRows,
 } from './hearthis-sounds.mjs';
+import { applyTrackCovers } from './hearthis-sync-artwork.mjs';
 import { parseReleaseDate, tracksFromSounds } from './releases-create.mjs';
 import { MAX_RELEASES_LIMIT } from './releases-list.mjs';
 
@@ -125,6 +126,7 @@ export async function hearthisToRelease(
     tracks = null,
     flac = false,
     ledgerPath = null,
+    coverArt = true,
     log = () => {},
   } = {},
 ) {
@@ -219,6 +221,12 @@ export async function hearthisToRelease(
   if (failed.length > 0) {
     result.stopped = `${failed.length} track(s) failed, so no release was created. Run the same command again to retry them; uploaded tracks are kept.`;
     return result;
+  }
+
+  if (coverArt) {
+    result.trackCovers = await applyTrackCovers(config, rows, plan.tracks, {
+      log,
+    });
   }
 
   const releaseTracks = await tracksFromSounds(

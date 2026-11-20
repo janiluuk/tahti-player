@@ -215,9 +215,15 @@ export async function fetchHearthisCollectionTracks(
   return tracks.map(hearthisApiTrack);
 }
 
+export type HearthisImportOptions = {
+  /** Rehost each track's hearthis.at cover onto the sound. Default true. */
+  importCoverArt?: boolean;
+};
+
 export async function importHearthisTracks(
   collectionId: string,
   tracks: HearthisTrack[],
+  { importCoverArt = true }: HearthisImportOptions = {},
 ): Promise<{
   imported: number;
   failed: number;
@@ -256,6 +262,13 @@ export async function importHearthisTracks(
             method: 'POST',
             body: JSON.stringify({ collectionId, trackUrl: track.url }),
           }).then(async ({ data }) => {
+            if (!importCoverArt) {
+              return {
+                artworkFailed: false,
+                trackId: track.id,
+                soundId: data.soundId,
+              };
+            }
             const coverUrl = data.track.coverUrl ?? track.coverUrl;
             if (!coverUrl) {
               return {

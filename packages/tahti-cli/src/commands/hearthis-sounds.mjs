@@ -184,24 +184,18 @@ export function findLibraryMatch(track, sounds) {
   if (exported) {
     return { sound: exported, matchedBy: 'hearthis export id' };
   }
-  const title = normalizeTitle(track.title);
-  const embed = usable.find(
-    (sound) =>
-      isHearthisEmbedOf(sound, track) ||
-      (sound.embedProvider && title && normalizeTitle(sound.title) === title),
-  );
-  if (embed) {
-    return {
-      conflict: `a hearthis.at embed of this track is in your library (${embed.id}); convert it with \`tahti hearthis import-embeds\` first`,
-      sound: embed,
-    };
-  }
-  if (!title) {
-    return null;
-  }
+  const titles = [
+    ...new Set(
+      [track.title, track.sourceTitle]
+        .filter(Boolean)
+        .map((value) => normalizeTitle(value))
+        .filter(Boolean),
+    ),
+  ];
   const sameTitle = usable
     .filter(
-      (sound) => !sound.embedProvider && normalizeTitle(sound.title) === title,
+      (sound) =>
+        !sound.embedProvider && titles.includes(normalizeTitle(sound.title)),
     )
     .sort(READY_FIRST);
   const timed = sameTitle.find((sound) => closeEnough(sound, track));
@@ -211,6 +205,21 @@ export function findLibraryMatch(track, sounds) {
   const untimed = sameTitle.find((sound) => sound.durationSec == null);
   if (untimed) {
     return { sound: untimed, matchedBy: 'title (still processing)' };
+  }
+  const embed = usable.find(
+    (sound) =>
+      isHearthisEmbedOf(sound, track) ||
+      (sound.embedProvider &&
+        titles.some((title) => normalizeTitle(sound.title) === title)),
+  );
+  if (embed) {
+    return {
+      conflict: `a hearthis.at embed of this track is in your library (${embed.id}); convert it with \`tahti hearthis import-embeds\` first`,
+      sound: embed,
+    };
+  }
+  if (titles.length === 0) {
+    return null;
   }
   if (sameTitle.length > 0) {
     return {

@@ -65,6 +65,23 @@ describe('findLibraryMatch', () => {
     expect(match?.conflict).toMatch(/different length/);
   });
 
+  it('prefers a local upload over a hearthis.at embed of the same track', () => {
+    const match = findLibraryMatch(TRACK, [
+      {
+        id: 'embed',
+        title: 'Night Drive',
+        durationSec: 300,
+        embedProvider: 'HEARTHIS',
+        embedSourceUrl: TRACK.url,
+      },
+      { id: 'upload', title: 'Night Drive', durationSec: 300 },
+    ]);
+    expect(match).toEqual({
+      sound: expect.objectContaining({ id: 'upload' }),
+      matchedBy: 'title + duration',
+    });
+  });
+
   it('reports an embed of the track as a conflict and ignores failed sounds', () => {
     const embed = findLibraryMatch(TRACK, [
       {
