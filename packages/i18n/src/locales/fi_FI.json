@@ -14890,6 +14890,33 @@
       "bannerAlt": "Tapahtuman {{title}} banneri",
       "edit": "Muokkaa tapahtumaa",
       "venue": "Tapahtumapaikka"
+    },
+    "eventGallery": {
+      "heading": "Kuvagalleria",
+      "addTitle": "Lisää kuvia",
+      "addDescription": "Valitse yksi tai useampi kuva, yhteensä enintään {{max}}. Lisää jokaiselle kuvateksti.",
+      "choose": "Valitse kuvat",
+      "count": "{{current}} / {{max}} kuvaa",
+      "limitReached": "Kuvagalleriaan mahtuu enintään {{max}} kuvaa.",
+      "uploads": "Lataukset",
+      "uploading": "Ladataan {{name}}…",
+      "uploadFailed": "Tiedoston {{name}} lataus epäonnistui: {{error}}",
+      "dismiss": "Sulje",
+      "imageNumber": "Kuva {{position}}",
+      "captionLabel": "Kuvan {{position}} kuvateksti",
+      "captionPlaceholder": "Mitä kuvassa tapahtuu?",
+      "moveUp": "Siirrä ylös",
+      "moveUpLabel": "Siirrä kuva {{position}} ylös",
+      "moveDown": "Siirrä alas",
+      "moveDownLabel": "Siirrä kuva {{position}} alas",
+      "remove": "Poista",
+      "removeLabel": "Poista kuva {{position}}",
+      "imageRemoved": "Kuva poistettiin galleriasta",
+      "imageRestored": "Kuva palautettiin",
+      "openImage": "Avaa kuva {{position}}/{{total}}",
+      "openImageNamed": "Avaa kuva {{position}}/{{total}}: {{caption}}",
+      "imageAlt": "{{title}}, kuva {{position}}",
+      "slideshowLabel": "Kuvia tapahtumasta {{title}}"
     }
   },
   "studioEditor": {

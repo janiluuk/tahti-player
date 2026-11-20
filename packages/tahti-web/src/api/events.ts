@@ -27,6 +27,23 @@ export type ArtistEventParticipant = {
   status: ArtistEventParticipantStatus;
 };
 
+export type ArtistEventGalleryImage = { url: string; caption: string };
+
+export function normalizeEventGallery(raw: unknown): ArtistEventGalleryImage[] {
+  if (!Array.isArray(raw)) {
+    return [];
+  }
+  return raw.flatMap((item: unknown) => {
+    if (!item || typeof item !== 'object') {
+      return [];
+    }
+    const { url, caption } = item as { url?: unknown; caption?: unknown };
+    return typeof url === 'string' && url
+      ? [{ url, caption: typeof caption === 'string' ? caption : '' }]
+      : [];
+  });
+}
+
 export type ArtistEvent = {
   id: string;
   title: string;
@@ -44,6 +61,7 @@ export type ArtistEvent = {
   status: ArtistEventStatus;
   publishedAt: string | null;
   participants: ArtistEventParticipant[];
+  gallery: ArtistEventGalleryImage[];
 };
 
 export function normalizeEvent(
@@ -63,6 +81,7 @@ export function normalizeEvent(
     status: raw.status ?? 'PUBLISHED',
     publishedAt: raw.publishedAt ?? null,
     participants: Array.isArray(raw.participants) ? raw.participants : [],
+    gallery: normalizeEventGallery(raw.gallery),
   };
 }
 
@@ -76,7 +95,23 @@ const mockBase = {
   status: 'PUBLISHED' as const,
   publishedAt: '2026-08-01T10:00:00.000Z',
   participants: [] as ArtistEventParticipant[],
+  gallery: [] as ArtistEventGalleryImage[],
 };
+
+function presetUrl(n: number): string {
+  return `/artwork-presets/artwork-${String(n).padStart(2, '0')}.webp`;
+}
+
+export const mockEventGallery: ArtistEventGalleryImage[] = [
+  { url: presetUrl(3), caption: 'Doors open - the queue reached the corner' },
+  { url: presetUrl(7), caption: 'Modular rig during the opening set' },
+  {
+    url: presetUrl(10),
+    caption: 'Northern Signals joined for the closing track',
+  },
+  { url: presetUrl(12), caption: '' },
+  { url: presetUrl(14), caption: 'Crowd after the encore' },
+];
 
 export const mockEvents: ArtistEvent[] = [
   {
@@ -100,6 +135,7 @@ export const mockEvents: ArtistEvent[] = [
     location: 'Helsinki, Finland',
     eventUrl: 'https://kuudeslinja.fi/events/midnight-cartography',
     ticketUrl: 'https://tickets.example/kuudes-linja',
+    gallery: mockEventGallery,
     startAt: '2026-09-19T21:00:00.000Z',
     endAt: '2026-09-20T02:00:00.000Z',
     timezone: 'Europe/Helsinki',
@@ -225,6 +261,8 @@ export type CreateArtistEventInput = {
   visibility?: ArtistEventVisibility;
   status?: 'DRAFT' | 'PUBLISHED';
   shareTo?: Array<'MASTODON' | 'BLUESKY'>;
+  /** On update, replaces the whole gallery. */
+  gallery?: ArtistEventGalleryImage[];
 };
 
 function mockEventVenue(
@@ -263,6 +301,7 @@ export async function createEvent(
       status,
       publishedAt: status === 'PUBLISHED' ? new Date().toISOString() : null,
       participants: [],
+      gallery: input.gallery ?? [],
     };
     mockEvents.push(row);
     mockEvents.sort((a, b) => a.startAt.localeCompare(b.startAt));

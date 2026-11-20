@@ -16,6 +16,9 @@ type DialogRootProps = PropsWithChildren<{
   /** Stacking class for the dialog layer. Raise it (e.g. `z-[70]`) for
    * dialogs opened from the full-screen player, which sits at `z-[60]`. */
   layerClassName?: string;
+  /** Fill the whole viewport (no outer gutter or max width), e.g. an image
+   * slideshow. Style the panel itself through `className`. */
+  fullScreen?: boolean;
   'aria-label'?: string;
 }>;
 
@@ -26,6 +29,7 @@ export const DialogRoot: FC<DialogRootProps> = ({
   className,
   showCloseButton = true,
   layerClassName = 'z-50',
+  fullScreen = false,
   'aria-label': ariaLabel,
   children,
 }) => {
@@ -42,9 +46,19 @@ export const DialogRoot: FC<DialogRootProps> = ({
             className={cn('relative', layerClassName)}
           >
             <DialogOverlayBackdrop />
-            <div className="pointer-events-none fixed inset-0 flex items-center justify-center p-4">
+            <div
+              className={
+                fullScreen
+                  ? 'pointer-events-none fixed inset-0 flex items-center justify-center'
+                  : 'pointer-events-none fixed inset-0 flex items-center justify-center p-4'
+              }
+            >
               <motion.div
-                className="pointer-events-auto flex max-h-full w-full max-w-[calc(100vw-2rem)] flex-col"
+                className={
+                  fullScreen
+                    ? 'pointer-events-auto flex h-full w-full flex-col'
+                    : 'pointer-events-auto flex max-h-full w-full max-w-[calc(100vw-2rem)] flex-col'
+                }
                 initial={{ opacity: 1, scale: 1, y: 0 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 8 }}
@@ -58,6 +72,8 @@ export const DialogRoot: FC<DialogRootProps> = ({
                 <DialogPanel
                   className={cn(
                     'border-border bg-background shadow-shadow relative mx-auto max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-md border-(length:--border-width) p-6',
+                    fullScreen &&
+                      'h-dvh max-h-dvh max-w-none rounded-none border-0 p-0',
                     className,
                   )}
                 >

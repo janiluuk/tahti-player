@@ -14890,6 +14890,33 @@
       "bannerAlt": "Banner for {{title}}",
       "edit": "Edit event",
       "venue": "Venue"
+    },
+    "eventGallery": {
+      "heading": "Photo gallery",
+      "addTitle": "Add photos",
+      "addDescription": "Pick one or more images, up to {{max}} in total. Add a caption to each.",
+      "choose": "Choose images",
+      "count": "{{current}} / {{max}} images",
+      "limitReached": "The gallery holds at most {{max}} images.",
+      "uploads": "Uploads",
+      "uploading": "Uploading {{name}}…",
+      "uploadFailed": "{{name}} did not upload: {{error}}",
+      "dismiss": "Dismiss",
+      "imageNumber": "Image {{position}}",
+      "captionLabel": "Caption for image {{position}}",
+      "captionPlaceholder": "What is happening in this photo?",
+      "moveUp": "Move up",
+      "moveUpLabel": "Move image {{position}} up",
+      "moveDown": "Move down",
+      "moveDownLabel": "Move image {{position}} down",
+      "remove": "Remove",
+      "removeLabel": "Remove image {{position}}",
+      "imageRemoved": "Image removed from the gallery",
+      "imageRestored": "Image restored",
+      "openImage": "Open image {{position}} of {{total}}",
+      "openImageNamed": "Open image {{position}} of {{total}}: {{caption}}",
+      "imageAlt": "{{title}}, image {{position}}",
+      "slideshowLabel": "Photos from {{title}}"
     }
   },
   "studioEditor": {
