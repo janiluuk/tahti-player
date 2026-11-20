@@ -22,7 +22,7 @@ flowchart LR
 | 2026-09-05 | `UI-REDESIGN-WORKLOG.md` is an append-only ship diary, not the open backlog. | - | `AGENTS-START-HERE.md` |
 | 2026-09-05 | Root `AGENTS.md` is short; deep topics live under `docs/agent/*`. | - | `AGENTS.md` |
 | 2026-09-05 | WORKPLAN is epics only; leaf tasks are `docs/todo/INDEX.md`. | - | `WORKPLAN.md` |
-| 2026-10-19 | **Ops CLI is separate from product `tahti`.** Maintainer scripts fold into `@tahti-player/tahti-ops` (`tahti-ops`). Product `@tahti-player/tahti-cli` stays API/TUI-only. | Product CLI must not ship deploy SSH tooling. | `packages/tahti-ops`, `docs/todo/tahti-ops-cli.md` |
+| 2026-10-19 | **Ops CLI is separate from product `tahti`.** Maintainer scripts fold into `@tahti-player/tahti-ops` (`tahti-ops`). Product CLI stays in `janiluuk/tahti-cli` (API/TUI-only). | Product CLI must not ship deploy SSH tooling. | `packages/tahti-ops`, `docs/todo/tahti-ops-cli.md` |
 
 ## Plugins and add-ons
 

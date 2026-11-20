@@ -21,7 +21,7 @@
     "snapshots": "pnpm tahti-ops snapshots",
     "deploy:web": "pnpm tahti-ops deploy web",
     "deploy:prod": "pnpm tahti-ops deploy all",
-    "tahti": "node packages/tahti-cli/src/cli.mjs",
+    "tahti": "pnpm --dir ../tahti-cli run tahti",
     "deploy:tahti-beta": "pnpm tahti-ops deploy web",
     "deploy:tahti-storybook": "pnpm --filter @tahti-player/storybook run deploy:vimage",
     "build": "turbo build",

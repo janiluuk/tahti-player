@@ -1,3 +1,11 @@
+## 2026-11-20 — tahti-cli moved to janiluuk/tahti-cli
+
+Cut over: removed `packages/tahti-cli` from this monorepo. Canonical CLI is
+[janiluuk/tahti-cli](https://github.com/janiluuk/tahti-cli) (sync #6, SDK #7).
+`@tahti/api-client` npm publish still needs `NPM_TOKEN` on tahti-org; until then
+the sibling vendors a packed tarball. Root `pnpm tahti` delegates to
+`../tahti-cli`. Folded `tahti-cli-tool.md`.
+
 ## 2026-11-20 — API notification bodies (org FI/EN)
 
 Org stores in-app notification title/body in the recipient’s `uiLocale`.

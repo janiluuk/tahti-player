@@ -31,7 +31,7 @@ This repository is the Tahti fork of Nuclear (`janiluuk/tahti-player`). Upstream
 - `@tahti-player/player` — Tauri app
 - `@tahti-player/ui` / `storybook` / `plugin-sdk` / `model` / `themes` / `hifi` / `i18n`
 - `@tahti-player/tahti-web` — beta.tahti.live
-- `@tahti-player/tahti-cli` — product `tahti` API/TUI CLI
+- Product `tahti` CLI — sibling [`../tahti-cli`](https://github.com/janiluuk/tahti-cli) (not in this monorepo)
 - `@tahti-player/tahti-ops` — maintainer `tahti-ops` (folds `scripts/`; separate from product CLI)
 - `@tahti-player/docs` / `website` / `tools` / shared eslint + tailwind configs
 

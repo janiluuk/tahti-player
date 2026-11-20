@@ -45,7 +45,7 @@ A pnpm and Turborepo monorepo. The main packages:
 - `@tahti-player/player` - the desktop shell (Tauri, Rust)
 - `@tahti-player/ui` - shared UI components
 - `@tahti-player/storybook` - component demos
-- `@tahti-player/tahti-cli` - the `tahti` command-line tool
+- [`janiluuk/tahti-cli`](https://github.com/janiluuk/tahti-cli) — the `tahti` command-line tool (sibling repo)
 - `@tahti-player/themes` - the theme engine
 - `@tahti-player/audio-core`, `audio-editor`, `audio-rack`, `visualizer` - audio packages ported from theDAW
 - `@tahti-player/hifi` - HTML5 audio engine

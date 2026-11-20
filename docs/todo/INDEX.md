@@ -39,6 +39,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | open    | [channel-play-icon-hover.md](channel-play-icon-hover.md) | Channel track rows: play icon only on playing + hovered row; Shift hover → queue icon, Shift+click queues |
+| open    | [radio-station-under-widget.md](radio-station-under-widget.md) | Added radio stations land under the radio widget, not on an empty row |
 | partial | [discover-events-tab.md](discover-events-tab.md) | Events tab, posting for any signed-in user, banner crop, event page backdrop built; left: e2e run, EventPostView story, filters (need org upcoming filters), event gallery API deploy (tahti-org#1122 merged) |
 | partial | [mobile-bottom-nav-readability.md](mobile-bottom-nav-readability.md) | Taller bar that grows by the gesture-bar inset, bigger labels/icons; left: check on a real Android phone |
 | open    | [pattern-detection-grants-ui.md](pattern-detection-grants-ui.md) | Board grant preview anomaly chips + PATTERN_FRAUD_ALERT activity; left: pitch copy after org merge |
@@ -80,7 +81,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | blocked | [ai-dj-radio-dj-port.md](ai-dj-radio-dj-port.md) | POC not committed; no prod ship without go-ahead |
 | blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
 | blocked | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Multi-phase 13-category project not started |
-| blocked | [tahti-cli-tool.md](tahti-cli-tool.md) | npm publish @tahti/api-client (NPM_TOKEN) |
 | blocked | [release-player-workflow-broken.md](release-player-workflow-broken.md) | User store secrets + first real release run |
 
 ## Desktop app

@@ -29,7 +29,7 @@ describe('main', () => {
     expect(help).toContain('tahti-ops stack smoke');
     expect(help).toContain('tahti-ops backup status');
     expect(help).toContain('tahti-ops deploy');
-    expect(help).toContain('@tahti-player/tahti-cli');
+    expect(help).toContain('janiluuk/tahti-cli');
   });
 
   it('exits 1 for unknown commands', async () => {

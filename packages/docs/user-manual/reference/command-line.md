@@ -18,7 +18,7 @@ npm link        # puts `tahti` on your PATH
 tahti --help
 ```
 
-If you work in the Tahti Player repository, the same tool is in `packages/tahti-cli`: run it with `pnpm --filter @tahti-player/tahti-cli exec tahti --help`.
+Clone [`janiluuk/tahti-cli`](https://github.com/janiluuk/tahti-cli) next to this repo (`../tahti-cli`) and run `pnpm tahti --help` there (or `pnpm tahti` from the player root after a sibling checkout).
 
 ## Sign in
 

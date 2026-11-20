@@ -52,7 +52,7 @@ Everything from the web app, plus:
 - Control from other devices: a phone remote, MPD clients and Discord status.
 - A built-in [MCP](https://modelcontextprotocol.io/) server, so AI agents on your computer can control playback and search Tahti. See [`packages/docs/integrations/mcp-server.md`](./packages/docs/integrations/mcp-server.md).
 
-There's also a command-line client, `tahti`, for managing your library, uploading folders and listening from the terminal. See [`packages/tahti-cli`](./packages/tahti-cli/README.md).
+There's also a command-line client, `tahti`, for managing your library, uploading folders and listening from the terminal. It lives in the sibling repo [`janiluuk/tahti-cli`](https://github.com/janiluuk/tahti-cli) (checkout as `../tahti-cli`).
 
 ## More screens
 
@@ -95,7 +95,7 @@ On Linux the desktop app renders with the GPU. If the window stays blank or cras
 | `@tahti-player/tahti-web` | The web app: listening, artist studio and board admin |
 | `@tahti-player/player` | The desktop app (Tauri) |
 | `@tahti-player/ui`, `themes` | Shared components and themes |
-| `@tahti-player/tahti-cli` | The `tahti` command-line client |
+| [`janiluuk/tahti-cli`](https://github.com/janiluuk/tahti-cli) | The `tahti` command-line client (sibling repo) |
 | `@tahti-player/tahti-ops` | Maintainer tooling: deploys, stack, tests |
 
 The API lives in [janiluuk/tahti-org](https://github.com/janiluuk/tahti-org). Its public docs are at [api.tahti.live/api](https://api.tahti.live/api). How the pieces fit together: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). Settled decisions: [`docs/DECISIONS.md`](./docs/DECISIONS.md). Web app details and configuration: [`packages/tahti-web/README.md`](./packages/tahti-web/README.md).

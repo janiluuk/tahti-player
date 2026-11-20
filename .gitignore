@@ -37,3 +37,4 @@ packages/tahti-web/docs/listener-shots/
 
 
 /artifacts/android/
+.pnpm-store/

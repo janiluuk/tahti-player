@@ -103,7 +103,8 @@ describe('shortcut commands', () => {
       0,
     );
     const text = output();
-    expect(text).toContain('pnpm --filter @tahti-player/tahti-cli test');
+    expect(text).toMatch(/pnpm test/);
+    expect(text).toContain('test cli');
     expect(text).toContain('pnpm --filter @tahti-player/tahti-ops test');
     expect(text).toContain('pnpm --filter @tahti-player/visualizer test');
   });

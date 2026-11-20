@@ -414,7 +414,7 @@ Usage:
 Commands:
 ${formatCommandList()}
 
-Product API/TUI: \`tahti\` (@tahti-player/tahti-cli).
+Product API/TUI: \`tahti\` (sibling janiluuk/tahti-cli).
 
 ${ENVIRONMENT_HELP}
 `;
