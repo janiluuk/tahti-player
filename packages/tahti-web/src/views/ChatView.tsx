@@ -149,8 +149,11 @@ function ChatPicker() {
                     </span>
                     {row.lastTs ? (
                       <span className="text-foreground-secondary block text-xs">
-                        Last message{' '}
-                        {humanizePastDate(new Date(row.lastTs).toISOString())}
+                        {t('chatViewBatch33.lastMessage', {
+                          when: humanizePastDate(
+                            new Date(row.lastTs).toISOString(),
+                          ),
+                        })}
                       </span>
                     ) : null}
                   </span>

@@ -32,13 +32,13 @@ export function SignupPaymentView() {
           {t('signupPaymentView.membership')}
         </h1>
         <p className="text-foreground-secondary text-sm">
-          Sign in to purchase Tahti ry membership (€40/year).
+          {t('signupPaymentViewBatch33.signInToPurchase')}
         </p>
         <Link
           to="/login"
           className="text-sm underline-offset-2 hover:underline"
         >
-          Log in →
+          {t('signupPaymentViewBatch33.logIn')}
         </Link>
       </div>
     );
@@ -59,18 +59,18 @@ export function SignupPaymentView() {
 
       {isMember ? (
         <div className="border-border rounded-lg border px-4 py-3 text-sm">
-          Membership is active
           {membership?.memberNumber != null
-            ? ` — member #${membership.memberNumber}`
-            : ''}
-          .
+            ? t('signupPaymentViewBatch33.membershipActiveNumber', {
+                number: membership.memberNumber,
+              })
+            : t('signupPaymentViewBatch33.membershipActive')}
           <div className="mt-2">
             <Link
               to="/settings/$section"
               params={{ section: 'account' }}
               className="underline-offset-2 hover:underline"
             >
-              Account settings →
+              {t('signupPaymentViewBatch33.accountSettings')}
             </Link>
           </div>
         </div>
@@ -103,8 +103,10 @@ export function SignupPaymentView() {
                 if ('activated' in res && res.activated) {
                   setMsg(
                     res.memberNumber != null
-                      ? `Membership activated — member #${res.memberNumber}.`
-                      : 'Membership activated.',
+                      ? t('signupPaymentViewBatch33.activatedNumber', {
+                          number: res.memberNumber,
+                        })
+                      : t('signupPaymentViewBatch33.activated'),
                   );
                   void fetchMembership().then((r) => setMembership(r.data));
                 }

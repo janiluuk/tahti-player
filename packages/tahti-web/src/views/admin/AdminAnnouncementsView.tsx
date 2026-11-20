@@ -248,7 +248,9 @@ export function AdminAnnouncementsView() {
                                     id: `announcement:${clip.id}`,
                                     kind: 'sound',
                                     title: clip.title,
-                                    artist: 'System announcement',
+                                    artist: t(
+                                      'adminAnnouncementsViewBatch33.systemAnnouncement',
+                                    ),
                                     streamUrl: clip.audioUrl!,
                                     protocol: 'https',
                                   });
@@ -303,7 +305,7 @@ export function AdminAnnouncementsView() {
               onClose={() => setTrimming(null)}
               onRendered={() => {
                 setTrimming(null);
-                setMsg('Rendering the trimmed clip…');
+                setMsg(t('adminAnnouncementsViewBatch33.renderingTrimmed'));
                 reload();
               }}
             />

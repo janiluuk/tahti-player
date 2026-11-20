@@ -116,7 +116,7 @@ export function AdminGrantCycleView() {
               <BreadcrumbCurrent>{year}</BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title={`${year} grant cycle`}
+              title={t('adminGrantCycleViewBatch33.title', { year })}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <div className="flex flex-wrap gap-2">
@@ -293,9 +293,9 @@ export function AdminGrantCycleView() {
                   {!alreadyRun && (
                     <StudioPanel title={t('grantCycle.approveDisbursement')}>
                       <p className="text-foreground-secondary text-sm">
-                        This creates grant ledger entries for {eligible.length}{' '}
-                        eligible artists and notifies each of them of their
-                        grant, by email too where they asked for money notices.
+                        {t('adminGrantCycleViewBatch33.approveNote', {
+                          count: eligible.length,
+                        })}
                       </p>
                       {error ? (
                         <InlineError className="mt-2">{error}</InlineError>
@@ -306,7 +306,7 @@ export function AdminGrantCycleView() {
                         onClick={() => void run()}
                       >
                         {running ? (
-                          'Approving…'
+                          t('betaTabStates.approving')
                         ) : (
                           <>
                             <CheckIcon

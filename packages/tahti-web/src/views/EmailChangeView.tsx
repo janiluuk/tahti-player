@@ -29,7 +29,7 @@ export function EmailChangeView() {
     if (!token) {
       setState({
         kind: 'error',
-        error: 'This link has no token. Open the link from the email again.',
+        error: t('emailChangeViewBatch33.noToken'),
       });
       return;
     }
@@ -81,8 +81,7 @@ export function EmailChangeView() {
         <>
           <InlineError>{state.error}</InlineError>
           <p className="text-foreground-secondary text-sm">
-            Links work once and expire after 24 hours. Ask for a new one in
-            Settings → Account → Password &amp; email.
+            {t('emailChangeViewBatch33.linksExpire')}
           </p>
         </>
       ) : null}

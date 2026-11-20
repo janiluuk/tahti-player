@@ -13,12 +13,10 @@ import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
-  Dialog,
   FilterChips,
   HorizontalScroll,
   InlineError,
   Input,
-  SaveButton,
   TabLabel,
   Tabs,
   Tooltip,
@@ -54,22 +52,13 @@ import {
   type ScheduleSelection,
   type StationFilter,
 } from '../lib/radioSchedule';
-import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
 import { useChannelSetupModalStore } from '../stores/channelSetupModalStore';
-
-function formatHour(hour: number): string {
-  return `${String(hour).padStart(2, '0')}:00`;
-}
-
-function bookingTitle(booking: StudioShowBooking): string {
-  return (
-    booking.note ||
-    (booking.showType === 'TALK'
-      ? webT()('radioScheduleViewStates.talkShow')
-      : webT()('radioScheduleViewStates.liveSet'))
-  );
-}
+import {
+  bookingTitle,
+  formatHour,
+  RadioScheduleBookingDialog,
+} from './RadioScheduleBookingDialog';
 
 export function RadioScheduleView() {
   const { t } = useTranslation('web');
@@ -202,7 +191,7 @@ export function RadioScheduleView() {
         return;
       }
       setBookings((prev) => prev.filter((b) => b.id !== id));
-      setMessage('Booking cancelled.');
+      setMessage(t('radioScheduleViewBatch33.bookingCancelled'));
       setSelectedBooking(null);
       setCancelConfirming(false);
     });
@@ -227,7 +216,7 @@ export function RadioScheduleView() {
         prev.map((b) => (b.id === res.data.id ? res.data : b)),
       );
       setSelectedBooking(res.data);
-      setMessage('Booking updated.');
+      setMessage(t('radioScheduleViewBatch33.bookingUpdated'));
     });
   }
 
@@ -287,7 +276,7 @@ export function RadioScheduleView() {
       setSelection(null);
       setNote('');
       setShowType('LIVE_SET');
-      setMessage('Slot booked.');
+      setMessage(t('radioScheduleViewBatch33.slotBooked'));
     });
   }
 
@@ -304,10 +293,14 @@ export function RadioScheduleView() {
               className="flex flex-wrap items-center justify-between gap-2 text-sm"
             >
               <span>
-                <strong>{bookingTitle(b)}</strong> by {b.displayName} —{' '}
+                <strong>{bookingTitle(b)}</strong>{' '}
                 {new Date(b.startAt).getTime() <= Date.now()
-                  ? 'live now'
-                  : 'starting soon'}
+                  ? t('radioScheduleViewBatch33.byNameLiveNow', {
+                      name: b.displayName,
+                    })
+                  : t('radioScheduleViewBatch33.byNameStartingSoon', {
+                      name: b.displayName,
+                    })}
               </span>
               <Tooltip content={t('radioSchedule.greenRoom')} side="top">
                 <ButtonLink
@@ -504,16 +497,31 @@ export function RadioScheduleView() {
                           onClick={() => onCellClick(day, hour)}
                           aria-label={
                             booking
-                              ? `${bookingTitle(booking)} by ${booking.displayName}${
-                                  booking.isMine ? ' — click to view' : ''
-                                }`
-                              : `${day.toLocaleDateString(dateLocaleTag(), {
-                                  weekday: 'long',
-                                  month: 'long',
-                                  day: 'numeric',
-                                })} at ${formatHour(hour)}${
-                                  isPast ? ' — unavailable' : ' — available'
-                                }`
+                              ? t(
+                                  booking.isMine
+                                    ? 'radioScheduleViewBatch33.bookedCellMine'
+                                    : 'radioScheduleViewBatch33.bookedCell',
+                                  {
+                                    title: bookingTitle(booking),
+                                    name: booking.displayName,
+                                  },
+                                )
+                              : t(
+                                  isPast
+                                    ? 'radioScheduleViewBatch33.slotUnavailable'
+                                    : 'radioScheduleViewBatch33.slotAvailable',
+                                  {
+                                    date: day.toLocaleDateString(
+                                      dateLocaleTag(),
+                                      {
+                                        weekday: 'long',
+                                        month: 'long',
+                                        day: 'numeric',
+                                      },
+                                    ),
+                                    time: formatHour(hour),
+                                  },
+                                )
                           }
                           className={cn(
                             'border-border inline-block h-8 rounded-none border-r border-b px-1.5 text-left text-[11px] whitespace-normal transition-colors active:scale-100 disabled:opacity-100',
@@ -589,7 +597,7 @@ export function RadioScheduleView() {
               disabled={busy}
               onClick={extendSelection}
             >
-              +1 hour
+              {t('radioScheduleViewBatch33.addHour')}
             </Button>
           ) : null}
           <FilterChips
@@ -607,8 +615,8 @@ export function RadioScheduleView() {
             onChange={(e) => setNote(e.target.value)}
             placeholder={
               showType === 'TALK'
-                ? 'Note (optional) — topic or guests'
-                : "Note (optional) — what you're playing"
+                ? t('radioScheduleViewBatch33.notePlaceholderTalk')
+                : t('radioScheduleViewBatch33.notePlaceholderSet')
             }
             className="min-w-0 flex-1 sm:min-w-48"
           />
@@ -634,7 +642,7 @@ export function RadioScheduleView() {
           >
             {t('radioSchedule.signIn')}
           </Link>{' '}
-          to book a slot on Tahti Radio.
+          {t('radioScheduleViewBatch33.toBookSlot')}
         </p>
       ) : !ownChannelSlug ? (
         <p className="text-foreground-secondary text-sm">
@@ -647,7 +655,7 @@ export function RadioScheduleView() {
           >
             {t('radioSchedule.setUpAChannel')}
           </Button>{' '}
-          to book a slot on Tahti Radio.
+          {t('radioScheduleViewBatch33.toBookSlot')}
         </p>
       ) : (
         <p className="text-foreground-secondary text-sm">
@@ -673,125 +681,24 @@ export function RadioScheduleView() {
         </span>
       </div>
 
-      <Dialog.Root
-        isOpen={Boolean(selectedBooking)}
+      <RadioScheduleBookingDialog
+        booking={selectedBooking}
+        busy={busy}
+        cancelConfirming={cancelConfirming}
+        onCancelConfirmingChange={setCancelConfirming}
+        editNote={editNote}
+        onEditNoteChange={setEditNote}
+        editShowType={editShowType}
+        onEditShowTypeChange={setEditShowType}
         onClose={() => {
           if (!busy) {
             setSelectedBooking(null);
             setCancelConfirming(false);
           }
         }}
-      >
-        {selectedBooking &&
-          (cancelConfirming ? (
-            <>
-              <Dialog.Title>
-                {t('radioSchedule.cancelThisBooking')}
-              </Dialog.Title>
-              <Dialog.Description>
-                This removes your{' '}
-                {formatHour(new Date(selectedBooking.startAt).getHours())} slot
-                on{' '}
-                {new Date(selectedBooking.startAt).toLocaleDateString(
-                  undefined,
-                  { weekday: 'long', month: 'long', day: 'numeric' },
-                )}
-                . This can't be undone.
-              </Dialog.Description>
-              <Dialog.Actions>
-                <Button
-                  variant="secondary"
-                  disabled={busy}
-                  onClick={() => setCancelConfirming(false)}
-                >
-                  {t('radioSchedule.keepBooking')}
-                </Button>
-                <Button
-                  intent="danger"
-                  disabled={busy}
-                  onClick={() => cancelBooking(selectedBooking.id)}
-                >
-                  {busy
-                    ? t('radioScheduleViewStates.cancelling')
-                    : t('radioScheduleViewStates.cancelBooking')}
-                </Button>
-              </Dialog.Actions>
-            </>
-          ) : (
-            <>
-              <Dialog.Title>{bookingTitle(selectedBooking)}</Dialog.Title>
-              <Dialog.Description>
-                {new Date(selectedBooking.startAt).toLocaleDateString(
-                  undefined,
-                  { weekday: 'long', month: 'long', day: 'numeric' },
-                )}
-                , {formatHour(new Date(selectedBooking.startAt).getHours())}–
-                {formatHour(new Date(selectedBooking.endAt).getHours())}
-              </Dialog.Description>
-              <form
-                className="contents"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  saveBookingEdits();
-                }}
-              >
-                <div className="flex flex-col gap-3">
-                  {selectedBooking.showTitle && (
-                    <p className="text-sm">
-                      <span className="text-foreground-secondary">
-                        {t('radioScheduleViewLeftovers.show')}{' '}
-                      </span>
-                      {selectedBooking.showTitle}
-                      {selectedBooking.episodeNumber != null
-                        ? t('radioScheduleViewLeftovers.episodeNumber', {
-                            number: selectedBooking.episodeNumber,
-                          })
-                        : ''}
-                    </p>
-                  )}
-                  <FilterChips
-                    items={[
-                      { id: 'LIVE_SET', label: t('radioScheduleView.liveSet') },
-                      { id: 'TALK', label: t('radioScheduleView.talk') },
-                    ]}
-                    selected={editShowType}
-                    onChange={(id) => setEditShowType(id as ShowType)}
-                    disabled={busy}
-                    aria-label={t('radioSchedule.showType')}
-                  />
-                  <Input
-                    aria-label={t('radioSchedule.note')}
-                    value={editNote}
-                    onChange={(e) => setEditNote(e.target.value)}
-                    disabled={busy}
-                    placeholder={
-                      editShowType === 'TALK'
-                        ? 'Note — topic or guests'
-                        : "Note — what you're playing"
-                    }
-                  />
-                </div>
-                <Dialog.Actions>
-                  <Dialog.Close>{t('radioSchedule.close')}</Dialog.Close>
-                  <Button
-                    intent="danger"
-                    variant="secondary"
-                    disabled={busy}
-                    onClick={() => setCancelConfirming(true)}
-                  >
-                    {t('radioSchedule.cancelBooking')}
-                  </Button>
-                  <SaveButton
-                    disabled={busy}
-                    saving={busy}
-                    label={t('radioSchedule.saveChanges')}
-                    type="submit"
-                  />
-                </Dialog.Actions>
-              </form>
-            </>
-          ))}
-      </Dialog.Root>
+        onCancelBooking={cancelBooking}
+        onSave={saveBookingEdits}
+      />
     </ViewShell>
   );
 }

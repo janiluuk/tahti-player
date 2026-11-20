@@ -238,7 +238,7 @@ export function MessagesView({
                   (u) => u.username.toLowerCase() === query.toLowerCase(),
                 ) ?? r.data[0];
               if (!match) {
-                setMsg(`No account found for "${query}".`);
+                setMsg(t('messagesViewBatch33.noAccountFound', { query }));
                 return;
               }
               setComposeUser(match.username);
@@ -254,7 +254,7 @@ export function MessagesView({
               label={t('messagesPage.findOrMessage')}
               value={composeUser}
               onChange={(e) => setComposeUser(e.target.value)}
-              placeholder="username"
+              placeholder={t('messagesViewBatch33.usernamePlaceholder')}
             />
           </div>
           <Button

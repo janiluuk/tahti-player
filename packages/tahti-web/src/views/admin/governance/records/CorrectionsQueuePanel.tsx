@@ -7,7 +7,6 @@ import {
   fetchAdminCorrections,
   type AdminGovernanceCorrection,
 } from '../../../../api/admin/admin-governance-corrections';
-import { CORRECTION_SUBJECT_LABELS } from '../../../../api/governance-corrections';
 import {
   PageEmpty,
   PageError,
@@ -18,8 +17,8 @@ import { relativeDate } from '../../../../lib/relativeDate';
 import { AnswerCorrectionForm } from './AnswerCorrectionForm';
 
 const SUBJECT_FOR_BOARD = {
-  MEMBER_REGISTER: 'Member register details',
-  GOVERNANCE_RECORD: CORRECTION_SUBJECT_LABELS.GOVERNANCE_RECORD,
+  MEMBER_REGISTER: 'correctionsQueuePanelBatch33.subjectMemberRegister',
+  GOVERNANCE_RECORD: 'correctionsQueuePanelBatch33.subjectGovernanceRecord',
 } as const;
 
 function stateLabels(t: TFunction<'web'>) {
@@ -69,7 +68,7 @@ export function CorrectionsQueuePanel() {
         onChange={setFilter}
         options={[
           { id: 'waiting', label: t('correctionsQueuePanelFields.waiting') },
-          { id: 'all', label: 'All' },
+          { id: 'all', label: t('correctionsQueuePanelBatch33.filterAll') },
         ]}
       />
       {rows === null ? (
@@ -102,7 +101,7 @@ export function CorrectionsQueuePanel() {
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-medium">
-                    {SUBJECT_FOR_BOARD[row.subject]}
+                    {t(SUBJECT_FOR_BOARD[row.subject])}
                   </span>
                   <Badge variant="pill" color={state.color}>
                     {state.label}
@@ -111,9 +110,9 @@ export function CorrectionsQueuePanel() {
                 <p className="text-foreground-secondary text-xs">
                   {row.requester.displayName} @{row.requester.username}
                   {row.requester.memberNumber !== null
-                    ? ` · member #${row.requester.memberNumber}`
-                    : ''}{' '}
-                  · sent {relativeDate(row.createdAt)}
+                    ? ` · ${t('correctionsQueuePanelBatch33.memberNumber', { number: row.requester.memberNumber })}`
+                    : ''}
+                  {` · ${t('correctionsQueuePanelBatch33.sent', { when: relativeDate(row.createdAt) })}`}
                   {row.recordKind
                     ? ` · ${row.recordKind.toLowerCase().replace('_', ' ')} ${row.recordId}`
                     : ''}
@@ -121,7 +120,9 @@ export function CorrectionsQueuePanel() {
                 <p className="whitespace-pre-line">{row.details}</p>
                 {row.resolutionNote ? (
                   <p className="text-foreground-secondary text-xs">
-                    Answer: {row.resolutionNote}
+                    {t('correctionsQueuePanelBatch33.answer', {
+                      note: row.resolutionNote,
+                    })}
                   </p>
                 ) : null}
                 {row.state === 'OPEN' ? (

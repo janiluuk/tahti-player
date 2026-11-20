@@ -26,6 +26,7 @@ import {
 } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { usePolling } from '../../hooks/usePolling';
+import { webT } from '../../lib/webT';
 
 const REFRESH_INTERVAL_MS = 15_000;
 const PAGE_LIMIT = 50;
@@ -102,6 +103,7 @@ function actorLabel(entry: AdminActivityEntry): string {
 }
 
 function messageFor(entry: AdminActivityEntry): string {
+  const t = webT();
   const actor = actorLabel(entry);
   const meta = entry.meta;
   const str = (key: string) =>
@@ -110,58 +112,89 @@ function messageFor(entry: AdminActivityEntry): string {
     str('subjectTitle') ??
     str('title') ??
     entry.targetId ??
-    'a governance item';
+    t('adminActivityViewBatch33.aGovernanceItem');
+  const channel =
+    str('channelSlug') ??
+    entry.targetId ??
+    t('adminActivityViewBatch33.aChannel');
 
   switch (entry.action) {
     case 'USER_LOGIN':
-      return `${actor} logged in`;
+      return t('adminActivityViewBatch33.loggedIn', { actor });
     case 'USER_REGISTER':
-      return `${actor} created an account`;
+      return t('adminActivityViewBatch33.registered', { actor });
     case 'CONTENT_UPLOAD':
-      return `${actor} uploaded ${str('title') ?? 'a track'}`;
+      return t('adminActivityViewBatch33.uploaded', {
+        actor,
+        title: str('title') ?? t('adminActivityViewBatch33.aTrack'),
+      });
     case 'RELEASE_PUBLISH':
-      return `${actor} published ${str('title') ?? 'a release'}`;
+      return t('adminActivityViewBatch33.published', {
+        actor,
+        title: str('title') ?? t('adminActivityViewBatch33.aRelease'),
+      });
     case 'SOUND_ITEM_LIKE':
-      return `${actor} liked ${str('title') ?? 'a track'}`;
+      return t('adminActivityViewBatch33.liked', {
+        actor,
+        title: str('title') ?? t('adminActivityViewBatch33.aTrack'),
+      });
     case 'ARTIST_FOLLOW':
-      return `${actor} followed ${str('artistDisplayName') ?? str('artistUsername') ?? 'an artist'}`;
-    case 'VOTE_CAST':
-      return `${actor} voted ${str('choice') ?? 'on'} on ${subject}`;
+      return t('adminActivityViewBatch33.followed', {
+        actor,
+        artist:
+          str('artistDisplayName') ??
+          str('artistUsername') ??
+          t('adminActivityViewBatch33.anArtist'),
+      });
+    case 'VOTE_CAST': {
+      const choice = str('choice');
+      return choice
+        ? t('adminActivityViewBatch33.votedChoice', { actor, choice, subject })
+        : t('adminActivityViewBatch33.votedOn', { actor, subject });
+    }
     case 'FEATURE_REQUEST_VOTE':
-      return `${actor} voted for ${subject}`;
+      return t('adminActivityViewBatch33.votedFor', { actor, subject });
     case 'FEATURE_REQUEST_UNVOTE':
-      return `${actor} removed their vote from ${subject}`;
+      return t('adminActivityViewBatch33.unvoted', { actor, subject });
     case 'MOTION_COMMENT_CREATE':
-      return `${actor} commented on ${subject}`;
+    case 'FEATURE_REQUEST_COMMENT_CREATE':
+      return t('adminActivityViewBatch33.commented', { actor, subject });
     case 'DISCUSSION_POST_REMOVE':
       return meta.byAuthor === true
-        ? `${actor} removed their reply in a discussion`
-        : `${actor} removed a reply in a discussion`;
-    case 'FEATURE_REQUEST_COMMENT_CREATE':
-      return `${actor} commented on ${subject}`;
+        ? t('adminActivityViewBatch33.removedOwnReply', { actor })
+        : t('adminActivityViewBatch33.removedReply', { actor });
     case 'FAN_SUBSCRIPTION_CREATE': {
-      const cents =
-        typeof meta.amountCents === 'number' ? meta.amountCents : null;
-      const amount = cents !== null ? ` (€${(cents / 100).toFixed(2)}/mo)` : '';
-      return `${actor} subscribed — ${str('tierName') ?? 'a tier'}${amount}`;
+      const tier = str('tierName') ?? t('adminActivityViewBatch33.aTier');
+      return typeof meta.amountCents === 'number'
+        ? t('adminActivityViewBatch33.subscribedAmount', {
+            actor,
+            tier,
+            amount: (meta.amountCents / 100).toFixed(2),
+          })
+        : t('adminActivityViewBatch33.subscribed', { actor, tier });
     }
     case 'LEDGER_ENTRY_CREATE': {
       const title = str('title');
       return title
-        ? `${actor} logged a ledger entry — ${title}`
-        : `${actor} logged a ledger entry`;
+        ? t('adminActivityViewBatch33.ledgerEntryTitled', { actor, title })
+        : t('adminActivityViewBatch33.ledgerEntry', { actor });
     }
     case 'DOWNLOAD_FRAUD_ALERT':
-      return `Download velocity alert on ${str('channelSlug') ?? entry.targetId ?? 'a channel'}`;
+      return t('adminActivityViewBatch33.downloadAlert', { channel });
     case 'PATTERN_FRAUD_ALERT': {
       const code = str('code') ?? 'pattern';
-      const slug = str('channelSlug') ?? entry.targetId ?? 'a channel';
-      return `Pattern ${code.replaceAll('_', ' ').toLowerCase()} on ${slug}`;
+      return t('adminActivityViewBatch33.patternAlert', {
+        code: code.replaceAll('_', ' ').toLowerCase(),
+        channel,
+      });
     }
     case 'USER_TIER_CHANGE': {
-      const from = str('from') ?? 'unknown';
-      const to = str('to') ?? 'unknown';
-      return `${actor} changed account tier from ${from} to ${to}`;
+      const unknown = t('adminActivityViewBatch33.unknown');
+      return t('adminActivityViewBatch33.tierChange', {
+        actor,
+        from: str('from') ?? unknown,
+        to: str('to') ?? unknown,
+      });
     }
     default:
       return `${actor} — ${entry.action.toLowerCase().replaceAll('_', ' ')}`;
@@ -228,18 +261,22 @@ export function AdminActivityView({
   const content = (
     <StudioPanel>
       <p className="text-foreground-secondary mb-3 text-xs">
-        {total} event{total === 1 ? '' : 's'}
         {topic !== 'ALL'
-          ? ` in ${ADMIN_AUDIT_TOPICS.find((t) => t.id === topic)?.label ?? topic}`
-          : ''}
-        . Listen counts are anonymous by design (no per-user attribution exists
-        for plays) so individual listens aren&apos;t shown here — see Stats for
-        aggregate play counts.{' '}
+          ? t('adminActivityViewBatch33.eventCountInTopic', {
+              count: total,
+              topic:
+                ADMIN_AUDIT_TOPICS.find((item) => item.id === topic)?.label ??
+                topic,
+            })
+          : t('adminActivityViewBatch33.eventCount', { count: total })}{' '}
+        {t('adminActivityViewBatch33.listensNote')}{' '}
         <a
           href={adminActivityExportCsvUrl({ topic: exportTopic })}
           className="text-primary-strong underline underline-offset-2"
         >
-          Export{topic !== 'ALL' ? ' this topic' : ' full audit log'} as CSV
+          {topic !== 'ALL'
+            ? t('adminActivityViewBatch33.exportTopicCsv')
+            : t('adminActivityViewBatch33.exportAllCsv')}
         </a>
       </p>
 
@@ -308,10 +345,10 @@ export function AdminActivityView({
                 totalPages={totalPages}
                 onPageChange={setPage}
                 labels={{
-                  navigation: 'Activity pages',
-                  previous: 'Previous page',
-                  next: 'Next page',
-                  page: (n) => `Page ${n}`,
+                  navigation: t('adminActivityViewBatch33.activityPages'),
+                  previous: t('library.history.previousPage'),
+                  next: t('library.history.nextPage'),
+                  page: (n) => t('library.history.page', { n }),
                 }}
               />
             </div>

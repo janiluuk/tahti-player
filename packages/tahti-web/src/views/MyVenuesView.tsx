@@ -172,7 +172,7 @@ export function MyVenuesView() {
           />
           {filtered.length === 0 ? (
             <PageEmpty
-              title={`No venues match “${query.trim()}”`}
+              title={t('myVenuesViewBatch33.noMatch', { query: query.trim() })}
               action={
                 <Button
                   size="sm"

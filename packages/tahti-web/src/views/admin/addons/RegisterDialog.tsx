@@ -45,7 +45,7 @@ export function RegisterDialog({
       <Dialog.Title>
         {editing
           ? webT()('a11yNamed.edit', { name: editing })
-          : 'Register a new add-on'}
+          : t('registerDialogBatch33.title')}
       </Dialog.Title>
       <Dialog.Description>
         {editing

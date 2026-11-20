@@ -14632,6 +14632,226 @@
       "restoreNote": ". Palauttaminen lähettää käyttäjälle kirjautumislinkin sähköpostilla.",
       "suspensionNote": "Jäädytys estää kirjautumisen heti ja kirjataan lokiin. Käyttäjä saa perustelusi sähköpostilla ja näkee sen yrittäessään kirjautua.",
       "profilePicture": "Käyttäjän {{name}} profiilikuva"
+    },
+    "moderateChannelViewBatch33": {
+      "documentTitle": "{{name}}: chatin moderointi · Tahti",
+      "notAModerator": "@{{username}} ei ole tämän kanavan chatin moderaattori. Kanavan omistaja lisää moderaattorit kohdassa Studio → Fanit.",
+      "chatTitle": "{{name}}: chat",
+      "youModerate": "Moderoit tätä chattia kanavalle {{name}}. Voit poistaa viestejä ja estää ihmisiä kirjoittamasta."
+    },
+    "chatViewBatch33": {
+      "lastMessage": "Viimeisin viesti {{when}}"
+    },
+    "emailChangeViewBatch33": {
+      "noToken": "Linkistä puuttuu tunniste. Avaa linkki sähköpostista uudelleen.",
+      "linksExpire": "Linkit toimivat kerran ja vanhenevat 24 tunnissa. Pyydä uusi kohdassa Asetukset → Tili → Salasana ja sähköposti."
+    },
+    "messagesViewBatch33": {
+      "noAccountFound": "Tiliä ”{{query}}” ei löytynyt.",
+      "usernamePlaceholder": "käyttäjänimi"
+    },
+    "feedViewBatch33": {
+      "notFollowingAnyone": "Et seuraa vielä yhtään artistia",
+      "allQuiet": "Täällä on hiljaista"
+    },
+    "featureRequestsViewBatch33": {
+      "ideaPosted": "Idea julkaistu.",
+      "proposedBy_one": "Ehdottaja {{name}}, {{count}} kommentti",
+      "proposedBy_other": "Ehdottaja {{name}}, {{count}} kommenttia",
+      "mergedInto": "Yhdistetty ehdotukseen ”{{title}}”",
+      "boardNote": "Hallituksen huomio: {{note}}",
+      "member": "Jäsen"
+    },
+    "embedViewsBatch33": {
+      "couldNotLoad": "Upotusta ei voitu ladata.",
+      "live": "LIVE",
+      "offline": "offline"
+    },
+    "discoverViewBatch33": {
+      "basedOnGenres": "Perustuu tyylilajeihin {{genres}}",
+      "signInForPicks": "Kirjaudu sisään, niin saat makuusi sopivia poimintoja",
+      "days_one": "{{count}} päivä",
+      "days_other": "{{count}} päivää"
+    },
+    "collectionViewBatch33": {
+      "documentTitle": "{{name}} – {{artist}} Tahdissa",
+      "documentDescription": "Kuuntele kokoelmaa {{name}} ({{artist}}) Tahdissa.",
+      "by": "tekijä",
+      "collaborative": "(yhteinen)"
+    },
+    "soulseekAddonCardBatch33": {
+      "author": "Työpöytälisäosa",
+      "description": "Hae ja lataa Soulseekista paikalliseen kirjastoosi. Vaatii Tahti Playerin työpöytäversion, sillä selain ei osaa Soulseek-protokollaa.",
+      "categoryDesktop": "Työpöytä",
+      "categoryLibrary": "Kirjasto",
+      "configure": "Määritä"
+    },
+    "workersPanelBatch33": {
+      "jobHistory": "{{name}}: työhistoria",
+      "statusCompleted": "valmis",
+      "statusFailed": "epäonnistui",
+      "statusActive": "käynnissä",
+      "offlineCount": "{{offline}}/{{total}} ei verkossa (ei elonmerkkiä hetkeen).",
+      "description": "Taustatöiden ajajat ja mitä ne ajoivat viimeksi.",
+      "seen": "nähty {{when}}",
+      "lastJob": "Viimeisin työ: {{name}}"
+    },
+    "selectsGenerateDialogBatch33": {
+      "removesAll_one": "Tämä poistaa nykyisen rotaation {{count}} kappaleen.",
+      "removesAll_other": "Tämä poistaa kaikki {{count}} kappaletta nykyisestä rotaatiosta.",
+      "filling": "Täytetään…"
+    },
+    "betaTabBatch33": {
+      "statusApproved": "Hyväksytty",
+      "statusRejected": "Hylätty",
+      "statusPending": "Odottaa",
+      "filterAll": "Kaikki",
+      "statusFilterLabel": "Beta-hakemuksen tila",
+      "passwordSet": "salasana asetettu",
+      "awaitingPassword": "odottaa salasanaa",
+      "setupLinkResent": "Asetuslinkki lähetetty uudelleen: {{url}}",
+      "approveTitle": "Hyväksy {{name}}",
+      "approvedSetupLink": "Hyväksytty. Salasanan asetuslinkki:"
+    },
+    "meetingRecordPanelsBatch33": {
+      "conflicts": "Esteellisyydet",
+      "conflictsCount": "Esteellisyydet ({{count}})",
+      "notices": "Kokouskutsujen toimitus",
+      "noticesSent": "Kokouskutsujen toimitus ({{sent}} lähetetty)",
+      "noticesSentBounced": "Kokouskutsujen toimitus ({{sent}} lähetetty, {{bounced}} palautui)",
+      "unnamedMember": "Nimetön jäsen",
+      "sentOn": "lähetetty"
+    },
+    "annualReportRowBatch33": {
+      "stagePublished": "Julkaistu",
+      "stageApproved": "Hyväksytty, ei julkaistu",
+      "stageDraft": "Luonnos",
+      "generated": "Luotu {{when}}",
+      "approved": "hyväksytty {{when}}",
+      "published": "julkaistu {{when}}",
+      "filed": "toimitettu {{when}}",
+      "filedWithReference": "toimitettu {{when}} ({{reference}})",
+      "corrected": "korjattu {{when}}",
+      "title": "Vuosikertomus {{year}}"
+    },
+    "annualReportActionsBatch33": {
+      "approveReport": "Hyväksy vuosikertomus {{year}}"
+    },
+    "correctionsQueuePanelBatch33": {
+      "subjectMemberRegister": "Jäsenrekisteritiedot",
+      "subjectGovernanceRecord": "Hallinnon asiakirja",
+      "filterAll": "Kaikki",
+      "memberNumber": "jäsen #{{number}}",
+      "sent": "lähetetty {{when}}",
+      "answer": "Vastaus: {{note}}"
+    },
+    "fanSubPayoutQueueBatch33": {
+      "from": "Tilaaja: {{name}}",
+      "showingNewest": "Näytetään uusimmat {{shown}}/{{total}}."
+    },
+    "registerDialogBatch33": {
+      "title": "Rekisteröi uusi lisäosa"
+    },
+    "manageDialogBatch33": {
+      "title": "Hallitse: {{name}}",
+      "invalidJson": "Virheellinen JSON.",
+      "rendersByDefaultListener": "Näkyy jokaisella kuuntelijan pinnalla ilman erillistä asennusta.",
+      "rendersByDefaultArtist": "Näkyy jokaisella artistin pinnalla ilman erillistä asennusta.",
+      "rendersByDefaultAdmin": "Näkyy jokaisella ylläpidon pinnalla ilman erillistä asennusta."
+    },
+    "adminGrantCycleViewBatch33": {
+      "title": "Apurahakierros {{year}}",
+      "approveNote_one": "Tämä luo apurahakirjauksen {{count}} oikeutetulle artistille ja ilmoittaa hänelle apurahasta, myös sähköpostilla, jos hän on pyytänyt rahailmoitukset.",
+      "approveNote_other": "Tämä luo apurahakirjaukset {{count}} oikeutetulle artistille ja ilmoittaa jokaiselle apurahasta, myös sähköpostilla, jos he ovat pyytäneet rahailmoitukset."
+    },
+    "adminAnnouncementsViewBatch33": {
+      "systemAnnouncement": "Järjestelmäkuulutus",
+      "renderingTrimmed": "Renderöidään lyhennettyä klippiä…"
+    },
+    "adminActivityViewBatch33": {
+      "eventCount_one": "{{count}} tapahtuma.",
+      "eventCount_other": "{{count}} tapahtumaa.",
+      "eventCountInTopic_one": "{{count}} tapahtuma aiheessa {{topic}}.",
+      "eventCountInTopic_other": "{{count}} tapahtumaa aiheessa {{topic}}.",
+      "listensNote": "Kuuntelumäärät ovat tarkoituksella anonyymejä (toistoja ei kohdisteta käyttäjiin), joten yksittäisiä kuunteluja ei näytetä tässä. Kokonaistoistomäärät näet Tilastoista.",
+      "exportTopicCsv": "Vie tämä aihe CSV:nä",
+      "exportAllCsv": "Vie koko tarkastusloki CSV:nä",
+      "activityPages": "Toimintalokin sivut",
+      "aGovernanceItem": "hallintokohde",
+      "aTrack": "kappale",
+      "aRelease": "julkaisu",
+      "anArtist": "artisti",
+      "aTier": "taso",
+      "aChannel": "kanava",
+      "unknown": "tuntematon",
+      "loggedIn": "{{actor}} kirjautui sisään",
+      "registered": "{{actor}} loi tilin",
+      "uploaded": "{{actor}} latasi: {{title}}",
+      "published": "{{actor}} julkaisi: {{title}}",
+      "liked": "{{actor}} tykkäsi: {{title}}",
+      "followed": "{{actor}} alkoi seurata: {{artist}}",
+      "votedChoice": "{{actor}} äänesti {{choice}}: {{subject}}",
+      "votedOn": "{{actor}} äänesti: {{subject}}",
+      "votedFor": "{{actor}} antoi äänen: {{subject}}",
+      "unvoted": "{{actor}} perui äänensä: {{subject}}",
+      "commented": "{{actor}} kommentoi: {{subject}}",
+      "removedOwnReply": "{{actor}} poisti vastauksensa keskustelusta",
+      "removedReply": "{{actor}} poisti vastauksen keskustelusta",
+      "subscribed": "{{actor}} tilasi – {{tier}}",
+      "subscribedAmount": "{{actor}} tilasi – {{tier}} ({{amount}} €/kk)",
+      "ledgerEntry": "{{actor}} lisäsi kirjanpitomerkinnän",
+      "ledgerEntryTitled": "{{actor}} lisäsi kirjanpitomerkinnän – {{title}}",
+      "downloadAlert": "Latausnopeushälytys: {{channel}}",
+      "patternAlert": "Kuviohälytys {{code}}: {{channel}}",
+      "tierChange": "{{actor}} vaihtoi tilin tason: {{from}} → {{to}}"
+    },
+    "venueDetailViewBatch33": {
+      "loadError": "Tapahtumapaikkaa ei voitu ladata.",
+      "feedCopied": "Kalenterisyötteen linkki kopioitu. Tilaa se kalenterisovelluksessasi, niin se pysyy ajan tasalla."
+    },
+    "smartLinkViewBatch33": {
+      "coverAlt": "{{title}} – kansikuva"
+    },
+    "signupPaymentViewBatch33": {
+      "signInToPurchase": "Kirjaudu sisään ostaaksesi Tahti ry:n jäsenyyden (40 €/vuosi).",
+      "logIn": "Kirjaudu sisään →",
+      "membershipActive": "Jäsenyys on voimassa.",
+      "membershipActiveNumber": "Jäsenyys on voimassa – jäsennumero {{number}}.",
+      "accountSettings": "Tilin asetukset →",
+      "activated": "Jäsenyys aktivoitu.",
+      "activatedNumber": "Jäsenyys aktivoitu – jäsennumero {{number}}."
+    },
+    "radioStationViewBatch33": {
+      "logoAlt": "{{name}} – logo",
+      "website": "{{name}} – verkkosivusto",
+      "programmeGuide": "{{name}} – ohjelmaopas",
+      "noStationsMatch": "Mikään asema ei vastaa suodatinta."
+    },
+    "radioScheduleViewBatch33": {
+      "bookingCancelled": "Varaus peruttu.",
+      "bookingUpdated": "Varaus päivitetty.",
+      "slotBooked": "Aika varattu.",
+      "byNameLiveNow": "– {{name}}, nyt livenä",
+      "byNameStartingSoon": "– {{name}}, alkaa pian",
+      "bookedCell": "{{title}} – {{name}}",
+      "bookedCellMine": "{{title}} – {{name}}, avaa napsauttamalla",
+      "slotAvailable": "{{date}} klo {{time}}, vapaa",
+      "slotUnavailable": "{{date}} klo {{time}}, ei saatavilla",
+      "addHour": "+1 tunti",
+      "notePlaceholderTalk": "Huomautus (valinnainen) – aihe tai vieraat",
+      "notePlaceholderSet": "Huomautus (valinnainen) – mitä soitat",
+      "editNoteTalk": "Huomautus – aihe tai vieraat",
+      "editNoteSet": "Huomautus – mitä soitat",
+      "toBookSlot": "varataksesi ajan Tahti Radiosta.",
+      "cancelDescription": "Tämä poistaa varauksesi {{date}} klo {{time}}. Tätä ei voi perua."
+    },
+    "publicGovernanceHistoryViewBatch33": {
+      "backToGovernance": "← Hallinto",
+      "proposedByClosed": "Ehdottaja: {{name}} · Suljettu",
+      "voteTally": "KYLLÄ {{yes}} · EI {{no}} · TYHJÄ {{abstain}}"
+    },
+    "myVenuesViewBatch33": {
+      "noMatch": "Mikään tapahtumapaikka ei vastaa hakua ”{{query}}”"
     }
   },
   "studioEditor": {

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, Button, Dialog, Input } from '@tahti-player/ui';
 
 import {
@@ -41,25 +41,31 @@ function suggestUsername(name: string): string {
   return base.length >= 2 ? base : 'artist';
 }
 
-function statusBadge(status: AdminBetaStatus): {
+function statusBadge(
+  t: TFunction<'web'>,
+  status: AdminBetaStatus,
+): {
   label: string;
   color: 'green' | 'orange' | 'secondary';
 } {
   if (status === 'APPROVED') {
-    return { label: 'Approved', color: 'green' };
+    return { label: t('betaTabBatch33.statusApproved'), color: 'green' };
   }
   if (status === 'REJECTED') {
-    return { label: 'Rejected', color: 'secondary' };
+    return { label: t('betaTabBatch33.statusRejected'), color: 'secondary' };
   }
-  return { label: 'Pending', color: 'orange' };
+  return { label: t('betaTabBatch33.statusPending'), color: 'orange' };
 }
 
-const FILTERS: { id: AdminBetaStatus | 'all'; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'PENDING', label: 'Pending' },
-  { id: 'APPROVED', label: 'Approved' },
-  { id: 'REJECTED', label: 'Rejected' },
-];
+const FILTERS = [
+  { id: 'all', labelKey: 'betaTabBatch33.filterAll' },
+  { id: 'PENDING', labelKey: 'betaTabBatch33.statusPending' },
+  { id: 'APPROVED', labelKey: 'betaTabBatch33.statusApproved' },
+  { id: 'REJECTED', labelKey: 'betaTabBatch33.statusRejected' },
+] as const satisfies readonly {
+  id: AdminBetaStatus | 'all';
+  labelKey: string;
+}[];
 
 const FILTER_TAB_ICONS = {
   all: ListFilterIcon,
@@ -114,10 +120,11 @@ export function BetaTab() {
       <ModerationTabs
         activeId={filter}
         items={FILTERS.map((item) => ({
-          ...item,
+          id: item.id,
+          label: t(item.labelKey),
           icon: FILTER_TAB_ICONS[item.id],
         }))}
-        ariaLabel="Beta application status"
+        ariaLabel={t('betaTabBatch33.statusFilterLabel')}
         onChange={(id) => setFilter(id as AdminBetaStatus | 'all')}
       />
 
@@ -141,7 +148,7 @@ export function BetaTab() {
         ) : (
           <ul className="divide-border divide-y">
             {apps.map((app) => {
-              const badge = statusBadge(app.status);
+              const badge = statusBadge(t, app.status);
               return (
                 <li
                   key={app.id}
@@ -166,9 +173,10 @@ export function BetaTab() {
                     {app.userId && (
                       <p className="text-foreground-secondary mt-1 text-xs">
                         @{app.username}
+                        {' · '}
                         {app.hasPassword
-                          ? ' · password set'
-                          : ' · awaiting password'}
+                          ? t('betaTabBatch33.passwordSet')
+                          : t('betaTabBatch33.awaitingPassword')}
                       </p>
                     )}
                   </div>
@@ -213,7 +221,9 @@ export function BetaTab() {
                             void resendBetaSetupLink(app.id).then((r) => {
                               setMsg(
                                 r.ok
-                                  ? `Setup link resent: ${r.setupUrl}`
+                                  ? t('betaTabBatch33.setupLinkResent', {
+                                      url: r.setupUrl,
+                                    })
                                   : r.error,
                               );
                             });
@@ -232,11 +242,15 @@ export function BetaTab() {
       </StudioPanel>
 
       <Dialog.Root isOpen={Boolean(approveTarget)} onClose={closeApprove}>
-        <Dialog.Title>Approve {approveTarget?.name}</Dialog.Title>
+        <Dialog.Title>
+          {t('betaTabBatch33.approveTitle', {
+            name: approveTarget?.name ?? '',
+          })}
+        </Dialog.Title>
         {setupUrl ? (
           <div className="mt-4 flex flex-col gap-3">
             <p className="text-foreground-secondary text-sm">
-              Approved. Password setup link:
+              {t('betaTabBatch33.approvedSetupLink')}
             </p>
             <a
               href={setupUrl}

@@ -14632,6 +14632,226 @@
       "restoreNote": ". Restoring it emails them a sign-in link.",
       "suspensionNote": "Suspension blocks sign-in immediately and is audited. They are emailed your reason, and see it when they try to sign in.",
       "profilePicture": "{{name}} profile picture"
+    },
+    "moderateChannelViewBatch33": {
+      "documentTitle": "{{name}}: chat moderation · Tahti",
+      "notAModerator": "@{{username}} is not a moderator of this channel's chat. Its owner adds moderators under Studio → Fans.",
+      "chatTitle": "{{name}}: chat",
+      "youModerate": "You moderate this chat for {{name}}. You can remove messages and ban people from posting."
+    },
+    "chatViewBatch33": {
+      "lastMessage": "Last message {{when}}"
+    },
+    "emailChangeViewBatch33": {
+      "noToken": "This link has no token. Open the link from the email again.",
+      "linksExpire": "Links work once and expire after 24 hours. Ask for a new one in Settings → Account → Password & email."
+    },
+    "messagesViewBatch33": {
+      "noAccountFound": "No account found for \"{{query}}\".",
+      "usernamePlaceholder": "username"
+    },
+    "feedViewBatch33": {
+      "notFollowingAnyone": "You're not following any artists yet",
+      "allQuiet": "All quiet here"
+    },
+    "featureRequestsViewBatch33": {
+      "ideaPosted": "Idea posted.",
+      "proposedBy_one": "Proposed by {{name}}, {{count}} comment",
+      "proposedBy_other": "Proposed by {{name}}, {{count}} comments",
+      "mergedInto": "Merged into “{{title}}”",
+      "boardNote": "Board note: {{note}}",
+      "member": "Member"
+    },
+    "embedViewsBatch33": {
+      "couldNotLoad": "Could not load this embed.",
+      "live": "LIVE",
+      "offline": "offline"
+    },
+    "discoverViewBatch33": {
+      "basedOnGenres": "Based on {{genres}}",
+      "signInForPicks": "Sign in for picks based on your taste",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days"
+    },
+    "collectionViewBatch33": {
+      "documentTitle": "{{name}} by {{artist}} on Tahti",
+      "documentDescription": "Listen to {{name}}, a collection by {{artist}} on Tahti.",
+      "by": "by",
+      "collaborative": "(collaborative)"
+    },
+    "soulseekAddonCardBatch33": {
+      "author": "Desktop add-on",
+      "description": "Search and download from Soulseek into your local library. Requires the desktop Tahti Player — the browser cannot speak the Soulseek protocol.",
+      "categoryDesktop": "Desktop",
+      "categoryLibrary": "Library",
+      "configure": "Configure"
+    },
+    "workersPanelBatch33": {
+      "jobHistory": "{{name}} job history",
+      "statusCompleted": "completed",
+      "statusFailed": "failed",
+      "statusActive": "active",
+      "offlineCount": "{{offline}} of {{total}} offline (no heartbeat recently).",
+      "description": "Background job workers and what they ran last.",
+      "seen": "seen {{when}}",
+      "lastJob": "Last job: {{name}}"
+    },
+    "selectsGenerateDialogBatch33": {
+      "removesAll_one": "This removes the {{count}} track in the current rotation.",
+      "removesAll_other": "This removes all {{count}} tracks in the current rotation.",
+      "filling": "Filling…"
+    },
+    "betaTabBatch33": {
+      "statusApproved": "Approved",
+      "statusRejected": "Rejected",
+      "statusPending": "Pending",
+      "filterAll": "All",
+      "statusFilterLabel": "Beta application status",
+      "passwordSet": "password set",
+      "awaitingPassword": "awaiting password",
+      "setupLinkResent": "Setup link resent: {{url}}",
+      "approveTitle": "Approve {{name}}",
+      "approvedSetupLink": "Approved. Password setup link:"
+    },
+    "meetingRecordPanelsBatch33": {
+      "conflicts": "Conflicts of interest",
+      "conflictsCount": "Conflicts of interest ({{count}})",
+      "notices": "Notice deliveries",
+      "noticesSent": "Notice deliveries ({{sent}} sent)",
+      "noticesSentBounced": "Notice deliveries ({{sent}} sent, {{bounced}} bounced)",
+      "unnamedMember": "Unnamed member",
+      "sentOn": "sent"
+    },
+    "annualReportRowBatch33": {
+      "stagePublished": "Published",
+      "stageApproved": "Approved, not published",
+      "stageDraft": "Draft",
+      "generated": "Generated {{when}}",
+      "approved": "approved {{when}}",
+      "published": "published {{when}}",
+      "filed": "filed {{when}}",
+      "filedWithReference": "filed {{when}} ({{reference}})",
+      "corrected": "corrected {{when}}",
+      "title": "Annual report {{year}}"
+    },
+    "annualReportActionsBatch33": {
+      "approveReport": "Approve report {{year}}"
+    },
+    "correctionsQueuePanelBatch33": {
+      "subjectMemberRegister": "Member register details",
+      "subjectGovernanceRecord": "A governance record",
+      "filterAll": "All",
+      "memberNumber": "member #{{number}}",
+      "sent": "sent {{when}}",
+      "answer": "Answer: {{note}}"
+    },
+    "fanSubPayoutQueueBatch33": {
+      "from": "From {{name}}",
+      "showingNewest": "Showing the newest {{shown}} of {{total}}."
+    },
+    "registerDialogBatch33": {
+      "title": "Register a new add-on"
+    },
+    "manageDialogBatch33": {
+      "title": "Manage {{name}}",
+      "invalidJson": "Not valid JSON.",
+      "rendersByDefaultListener": "Renders for every listener surface with no explicit install.",
+      "rendersByDefaultArtist": "Renders for every artist surface with no explicit install.",
+      "rendersByDefaultAdmin": "Renders for every admin surface with no explicit install."
+    },
+    "adminGrantCycleViewBatch33": {
+      "title": "{{year}} grant cycle",
+      "approveNote_one": "This creates a grant ledger entry for {{count}} eligible artist and notifies them of their grant, by email too where they asked for money notices.",
+      "approveNote_other": "This creates grant ledger entries for {{count}} eligible artists and notifies each of them of their grant, by email too where they asked for money notices."
+    },
+    "adminAnnouncementsViewBatch33": {
+      "systemAnnouncement": "System announcement",
+      "renderingTrimmed": "Rendering the trimmed clip…"
+    },
+    "adminActivityViewBatch33": {
+      "eventCount_one": "{{count}} event.",
+      "eventCount_other": "{{count}} events.",
+      "eventCountInTopic_one": "{{count}} event in {{topic}}.",
+      "eventCountInTopic_other": "{{count}} events in {{topic}}.",
+      "listensNote": "Listen counts are anonymous by design (no per-user attribution exists for plays) so individual listens aren't shown here — see Stats for aggregate play counts.",
+      "exportTopicCsv": "Export this topic as CSV",
+      "exportAllCsv": "Export full audit log as CSV",
+      "activityPages": "Activity pages",
+      "aGovernanceItem": "a governance item",
+      "aTrack": "a track",
+      "aRelease": "a release",
+      "anArtist": "an artist",
+      "aTier": "a tier",
+      "aChannel": "a channel",
+      "unknown": "unknown",
+      "loggedIn": "{{actor}} logged in",
+      "registered": "{{actor}} created an account",
+      "uploaded": "{{actor}} uploaded {{title}}",
+      "published": "{{actor}} published {{title}}",
+      "liked": "{{actor}} liked {{title}}",
+      "followed": "{{actor}} followed {{artist}}",
+      "votedChoice": "{{actor}} voted {{choice}} on {{subject}}",
+      "votedOn": "{{actor}} voted on {{subject}}",
+      "votedFor": "{{actor}} voted for {{subject}}",
+      "unvoted": "{{actor}} removed their vote from {{subject}}",
+      "commented": "{{actor}} commented on {{subject}}",
+      "removedOwnReply": "{{actor}} removed their reply in a discussion",
+      "removedReply": "{{actor}} removed a reply in a discussion",
+      "subscribed": "{{actor}} subscribed — {{tier}}",
+      "subscribedAmount": "{{actor}} subscribed — {{tier}} (€{{amount}}/mo)",
+      "ledgerEntry": "{{actor}} logged a ledger entry",
+      "ledgerEntryTitled": "{{actor}} logged a ledger entry — {{title}}",
+      "downloadAlert": "Download velocity alert on {{channel}}",
+      "patternAlert": "Pattern {{code}} on {{channel}}",
+      "tierChange": "{{actor}} changed account tier from {{from}} to {{to}}"
+    },
+    "venueDetailViewBatch33": {
+      "loadError": "Could not load this venue.",
+      "feedCopied": "Calendar feed link copied. Subscribe to it in your calendar app to keep it up to date."
+    },
+    "smartLinkViewBatch33": {
+      "coverAlt": "{{title}} cover"
+    },
+    "signupPaymentViewBatch33": {
+      "signInToPurchase": "Sign in to purchase Tahti ry membership (€40/year).",
+      "logIn": "Log in →",
+      "membershipActive": "Membership is active.",
+      "membershipActiveNumber": "Membership is active — member #{{number}}.",
+      "accountSettings": "Account settings →",
+      "activated": "Membership activated.",
+      "activatedNumber": "Membership activated — member #{{number}}."
+    },
+    "radioStationViewBatch33": {
+      "logoAlt": "{{name}} logo",
+      "website": "{{name}} website",
+      "programmeGuide": "{{name}} programme guide",
+      "noStationsMatch": "No stations match that filter."
+    },
+    "radioScheduleViewBatch33": {
+      "bookingCancelled": "Booking cancelled.",
+      "bookingUpdated": "Booking updated.",
+      "slotBooked": "Slot booked.",
+      "byNameLiveNow": "by {{name}} — live now",
+      "byNameStartingSoon": "by {{name}} — starting soon",
+      "bookedCell": "{{title}} by {{name}}",
+      "bookedCellMine": "{{title}} by {{name}} — click to view",
+      "slotAvailable": "{{date}} at {{time}} — available",
+      "slotUnavailable": "{{date}} at {{time}} — unavailable",
+      "addHour": "+1 hour",
+      "notePlaceholderTalk": "Note (optional) — topic or guests",
+      "notePlaceholderSet": "Note (optional) — what you're playing",
+      "editNoteTalk": "Note — topic or guests",
+      "editNoteSet": "Note — what you're playing",
+      "toBookSlot": "to book a slot on Tahti Radio.",
+      "cancelDescription": "This removes your {{time}} slot on {{date}}. This can't be undone."
+    },
+    "publicGovernanceHistoryViewBatch33": {
+      "backToGovernance": "← Governance",
+      "proposedByClosed": "Proposed by {{name}} · Closed",
+      "voteTally": "YES {{yes}} · NO {{no}} · ABSTAIN {{abstain}}"
+    },
+    "myVenuesViewBatch33": {
+      "noMatch": "No venues match “{{query}}”"
     }
   },
   "studioEditor": {

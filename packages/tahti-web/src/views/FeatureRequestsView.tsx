@@ -168,7 +168,7 @@ export function FeatureRequestsView() {
               setNewTitle('');
               setNewDescription('');
               setComposerOpen(false);
-              setActionMsg('Idea posted.');
+              setActionMsg(t('featureRequestsViewBatch33.ideaPosted'));
             });
           }}
         >
@@ -258,17 +258,23 @@ export function FeatureRequestsView() {
                   {r.description}
                 </p>
                 <p className="text-foreground-secondary mt-2 text-xs">
-                  Proposed by {r.proposer}
-                  {`, ${r.commentCount} comment${r.commentCount === 1 ? '' : 's'}`}
+                  {t('featureRequestsViewBatch33.proposedBy', {
+                    name: r.proposer,
+                    count: r.commentCount,
+                  })}
                 </p>
                 {r.status === 'DUPLICATE' && r.mergedIntoTitle && (
                   <p className="text-foreground-secondary mt-1 text-xs">
-                    Merged into &ldquo;{r.mergedIntoTitle}&rdquo;
+                    {t('featureRequestsViewBatch33.mergedInto', {
+                      title: r.mergedIntoTitle,
+                    })}
                   </p>
                 )}
                 {r.reviewNote && (
                   <p className="border-border bg-background-secondary/40 mt-2 rounded-md border px-2.5 py-1.5 text-xs">
-                    Board note: {r.reviewNote}
+                    {t('featureRequestsViewBatch33.boardNote', {
+                      note: r.reviewNote,
+                    })}
                   </p>
                 )}
 
@@ -336,7 +342,8 @@ export function FeatureRequestsView() {
                         {comments.map((c) => (
                           <li key={c.id} className="px-3 py-2">
                             <div className="text-foreground-secondary text-xs">
-                              {c.authorDisplayName ?? 'Member'}
+                              {c.authorDisplayName ??
+                                t('featureRequestsViewBatch33.member')}
                               {c.createdAt ? (
                                 <>
                                   {', '}

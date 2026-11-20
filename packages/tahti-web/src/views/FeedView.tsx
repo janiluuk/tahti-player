@@ -384,8 +384,8 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
           icon="inbox"
           title={
             followingCount === 0
-              ? "You're not following any artists yet"
-              : 'All quiet here'
+              ? t('feedViewBatch33.notFollowingAnyone')
+              : t('feedViewBatch33.allQuiet')
           }
           description={
             followingCount === 0
