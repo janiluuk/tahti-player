@@ -137,6 +137,8 @@ export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   onLayoutChange?: (layout: CardsRowLayout) => void;
   /** Toolbar icon that cycles list → cards → full (default on). */
   allowListToggle?: boolean;
+  /** Section-level buttons shown first in the toolbar (e.g. Add new). */
+  actions?: ReactNode;
 };
 
 export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
@@ -154,6 +156,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
   defaultLayout,
   onLayoutChange,
   allowListToggle = true,
+  actions,
 }: CardsRowProps<T>) => {
   const prefersListOnMobile = usePrefersListOnMobile();
   const uncontrolledDefault =
@@ -253,6 +256,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
               : 'min-w-fit',
           )}
         >
+          {actions}
           {showFilter ? (
             <Input
               data-testid="cards-row-filter"

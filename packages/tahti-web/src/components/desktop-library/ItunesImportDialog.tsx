@@ -1,6 +1,6 @@
 import { FolderOpenIcon, PlusIcon, XIcon } from 'lucide-react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import {
   Alert,
   Button,
@@ -36,9 +36,6 @@ type Props = {
 
 const n = (value: number) => value.toLocaleString('en-US');
 
-const plural = (count: number, word: string) =>
-  `${n(count)} ${word}${count === 1 ? '' : 's'}`;
-
 function Counts({ rows }: { rows: Array<[string, number]> }) {
   const shown = rows.filter(([, value]) => value > 0);
   if (!shown.length) {
@@ -56,18 +53,25 @@ function Counts({ rows }: { rows: Array<[string, number]> }) {
   );
 }
 
-const REASONS: Array<[NativeItunesUnresolvedReason, string]> = [
-  ['missing', 'File not found'],
-  ['unsupported', 'Format not supported'],
-  ['notLocal', 'Not a local file'],
-];
+const REASONS = [
+  ['missing', 'itunesImportDialogBatch30.fileNotFound'],
+  ['unsupported', 'itunesImportDialogBatch30.formatNotSupported'],
+  ['notLocal', 'itunesImportDialogBatch30.notALocalFile'],
+] as const satisfies ReadonlyArray<
+  readonly [NativeItunesUnresolvedReason, ParseKeys<'web'>]
+>;
 
-const trackLabel = (track: NativeItunesUnresolved) =>
-  [track.name || 'Untitled', track.artist].filter(Boolean).join(' — ');
+const trackLabel = (track: NativeItunesUnresolved, untitled: string) =>
+  [track.name || untitled, track.artist].filter(Boolean).join(' — ');
 
 /** Tab-separated, one track per line, for pasting into a spreadsheet. */
 export function unresolvedAsText(tracks: NativeItunesUnresolved[]): string {
-  const label = Object.fromEntries(REASONS);
+  const t = webT();
+  const label: Record<NativeItunesUnresolvedReason, string> = {
+    missing: t(REASONS[0][1]),
+    unsupported: t(REASONS[1][1]),
+    notLocal: t(REASONS[2][1]),
+  };
   return tracks
     .map((track) =>
       [label[track.reason], track.name, track.artist, track.path ?? ''].join(
@@ -96,19 +100,25 @@ function UnresolvedList({
     >
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm font-medium">
-          Not resolved ({n(total)})
-          {total > tracks.length ? `, first ${n(tracks.length)} listed` : ''}
+          {total > tracks.length
+            ? t('itunesImportDialogBatch30.notResolvedFirstListed', {
+                total: n(total),
+                shown: n(tracks.length),
+              })
+            : t('itunesImportDialogBatch30.notResolvedCount', {
+                total: n(total),
+              })}
         </p>
         <CopyButton
           size="sm"
           variant="text"
           label={t('itunesImport.copyList')}
           text={unresolvedAsText(tracks)}
-          toastMessage="List copied"
+          toastMessage={t('itunesImportDialogBatch30.listCopied')}
         />
       </div>
       <div className="border-border flex max-h-60 flex-col gap-3 overflow-y-auto rounded-md border p-2">
-        {REASONS.map(([reason, title]) => {
+        {REASONS.map(([reason, titleKey]) => {
           const group = tracks.filter((track) => track.reason === reason);
           if (!group.length) {
             return null;
@@ -116,12 +126,17 @@ function UnresolvedList({
           return (
             <div key={reason} className="flex flex-col gap-1 text-xs">
               <p className="text-foreground-secondary font-medium">
-                {title} ({n(group.length)})
+                {t(titleKey)} ({n(group.length)})
               </p>
               <ul className="flex flex-col gap-1">
                 {group.map((track, index) => (
                   <li key={`${track.path ?? ''}:${index}`} className="min-w-0">
-                    <p className="truncate">{trackLabel(track)}</p>
+                    <p className="truncate">
+                      {trackLabel(
+                        track,
+                        t('itunesImportDialogBatch30.untitled'),
+                      )}
+                    </p>
                     {track.path ? (
                       <Tooltip content={track.path} side="top">
                         <p className="text-foreground-secondary truncate">
@@ -140,10 +155,10 @@ function UnresolvedList({
   );
 }
 
-const STAGES: Record<NativeItunesImportProgress['stage'], string> = {
-  importing: 'Importing files',
-  metadata: 'Applying ratings, play counts and tags',
-  playlists: 'Creating playlists',
+const STAGES: Record<NativeItunesImportProgress['stage'], ParseKeys<'web'>> = {
+  importing: 'itunesImportDialogBatch30.stageImporting',
+  metadata: 'itunesImportDialogBatch30.stageMetadata',
+  playlists: 'itunesImportDialogBatch30.stagePlaylists',
 };
 
 function CommitProgress({
@@ -151,6 +166,7 @@ function CommitProgress({
 }: {
   progress: NativeItunesImportProgress | null;
 }) {
+  const { t } = useTranslation('web');
   if (!progress) {
     return (
       <p
@@ -158,7 +174,7 @@ function CommitProgress({
         role="status"
       >
         <Loader size="inline" shape="circle" />
-        Importing… Large libraries can take a few minutes.
+        {t('itunesImportDialogBatch30.importingLargeLibraries')}
       </p>
     );
   }
@@ -169,41 +185,86 @@ function CommitProgress({
         role="status"
       >
         <Loader size="inline" shape="circle" />
-        {STAGES[progress.stage]}… {n(progress.done)} of {n(progress.total)}
+        {t('itunesImportDialogBatch30.stageProgress', {
+          stage: t(STAGES[progress.stage]),
+          done: n(progress.done),
+          total: n(progress.total),
+        })}
       </p>
       <Meter
         role="progressbar"
         value={progress.done}
         max={Math.max(progress.total, 1)}
-        aria-label={STAGES[progress.stage]}
+        aria-label={t(STAGES[progress.stage])}
       />
     </div>
   );
 }
 
 function PreviewSummary({ preview }: { preview: NativeItunesPreview }) {
+  const { t } = useTranslation('web');
   const resolved = preview.tracksInCatalog + preview.tracksToImport;
   const unresolved =
     preview.tracksMissing + preview.tracksUnsupported + preview.tracksNotLocal;
   return (
     <div className="flex flex-col gap-2">
       <p className="text-sm" role="status">
-        {n(resolved)} of {plural(preview.tracks, 'track')} found
-        {unresolved ? `, ${n(unresolved)} not resolved` : ''};{' '}
-        {plural(preview.playlists, 'playlist')}.
+        {t('itunesImportDialogBatch30.tracksFound', {
+          count: preview.tracks,
+          resolved: n(resolved),
+          n: n(preview.tracks),
+        })}
+        {unresolved
+          ? t('itunesImportDialogBatch30.previewNotResolvedSuffix', {
+              n: n(unresolved),
+            })
+          : ''}
+        ;{' '}
+        {t('itunesImportDialogBatch30.playlistCount', {
+          count: preview.playlists,
+          n: n(preview.playlists),
+        })}
+        .
       </p>
       <Counts
         rows={[
-          ['Already in your library (will be linked)', preview.tracksInCatalog],
-          ['On disk, will be imported', preview.tracksToImport],
-          ['File not found', preview.tracksMissing],
-          ['Format not supported', preview.tracksUnsupported],
-          ['Not a local file (stream or cloud)', preview.tracksNotLocal],
-          ['Duplicate entries for the same file', preview.duplicateTracks],
-          ['Linked by an earlier import', preview.previouslyImported],
-          ['Playlist entries', preview.playlistEntries],
-          ['Playlist folders', preview.playlistFolders],
-          ['Playlists imported before', preview.playlistsAlreadyImported],
+          [
+            t('itunesImportDialogBatch30.alreadyInLibraryLinked'),
+            preview.tracksInCatalog,
+          ],
+          [
+            t('itunesImportDialogBatch30.onDiskWillImport'),
+            preview.tracksToImport,
+          ],
+          [t('itunesImportDialogBatch30.fileNotFound'), preview.tracksMissing],
+          [
+            t('itunesImportDialogBatch30.formatNotSupported'),
+            preview.tracksUnsupported,
+          ],
+          [
+            t('itunesImportDialogBatch30.notALocalFileStreamOrCloud'),
+            preview.tracksNotLocal,
+          ],
+          [
+            t('itunesImportDialogBatch30.duplicateEntries'),
+            preview.duplicateTracks,
+          ],
+          [
+            t('itunesImportDialogBatch30.linkedByEarlierImport'),
+            preview.previouslyImported,
+          ],
+          [
+            t('itunesImportDialogBatch30.playlistEntries'),
+            preview.playlistEntries,
+          ],
+          [
+            t('itunesImportDialogBatch30.playlistFolders'),
+            preview.playlistFolders,
+          ],
+          [
+            t('itunesImportDialogBatch30.playlistsImportedBefore'),
+            preview.playlistsAlreadyImported,
+          ],
         ]}
       />
       <UnresolvedList tracks={preview.unresolved} total={unresolved} />
@@ -218,6 +279,7 @@ function ResultSummary({
   result: NativeItunesImportResult;
   preview: NativeItunesPreview | null;
 }) {
+  const { t } = useTranslation('web');
   const unresolved =
     result.tracksMissing +
     result.tracksUnsupported +
@@ -226,38 +288,79 @@ function ResultSummary({
   return (
     <div className="flex flex-col gap-2">
       <p className="text-sm" role="status">
-        {plural(result.tracksLinked + result.tracksImported, 'track')} linked or
-        imported, {plural(result.playlistsCreated, 'playlist')} created
-        {unresolved ? `; ${n(unresolved)} not resolved` : ''}.
+        {t('itunesImportDialogBatch30.tracksLinkedOrImported', {
+          count: result.tracksLinked + result.tracksImported,
+          n: n(result.tracksLinked + result.tracksImported),
+        })}
+        ,{' '}
+        {t('itunesImportDialogBatch30.playlistsCreated', {
+          count: result.playlistsCreated,
+          n: n(result.playlistsCreated),
+        })}
+        {unresolved
+          ? t('itunesImportDialogBatch30.resultNotResolvedSuffix', {
+              n: n(unresolved),
+            })
+          : ''}
+        .
       </p>
       <Counts
         rows={[
-          ['Linked to tracks in your library', result.tracksLinked],
-          ['Imported', result.tracksImported],
-          ['Could not be imported', result.tracksFailed],
-          ['File not found', result.tracksMissing],
-          ['Format not supported', result.tracksUnsupported],
-          ['Not a local file', result.tracksNotLocal],
-          ['Plays added', result.playsAdded],
-          ['Skips added', result.skipsAdded],
-          ['Ratings applied', result.ratingsApplied],
-          ['Loved tracks tagged', result.lovedTagged],
-          ['Empty tags filled', result.fieldsFilled],
-          ['Tags kept from the file', result.fieldsKeptFromFile],
-          ['BPM values applied', result.bpmApplied],
-          ['Playlists renamed (name taken)', result.playlistsRenamed],
-          ['Playlists imported before', result.playlistsAlreadyImported],
-          ['Playlist entries', result.playlistEntries],
+          [t('itunesImportDialogBatch30.linkedToTracks'), result.tracksLinked],
+          [t('itunesImportDialogBatch30.imported'), result.tracksImported],
           [
-            'Playlist entries waiting for their file',
+            t('itunesImportDialogBatch30.couldNotBeImported'),
+            result.tracksFailed,
+          ],
+          [t('itunesImportDialogBatch30.fileNotFound'), result.tracksMissing],
+          [
+            t('itunesImportDialogBatch30.formatNotSupported'),
+            result.tracksUnsupported,
+          ],
+          [t('itunesImportDialogBatch30.notALocalFile'), result.tracksNotLocal],
+          [t('itunesImportDialogBatch30.playsAdded'), result.playsAdded],
+          [t('itunesImportDialogBatch30.skipsAdded'), result.skipsAdded],
+          [
+            t('itunesImportDialogBatch30.ratingsApplied'),
+            result.ratingsApplied,
+          ],
+          [
+            t('itunesImportDialogBatch30.lovedTracksTagged'),
+            result.lovedTagged,
+          ],
+          [t('itunesImportDialogBatch30.emptyTagsFilled'), result.fieldsFilled],
+          [
+            t('itunesImportDialogBatch30.tagsKeptFromFile'),
+            result.fieldsKeptFromFile,
+          ],
+          [t('itunesImportDialogBatch30.bpmValuesApplied'), result.bpmApplied],
+          [
+            t('itunesImportDialogBatch30.playlistsRenamed'),
+            result.playlistsRenamed,
+          ],
+          [
+            t('itunesImportDialogBatch30.playlistsImportedBefore'),
+            result.playlistsAlreadyImported,
+          ],
+          [
+            t('itunesImportDialogBatch30.playlistEntries'),
+            result.playlistEntries,
+          ],
+          [
+            t('itunesImportDialogBatch30.playlistEntriesWaiting'),
             result.playlistEntriesUnavailable,
           ],
-          ['Playlist entries left out', result.playlistEntriesSkipped],
+          [
+            t('itunesImportDialogBatch30.playlistEntriesLeftOut'),
+            result.playlistEntriesSkipped,
+          ],
         ]}
       />
       {result.errors.length ? (
         <div className="flex flex-col gap-0.5 text-xs">
-          <p className="text-foreground-secondary">Could not be imported:</p>
+          <p className="text-foreground-secondary">
+            {t('itunesImportDialogBatch30.couldNotBeImportedColon')}
+          </p>
           <ul className="flex flex-col gap-0.5">
             {result.errors.map((failure) => (
               <li key={failure.path} className="min-w-0">
@@ -408,7 +511,9 @@ export function ItunesImportDialog({
                 <Button
                   size="sm"
                   variant="secondary"
-                  aria-label={`Choose new folder ${index + 1}`}
+                  aria-label={t('itunesImportDialogBatch30.chooseNewFolderN', {
+                    n: index + 1,
+                  })}
                   onClick={() => void state.chooseTarget(index)}
                 >
                   <FolderOpenIcon size={14} aria-hidden />
@@ -493,7 +598,7 @@ export function ItunesImportDialog({
             {state.phase === 'committing' ? (
               <Loader size="inline" shape="circle" />
             ) : null}
-            Import
+            {t('itunesImportDialogBatch30.import')}
           </Button>
         ) : null}
       </Dialog.Actions>

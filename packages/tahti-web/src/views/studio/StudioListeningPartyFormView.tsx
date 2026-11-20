@@ -74,7 +74,10 @@ export function StudioListeningPartyFormView({
             });
             return;
           }
-          setLoadError(meta.reason ?? 'Could not load the listening party');
+          setLoadError(
+            meta.reason ??
+              i18n.t('web:studioListeningPartyFormViewBatch30.couldNotLoad'),
+          );
           setLoading(false);
           return;
         }
@@ -135,15 +138,19 @@ export function StudioListeningPartyFormView({
     }
     if (editing) {
       toast.success(
-        `Rescheduled the ${result.data.release.title} listening party.`,
+        t('studioListeningPartyFormViewBatch30.rescheduled', {
+          title: result.data.release.title,
+        }),
       );
     } else {
       const created = result.data;
       toastWithUndo(
-        `Scheduled a listening party for ${created.release.title}.`,
+        t('studioListeningPartyFormViewBatch30.scheduled', {
+          title: created.release.title,
+        }),
         {
           undo: () => cancelListeningParty(created.id),
-          undoneMessage: 'Listening party canceled.',
+          undoneMessage: t('studioListeningPartyFormViewBatch30.canceled'),
         },
       );
     }
@@ -215,7 +222,9 @@ export function StudioListeningPartyFormView({
                   value={startAt}
                   onChange={(event) => setStartAt(event.target.value)}
                   error={
-                    tooSoon ? 'Start at least 5 minutes from now.' : undefined
+                    tooSoon
+                      ? t('studioListeningPartyFormViewBatch30.tooSoon')
+                      : undefined
                   }
                 />
                 <Textarea

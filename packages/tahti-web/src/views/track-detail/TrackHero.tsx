@@ -242,11 +242,11 @@ export function TrackHero({ page }: { page: TrackPage }) {
               </h1>
               {embedSrc ? (
                 <span className="shrink-0 text-xs tracking-wide text-white/55">
-                  via {embedLabel}
+                  {t('trackHeroBatch30.via', { provider: embedLabel })}
                 </span>
               ) : canPlay ? (
                 <span className="shrink-0 text-xs tracking-wide text-white/55">
-                  lossless
+                  {t('trackHeroBatch30.lossless')}
                 </span>
               ) : null}
               <AiGeneratedBadge show={detail?.isAiGenerated} />
@@ -267,7 +267,10 @@ export function TrackHero({ page }: { page: TrackPage }) {
               ) : embedSrc ? (
                 <div className="overflow-hidden rounded-lg">
                   <iframe
-                    title={`${playable.title} — ${embedLabel} player`}
+                    title={t('trackHeroBatch30.embedPlayerTitle', {
+                      title: playable.title,
+                      provider: embedLabel,
+                    })}
                     src={embedSrc}
                     width="100%"
                     height={
@@ -344,7 +347,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                     onChange={(event) => setCommentBody(event.target.value)}
                     placeholder={
                       embedSrc
-                        ? 'Write a comment'
+                        ? t('trackHeroStates.writeAComment')
                         : webT()('templateText.writeCommentAt', { name: clock })
                     }
                     maxLength={2000}
@@ -362,8 +365,8 @@ export function TrackHero({ page }: { page: TrackPage }) {
                     className="min-w-0 flex-1 text-sm text-white/55"
                   >
                     {embedSrc
-                      ? 'Log in to write a comment'
-                      : `Log in to write a comment at ${clock}`}
+                      ? t('trackHeroBatch30.logInToComment')
+                      : t('trackHeroBatch30.logInToCommentAt', { time: clock })}
                   </Link>
                 ) : (
                   <span className="min-w-0 flex-1 text-sm text-white/55">
@@ -392,7 +395,9 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 <span aria-hidden>
                   {detail.playCount.toLocaleString(dateLocaleTag())}
                 </span>
-                <span className="sr-only">{`${detail.playCount} plays`}</span>
+                <span className="sr-only">
+                  {t('trackHeroBatch30.playCount', { count: detail.playCount })}
+                </span>
               </span>
             ) : null}
             <span className="inline-flex items-center gap-1">

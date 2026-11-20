@@ -12,6 +12,7 @@ import {
   Loader,
 } from '@tahti-player/ui';
 
+import { dateLocaleTag } from '../lib/locale';
 import type {
   NativeEditField,
   NativeEditPreview,
@@ -19,7 +20,6 @@ import type {
   NativeFieldSummary,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
-import { webT } from '../lib/webT';
 
 function fields(
   t: TFunction<'web'>,
@@ -44,8 +44,10 @@ function fieldLabels(t: TFunction<'web'>): Record<NativeEditField, string> {
   ) as Record<NativeEditField, string>;
 }
 
-const plural = (count: number, noun: string) =>
-  `${count.toLocaleString('en-US')} ${noun}${count === 1 ? '' : 's'}`;
+const counted = (count: number) => ({
+  count,
+  formattedCount: count.toLocaleString(dateLocaleTag()),
+});
 
 type Props = {
   isOpen: boolean;
@@ -167,8 +169,11 @@ export function TrackEditorDialog({
       onClose();
       toast.success(
         outcome.tracksChanged === 0
-          ? 'Nothing needed changing.'
-          : `Updated ${plural(outcome.tracksChanged, 'track')}.`,
+          ? t('trackEditorDialogBatch30.nothingNeededChanging')
+          : t(
+              'trackEditorDialogBatch30.updatedTracks',
+              counted(outcome.tracksChanged),
+            ),
         outcome.tracksChanged === 0
           ? undefined
           : {
@@ -185,7 +190,7 @@ export function TrackEditorDialog({
                       toast.error(
                         failure instanceof Error
                           ? failure.message
-                          : 'Could not undo.',
+                          : i18n.t('web:trackEditorDialogBatch30.couldNotUndo'),
                       ),
                     );
                 },
@@ -215,8 +220,8 @@ export function TrackEditorDialog({
     <Dialog.Root isOpen={isOpen} onClose={close} className="max-w-xl">
       <Dialog.Title>
         {ids.length === 1
-          ? 'Edit tags'
-          : webT()('a11yNamed.edit', { name: plural(ids.length, 'track') })}
+          ? t('trackEditorDialogBatch30.editTags')
+          : t('trackEditorDialogBatch30.editTracks', counted(ids.length))}
       </Dialog.Title>
       <Dialog.Description>
         {t('trackEditorDialog.changesAreKeptInYour')}
@@ -255,9 +260,9 @@ export function TrackEditorDialog({
                       disabled={reverting}
                       placeholder={
                         reverting
-                          ? 'Will go back to the file’s tag'
+                          ? t('trackEditorDialogBatch30.willRevertToFileTag')
                           : mixed
-                            ? 'Mixed values'
+                            ? t('trackEditorDialogBatch30.mixedValues')
                             : ''
                       }
                       onChange={(event) =>
@@ -274,8 +279,12 @@ export function TrackEditorDialog({
                       variant="text"
                       aria-label={
                         field in draft
-                          ? `Discard change to ${label}`
-                          : `Put ${label} back to the file’s tag`
+                          ? t('trackEditorDialogBatch30.discardChangeTo', {
+                              label,
+                            })
+                          : t('trackEditorDialogBatch30.putBackToFileTag', {
+                              label,
+                            })
                       }
                       onClick={() =>
                         setDraft((current) => {
@@ -292,10 +301,12 @@ export function TrackEditorDialog({
                     >
                       <Undo2Icon size={13} aria-hidden />
                       {field in draft
-                        ? 'Discard'
+                        ? t('trackEditorDialogBatch30.discard')
                         : ids.length > 1
-                          ? `Revert (${info?.edited})`
-                          : 'Revert to file tag'}
+                          ? t('trackEditorDialogBatch30.revertCount', {
+                              edited: info?.edited ?? 0,
+                            })
+                          : t('trackEditorDialogBatch30.revertToFileTag')}
                     </Button>
                   ) : null}
                 </div>
@@ -309,12 +320,17 @@ export function TrackEditorDialog({
           <div className="text-foreground-secondary flex flex-col gap-1 text-xs">
             <p>
               {preview.tracksChanged === 0
-                ? 'No track would change.'
-                : `${plural(preview.tracksChanged, 'track')} will change${
-                    preview.tracksUnchanged > 0
-                      ? `, ${preview.tracksUnchanged.toLocaleString('en-US')} already match`
-                      : ''
-                  }.`}
+                ? t('trackEditorDialogBatch30.noTrackWouldChange')
+                : preview.tracksUnchanged > 0
+                  ? t('trackEditorDialogBatch30.tracksWillChangeSomeMatch', {
+                      ...counted(preview.tracksChanged),
+                      matching:
+                        preview.tracksUnchanged.toLocaleString(dateLocaleTag()),
+                    })
+                  : t(
+                      'trackEditorDialogBatch30.tracksWillChange',
+                      counted(preview.tracksChanged),
+                    )}
             </p>
             {preview.examples.slice(0, 3).map((example) => (
               <p
@@ -322,7 +338,8 @@ export function TrackEditorDialog({
                 className="truncate"
               >
                 {example.title} — {fieldLabels(t)[example.field]}:{' '}
-                {example.before || '(empty)'} → {example.after || '(empty)'}
+                {example.before || t('trackEditorDialogBatch30.empty')} →{' '}
+                {example.after || t('trackEditorDialogBatch30.empty')}
               </p>
             ))}
           </div>
@@ -331,7 +348,7 @@ export function TrackEditorDialog({
           <Dialog.Close>{t('trackEditorDialog.cancel')}</Dialog.Close>
           <Button className="gap-1.5" disabled={!canApply} type="submit">
             {busy ? <Loader size="inline" shape="circle" /> : null}
-            Apply
+            {t('trackEditorDialogBatch30.apply')}
           </Button>
         </Dialog.Actions>
       </form>

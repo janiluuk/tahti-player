@@ -72,7 +72,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
 
   return (
     <ViewShell
-      title={meeting?.title ?? 'Meeting'}
+      title={meeting?.title ?? t('governanceMeetingDetailViewBatch30.meeting')}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-2xl',
         content: 'gap-6',
@@ -148,7 +148,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                 {meeting.noticeAt ? (
                   <ListingDate value={meeting.noticeAt} />
                 ) : (
-                  'Not yet published'
+                  t('governanceMeetingDetailViewBatch30.notYetPublished')
                 )}
               </dd>
               <dt className="text-foreground-secondary">
@@ -161,9 +161,11 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                     <ListingDate value={meeting.minutesApprovedAt} />
                   </>
                 ) : meeting.minutesKey ? (
-                  'Uploaded, pending approval'
+                  t(
+                    'governanceMeetingDetailViewBatch30.uploadedPendingApproval',
+                  )
                 ) : (
-                  'Not yet uploaded'
+                  t('governanceMeetingDetailViewBatch30.notYetUploaded')
                 )}
                 {meeting.minutesUrl && isSafeHref(meeting.minutesUrl) && (
                   <>
@@ -190,12 +192,12 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               </dt>
               <dd>
                 {meeting.quorumMet === null
-                  ? 'Not yet determined'
+                  ? t('governanceMeetingDetailViewBatch30.notYetDetermined')
                   : meeting.quorumMet
                     ? t('governanceMeetingDetailViewStates.met')
                     : t('governanceMeetingDetailViewStates.notMet')}
                 {meeting.quorumRequired !== null &&
-                  ` (${meeting.quorumRequired} required)`}
+                  ` (${t('governanceMeetingDetailViewBatch30.required', { count: meeting.quorumRequired })})`}
               </dd>
               <dt className="text-foreground-secondary">
                 {t('meetingDetail.present')}
@@ -203,7 +205,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               <dd>
                 {meeting.presentCount}
                 {meeting.eligibleMemberCount !== null &&
-                  ` of ${meeting.eligibleMemberCount} eligible`}
+                  ` ${t('governanceMeetingDetailViewBatch30.ofEligible', { count: meeting.eligibleMemberCount })}`}
               </dd>
               <dt className="text-foreground-secondary">
                 {t('meetingDetail.attendanceRecorded')}

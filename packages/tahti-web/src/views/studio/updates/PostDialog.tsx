@@ -83,12 +83,12 @@ export function PostDialog({
   const trimmedUrl = linkUrl.trim();
   const linkError =
     trimmedUrl && !isHttpUrl(trimmedUrl)
-      ? 'Enter a full web address starting with https://'
+      ? t('postDialogBatch30.linkError')
       : undefined;
   const publishIso = fromDatetimeLocalValue(publishAt);
   const scheduleError =
     publishAt && (!publishIso || Date.parse(publishIso) <= Date.now())
-      ? 'Pick a time in the future, or leave it empty to publish now.'
+      ? t('postDialogBatch30.scheduleError')
       : undefined;
   const scheduling = Boolean(publishIso) && !scheduleError;
   const canSubmit = Boolean(body.trim()) && !linkError && !scheduleError;
@@ -137,7 +137,9 @@ export function PostDialog({
         const imageResult = await uploadArtistPostImage(result.data.id, image);
         if (!imageResult.ok) {
           toast.error(
-            `Post saved, but image upload failed: ${imageResult.error}`,
+            t('postDialogBatch30.imageUploadFailed', {
+              error: imageResult.error,
+            }),
           );
           onSaved();
           onClose();
@@ -145,7 +147,11 @@ export function PostDialog({
         }
       }
       const savedMessage = isScheduledPost(result.data)
-        ? `Post scheduled for ${new Date(result.data.publishAt).toLocaleString(dateLocaleTag())}.`
+        ? t('postDialogBatch30.scheduledFor', {
+            date: new Date(result.data.publishAt).toLocaleString(
+              dateLocaleTag(),
+            ),
+          })
         : editing
           ? t('postDialogStates.postSaved')
           : t('postDialogStates.postPublished');
@@ -155,7 +161,7 @@ export function PostDialog({
         const created = result.data;
         toastWithUndo(savedMessage, {
           undo: () => deleteArtistPost(created.id),
-          undoneMessage: 'Post removed.',
+          undoneMessage: t('postDialogBatch30.postRemoved'),
           onUndone: () => onSaved(),
         });
       }
@@ -169,9 +175,9 @@ export function PostDialog({
   };
 
   const submitLabel = busy
-    ? 'Saving…'
+    ? t('postDialogBatch30.saving')
     : editing
-      ? 'Save'
+      ? t('postDialogBatch30.save')
       : scheduling
         ? t('postDialogStates.schedule')
         : t('postDialogStates.publish');

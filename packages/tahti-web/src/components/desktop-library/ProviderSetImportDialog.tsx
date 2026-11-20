@@ -1,4 +1,4 @@
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Alert,
   Badge,
@@ -31,8 +31,7 @@ type Props = {
   onImported: () => void;
 };
 
-const plural = (count: number, word: string) =>
-  `${count.toLocaleString('en-US')} ${word}${count === 1 ? '' : 's'}`;
+const formatCount = (count: number) => count.toLocaleString('en-US');
 
 function formatDuration(totalSec: number): string {
   const hours = Math.floor(totalSec / 3600);
@@ -40,46 +39,60 @@ function formatDuration(totalSec: number): string {
   return hours > 0 ? `${hours} h ${minutes} min` : `${minutes} min`;
 }
 
-function rowStatus(row: SetImportRow): string {
+function rowStatus(row: SetImportRow, t: TFunction<'web'>): string {
   switch (row.state) {
     case 'ready':
       return '';
     case 'unavailable':
-      return 'Not offered for download';
+      return t('providerSetImportDialogBatch30.notOfferedForDownload');
     case 'waiting':
-      return 'Waiting';
+      return t('providerSetImportDialogBatch30.waiting');
     case 'downloading':
       return row.percent === null
-        ? 'Downloading'
-        : `Downloading ${row.percent}%`;
+        ? t('providerSetImportDialogBatch30.downloading')
+        : t('providerSetImportDialogBatch30.downloadingPercent', {
+            percent: row.percent,
+          });
     case 'imported':
-      return 'Imported';
+      return t('providerSetImportDialogBatch30.imported');
     case 'skipped':
-      return 'Already in your library';
+      return t('providerSetImportDialogBatch30.alreadyInLibrary');
     case 'failed':
-      return row.error ? `Failed: ${row.error}` : 'Failed';
+      return row.error
+        ? t('providerSetImportDialogBatch30.failedError', { error: row.error })
+        : t('providerSetImport.failed');
     case 'cancelled':
-      return 'Cancelled';
+      return t('providerSetImportDialogBatch30.cancelled');
   }
 }
 
-function spaceSummary(space: SetImportSpace & { status: 'ready' }): string {
+function spaceSummary(
+  space: SetImportSpace & { status: 'ready' },
+  t: TFunction<'web'>,
+): string {
   const { neededBytes, sized, unknownSize, freeBytes } = space.value;
   if (sized + unknownSize === 0) {
-    return 'Every track is already in your library.';
+    return t('providerSetImportDialogBatch30.everyTrackInLibrary');
   }
   const needed =
     sized === 0
-      ? 'File sizes are not listed'
-      : `About ${formatBytes(neededBytes)} needed` +
+      ? t('providerSetImportDialogBatch30.fileSizesNotListed')
+      : t('providerSetImportDialogBatch30.aboutNeeded', {
+          size: formatBytes(neededBytes),
+        }) +
         (unknownSize
-          ? ` (${plural(unknownSize, 'track')} of unknown size)`
+          ? t('providerSetImportDialogBatch30.unknownSizeSuffix', {
+              count: unknownSize,
+              n: formatCount(unknownSize),
+            })
           : '');
   const free =
     freeBytes === null
-      ? 'free space unknown'
-      : `${formatBytes(freeBytes)} free on that disk`;
-  return `${needed}, ${free}.`;
+      ? t('providerSetImportDialogBatch30.freeSpaceUnknown')
+      : t('providerSetImportDialogBatch30.freeOnDisk', {
+          size: formatBytes(freeBytes),
+        });
+  return t('providerSetImportDialogBatch30.neededAndFree', { needed, free });
 }
 
 function SpaceLine({
@@ -104,14 +117,16 @@ function SpaceLine({
   if (space.status === 'failed') {
     return (
       <p className="text-foreground-secondary text-xs">
-        Could not check the file sizes: {space.error}
+        {t('providerSetImportDialogBatch30.couldNotCheckSizes', {
+          error: space.error,
+        })}
       </p>
     );
   }
   const { verdict, neededBytes, freeBytes } = space.value;
   return (
     <div className="flex flex-col gap-1 text-xs">
-      <p className="text-foreground-secondary">{spaceSummary(space)}</p>
+      <p className="text-foreground-secondary">{spaceSummary(space, t)}</p>
       {verdict === 'tight' ? (
         <Alert tone="warning" className="px-3 py-2 text-xs">
           {t('providerSetImport.theSetFitsButLeaves')}
@@ -121,8 +136,9 @@ function SpaceLine({
         <Alert tone="error" className="px-3 py-2 text-xs">
           <span className="flex items-center justify-between gap-2">
             <span>
-              Not enough space. Free up at least{' '}
-              {formatBytes(neededBytes - (freeBytes ?? 0))} and check again.
+              {t('providerSetImportDialogBatch30.notEnoughSpace', {
+                size: formatBytes(neededBytes - (freeBytes ?? 0)),
+              })}
             </span>
             <Button variant="text" size="xs" onClick={onRecheck}>
               {t('providerSetImport.checkAgain')}
@@ -170,7 +186,7 @@ function TrackRows({ rows }: { rows: SetImportRow[] }) {
             className={`shrink-0 text-xs ${row.state === 'failed' ? 'text-accent-red-strong max-w-[45%] truncate' : 'text-foreground-secondary'}`}
             title={row.error ?? undefined}
           >
-            {row.state === 'failed' ? row.error : rowStatus(row)}
+            {row.state === 'failed' ? row.error : rowStatus(row, t)}
           </span>
         </li>
       ))}
@@ -212,7 +228,9 @@ export function ProviderSetImportDialog({
       onClose={() => (running ? undefined : onClose())}
       className="max-w-xl"
     >
-      <Dialog.Title>Import a {source.label} set</Dialog.Title>
+      <Dialog.Title>
+        {t('providerSetImportDialogBatch30.title', { provider: source.label })}
+      </Dialog.Title>
       <Dialog.Description>
         {t('providerSetImport.downloadsTheTracksTheUploader')}
       </Dialog.Description>
@@ -259,7 +277,10 @@ export function ProviderSetImportDialog({
                 >
                   <span className="truncate">{set.title}</span>
                   <span className="text-foreground-secondary shrink-0 text-xs">
-                    {plural(set.trackCount, 'track')}
+                    {t('providerSetImportDialogBatch30.trackCount', {
+                      count: set.trackCount,
+                      n: formatCount(set.trackCount),
+                    })}
                   </span>
                 </Button>
               ))}
@@ -267,9 +288,10 @@ export function ProviderSetImportDialog({
           ) : null}
           {state.yourSetsError ? (
             <p className="text-foreground-secondary text-xs">
-              Could not list your {source.label} sets: {state.yourSetsError}.
-              Connect {source.label} in Settings → Add-ons → Import, or paste a
-              set link.
+              {t('providerSetImportDialogBatch30.couldNotListSets', {
+                provider: source.label,
+                error: state.yourSetsError,
+              })}
             </p>
           ) : null}
         </div>
@@ -294,8 +316,9 @@ export function ProviderSetImportDialog({
                 onChange={(event) => state.setTitle(event.target.value)}
               />
               <p className="text-foreground-secondary text-xs break-all">
-                Saves to {state.destination || '…'}. A file that already exists
-                there under the same name is kept and the new one gets a number.
+                {t('providerSetImportDialogBatch30.savesTo', {
+                  destination: state.destination || '…',
+                })}
               </p>
               <SpaceLine space={state.space} onRecheck={state.recheckSpace} />
             </>
@@ -303,20 +326,36 @@ export function ProviderSetImportDialog({
           <p role="status" className="text-sm">
             {state.phase === 'done' && state.result
               ? [
-                  `${plural(state.result.imported, 'track')} imported`,
+                  t('providerSetImportDialogBatch30.tracksImported', {
+                    count: state.result.imported,
+                    n: formatCount(state.result.imported),
+                  }),
                   state.result.skipped
-                    ? `${state.result.skipped} already in your library`
+                    ? t('providerSetImportDialogBatch30.skippedInLibrary', {
+                        n: state.result.skipped,
+                      })
                     : '',
                   state.result.failures.length
-                    ? `${state.result.failures.length} failed`
+                    ? t('providerSetImportDialogBatch30.failedCount', {
+                        n: state.result.failures.length,
+                      })
                     : '',
-                  state.result.cancelled ? 'stopped early' : '',
+                  state.result.cancelled
+                    ? t('providerSetImportDialogBatch30.stoppedEarly')
+                    : '',
                 ]
                   .filter(Boolean)
                   .join(', ') + '.'
-              : `${state.downloadable} of ${plural(state.rows.length, 'track')} can be downloaded (${formatDuration(totalSec)}).` +
+              : t('providerSetImportDialogBatch30.canBeDownloaded', {
+                  count: state.rows.length,
+                  downloadable: state.downloadable,
+                  n: formatCount(state.rows.length),
+                  duration: formatDuration(totalSec),
+                }) +
                 (unavailable
-                  ? ` ${unavailable} ${unavailable === 1 ? 'is' : 'are'} not offered for download.`
+                  ? t('providerSetImportDialogBatch30.notOfferedSuffix', {
+                      count: unavailable,
+                    })
                   : '')}
           </p>
           <TrackRows rows={state.rows} />
@@ -356,7 +395,10 @@ export function ProviderSetImportDialog({
               }
               onClick={state.start}
             >
-              Download {plural(state.downloadable, 'track')}
+              {t('providerSetImportDialogBatch30.downloadTracks', {
+                count: state.downloadable,
+                n: formatCount(state.downloadable),
+              })}
             </Button>
           </>
         ) : null}
@@ -368,7 +410,10 @@ export function ProviderSetImportDialog({
         ) : null}
         {state.phase === 'done' && state.failedCount > 0 ? (
           <Button onClick={state.retryFailed}>
-            Retry {plural(state.failedCount, 'track')}
+            {t('providerSetImportDialogBatch30.retryTracks', {
+              count: state.failedCount,
+              n: formatCount(state.failedCount),
+            })}
           </Button>
         ) : null}
       </Dialog.Actions>

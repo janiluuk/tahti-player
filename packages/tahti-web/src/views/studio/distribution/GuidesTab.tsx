@@ -32,7 +32,7 @@ export function GuidesTab() {
           title="MusicBrainz"
           steps={MUSICBRAINZ_GUIDE_STEPS}
           href={MUSICBRAINZ_SUBMIT_URL}
-          linkLabel="Open MusicBrainz release editor"
+          linkLabel={t('guidesTabBatch30.openMusicBrainzEditor')}
         />
       )}
       {selectedGuide === 'discogs' && (
@@ -40,16 +40,16 @@ export function GuidesTab() {
           title="Discogs"
           steps={DISCOGS_GUIDE_STEPS}
           href={DISCOGS_SUBMIT_URL}
-          linkLabel="Search Discogs"
+          linkLabel={t('guidesTabBatch30.searchDiscogs')}
         />
       )}
       {selectedGuide === 'upc' && (
         <GuideDetail
           title="UPC / EAN"
           steps={[
-            'Use the barcode assigned to this exact release, not an artist or catalog number.',
-            'Save it under Catalog & credits; it is included in the export JSON and distribution checklist.',
-            'If the release has no UPC/EAN, add ISRC values to every track before delivery.',
+            t('guidesTabBatch30.upcStepBarcode'),
+            t('guidesTabBatch30.upcStepSave'),
+            t('guidesTabBatch30.upcStepIsrc'),
           ]}
         />
       )}
@@ -57,9 +57,9 @@ export function GuidesTab() {
         <GuideDetail
           title={t('distributionGuides.automation')}
           steps={[
-            'Export JSON creates a portable metadata package for MusicBrainz, Discogs, and future delivery tools.',
-            'Copy prefill prepares the relevant form with the release title, barcode, credits, and tracklist.',
-            'Delivery & royalties can submit eligible releases to Revelator and show status and royalty reports here.',
+            t('guidesTabBatch30.automationStepExport'),
+            t('guidesTabBatch30.automationStepPrefill'),
+            t('guidesTabBatch30.automationStepDelivery'),
           ]}
         />
       )}

@@ -59,7 +59,6 @@ import { ArtistStoryFeed } from '../../components/ArtistStoryFeed';
 import { ChannelDesigner } from '../../components/ChannelDesigner';
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
 import { type EntitySocialStat } from '../../components/EntitySocialHeader';
-import { FollowListDialog } from '../../components/FollowListDialog';
 import { ImageLightbox } from '../../components/ImageLightbox';
 import {
   PageEmpty,
@@ -88,12 +87,12 @@ import { countryName } from '../../lib/countries';
 import { entityStatLabel, type EntityStatKey } from '../../lib/entityStatLabel';
 import { isPinned } from '../../lib/pinnedTracks';
 import { useArtistFollow } from '../../lib/useArtistFollow';
-import { useFollowList } from '../../lib/useFollowList';
 import { useAuthStore } from '../../stores/authStore';
 import {
   playableFromQueueItem,
   usePlayerStore,
 } from '../../stores/playerStore';
+import { ArtistFollowListDialog } from './ArtistFollowListDialog';
 import { useArtistProfileLoad } from './useArtistProfileLoad';
 
 type Tab = 'stage' | 'gallery' | 'design';
@@ -245,7 +244,6 @@ export function ArtistProfilePage({ username }: { username: string }) {
   const [followList, setFollowList] = useState<FollowListDirection | null>(
     null,
   );
-  const followListState = useFollowList(username, followList);
 
   if (loading) {
     return <PageLoading label={t('loading.loadingArtist')} />;
@@ -558,7 +556,9 @@ export function ArtistProfilePage({ username }: { username: string }) {
 
       {mentionsError && taggedIn.length === 0 ? (
         <p className="text-foreground-secondary text-xs" role="status">
-          Could not load mentions: {mentionsError}
+          {t('artistProfilePageBatch30.couldNotLoadMentions', {
+            error: mentionsError,
+          })}
         </p>
       ) : null}
 
@@ -611,7 +611,9 @@ export function ArtistProfilePage({ username }: { username: string }) {
         ) : null}
         {galleryError && galleryImages.length === 0 ? (
           <p className="text-foreground-secondary text-xs" role="status">
-            Could not load the gallery: {galleryError}
+            {t('artistProfilePageBatch30.couldNotLoadGallery', {
+              error: galleryError,
+            })}
           </p>
         ) : null}
         {isOwner &&
@@ -673,16 +675,16 @@ export function ArtistProfilePage({ username }: { username: string }) {
         <div className="flex flex-col gap-3">
           {channel?.slug ? (
             <p className="text-foreground-secondary text-sm">
-              Full layout editing (layers, hide/add, drag) lives on the{' '}
+              {t('artistProfilePageBatch30.fullLayoutEditingLivesOn')}{' '}
               <Link
                 to="/channel/$slug"
                 params={{ slug: channel.slug }}
                 search={{ edit: true }}
                 className="underline-offset-2 hover:underline"
               >
-                channel page
+                {t('artistProfilePageBatch30.channelPage')}
               </Link>
-              .
+              {t('artistProfilePageBatch30.fullLayoutEditingEnd')}
             </p>
           ) : null}
           <ChannelDesigner
@@ -721,7 +723,9 @@ export function ArtistProfilePage({ username }: { username: string }) {
         <ImageLightbox
           images={[{ imageUrl: artist.avatarUrl }]}
           index={0}
-          label={`${artist.displayName} profile picture`}
+          label={t('artistProfilePageBatch30.profilePicture', {
+            name: artist.displayName,
+          })}
           onClose={() => setAvatarOpen(false)}
         />
       ) : null}
@@ -750,7 +754,9 @@ export function ArtistProfilePage({ username }: { username: string }) {
       >
         {channel ? (
           <>
-            <Dialog.Title>Manage stream</Dialog.Title>
+            <Dialog.Title>
+              {t('artistProfilePageBatch30.manageStream')}
+            </Dialog.Title>
             <StreamManagerPanel
               slug={channel.slug}
               channelState={channel.state}
@@ -761,19 +767,10 @@ export function ArtistProfilePage({ username }: { username: string }) {
         ) : null}
       </Dialog.Root>
 
-      <FollowListDialog
-        isOpen={followList !== null}
-        title={followList === 'following' ? 'Following' : 'Followers'}
-        emptyMessage={
-          followList === 'following'
-            ? `${artist.displayName} doesn't follow anyone yet`
-            : `No one follows ${artist.displayName} yet`
-        }
-        users={followListState.users}
-        loading={followListState.loading}
-        error={followListState.error}
-        hasMore={followListState.hasMore}
-        onLoadMore={followListState.loadMore}
+      <ArtistFollowListDialog
+        username={username}
+        artistName={artist.displayName}
+        direction={followList}
         onClose={() => setFollowList(null)}
       />
 

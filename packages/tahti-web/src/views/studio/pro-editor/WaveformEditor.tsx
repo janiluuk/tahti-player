@@ -64,13 +64,12 @@ const FALLBACK_RATE = 48000;
 /** Shortest selection that counts as a cut or fade (about one sample). */
 const MIN_REGION_SEC = 0.0001;
 
-const STATUS_NOTE: Partial<Record<string, string>> = {
-  decoding: 'Loading the sample-accurate waveform…',
-  fine: 'Long file: showing 10 ms peaks from the server (zoom stops at that resolution).',
-  'overview-only':
-    'Showing overview peaks only: the file is too long (or could not be decoded) for a sample-level view.',
-  failed: 'Could not decode the audio for a detailed waveform.',
-};
+const STATUS_NOTE_KEY = {
+  decoding: 'waveformEditorBatch30.statusDecoding',
+  fine: 'waveformEditorBatch30.statusFine',
+  'overview-only': 'waveformEditorBatch30.statusOverviewOnly',
+  failed: 'waveformEditorBatch30.statusFailed',
+} as const;
 
 /** The waveform, its toolbar, the overview strip and the audio element.
  * Playback moves the playhead through refs every animation frame, so it
@@ -446,7 +445,11 @@ export function WaveformEditor({
   };
 
   const isZoomed = view.start > 0 || view.end < duration;
-  const note = STATUS_NOTE[status];
+  const noteKey =
+    status in STATUS_NOTE_KEY
+      ? STATUS_NOTE_KEY[status as keyof typeof STATUS_NOTE_KEY]
+      : undefined;
+  const note = noteKey ? t(noteKey) : undefined;
 
   return (
     <>
@@ -520,18 +523,30 @@ export function WaveformEditor({
               <span ref={clockRef}>{formatClock(pausedAt, MS)}</span> /{' '}
               {formatClock(duration, MS)}
             </span>
-            <span>Kept {formatClock(kept, MS)}</span>
-            <span>{editList.cuts.length} cut(s)</span>
             <span>
-              View {formatClock(view.end - view.start, MS)}
+              {t('waveformEditorBatch30.kept', {
+                time: formatClock(kept, MS),
+              })}
+            </span>
+            <span>
+              {t('waveformEditorBatch30.cuts', {
+                count: editList.cuts.length,
+              })}
+            </span>
+            <span>
+              {t('waveformEditorBatch30.view', {
+                time: formatClock(view.end - view.start, MS),
+              })}
               {data ? ` · ${data.sampleRate / 1000} kHz` : ''}
               {data?.exact ? ` · ${data.channels.length} ch` : ''}
             </span>
             {selection && (
               <span>
-                Selection {formatClock(selection.start, MS)}–
-                {formatClock(selection.end, MS)} (
-                {formatClock(selection.end - selection.start, MS)})
+                {t('waveformEditorBatch30.selectionRange', {
+                  start: formatClock(selection.start, MS),
+                  end: formatClock(selection.end, MS),
+                  length: formatClock(selection.end - selection.start, MS),
+                })}
               </span>
             )}
           </div>
@@ -541,8 +556,11 @@ export function WaveformEditor({
             data-testid="selection-announcement"
           >
             {selection
-              ? `Selection ${formatClock(selection.start, MS)} to ${formatClock(selection.end, MS)}`
-              : 'No selection'}
+              ? t('waveformEditorBatch30.selectionAnnouncement', {
+                  start: formatClock(selection.start, MS),
+                  end: formatClock(selection.end, MS),
+                })
+              : t('waveformEditorBatch30.noSelection')}
           </p>
           {effectsBlocked ? (
             <Alert
@@ -554,8 +572,8 @@ export function WaveformEditor({
             </Alert>
           ) : null}
           <p className="text-foreground-secondary mt-1 text-xs">
-            {note ? `${note} ` : ''}Ctrl/⌘ + scroll or pinch to zoom, Shift +
-            scroll to pan. Focus the waveform for keyboard shortcuts.
+            {note ? `${note} ` : ''}
+            {t('waveformEditorBatch30.zoomHelp')}
           </p>
 
           <RegionList
@@ -567,8 +585,7 @@ export function WaveformEditor({
             onRemoveCut={(index) =>
               ask({
                 title: t('waveformEditorMore.removeThisCut'),
-                description:
-                  'The audio in it will be kept on render. You can undo this.',
+                description: t('waveformEditorBatch30.removeCutDescription'),
                 confirmLabel: t('waveformEditorMore.removeCut'),
                 run: () =>
                   onChange({

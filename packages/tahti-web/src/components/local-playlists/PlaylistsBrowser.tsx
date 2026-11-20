@@ -64,7 +64,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
       toast.error(
         failure instanceof Error
           ? failure.message
-          : 'Could not read that file.',
+          : t('playlistsBrowserBatch30.couldNotReadFile'),
       );
     } finally {
       setChoosing(false);
@@ -79,10 +79,10 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
       setError(
         failure instanceof Error
           ? failure.message
-          : 'Could not load playlists.',
+          : t('playlistsBrowserBatch30.couldNotLoad'),
       );
     }
-  }, [library]);
+  }, [library, t]);
 
   useEffect(() => {
     void load();
@@ -122,7 +122,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
           ) : (
             <UploadIcon size={14} aria-hidden />
           )}
-          Import…
+          {t('playlistsBrowserBatch30.import')}
         </Button>
         <Button
           className="gap-1.5"
@@ -207,7 +207,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                         void run(
                           playlist.id,
                           () => playPlaylist(library, playlist.id),
-                          'Could not play playlist.',
+                          t('playlistsBrowserBatch30.couldNotPlay'),
                         )
                       }
                     >
@@ -229,7 +229,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                             playPlaylist(library, playlist.id, {
                               shuffle: true,
                             }),
-                          'Could not play playlist.',
+                          t('playlistsBrowserBatch30.couldNotPlay'),
                         )
                       }
                     >
@@ -250,18 +250,25 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                             const copy = await library.playlists.duplicate(
                               playlist.id,
                             );
-                            toastWithUndo(`Created “${copy.name}”.`, {
-                              undo: async () => {
-                                await library.playlists.delete(copy.id);
-                                return { ok: true as const };
+                            toastWithUndo(
+                              t('playlistsBrowserBatch30.createdNamed', {
+                                name: copy.name,
+                              }),
+                              {
+                                undo: async () => {
+                                  await library.playlists.delete(copy.id);
+                                  return { ok: true as const };
+                                },
+                                undoneMessage: t('toasts.removedNamedQuotes', {
+                                  name: copy.name,
+                                }),
+                                onUndone: () => {
+                                  void load();
+                                },
                               },
-                              undoneMessage: `Removed “${copy.name}”.`,
-                              onUndone: () => {
-                                void load();
-                              },
-                            });
+                            );
                           },
-                          'Could not duplicate playlist.',
+                          t('playlistsBrowserBatch30.couldNotDuplicate'),
                         )
                       }
                     >
@@ -328,16 +335,21 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
         onClose={() => setCreating(false)}
         onSubmit={async (name) => {
           const created = await library.playlists.create(name);
-          toastWithUndo(`Created “${created.name}”.`, {
-            undo: async () => {
-              await library.playlists.delete(created.id);
-              return { ok: true as const };
+          toastWithUndo(
+            t('playlistsBrowserBatch30.createdNamed', { name: created.name }),
+            {
+              undo: async () => {
+                await library.playlists.delete(created.id);
+                return { ok: true as const };
+              },
+              undoneMessage: t('toasts.removedNamedQuotes', {
+                name: created.name,
+              }),
+              onUndone: () => {
+                void load();
+              },
             },
-            undoneMessage: `Removed “${created.name}”.`,
-            onUndone: () => {
-              void load();
-            },
-          });
+          );
           await load();
         }}
       />
@@ -360,7 +372,10 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
         destructive
         isOpen={deleting !== null}
         title={t('localPlaylists.deleteThisPlaylist')}
-        description={`“${deleting?.name ?? ''}” and its ${deleting?.trackCount ?? 0} entries will be deleted. The tracks stay in your library.`}
+        description={t('playlistsBrowserBatch30.deleteDescription', {
+          name: deleting?.name ?? '',
+          count: deleting?.trackCount ?? 0,
+        })}
         confirmLabel={t('localPlaylists.delete')}
         onCancel={() => setDeleting(null)}
         onConfirm={() => {
@@ -377,7 +392,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                   }),
                 );
               },
-              'Could not delete playlist.',
+              t('playlistsBrowserBatch30.couldNotDelete'),
             );
           }
         }}

@@ -195,14 +195,19 @@ export function OnboardingView() {
       if (!known.user?.channel) {
         const provisioned = await provisionChannel();
         if (!provisioned.ok) {
-          toast.error(provisioned.error || 'Could not create your channel.');
+          toast.error(
+            provisioned.error ||
+              t('onboardingViewBatch30.couldNotCreateChannel'),
+          );
           return;
         }
       }
       if (slugChanged && slugStatus === 'available') {
         const renamed = await updateChannelSlug(slug.trim());
         if (!renamed.ok) {
-          toast.error(renamed.error || 'Could not update your domain.');
+          toast.error(
+            renamed.error || t('onboardingViewBatch30.couldNotUpdateDomain'),
+          );
         }
       }
       const profileResult = await patchMeProfile({
@@ -218,7 +223,9 @@ export function OnboardingView() {
           : {}),
       });
       if (!profileResult.ok) {
-        toast.error(profileResult.error || 'Could not save your profile.');
+        toast.error(
+          profileResult.error || t('onboardingViewBatch30.couldNotSaveProfile'),
+        );
       }
       await refresh();
       markOnboardingSeen(user.id);
@@ -228,7 +235,7 @@ export function OnboardingView() {
       toast.error(
         err instanceof Error && err.message
           ? err.message
-          : 'Something went wrong finishing setup. Please try again.',
+          : t('onboardingViewBatch30.finishSetupFailed'),
       );
     } finally {
       setSaving(false);
@@ -306,8 +313,7 @@ export function OnboardingView() {
                       />
                       {artistKind === 'COLLECTIVE' && (
                         <p className="text-foreground-secondary text-xs">
-                          You can invite full band members later from Studio →
-                          Artist → Members.
+                          {t('onboardingViewBatch30.inviteBandMembersLater')}
                         </p>
                       )}
                     </div>
@@ -370,7 +376,7 @@ export function OnboardingView() {
                               .replace(/[^a-z0-9-]/g, ''),
                           )
                         }
-                        description="lowercase letters, numbers, and -"
+                        description={t('onboardingViewBatch30.slugHint')}
                       />
                       {slugChanged && (
                         <p
@@ -383,21 +389,25 @@ export function OnboardingView() {
                                 : 'text-foreground-secondary'
                           }`}
                         >
-                          {slugStatus === 'checking' && 'Checking…'}
-                          {slugStatus === 'available' && 'Available'}
-                          {slugStatus === 'taken' && 'Already taken'}
-                          {slugStatus === 'invalid' && 'At least 3 characters'}
+                          {slugStatus === 'checking' &&
+                            t('onboardingViewBatch30.slugChecking')}
+                          {slugStatus === 'available' &&
+                            t('onboardingViewBatch30.slugAvailable')}
+                          {slugStatus === 'taken' &&
+                            t('onboardingViewBatch30.slugTaken')}
+                          {slugStatus === 'invalid' &&
+                            t('onboardingViewBatch30.slugTooShort')}
                         </p>
                       )}
                       <div className="border-border bg-background-secondary/40 mt-1 flex flex-col gap-1 rounded-lg border p-3 text-xs">
                         <span>
-                          Your channel:{' '}
+                          {t('onboardingViewBatch30.yourChannel')}{' '}
                           <span className="font-mono">
                             {slug.trim() || user.username}.tahti.live
                           </span>
                         </span>
                         <span>
-                          Your email will be:{' '}
+                          {t('onboardingViewBatch30.yourEmailWillBe')}{' '}
                           <span className="font-mono">{emailPreview}</span>
                         </span>
                       </div>
@@ -412,8 +422,9 @@ export function OnboardingView() {
                 content: (
                   <div className="flex flex-col gap-2">
                     <p className="text-foreground-secondary text-sm">
-                      Pick up to {MAX_GENRES} genres you make or play — helps
-                      listeners find you.
+                      {t('onboardingViewBatch30.pickGenres', {
+                        max: MAX_GENRES,
+                      })}
                     </p>
                     <GenrePicker value={genres} onChange={setGenres} />
                   </div>
@@ -447,14 +458,14 @@ export function OnboardingView() {
                     {(
                       [
                         [
-                          'Show followers',
-                          'Follower count is visible on your public profile.',
+                          t('onboardingViewBatch30.showFollowers'),
+                          t('onboardingViewBatch30.showFollowersHint'),
                           showFollowers,
                           setShowFollowers,
                         ],
                         [
-                          'Show following',
-                          'Who you follow is visible on your public profile.',
+                          t('onboardingViewBatch30.showFollowing'),
+                          t('onboardingViewBatch30.showFollowingHint'),
                           showFollowing,
                           setShowFollowing,
                         ],

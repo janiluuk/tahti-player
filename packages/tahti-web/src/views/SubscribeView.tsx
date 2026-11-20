@@ -23,7 +23,7 @@ import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
 function formatEur(cents: number) {
-  return `€${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}/mo`;
+  return `€${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}`;
 }
 
 function activeSubscriptionTo(
@@ -152,8 +152,9 @@ export function SubscribeView({
 
       {checkoutReturn === 'subscribed' && (
         <Alert tone="success" title={t('subscribeView.thanksForSubscribing')}>
-          Your support goes straight to {data.artist.displayName}. It can take a
-          moment for the subscription to show up here.
+          {t('subscribeViewBatch30.supportGoesStraightTo', {
+            name: data.artist.displayName,
+          })}
         </Alert>
       )}
       {checkoutReturn === 'canceled' && (
@@ -167,7 +168,9 @@ export function SubscribeView({
       ) : (
         <>
           <h2 className="font-display text-xl font-bold tracking-tight">
-            Subscribe to {data.artist.displayName}
+            {t('subscribeViewLabels.subscribeToDisplayname', {
+              displayName: data.artist.displayName,
+            })}
           </h2>
 
           {!data.paymentsReady && !tiers.data?.mock && (
@@ -215,7 +218,9 @@ export function SubscribeView({
                       {tier.name}
                     </div>
                     <div className="text-primary-strong text-sm font-semibold">
-                      {formatEur(tier.amountCents)}
+                      {t('subscribeViewBatch30.pricePerMonth', {
+                        price: formatEur(tier.amountCents),
+                      })}
                     </div>
                   </div>
                   {tier.description && (

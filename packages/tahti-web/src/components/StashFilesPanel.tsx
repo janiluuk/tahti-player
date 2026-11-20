@@ -2,7 +2,7 @@ import { PlayIcon, Share2Icon, Trash2Icon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, FilePicker, Input, Select, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -39,9 +39,9 @@ const NO_FILES: StashFile[] = [];
 const EXPIRY_OPTIONS = [1, 3, 7, 30, 0] as const;
 const MILLISECONDS_PER_DAY = 86_400_000;
 
-const formatExpiry = (expiresAt: string | null) => {
+const formatExpiry = (expiresAt: string | null, t: TFunction<'web'>) => {
   if (!expiresAt) {
-    return 'Permanent';
+    return t('stashFilesPanelBatch30.permanent');
   }
   const remainingDays = Math.max(
     0,
@@ -50,9 +50,9 @@ const formatExpiry = (expiresAt: string | null) => {
     ),
   );
   if (remainingDays === 0) {
-    return 'Expired';
+    return t('stashFilesPanelBatch30.expired');
   }
-  return `${remainingDays} day${remainingDays === 1 ? '' : 's'} left`;
+  return t('stashFilesPanelBatch30.daysLeft', { count: remainingDays });
 };
 
 export const StashFilesPanel = ({
@@ -121,7 +121,7 @@ export const StashFilesPanel = ({
     setSoundItems((current) =>
       current.filter((candidate) => candidate.id !== item.id),
     );
-    setMessage(`${item.title} moved to your private stash.`);
+    setMessage(t('stashFilesPanelBatch30.movedToStash', { name: item.title }));
   };
 
   const moveCollectionToStash = async (collection: StudioCollection) => {
@@ -138,7 +138,9 @@ export const StashFilesPanel = ({
     setCollections((current) =>
       current.filter((candidate) => candidate.slug !== collection.slug),
     );
-    setMessage(`${collection.name} moved to your private stash.`);
+    setMessage(
+      t('stashFilesPanelBatch30.movedToStash', { name: collection.name }),
+    );
   };
 
   const createShare = async (file: StashFile) => {
@@ -159,13 +161,16 @@ export const StashFilesPanel = ({
     setSharingFileId(null);
     setGranteeUsername('');
     const okMessage = username
-      ? `Shared ${file.filename} with @${username}.`
-      : `Created access for ${file.filename}.`;
+      ? t('stashFilesPanelBatch30.sharedWith', {
+          filename: file.filename,
+          username,
+        })
+      : t('stashFilesPanelBatch30.createdAccess', { filename: file.filename });
     setMessage(okMessage);
     const created = result.data;
     toastWithUndo(okMessage, {
       undo: () => revokeStashShare(created.id),
-      undoneMessage: 'Share access removed.',
+      undoneMessage: t('stashFilesPanelBatch30.shareAccessRemoved'),
       onUndone: () => {
         reload();
       },
@@ -183,7 +188,7 @@ export const StashFilesPanel = ({
       toast.error(result.error);
       return;
     }
-    setMessage('Share access revoked.');
+    setMessage(t('toasts.shareAccessRevoked'));
     toast.success(i18n.t('web:toasts.shareAccessRevoked'));
     reload();
   };
@@ -198,10 +203,13 @@ export const StashFilesPanel = ({
         toast.error(result.error);
         return;
       }
-      setMessage(`Uploaded ${file.name}`);
-      toastWithUndo(`Uploaded ${file.name}`, {
+      const uploaded = t('stashFilesPanelBatch30.uploaded', {
+        filename: file.name,
+      });
+      setMessage(uploaded);
+      toastWithUndo(uploaded, {
         undo: () => deleteStashFile(result.id),
-        undoneMessage: `Removed ${file.name}.`,
+        undoneMessage: t('toasts.removedNamed', { title: file.name }),
         onUndone: () => {
           reload();
         },
@@ -331,11 +339,13 @@ export const StashFilesPanel = ({
                   <div className="min-w-0 flex-1">
                     <div className="font-medium">{file.filename}</div>
                     <div className="text-foreground-secondary text-xs">
-                      {file.contentType ?? 'file'}
+                      {file.contentType ?? t('stashFilesPanelBatch30.file')}
                       {file.sizeBytes != null
                         ? ` · ${Math.round(Number(file.sizeBytes) / 1024)} KB`
                         : ''}
-                      {` · ${file.shareCount} share${file.shareCount === 1 ? '' : 's'}`}
+                      {` · ${t('stashFilesPanelBatch30.shareCount', {
+                        count: file.shareCount,
+                      })}`}
                     </div>
                   </div>
                   <div className="flex gap-1">
@@ -371,7 +381,9 @@ export const StashFilesPanel = ({
                         onClick={() => {
                           void fetchStashDownload(file.id).then((result) => {
                             if (!result.data?.url) {
-                              setMessage('Download is unavailable.');
+                              setMessage(
+                                t('stashFilesPanelBatch30.downloadUnavailable'),
+                              );
                               return;
                             }
                             play({
@@ -425,7 +437,9 @@ export const StashFilesPanel = ({
                         onChange={(event) =>
                           setGranteeUsername(event.target.value)
                         }
-                        placeholder="@username, or leave empty for link access"
+                        placeholder={t(
+                          'stashFilesPanelBatch30.shareWithPlaceholder',
+                        )}
                       />
                     </div>
                     <Select
@@ -450,8 +464,8 @@ export const StashFilesPanel = ({
                         id: String(days),
                         label:
                           days === 0
-                            ? 'Never'
-                            : `${days} day${days === 1 ? '' : 's'}`,
+                            ? t('stashFilesPanelBatch30.never')
+                            : t('stashFilesPanelBatch30.days', { count: days }),
                       }))}
                     />
                     <div className="flex justify-end sm:col-span-2">
@@ -474,13 +488,13 @@ export const StashFilesPanel = ({
                           <div className="font-medium">
                             {share.granteeUsername
                               ? `@${share.granteeUsername}`
-                              : 'Link access'}
+                              : t('stashFilesPanelBatch30.linkAccess')}
                           </div>
                           <div className="text-foreground-secondary">
                             {share.permission === 'DOWNLOAD'
                               ? t('actions.download')
-                              : 'Read-only'}{' '}
-                            · {formatExpiry(share.expiresAt)}
+                              : t('stashFilesPanelMore.readOnly')}{' '}
+                            · {formatExpiry(share.expiresAt, t)}
                           </div>
                         </div>
                         <Tooltip
@@ -490,7 +504,16 @@ export const StashFilesPanel = ({
                           <Button
                             size="icon-sm"
                             variant="text"
-                            aria-label={`Revoke access for ${share.granteeUsername ? `@${share.granteeUsername}` : 'link'}`}
+                            aria-label={
+                              share.granteeUsername
+                                ? t(
+                                    'stashFilesPanelBatch30.revokeAccessForUser',
+                                    {
+                                      username: share.granteeUsername,
+                                    },
+                                  )
+                                : t('stashFilesPanelBatch30.revokeLinkAccess')
+                            }
                             disabled={busy}
                             onClick={() => void revokeShare(file.id, share.id)}
                           >
@@ -533,7 +556,9 @@ export const StashFilesPanel = ({
             mutateFiles((current) =>
               (current ?? []).filter((candidate) => candidate.id !== file.id),
             );
-            setMessage(`Deleted ${file.filename}.`);
+            setMessage(
+              t('stashFilesPanelBatch30.deleted', { filename: file.filename }),
+            );
           });
         }}
       />

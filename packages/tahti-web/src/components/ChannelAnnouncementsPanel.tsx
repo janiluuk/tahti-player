@@ -193,8 +193,7 @@ export function ChannelAnnouncementsPanel() {
             wrap
           />
           <p className="text-foreground-secondary mt-1 text-sm">
-            Station IDs, voice links, and announcements for your 24/7 rotation.
-            Turn on “Play clips between programs” in the settings above.
+            {t('channelAnnouncementsPanelBatch30.intro')}
           </p>
         </div>
         <Button
@@ -265,26 +264,35 @@ export function ChannelAnnouncementsPanel() {
                 <div className="font-semibold">{clip.title}</div>
                 <p className="text-foreground-secondary text-xs">
                   {clip.durationSec == null
-                    ? 'Duration pending'
-                    : `${clip.durationSec} s`}{' '}
+                    ? t('channelAnnouncementsPanelBatch30.durationPending')
+                    : t('channelAnnouncementsPanelBatch30.durationSeconds', {
+                        seconds: clip.durationSec,
+                      })}{' '}
                   ·{' '}
                   {clip.isEnabled
                     ? t('channelAnnouncementsPanelStates.enabledInRotation')
                     : t('channelAnnouncementsPanelStates.inactive')}
                   {clip.draftStatus
-                    ? ` · Preview ${clip.draftStatus.toLowerCase()}`
+                    ? ` · ${t(
+                        'channelAnnouncementsPanelBatch30.previewStatus',
+                        {
+                          status: clip.draftStatus.toLowerCase(),
+                        },
+                      )}`
                     : ''}
                 </p>
                 <p className="text-foreground-secondary text-xs">
                   {clip.placement === 'BEFORE'
-                    ? 'Before selected program'
+                    ? t('channelAnnouncementsPanelBatch30.beforeSelected')
                     : clip.placement === 'AFTER'
-                      ? 'After selected program'
+                      ? t('channelAnnouncementsPanelBatch30.afterSelected')
                       : clip.scheduleMode === 'AFTER_EVERY'
-                        ? 'After every program'
+                        ? t('channelAnnouncementsPanelBatch30.afterEvery')
                         : clip.scheduleMode === 'EVERY_NTH'
-                          ? `Every ${clip.everyNth} programs`
-                          : 'Occasionally between programs'}
+                          ? t('channelAnnouncementsPanelBatch30.everyNth', {
+                              count: clip.everyNth ?? 0,
+                            })
+                          : t('channelAnnouncementsPanelBatch30.occasionally')}
                 </p>
               </div>
               <Toggle

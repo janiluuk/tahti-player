@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -11,18 +11,25 @@ import {
 
 const DEFAULT_CLIP_SEC = 15;
 
-function check(start: number, end: number, durationSec: number | null) {
+function check(
+  t: TFunction<'web'>,
+  start: number,
+  end: number,
+  durationSec: number | null,
+) {
   if (!Number.isFinite(start) || !Number.isFinite(end) || start < 0) {
-    return 'Use seconds from the start of the track.';
+    return t('stationIdClipFormBatch30.useSeconds');
   }
   if (end <= start) {
-    return 'End must be after start.';
+    return t('stationIdClipFormBatch30.endAfterStart');
   }
   if (end - start > SOUND_CLIP_MAX_DURATION_SEC) {
-    return `A clip can be ${SOUND_CLIP_MAX_DURATION_SEC} seconds or less.`;
+    return t('stationIdClipFormBatch30.maxLength', {
+      count: SOUND_CLIP_MAX_DURATION_SEC,
+    });
   }
   if (durationSec != null && end > durationSec + 0.05) {
-    return 'End is past the end of the track.';
+    return t('stationIdClipFormBatch30.endPastTrack');
   }
   return null;
 }
@@ -47,7 +54,7 @@ export function StationIdClipForm({
   );
   const [busy, setBusy] = useState(false);
 
-  const error = check(Number(start), Number(end), durationSec);
+  const error = check(t, Number(start), Number(end), durationSec);
 
   const submit = async () => {
     setBusy(true);
@@ -62,7 +69,7 @@ export function StationIdClipForm({
       return;
     }
     toast.success(
-      `“${result.data.title}” added to your announcements. Switch it on there once it's ready.`,
+      t('stationIdClipFormBatch30.added', { title: result.data.title }),
     );
     setTitle('');
   };
@@ -81,8 +88,9 @@ export function StationIdClipForm({
       <div>
         <p className="font-medium">{t('stationIdClip.makeAStationIdClip')}</p>
         <p className="text-foreground-secondary text-sm">
-          Up to {SOUND_CLIP_MAX_DURATION_SEC} seconds of this track, added to
-          your channel&apos;s announcements.
+          {t('stationIdClipFormBatch30.description', {
+            count: SOUND_CLIP_MAX_DURATION_SEC,
+          })}
         </p>
       </div>
       <Input

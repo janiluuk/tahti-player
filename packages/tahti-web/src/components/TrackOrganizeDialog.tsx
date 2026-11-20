@@ -2,7 +2,7 @@ import { StarIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Loader, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -12,8 +12,15 @@ import {
 } from '../lib/nativeLibrary';
 import { TRACK_COLOR_CSS } from '../lib/trackColors';
 
-const plural = (count: number, noun: string) =>
-  `${count.toLocaleString('en-US')} ${noun}${count === 1 ? '' : 's'}`;
+const COLOR_NAME: Record<(typeof TRACK_COLORS)[number], ParseKeys<'web'>> = {
+  red: 'trackOrganizeDialogBatch30.colorRed',
+  orange: 'trackOrganizeDialogBatch30.colorOrange',
+  yellow: 'trackOrganizeDialogBatch30.colorYellow',
+  green: 'trackOrganizeDialogBatch30.colorGreen',
+  blue: 'trackOrganizeDialogBatch30.colorBlue',
+  purple: 'trackOrganizeDialogBatch30.colorPurple',
+  gray: 'trackOrganizeDialogBatch30.colorGray',
+};
 
 type Props = {
   isOpen: boolean;
@@ -106,7 +113,7 @@ export function TrackOrganizeDialog({
                 toast.error(
                   failure instanceof Error
                     ? failure.message
-                    : 'Could not undo.',
+                    : t('trackOrganizeDialogBatch30.couldNotUndo'),
                 ),
               );
           },
@@ -129,8 +136,13 @@ export function TrackOrganizeDialog({
       return;
     }
     setTagInput('');
-    void run(`Tagged ${plural(ids.length, 'track')} “${trimmed}”.`, () =>
-      library.catalog.addTag(ids, trimmed),
+    void run(
+      t('trackOrganizeDialogBatch30.taggedTracks', {
+        count: ids.length,
+        n: ids.length.toLocaleString('en-US'),
+        tag: trimmed,
+      }),
+      () => library.catalog.addTag(ids, trimmed),
     );
   };
 
@@ -145,8 +157,10 @@ export function TrackOrganizeDialog({
     >
       <Dialog.Title>{t('trackOrganize.rateAndLabel')}</Dialog.Title>
       <Dialog.Description>
-        {plural(ids.length, 'track')}. Ratings, labels and tags stay in your
-        library; they never change the audio files.
+        {t('trackOrganizeDialogBatch30.description', {
+          count: ids.length,
+          n: ids.length.toLocaleString('en-US'),
+        })}
       </Dialog.Description>
       {!data ? (
         <p className="text-foreground-secondary flex items-center gap-2 text-sm">
@@ -157,13 +171,17 @@ export function TrackOrganizeDialog({
         <div className="flex flex-col gap-4 py-2">
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium">
-              Rating{currentRating === null ? ' (mixed)' : ''}
+              {currentRating === null
+                ? t('trackOrganizeDialogBatch30.ratingMixed')
+                : t('trackOrganizeDialogBatch30.rating')}
             </span>
             <div className="flex items-center gap-1">
               {[1, 2, 3, 4, 5].map((stars) => (
                 <Tooltip
                   key={stars}
-                  content={`${stars} ${stars === 1 ? 'star' : 'stars'}`}
+                  content={t('trackOrganizeDialogBatch30.stars', {
+                    count: stars,
+                  })}
                   side="top"
                 >
                   <Button
@@ -174,10 +192,16 @@ export function TrackOrganizeDialog({
                         : 'text'
                     }
                     disabled={busy}
-                    aria-label={`${stars} ${stars === 1 ? 'star' : 'stars'}`}
+                    aria-label={t('trackOrganizeDialogBatch30.stars', {
+                      count: stars,
+                    })}
                     onClick={() =>
                       void run(
-                        `Rated ${plural(ids.length, 'track')} ${stars} of 5.`,
+                        t('trackOrganizeDialogBatch30.ratedTracks', {
+                          count: ids.length,
+                          n: ids.length.toLocaleString('en-US'),
+                          stars,
+                        }),
                         () => library.catalog.setRating(ids, stars),
                       )
                     }
@@ -200,7 +224,10 @@ export function TrackOrganizeDialog({
                 disabled={busy || currentRating === 0}
                 onClick={() =>
                   void run(
-                    `Cleared the rating of ${plural(ids.length, 'track')}.`,
+                    t('trackOrganizeDialogBatch30.clearedRating', {
+                      count: ids.length,
+                      n: ids.length.toLocaleString('en-US'),
+                    }),
                     () => library.catalog.setRating(ids, 0),
                   )
                 }
@@ -211,7 +238,9 @@ export function TrackOrganizeDialog({
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium">
-              Color label{currentColor === null ? ' (mixed)' : ''}
+              {currentColor === null
+                ? t('trackOrganizeDialogBatch30.colorLabelMixed')
+                : t('trackOrganizeDialogBatch30.colorLabel')}
             </span>
             <div className="flex flex-wrap items-center gap-1">
               {TRACK_COLORS.map((color) => (
@@ -221,12 +250,16 @@ export function TrackOrganizeDialog({
                   variant={currentColor === color ? 'secondary' : 'text'}
                   disabled={busy}
                   aria-label={t('trackOrganizeDialogLabels.labelColor', {
-                    color,
+                    color: t(COLOR_NAME[color]),
                   })}
                   aria-pressed={currentColor === color}
                   onClick={() =>
                     void run(
-                      `Labeled ${plural(ids.length, 'track')} ${color}.`,
+                      t('trackOrganizeDialogBatch30.labeledTracks', {
+                        count: ids.length,
+                        n: ids.length.toLocaleString('en-US'),
+                        color: t(COLOR_NAME[color]),
+                      }),
                       () => library.catalog.setColor(ids, color),
                     )
                   }
@@ -236,7 +269,7 @@ export function TrackOrganizeDialog({
                     style={{ background: TRACK_COLOR_CSS[color] }}
                     aria-hidden
                   />
-                  {color}
+                  {t(COLOR_NAME[color])}
                 </Button>
               ))}
               <Button
@@ -245,7 +278,10 @@ export function TrackOrganizeDialog({
                 disabled={busy || currentColor === ''}
                 onClick={() =>
                   void run(
-                    `Removed the label from ${plural(ids.length, 'track')}.`,
+                    t('trackOrganizeDialogBatch30.removedLabel', {
+                      count: ids.length,
+                      n: ids.length.toLocaleString('en-US'),
+                    }),
                     () => library.catalog.setColor(ids, ''),
                   )
                 }
@@ -261,7 +297,9 @@ export function TrackOrganizeDialog({
             <div className="flex flex-wrap gap-1">
               {tagCounts.length === 0 ? (
                 <span className="text-foreground-secondary text-xs">
-                  No tags on {ids.length === 1 ? 'this track' : 'these tracks'}.
+                  {t('trackOrganizeDialogBatch30.noTags', {
+                    count: ids.length,
+                  })}
                 </span>
               ) : null}
               {tagCounts.map(([name, count]) => (
@@ -276,7 +314,11 @@ export function TrackOrganizeDialog({
                   })}
                   onClick={() =>
                     void run(
-                      `Removed “${name}” from ${plural(ids.length, 'track')}.`,
+                      t('trackOrganizeDialogBatch30.removedTag', {
+                        count: ids.length,
+                        n: ids.length.toLocaleString('en-US'),
+                        tag: name,
+                      }),
                       () => library.catalog.removeTag(ids, name),
                     )
                   }
@@ -304,7 +346,7 @@ export function TrackOrganizeDialog({
                 />
               </div>
               <Button disabled={busy || !tagInput.trim()} type="submit">
-                Add
+                {t('trackOrganizeDialogBatch30.add')}
               </Button>
             </form>
             {known.filter(

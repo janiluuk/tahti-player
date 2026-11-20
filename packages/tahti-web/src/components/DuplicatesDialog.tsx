@@ -25,17 +25,19 @@ type Props = {
 };
 
 function groupHeading(group: NativeDuplicateGroup) {
+  const t = webT();
+  const count = group.tracks.length;
   if (group.kind === 'exact') {
-    return `Identical files (${group.tracks.length})`;
+    return t('duplicatesDialogBatch30.identicalFiles', { count });
   }
   return group.confirmedDifferent
-    ? `Same name, different files (${group.tracks.length})`
-    : `Possibly the same track (${group.tracks.length})`;
+    ? t('duplicatesDialogBatch30.sameNameDifferentFiles', { count })
+    : t('duplicatesDialogBatch30.possiblySameTrack', { count });
 }
 
 function groupHint(group: NativeDuplicateGroup) {
   if (group.kind === 'exact') {
-    return 'Byte-for-byte copies. Keep one and remove the rest from the library if you like.';
+    return webT()('duplicatesDialogBatch30.byteForByteHint');
   }
   return group.confirmedDifferent
     ? webT()('duplicatesDialogStates.comparedAndDifferentTheseAre')
@@ -75,7 +77,7 @@ export function DuplicatesDialog({
       setError(
         failure instanceof Error
           ? failure.message
-          : 'Could not look for duplicates.',
+          : webT()('duplicatesDialogBatch30.couldNotLookForDuplicates'),
       );
     }
   }, [library]);
@@ -94,15 +96,22 @@ export function DuplicatesDialog({
       const result = await library.catalog.hashTracks([]);
       toast.success(
         result.cancelled
-          ? 'Comparison stopped.'
-          : `Compared ${result.hashed.toLocaleString('en-US')} files${
-              result.alreadyCurrent
-                ? ` (${result.alreadyCurrent.toLocaleString('en-US')} already up to date)`
-                : ''
-            }.`,
+          ? t('duplicatesDialogBatch30.comparisonStopped')
+          : result.alreadyCurrent
+            ? t('duplicatesDialogBatch30.comparedFilesUpToDate', {
+                count: result.hashed,
+                n: result.hashed.toLocaleString('en-US'),
+                current: result.alreadyCurrent.toLocaleString('en-US'),
+              })
+            : t('duplicatesDialogBatch30.comparedFiles', {
+                count: result.hashed,
+                n: result.hashed.toLocaleString('en-US'),
+              }),
         result.failed
           ? {
-              description: `${result.failed} files could not be read.`,
+              description: t('duplicatesDialogBatch30.filesCouldNotBeRead', {
+                count: result.failed,
+              }),
             }
           : undefined,
       );
@@ -129,10 +138,13 @@ export function DuplicatesDialog({
         others.map((track) => track.id),
       );
       toast.success(
-        `Kept “${keep.title}” and merged ${result.removed.toLocaleString('en-US')} ${result.removed === 1 ? 'copy' : 'copies'} into it.`,
+        t('duplicatesDialogBatch30.keptAndMerged', {
+          title: keep.title,
+          count: result.removed,
+          n: result.removed.toLocaleString('en-US'),
+        }),
         {
-          description:
-            'Ratings, tags, plays and playlist entries were carried over. No audio file was touched.',
+          description: t('duplicatesDialogBatch30.mergeCarriedOver'),
         },
       );
       onChanged();
@@ -141,7 +153,7 @@ export function DuplicatesDialog({
       toast.error(
         failure instanceof Error
           ? failure.message
-          : 'Could not merge the tracks.',
+          : t('duplicatesDialogBatch30.couldNotMerge'),
       );
     }
   };
@@ -163,7 +175,7 @@ export function DuplicatesDialog({
       toast.error(
         failure instanceof Error
           ? failure.message
-          : 'Could not remove the track.',
+          : t('duplicatesDialogBatch30.couldNotRemove'),
       );
     }
   };
@@ -193,8 +205,11 @@ export function DuplicatesDialog({
             <>
               <span className="text-foreground-secondary text-xs" role="status">
                 {hashing.total > 0
-                  ? `Comparing ${hashing.done.toLocaleString('en-US')} of ${hashing.total.toLocaleString('en-US')}…`
-                  : 'Starting…'}
+                  ? t('duplicatesDialogBatch30.comparingProgress', {
+                      done: hashing.done.toLocaleString('en-US'),
+                      total: hashing.total.toLocaleString('en-US'),
+                    })
+                  : t('duplicatesDialogBatch30.starting')}
               </span>
               <Button
                 size="sm"
@@ -293,7 +308,9 @@ export function DuplicatesDialog({
                                 toast.error(
                                   failure instanceof Error
                                     ? failure.message
-                                    : 'Could not open the folder.',
+                                    : t(
+                                        'duplicatesDialogBatch30.couldNotOpenFolder',
+                                      ),
                                 ),
                               )
                           }
@@ -336,7 +353,10 @@ export function DuplicatesDialog({
         isOpen={merging !== null}
         destructive
         title={t('duplicatesDialog.keepThisOneAndMerge')}
-        description={`“${merging?.keep.title ?? ''}” keeps the best rating, the label, all tags, the combined play count and the playlist spots of ${merging?.others.length ?? 0} other ${merging?.others.length === 1 ? 'copy' : 'copies'}, which are then removed from the library. No audio file on disk is touched.`}
+        description={t('duplicatesDialogBatch30.mergeDescription', {
+          title: merging?.keep.title ?? '',
+          count: merging?.others.length ?? 0,
+        })}
         confirmLabel={t('duplicatesDialog.merge')}
         onCancel={() => setMerging(null)}
         onConfirm={() => {
@@ -351,7 +371,9 @@ export function DuplicatesDialog({
         isOpen={pending !== null}
         destructive
         title={t('duplicatesDialog.removeThisTrackFromThe')}
-        description={`“${pending?.title ?? ''}” is only removed from your Tahti library. The audio file on disk is not touched.`}
+        description={t('duplicatesDialogBatch30.removeDescription', {
+          title: pending?.title ?? '',
+        })}
         confirmLabel={t('duplicatesDialog.remove')}
         onCancel={() => setPending(null)}
         onConfirm={() => {
