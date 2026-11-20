@@ -21,9 +21,11 @@ test('a new listener signs up, signs in and has no Studio or channel prompt', as
   const signInButton = page.getByRole('button', { name: 'Sign in' });
   await expect(signedIn.or(signInButton)).toBeVisible();
   if (await signInButton.isVisible()) {
-    await page.getByLabel('Email').fill(email);
-    await page.getByLabel('Password').fill(password);
     await signInButton.click();
+    const signIn = page.getByRole('dialog', { name: /Sign in/i });
+    await signIn.getByLabel('Email').fill(email);
+    await signIn.getByLabel('Password', { exact: true }).fill(password);
+    await signIn.getByRole('button', { name: 'Sign in' }).click();
   }
   await expect(signedIn).toBeVisible();
 
