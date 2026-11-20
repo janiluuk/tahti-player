@@ -49,6 +49,11 @@ function createDiscoverRouter(initialEntry: string) {
     path: '/u/$username',
     component: () => null,
   });
+  const eventRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/events/$eventId',
+    component: () => null,
+  });
 
   return createRouter({
     routeTree: rootRoute.addChildren([
@@ -57,6 +62,7 @@ function createDiscoverRouter(initialEntry: string) {
       myVenuesRoute,
       venueRoute,
       artistRoute,
+      eventRoute,
     ]),
     history: createMemoryHistory({ initialEntries: [initialEntry] }),
   });
@@ -145,6 +151,9 @@ describe('DiscoverView', () => {
     expect(
       container.querySelector('[data-testid="discover-tab-venues"]'),
     ).not.toBeNull();
+    expect(
+      container.querySelector('[data-testid="discover-tab-events"]'),
+    ).not.toBeNull();
   });
 
   it('hides the add-widget control on the venues tab and lists venues', async () => {
@@ -158,6 +167,19 @@ describe('DiscoverView', () => {
     ).toBeNull();
     expect(container.textContent).toContain('Kuudes Linja');
     expect(container.textContent).toContain('Register a venue');
+  });
+
+  it('lists upcoming events on the events tab without the widget controls', async () => {
+    const { container } = await renderDiscover('/discover?tab=events');
+
+    expect(
+      container.querySelector('[data-testid="discover-events"]'),
+    ).not.toBeNull();
+    expect(
+      container.querySelector('[data-testid="discover-add-widget"]'),
+    ).toBeNull();
+    expect(container.textContent).toContain('Aurora Drift b2b Northern Lights');
+    expect(container.textContent).toContain('Post event');
   });
 
   it('keeps the section tabs on one scrollable row instead of wrapping', async () => {

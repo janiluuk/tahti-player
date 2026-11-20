@@ -171,6 +171,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Discover/DirectoryArtistCardGrid` | `tahti-web/DirectoryArtistCardGrid.stories.tsx` |
 | `Tahti/Widgets/DiscoWidgetManagerPanel` | `tahti-web/DiscoWidgetManagerPanel.stories.tsx` |
 | `Tahti/Widgets/DiscoWidgetsSection` | `tahti-web/DiscoWidgetsSection.stories.tsx` |
+| `Tahti/Discover/DiscoverEventsPanel` | `tahti-web/DiscoverEventsPanel.stories.tsx` |
 | `Tahti/Discover/DiscoverGatewayBackground` | `tahti-web/DiscoverGatewayBackground.stories.tsx` |
 | `Tahti/Discover/DiscoverView` | `tahti-web/DiscoverView.stories.tsx` |
 | `Tahti/Governance/Discussions` | `tahti-web/DiscussionsView.stories.tsx` |
@@ -449,6 +450,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/HistoryRow` | `HistoryRow.stories.tsx` |
 | `Components/HorizontalScroll` | `HorizontalScroll.stories.tsx` |
 | `Navigation/HubCards` | `HubCards.stories.tsx` |
+| `Components/ImageCropDialog` | `ImageCropDialog.stories.tsx` |
 | `Components/ImageReveal` | `ImageReveal.stories.tsx` |
 | `Components/ImageThumbnailPicker` | `ImageThumbnailPicker.stories.tsx` |
 | `Components/InlineError` | `InlineError.stories.tsx` |

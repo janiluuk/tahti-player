@@ -14852,6 +14852,44 @@
     },
     "myVenuesViewBatch33": {
       "noMatch": "Mikään tapahtumapaikka ei vastaa hakua ”{{query}}”"
+    },
+    "discoverEvents": {
+      "tab": "Tapahtumat",
+      "post": "Lisää tapahtuma",
+      "signInToPost": "Kirjaudu sisään lisätäksesi tapahtuman.",
+      "loading": "Ladataan tapahtumia…",
+      "loadFailed": "Tapahtumia ei voitu ladata",
+      "emptyTitle": "Ei tulevia tapahtumia",
+      "emptyDescription": "Kalenterissa ei ole vielä mitään. Lisää ensimmäinen."
+    },
+    "eventForm": {
+      "postTitle": "Lisää tapahtuma",
+      "postSubtitle": "Keikat, klubi-illat, kuunteluhetket: kaikki, mihin ihmiset voivat tulla.",
+      "editTitle": "Muokkaa tapahtumaa",
+      "signInTitle": "Kirjaudu sisään lisätäksesi tapahtuman",
+      "signInDescription": "Kuka tahansa Tahti-tilin omistaja voi lisätä tapahtuman kalenteriin.",
+      "signIn": "Kirjaudu sisään",
+      "notYours": "Et voi muokata tätä tapahtumaa.",
+      "posted": "{{title}} lisätty.",
+      "saved": "{{title}} tallennettu.",
+      "bannerTitle": "Banneri (valinnainen)",
+      "bannerDescription": "Leveä kuva tapahtumasivun yläosassa. Rajaat sen sopivaksi valinnan jälkeen.",
+      "bannerChoose": "Valitse kuva",
+      "bannerReplace": "Valitse toinen kuva",
+      "bannerUploading": "Ladataan banneria…",
+      "bannerPreview": "Bannerin esikatselu",
+      "bannerRemove": "Poista banneri",
+      "cropTitle": "Rajaa banneri",
+      "cropDescription": "Vedä valitaksesi, mikä näkyy leveässä bannerissa.",
+      "cropZoom": "Zoomaus",
+      "cropCancel": "Peruuta",
+      "cropConfirm": "Käytä banneria"
+    },
+    "eventPage": {
+      "backToEvents": "Takaisin tapahtumiin",
+      "bannerAlt": "Tapahtuman {{title}} banneri",
+      "edit": "Muokkaa tapahtumaa",
+      "venue": "Tapahtumapaikka"
     }
   },
   "studioEditor": {

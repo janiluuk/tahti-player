@@ -33,6 +33,7 @@ export * from './FilterChips';
 export * from './FilterBar';
 export * from './HistoryDayGroup';
 export * from './HistoryRow';
+export * from './ImageCropDialog';
 export * from './ImageThumbnailPicker';
 export * from './InlineError';
 export * from './Input';
