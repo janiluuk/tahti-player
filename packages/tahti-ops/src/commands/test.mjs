@@ -1,3 +1,6 @@
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
 import { OpsError, playerRoot } from '../paths.mjs';
 import { runProgram, runSteps } from '../run-script.mjs';
 
@@ -16,8 +19,9 @@ const GROUPS = {
     args: ['--filter', '@tahti-player/player', 'test'],
   },
   cli: {
-    summary: 'tahti product CLI tests',
-    args: ['--filter', '@tahti-player/tahti-cli', 'test'],
+    summary: 'tahti product CLI tests (sibling ../tahti-cli)',
+    siblingDir: '../tahti-cli',
+    siblingArgs: ['test'],
   },
   ops: {
     summary: 'tahti-ops maintainer CLI tests',
@@ -54,18 +58,39 @@ export function runTests(groups, { dryRun = false, extraArgs = [] } = {}) {
   }
   const root = playerRoot();
   return runSteps(
-    names.map(
-      (name) =>
-        ({ dryRun: dry }) =>
-          runProgram(
+    names.map((name) => {
+      const group = GROUPS[name];
+      return ({ dryRun: dry }) => {
+        if (group.siblingDir) {
+          const sibling = resolve(root, group.siblingDir);
+          if (!existsSync(sibling) && !dry) {
+            throw new OpsError(
+              `Sibling CLI checkout missing at ${sibling} (clone janiluuk/tahti-cli)`,
+            );
+          }
+          return runProgram(
             'pnpm',
             [
-              ...GROUPS[name].args,
+              ...(group.siblingArgs ?? ['test']),
               ...(extraArgs.length > 0 ? ['--', ...extraArgs] : []),
             ],
-            { dryRun: dry, cwd: root, label: `test ${name}` },
-          ),
-    ),
+            {
+              dryRun: dry,
+              cwd: dry ? sibling : sibling,
+              label: `test ${name}`,
+            },
+          );
+        }
+        return runProgram(
+          'pnpm',
+          [
+            ...group.args,
+            ...(extraArgs.length > 0 ? ['--', ...extraArgs] : []),
+          ],
+          { dryRun: dry, cwd: root, label: `test ${name}` },
+        );
+      };
+    }),
     { dryRun },
   );
 }

@@ -1,7 +1,7 @@
 # @tahti-player/tahti-ops
 
 Maintainer CLI that folds scattered `scripts/` entrypoints into one help tree.
-Product API / TUI commands stay in [`@tahti-player/tahti-cli`](../tahti-cli)
+Product API / TUI commands stay in sibling [`janiluuk/tahti-cli`](https://github.com/janiluuk/tahti-cli)
 (`tahti`) — this package must not ship artist-facing API tooling.
 
 Roadmap / inventory: [`docs/todo/tahti-ops-cli.md`](../../docs/todo/tahti-ops-cli.md).
