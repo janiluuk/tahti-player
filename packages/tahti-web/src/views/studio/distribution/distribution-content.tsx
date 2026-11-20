@@ -12,23 +12,27 @@ import { type SelectableTile } from '@tahti-player/ui';
 export const MUSICBRAINZ_SUBMIT_URL = 'https://musicbrainz.org/release/add';
 export const DISCOGS_SUBMIT_URL = 'https://www.discogs.com/search/';
 
-export const MUSICBRAINZ_GUIDE_STEPS = [
-  'Export JSON (or copy UPC, ISRC, credits, P/C-lines).',
-  'Open MusicBrainz “Add release” and choose the release type.',
-  'Enter title, artist credit, and date — match your Tahti release.',
-  'Add medium and tracklist; paste ISRCs from your export when you have them.',
-  'Add label, catalog number, and barcode if applicable.',
-  'Save, then copy the release MBID back into Tahti.',
-] as const;
+export function musicbrainzGuideSteps(t: TFunction<'web'>) {
+  return [
+    t('distributionContentBatch31.musicbrainzStepExport'),
+    t('distributionContentBatch31.musicbrainzStepOpen'),
+    t('distributionContentBatch31.musicbrainzStepDetails'),
+    t('distributionContentBatch31.musicbrainzStepTracklist'),
+    t('distributionContentBatch31.musicbrainzStepLabel'),
+    t('distributionContentBatch31.musicbrainzStepSave'),
+  ];
+}
 
-export const DISCOGS_GUIDE_STEPS = [
-  'Export JSON (or copy title, label, barcode, and credits).',
-  'Search Discogs first — only add if the release is missing.',
-  'Submit a new release with title, label, format, country, and date.',
-  'Add the tracklist in order with durations from your export.',
-  'Add barcode and catalog number if applicable, then submit for review.',
-  'Copy the release URL or numeric ID back into Tahti.',
-] as const;
+export function discogsGuideSteps(t: TFunction<'web'>) {
+  return [
+    t('distributionContentBatch31.discogsStepExport'),
+    t('distributionContentBatch31.discogsStepSearch'),
+    t('distributionContentBatch31.discogsStepSubmit'),
+    t('distributionContentBatch31.discogsStepTracklist'),
+    t('distributionContentBatch31.discogsStepBarcode'),
+    t('distributionContentBatch31.discogsStepCopy'),
+  ];
+}
 
 export function catalogMethods(t: TFunction<'web'>) {
   return [

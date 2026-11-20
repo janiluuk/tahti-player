@@ -57,7 +57,9 @@ export function PublishDialog({
       onClose={onCancel}
       className="max-w-lg"
     >
-      <Dialog.Title>Publish a version of {addon?.name}</Dialog.Title>
+      <Dialog.Title>
+        {t('publishDialogBatch31.title', { name: addon?.name ?? '' })}
+      </Dialog.Title>
       <Dialog.Description>
         {t('addonPublish.uploadTheWidgetAposS')}
       </Dialog.Description>
@@ -74,7 +76,11 @@ export function PublishDialog({
           label={t('addonPublish.version')}
           value={version}
           placeholder="1.0.0"
-          error={version && !versionValid ? 'Use the form 1.0.0' : undefined}
+          error={
+            version && !versionValid
+              ? t('publishDialogBatch31.versionFormat')
+              : undefined
+          }
           onChange={(event) => setVersion(event.target.value)}
         />
         <FilePicker
@@ -84,7 +90,7 @@ export function PublishDialog({
             title: t('publishDialogFields.widgetBundle'),
             description: file
               ? `${file.name} · ${formatSize(file.size)}`
-              : 'A single .js or .mjs file.',
+              : t('publishDialogBatch31.bundleHint'),
             browse: file
               ? t('publishDialogStates.chooseAnotherFile')
               : t('publishDialogStates.chooseBundle'),
@@ -93,7 +99,7 @@ export function PublishDialog({
         />
         {tooBig ? (
           <InlineError>
-            This file is {formatSize(file.size)}; bundles can be at most 2 MB.
+            {t('publishDialogBatch31.tooBig', { size: formatSize(file.size) })}
           </InlineError>
         ) : null}
         <Textarea

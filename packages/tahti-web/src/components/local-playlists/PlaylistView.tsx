@@ -90,7 +90,7 @@ export function PlaylistView({
       }
       const current = list.find((playlist) => playlist.id === id) ?? null;
       if (!current) {
-        setError('This playlist no longer exists.');
+        setError(t('playlistViewBatch31.noLongerExists'));
         return;
       }
       setSummary(current);
@@ -102,7 +102,7 @@ export function PlaylistView({
         setError(
           failure instanceof Error
             ? failure.message
-            : 'Could not load playlist.',
+            : t('playlistViewBatch31.couldNotLoad'),
         );
       }
     } finally {
@@ -187,8 +187,7 @@ export function PlaylistView({
       const before = await library.playlists.entryIds(id);
       await library.playlists.moveEntries(id, rowIds, toIndex);
       pushUndo({
-        label:
-          rowIds.length === 1 ? 'move' : `move of ${rowIds.length} entries`,
+        label: t('playlistViewBatch31.undoMove', { count: rowIds.length }),
         run: () => library.playlists.setOrder(id, before),
       });
       await load();
@@ -210,17 +209,12 @@ export function PlaylistView({
       const removed: NativeRawPlaylistEntry[] =
         await library.playlists.removeEntries(id, rowIds);
       pushUndo({
-        label:
-          removed.length === 1
-            ? 'removal'
-            : `removal of ${removed.length} entries`,
+        label: t('playlistViewBatch31.undoRemoval', { count: removed.length }),
         run: () => library.playlists.restoreEntries(id, removed, before),
       });
       setSelectedIds(new Set());
       withUndoToast(
-        removed.length === 1
-          ? 'Removed 1 entry from the playlist.'
-          : `Removed ${removed.length} entries from the playlist.`,
+        t('playlistViewBatch31.removedEntries', { count: removed.length }),
       );
       await load();
     } catch (failure) {
@@ -338,7 +332,7 @@ export function PlaylistView({
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{summary?.name}</p>
           <p className="text-foreground-secondary truncate text-xs">
-            {summary ? summaryLine(summary) : 'Loading…'}
+            {summary ? summaryLine(summary) : t('loading.loading')}
           </p>
         </div>
         <Button
@@ -421,7 +415,7 @@ export function PlaylistView({
           layouts={table.layouts}
           rows={entries}
           total={total}
-          itemNoun="entries"
+          itemNoun={t('playlistViewBatch31.entriesNoun')}
           getRowId={(entry) => entry.entryId}
           getRowLabel={(entry) => entry.title}
           sort={null}
@@ -530,7 +524,10 @@ export function PlaylistView({
         destructive
         isOpen={deleting}
         title={t('playlistView.deleteThisPlaylist')}
-        description={`“${summary?.name ?? ''}” and its ${summary?.trackCount ?? 0} entries will be deleted. The tracks stay in your library.`}
+        description={t('playlistViewBatch31.deleteDescription', {
+          name: summary?.name ?? '',
+          count: summary?.trackCount ?? 0,
+        })}
         confirmLabel={t('playlistView.delete')}
         onCancel={() => setDeleting(false)}
         onConfirm={() => {
@@ -540,7 +537,7 @@ export function PlaylistView({
             .then(() => {
               toast.success(
                 i18n.t('web:toasts.deletedNamedQuotes', {
-                  name: summary?.name ?? 'playlist',
+                  name: summary?.name ?? t('playlistViewBatch31.fallbackName'),
                 }),
               );
               onBack();
@@ -549,7 +546,7 @@ export function PlaylistView({
               toast.error(
                 failure instanceof Error
                   ? failure.message
-                  : 'Could not delete playlist.',
+                  : t('playlistViewBatch31.couldNotDelete'),
               ),
             );
         }}

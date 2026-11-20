@@ -67,9 +67,14 @@ export function TrackAccessGate({
       </div>
       <p className="text-sm text-white/75">
         {purchase
-          ? `Buy this track${price ? ` (${price})` : ''} or subscribe to ${artist.displayName}'s fan tiers to listen.`
-          : `${artist.displayName} shares this track with their fan subscribers.`}
-        {signedIn ? '' : ' Sign in to listen if you already have access.'}
+          ? price
+            ? t('trackPageBatch31.buyOrSubscribeWithPrice', {
+                price,
+                name: artist.displayName,
+              })
+            : t('trackPageBatch31.buyOrSubscribe', { name: artist.displayName })
+          : t('trackPageBatch31.sharedWithFans', { name: artist.displayName })}
+        {signedIn ? '' : ` ${t('trackPageBatch31.signInIfYouHaveAccess')}`}
       </p>
       <div className="flex flex-wrap gap-2">
         {signedIn ? null : (

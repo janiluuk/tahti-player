@@ -1,9 +1,19 @@
 // @vitest-environment jsdom
+import {
+  createMemoryHistory,
+  createRootRoute,
+  createRouter,
+  RouterProvider,
+} from '@tanstack/react-router';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { act } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { MOBILE_PRIMARY_TABS, MobileDrawer } from './MobileChrome';
+import {
+  MOBILE_PRIMARY_TABS,
+  MobileBottomNav,
+  MobileDrawer,
+} from './MobileChrome';
 
 afterEach(() => {
   cleanup();
@@ -89,5 +99,24 @@ describe('MobileBottomNav tabs', () => {
       'radio',
       'discover',
     ]);
+  });
+});
+
+describe('MobileBottomNav', () => {
+  it('grows by the gesture-bar inset instead of squeezing its items', async () => {
+    const router = createRouter({
+      routeTree: createRootRoute({ component: () => <MobileBottomNav /> }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    const nav = await screen.findByTestId('mobile-bottom-nav');
+    expect(nav.className).toContain(
+      'min-h-[calc(var(--mobile-nav-h,72px)+env(safe-area-inset-bottom))]',
+    );
+    expect(nav.className).not.toMatch(/(^|\s)h-16(\s|$)/);
+    const link = nav.querySelector('a');
+    expect(link?.className).toContain('text-xs');
   });
 });

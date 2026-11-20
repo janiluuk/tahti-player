@@ -199,7 +199,7 @@ export function SelectsTab() {
         >
           <PowerIcon size={16} aria-hidden className="mr-1.5" />
           {streamBusy
-            ? 'Starting…'
+            ? t('selectsTabBatch31.starting')
             : stream.state === 'LIVE'
               ? t('selectsTabStates.stopStream')
               : t('selectsTabStates.bringStreamOnline')}
@@ -215,14 +215,14 @@ export function SelectsTab() {
       <StudioPanel
         title={
           stream.state === 'LIVE'
-            ? 'Stream live'
+            ? t('selectsTabBatch31.streamLive')
             : stream.state === 'STARTING'
               ? t('selectsTabStates.streamStarting')
               : t('selectsTabStates.streamOffline')
         }
         description={
           stream.state === 'LIVE'
-            ? 'Tahti Selects is broadcasting the curated rotation.'
+            ? t('selectsTabBatch31.broadcasting')
             : stream.state === 'STARTING'
               ? t('selectsTabStates.theRotationServiceIsBeing')
               : t('selectsTabStates.theStreamIsUnavailableRecovery')
@@ -430,7 +430,13 @@ export function SelectsTab() {
               <RadioTowerIcon size={15} aria-hidden className="mr-2" />
               {t('selectsTab.tracks')}
             </Button>
-            {['Releases', 'Collections', 'Playlists'].map((type) => (
+            {(
+              [
+                'selectsTabBatch31.typeReleases',
+                'selectsTabBatch31.typeCollections',
+                'selectsTabBatch31.typePlaylists',
+              ] as const
+            ).map((type) => (
               <Tooltip
                 key={type}
                 content={t('selectsTab.thisContentTypeIsNot')}
@@ -444,7 +450,7 @@ export function SelectsTab() {
                   className="justify-start opacity-50"
                   disabled
                 >
-                  {type}
+                  {t(type)}
                 </Button>
               </Tooltip>
             ))}
@@ -467,8 +473,8 @@ export function SelectsTab() {
                 <PageEmpty
                   title={
                     query.trim()
-                      ? `No public archive tracks match “${query}”.`
-                      : 'No eligible archive tracks found.'
+                      ? t('selectsTabBatch31.noMatch', { query })
+                      : t('selectsTabBatch31.noEligible')
                   }
                 />
               ) : (
@@ -598,7 +604,7 @@ export function SelectsTab() {
             }}
           >
             {adding
-              ? 'Adding…'
+              ? t('selectsTabBatch31.adding')
               : webT()('a11yNamed.addNToRotation', {
                   n: selectedIds.size || '',
                 })}

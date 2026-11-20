@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -17,14 +17,15 @@ import type {
   NativePlaylistSummary,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
+import { webT } from '../lib/webT';
 
-const STATUS_LABEL: Record<NativeEntryStatus, string> = {
-  linked: 'In library',
-  needsImport: 'Not in library yet',
-  missing: 'File not found',
-  unsupported: 'Unsupported format',
-  remote: 'Stream URL',
-};
+const STATUS_LABEL_KEYS = {
+  linked: 'playlistImportDialogBatch31.statusLinked',
+  needsImport: 'playlistImportDialogBatch31.statusNeedsImport',
+  missing: 'playlistImportDialogBatch31.statusMissing',
+  unsupported: 'playlistImportDialogBatch31.statusUnsupported',
+  remote: 'playlistImportDialogBatch31.statusRemote',
+} as const satisfies Record<NativeEntryStatus, ParseKeys<'web'>>;
 
 function basename(path: string) {
   return path.split(/[\\/]/).pop() || path;
@@ -32,21 +33,35 @@ function basename(path: string) {
 
 /** Summary line for a preview, e.g. "12 of 14 already in your library". */
 export function describePreview(preview: NativeImportPreview): string {
+  const t = webT();
   const parts = [
-    `${preview.linked} of ${preview.total} already in your library`,
+    t('playlistImportDialogBatch31.summaryLinked', {
+      linked: preview.linked,
+      total: preview.total,
+    }),
   ];
   if (preview.needsImport) {
-    parts.push(`${preview.needsImport} not imported yet`);
+    parts.push(
+      t('playlistImportDialogBatch31.summaryNeedsImport', {
+        n: preview.needsImport,
+      }),
+    );
   }
   if (preview.missing) {
-    parts.push(`${preview.missing} not found`);
+    parts.push(
+      t('playlistImportDialogBatch31.summaryMissing', { n: preview.missing }),
+    );
   }
   if (preview.unsupported) {
-    parts.push(`${preview.unsupported} unsupported`);
+    parts.push(
+      t('playlistImportDialogBatch31.summaryUnsupported', {
+        n: preview.unsupported,
+      }),
+    );
   }
   if (preview.remote) {
     parts.push(
-      `${preview.remote} stream URL${preview.remote === 1 ? '' : 's'}`,
+      t('playlistImportDialogBatch31.summaryRemote', { count: preview.remote }),
     );
   }
   return parts.join(' · ');
@@ -105,7 +120,7 @@ export function PlaylistImportDialog({
       toast.error(
         failure instanceof Error
           ? failure.message
-          : 'Could not search that folder.',
+          : t('playlistImportDialogBatch31.couldNotSearchFolder'),
       );
     } finally {
       setBusy(null);
@@ -127,14 +142,21 @@ export function PlaylistImportDialog({
       );
       const details = [
         outcome.imported
-          ? `${outcome.imported} ${outcome.imported === 1 ? 'file' : 'files'} added to your library`
+          ? t('playlistImportDialogBatch31.filesAdded', {
+              count: outcome.imported,
+            })
           : null,
         outcome.unresolved
-          ? `${outcome.unresolved} ${outcome.unresolved === 1 ? 'entry is' : 'entries are'} unavailable and will link up when the file is in your library`
+          ? t('playlistImportDialogBatch31.entriesUnavailable', {
+              count: outcome.unresolved,
+            })
           : null,
       ].filter(Boolean);
       toast.success(
-        `Imported “${outcome.playlist.name}” with ${outcome.playlist.trackCount} entries.`,
+        t('playlistImportDialogBatch31.importedToast', {
+          name: outcome.playlist.name,
+          count: outcome.playlist.trackCount,
+        }),
         details.length ? { description: details.join('. ') + '.' } : undefined,
       );
       onImported(outcome.playlist);
@@ -186,10 +208,9 @@ export function PlaylistImportDialog({
                   aria-label={t('playlistImport.addFilesToTheLibrary')}
                 />
                 <span className="text-sm">
-                  Also add the {preview.needsImport}{' '}
-                  {preview.needsImport === 1 ? 'file' : 'files'} that{' '}
-                  {preview.needsImport === 1 ? 'isn’t' : 'aren’t'} in your
-                  library yet
+                  {t('playlistImportDialogBatch31.alsoAddFiles', {
+                    count: preview.needsImport,
+                  })}
                 </span>
               </div>
             ) : null}
@@ -209,8 +230,10 @@ export function PlaylistImportDialog({
                 </Button>
                 <span className="text-foreground-secondary min-w-0 flex-1 truncate text-xs">
                   {relinkRoot
-                    ? `Searching ${relinkRoot}`
-                    : 'Matches by folder path, then by a unique file name.'}
+                    ? t('playlistImportDialogBatch31.searchingFolder', {
+                        path: relinkRoot,
+                      })
+                    : t('playlistImportDialogBatch31.matchesHint')}
                 </span>
               </div>
             ) : null}
@@ -244,14 +267,16 @@ export function PlaylistImportDialog({
                         </span>
                       </Tooltip>
                       <span className="text-foreground-secondary shrink-0 text-xs">
-                        {STATUS_LABEL[entry.status]}
+                        {t(STATUS_LABEL_KEYS[entry.status])}
                       </span>
                     </li>
                   ))}
                 </ul>
                 {unresolvedCount > preview.unresolved.length ? (
                   <p className="text-foreground-secondary mt-1 text-xs">
-                    …and {unresolvedCount - preview.unresolved.length} more.
+                    {t('playlistImportDialogBatch31.andMore', {
+                      n: unresolvedCount - preview.unresolved.length,
+                    })}
                   </p>
                 ) : null}
               </section>

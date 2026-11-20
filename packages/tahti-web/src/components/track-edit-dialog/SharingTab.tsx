@@ -120,13 +120,13 @@ export function SharingTab({
               </span>
               <span className="text-foreground-secondary block text-xs">
                 {radioSubmission?.status === 'PENDING'
-                  ? 'Submitted — waiting on board review.'
+                  ? t('sharingTabBatch31.radioPending')
                   : radioSubmission?.status === 'APPROVED'
-                    ? 'Approved — in the Tahti Radio rotation.'
+                    ? t('sharingTabBatch31.radioApproved')
                     : radioSubmission?.status === 'REJECTED'
                       ? (radioSubmission.rejectionNote ??
-                        'Not accepted this time — you can resubmit.')
-                      : 'Submit for board review to be considered for the shared 24/7 station.'}
+                        t('sharingTabBatch31.radioRejected'))
+                      : t('sharingTabBatch31.radioIdle')}
               </span>
             </div>
             <Button
@@ -140,11 +140,11 @@ export function SharingTab({
               onClick={submitToRadioRotation}
             >
               {submittingToRadio
-                ? 'Submitting…'
+                ? t('sharingTabBatch31.submitting')
                 : radioSubmission?.status === 'PENDING'
-                  ? 'Pending'
+                  ? t('sharingTabBatch31.pending')
                   : radioSubmission?.status === 'APPROVED'
-                    ? 'In rotation'
+                    ? t('sharingTabBatch31.inRotation')
                     : radioSubmission?.status === 'REJECTED'
                       ? t('sharingTabStates.resubmit')
                       : t('sharingTabStates.submit')}

@@ -22,12 +22,12 @@ import { decodeSourceAndReference } from '../../plugins/mastering/decodeAudio';
 import type { MasteringStage } from '../../plugins/mastering/match';
 import { useMasteringWorker } from '../../plugins/mastering/useMasteringWorker';
 
-const STAGE_LABELS: Record<MasteringStage, string> = {
-  'matching-levels': 'Matching loudness…',
-  'matching-frequencies': 'Matching tone…',
-  'correcting-levels': 'Correcting levels…',
-  limiting: 'Finalizing…',
-};
+const STAGE_LABELS = {
+  'matching-levels': 'studioMasteringViewBatch31.stageMatchingLevels',
+  'matching-frequencies': 'studioMasteringViewBatch31.stageMatchingFrequencies',
+  'correcting-levels': 'studioMasteringViewBatch31.stageCorrectingLevels',
+  limiting: 'studioMasteringViewBatch31.stageLimiting',
+} as const satisfies Record<MasteringStage, string>;
 
 export function StudioMasteringView({ soundId }: { soundId: string }) {
   const { t } = useTranslation('web');
@@ -78,7 +78,9 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
       );
     } catch (err) {
       setDecodeError(
-        err instanceof Error ? err.message : 'Could not read that audio.',
+        err instanceof Error
+          ? err.message
+          : t('studioMasteringViewBatch31.couldNotReadAudio'),
       );
     } finally {
       setDecoding(false);
@@ -122,7 +124,9 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
           ) : loadError || !source ? (
             <PageError
               title={t('loadErrors.couldNotLoadThisTrack')}
-              description={loadError ?? 'Source audio is unavailable.'}
+              description={
+                loadError ?? t('studioMasteringViewBatch31.sourceUnavailable')
+              }
               onRetry={retry}
             />
           ) : (
@@ -133,7 +137,9 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
               >
                 <p className="text-foreground-secondary text-sm">
                   {source.durationSec != null
-                    ? `${Math.round(source.durationSec)}s — `
+                    ? t('studioMasteringViewBatch31.durationPrefix', {
+                        seconds: Math.round(source.durationSec),
+                      })
                     : ''}
                   {t('studioMoneyText.masteringSource')}
                 </p>
@@ -177,8 +183,8 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                   {busy ? (
                     <span className="text-foreground-secondary text-sm">
                       {status in STAGE_LABELS
-                        ? STAGE_LABELS[status as MasteringStage]
-                        : 'Reading audio…'}
+                        ? t(STAGE_LABELS[status as MasteringStage])
+                        : t('studioMasteringViewBatch31.readingAudio')}
                     </span>
                   ) : null}
                 </div>

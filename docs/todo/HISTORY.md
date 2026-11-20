@@ -1,3 +1,13 @@
+## 2026-11-20 — Listen news first + mobile bottom menu + Finnish batch 31
+
+Listen puts the Latest news widget block first by default (above the radio row
+for new listeners); a saved section order still wins. Folded
+`discover-news-widget-top.md` (the Discover page already led with news; the ask
+was the Listen widget). Mobile bottom menu grows by the gesture-bar inset
+instead of squeezing its items into a fixed 64px, 72px base, 12px labels and
+22px icons; real Android check left in `mobile-bottom-nav-readability.md`.
+Finnish batch 31 (26 files) logged in `finnish-localization.md`.
+
 ## 2026-11-20 — Radio station row actions + governance discussions restyle
 
 Radio page: the Radio station row has **Add new** (Your stations dialog) and a

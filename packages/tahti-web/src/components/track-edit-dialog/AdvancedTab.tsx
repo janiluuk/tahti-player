@@ -14,20 +14,14 @@ import { TrackAnalysisSection } from './TrackAnalysisSection';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
 const LICENSES = [
-  ['', 'No license (default)'],
-  ['ALL_RIGHTS_RESERVED', 'All rights reserved'],
-  ['CC0', 'No rights reserved (CC0)'],
-  ['CC_BY', 'Creative Commons Attribution (CC BY)'],
-  ['CC_BY_SA', 'Creative Commons Attribution-ShareAlike (CC BY-SA)'],
-  ['CC_BY_NC', 'Creative Commons Attribution-NonCommercial (CC BY-NC)'],
-  [
-    'CC_BY_NC_SA',
-    'Creative Commons Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)',
-  ],
-  [
-    'CC_BY_NC_ND',
-    'Creative Commons Attribution-NonCommercial-NoDerivatives (CC BY-NC-ND)',
-  ],
+  ['', 'advancedTabBatch31.licenseNone'],
+  ['ALL_RIGHTS_RESERVED', 'advancedTabBatch31.licenseAllRightsReserved'],
+  ['CC0', 'advancedTabBatch31.licenseCc0'],
+  ['CC_BY', 'advancedTabBatch31.licenseCcBy'],
+  ['CC_BY_SA', 'advancedTabBatch31.licenseCcBySa'],
+  ['CC_BY_NC', 'advancedTabBatch31.licenseCcByNc'],
+  ['CC_BY_NC_SA', 'advancedTabBatch31.licenseCcByNcSa'],
+  ['CC_BY_NC_ND', 'advancedTabBatch31.licenseCcByNcNd'],
 ] as const;
 
 export function AdvancedTab({
@@ -48,7 +42,10 @@ export function AdvancedTab({
           label={t('advancedTab.licenseOptional')}
           value={form.license ?? ''}
           onValueChange={(value) => setForm({ ...form, license: value })}
-          options={LICENSES.map(([value, label]) => ({ id: value, label }))}
+          options={LICENSES.map(([value, labelKey]) => ({
+            id: value,
+            label: t(labelKey),
+          }))}
         />
       </div>
       {!isAudioClip ? (

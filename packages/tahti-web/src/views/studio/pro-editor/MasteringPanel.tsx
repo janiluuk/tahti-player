@@ -89,8 +89,10 @@ export function MasteringPanel({ editList, onChange }: Props) {
     onChange({ ...editList, loudnorm: { ...editList.loudnorm, enabled } });
     toast.info(
       enabled
-        ? `Normalizing to ${editList.loudnorm.targetLufs} LUFS on render.`
-        : 'Normalization turned off.',
+        ? t('masteringPanelBatch31.normalizingToast', {
+            lufs: editList.loudnorm.targetLufs,
+          })
+        : t('masteringPanelBatch31.normalizationOff'),
     );
   };
 
@@ -99,9 +101,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
       <StudioPanel
         title={t('masteringPanelMore.mastering')}
         description={
-          collapsed
-            ? undefined
-            : 'Enabled effects are audible live in Play and Preview selection — this is a real-time approximation for monitoring, not the final render.'
+          collapsed ? undefined : t('masteringPanelBatch31.description')
         }
         action={
           <Tooltip
@@ -141,8 +141,10 @@ export function MasteringPanel({ editList, onChange }: Props) {
               >
                 <Wand2Icon size={14} aria-hidden className="mr-1.5" />
                 {editList.loudnorm.enabled
-                  ? `Normalizing (${editList.loudnorm.targetLufs} LUFS)`
-                  : 'Normalize'}
+                  ? t('masteringPanelBatch31.normalizing', {
+                      lufs: editList.loudnorm.targetLufs,
+                    })
+                  : t('masteringPanelBatch31.normalize')}
               </Button>
             </div>
 

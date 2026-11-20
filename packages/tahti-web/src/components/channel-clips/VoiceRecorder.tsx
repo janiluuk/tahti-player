@@ -55,9 +55,7 @@ export function VoiceRecorder({
         !navigator.mediaDevices?.getUserMedia ||
         !globalThis.AudioWorkletNode
       ) {
-        throw new Error(
-          'Voice recording needs a supported browser on HTTPS. You can upload an audio file instead.',
-        );
+        throw new Error(t('voiceRecorderBatch31.unsupportedBrowser'));
       }
       stream = await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -116,7 +114,7 @@ export function VoiceRecorder({
           cleanup();
           if (mounted.current) {
             setState('idle');
-            setError('Recording stopped unexpectedly. Please try again.');
+            setError(t('voiceRecorderBatch31.stoppedUnexpectedly'));
           }
         }, 3000);
       };
@@ -141,9 +139,7 @@ export function VoiceRecorder({
               ),
             );
           } else {
-            setError(
-              'No voice was captured. Check your microphone and try again.',
-            );
+            setError(t('voiceRecorderBatch31.noVoiceCaptured'));
           }
           cleanup();
           setState('idle');
@@ -197,7 +193,7 @@ export function VoiceRecorder({
         setError(
           err instanceof Error || err instanceof DOMException
             ? err.message
-            : 'Could not start recording',
+            : t('voiceRecorderBatch31.couldNotStart'),
         );
       }
     }
@@ -220,7 +216,9 @@ export function VoiceRecorder({
                 .filter((d) => d.deviceId && d.deviceId !== 'default')
                 .map((d, i) => ({
                   id: d.deviceId,
-                  label: d.label || `Microphone ${i + 1}`,
+                  label:
+                    d.label ||
+                    t('voiceRecorderBatch31.microphoneN', { n: i + 1 }),
                 })),
             ]}
             onValueChange={setDeviceId}
@@ -233,11 +231,11 @@ export function VoiceRecorder({
           }
         >
           {state === 'recording'
-            ? 'Stop recording'
+            ? t('voiceRecorderBatch31.stopRecording')
             : state === 'starting'
-              ? 'Opening microphone…'
+              ? t('voiceRecorderBatch31.openingMicrophone')
               : state === 'stopping'
-                ? 'Finishing…'
+                ? t('voiceRecorderBatch31.finishing')
                 : take
                   ? t('voiceRecorderStates.recordAnotherTake')
                   : t('voiceRecorderStates.recordVoice')}
@@ -245,7 +243,11 @@ export function VoiceRecorder({
       </div>
       {state === 'recording' && (
         <div role="status" className="flex items-center gap-3 text-sm">
-          <span>{Math.floor(seconds)} s · recording WAV</span>
+          <span>
+            {t('voiceRecorderBatch31.recordingSeconds', {
+              seconds: Math.floor(seconds),
+            })}
+          </span>
           <meter
             aria-label={t('voiceRecorder.microphoneLevel')}
             min={0}
@@ -258,8 +260,7 @@ export function VoiceRecorder({
         </div>
       )}
       <p className="text-foreground-secondary text-xs">
-        Lossless WAV · up to 10 minutes / 50 MB. Your microphone stops when you
-        finish or leave this page.
+        {t('voiceRecorderBatch31.limitsHint')}
       </p>
       {url && (
         <>

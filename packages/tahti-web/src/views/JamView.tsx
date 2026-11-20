@@ -68,7 +68,7 @@ export function JamView({ code }: { code: string }) {
       })
       .catch(() => {
         if (!cancelled) {
-          setJoinError('This Jam link is invalid or has ended.');
+          setJoinError(t('jamViewBatch31.invalidLink'));
         }
       });
     return () => {
@@ -100,7 +100,7 @@ export function JamView({ code }: { code: string }) {
   useEffect(() => {
     if (hostName) {
       syncDocumentMetadata(window.location.pathname, {
-        title: `${hostName}'s Jam · Tahti`,
+        title: t('jamViewBatch31.documentTitle', { name: hostName }),
       });
     }
   }, [hostName]);
@@ -199,10 +199,7 @@ export function JamView({ code }: { code: string }) {
             headingLevel={1}
             icon="alert"
             title={t('empties.jamNotFound')}
-            description={
-              joinError ||
-              'That code is not an open Jam. Check the link, or go back to Listen.'
-            }
+            description={joinError || t('jamViewBatch31.notOpenJam')}
             action={backToListen}
           />
         </div>
@@ -278,7 +275,7 @@ export function JamView({ code }: { code: string }) {
               color={connectionStatus === 'connected' ? 'green' : 'yellow'}
             >
               {connectionStatus === 'connected'
-                ? 'Live'
+                ? t('jamViewBatch31.live')
                 : connectionStatus === 'reconnecting'
                   ? t('jamViewStates.reconnecting')
                   : t('jamViewStates.connecting')}

@@ -247,7 +247,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
           {relatedTracks.length > 0 ? (
             <div>
               <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">
-                More from {playable.artist}
+                {t('trackPageBatch31.moreFrom', { artist: playable.artist })}
               </h2>
               <ul className="flex flex-col gap-3">
                 {relatedTracks.map((track) => (

@@ -79,10 +79,9 @@ export function MobileBottomNav({
 
   return (
     <nav
-      className="border-border bg-background z-40 flex h-16 shrink-0 items-stretch justify-around border-t px-1 pt-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] md:hidden"
+      className="border-border bg-background z-40 flex min-h-[calc(var(--mobile-nav-h,72px)+env(safe-area-inset-bottom))] shrink-0 items-stretch justify-around border-t px-1 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] md:hidden"
       aria-label={t('nav.primary')}
       data-testid="mobile-bottom-nav"
-      style={{ minHeight: 'var(--mobile-nav-h, 64px)' }}
     >
       {items.map((item) => {
         const Icon = item.icon;
@@ -98,9 +97,9 @@ export function MobileBottomNav({
               onClick={(event) => {
                 event.preventDefault();
               }}
-              className="text-foreground-secondary min-w-0 flex-1 cursor-not-allowed flex-col justify-center gap-0.5 px-1 py-1.5 text-[10px] tracking-wide whitespace-normal active:scale-100"
+              className="text-foreground-secondary min-w-0 flex-1 cursor-not-allowed flex-col justify-center gap-1 px-1 py-1.5 text-xs font-medium whitespace-normal active:scale-100"
             >
-              <Icon size={18} strokeWidth={2} />
+              <Icon size={22} strokeWidth={2} />
               <span className="truncate">{t(item.labelKey)}</span>
             </Button>
           );
@@ -111,13 +110,13 @@ export function MobileBottomNav({
             to={item.to}
             aria-current={active ? 'page' : undefined}
             className={cn(
-              'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide',
+              'flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-md px-1 py-1.5 text-xs font-medium',
               active
                 ? 'text-primary-strong'
                 : 'text-foreground-secondary hover:text-foreground',
             )}
           >
-            <Icon size={18} strokeWidth={active ? 2.5 : 2} />
+            <Icon size={22} strokeWidth={active ? 2.5 : 2} />
             <span className="truncate">{t(item.labelKey)}</span>
           </Link>
         );
@@ -130,14 +129,14 @@ export function MobileBottomNav({
         aria-label={t('nav.moreNavigation')}
         aria-expanded={moreOpen}
         className={cn(
-          'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide hover:bg-transparent',
+          'flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-md px-1 py-1.5 text-xs font-medium hover:bg-transparent',
           moreActive || moreOpen
             ? 'text-primary-strong'
             : 'text-foreground-secondary hover:text-foreground',
         )}
       >
         <EllipsisIcon
-          size={18}
+          size={22}
           strokeWidth={moreActive || moreOpen ? 2.5 : 2}
         />
         <span className="truncate">{t('nav.more')}</span>

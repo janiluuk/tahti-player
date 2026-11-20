@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, InlineError, Loader, Tooltip } from '@tahti-player/ui';
 
+import { dateLocaleTag } from '../lib/locale';
 import type {
   NativePlayLogEntry,
   TahtiNativeLibrary,
@@ -64,13 +65,13 @@ export function PlayHistoryDialog({
         setError(
           failure instanceof Error
             ? failure.message
-            : 'Could not load history.',
+            : t('playHistoryDialogBatch31.couldNotLoadHistory'),
         );
       } finally {
         setLoading(false);
       }
     },
-    [library],
+    [library, t],
   );
 
   useEffect(() => {
@@ -93,7 +94,7 @@ export function PlayHistoryDialog({
       toast.error(
         failure instanceof Error
           ? failure.message
-          : 'Could not play this session.',
+          : t('playHistoryDialogBatch31.couldNotPlaySession'),
       );
     }
   };
@@ -165,16 +166,18 @@ export function PlayHistoryDialog({
               variant="text"
               onClick={() => void load(entries.length)}
             >
-              Show more ({(total - entries.length).toLocaleString('en-US')}{' '}
-              older)
+              {t('playHistoryDialogBatch31.showMoreOlder', {
+                n: (total - entries.length).toLocaleString(dateLocaleTag()),
+              })}
             </Button>
           ) : null}
         </div>
         {session.length > 0 ? (
           <p className="text-foreground-secondary text-xs">
-            Your last session is {session.length}{' '}
-            {session.length === 1 ? 'track' : 'tracks'} with no break longer
-            than {SET_GAP_MINUTES} minutes.
+            {t('playHistoryDialogBatch31.lastSession', {
+              count: session.length,
+              minutes: SET_GAP_MINUTES,
+            })}
           </p>
         ) : null}
         <Dialog.Actions>
