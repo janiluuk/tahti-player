@@ -196,10 +196,13 @@ function DestinationDialog({
       setStreamKey('');
       onSaved(result.target);
       const created = result.target;
-      const createdName = created.label ?? 'destination';
-      toastWithUndo(`Saved ${createdName}.`, {
+      const createdName =
+        created.label ?? t('multicastSectionBatch32.destinationFallback');
+      toastWithUndo(t('multicastSectionBatch32.saved', { name: createdName }), {
         undo: () => deleteRtmpTarget(created.id, scope),
-        undoneMessage: `Removed ${createdName}.`,
+        undoneMessage: t('multicastSectionBatch32.removed', {
+          name: createdName,
+        }),
         onUndone: () => {
           setSavedTarget(null);
           onDeleted();
@@ -228,17 +231,21 @@ function DestinationDialog({
     >
       <Dialog.Title>
         {savedTarget
-          ? `Configure ${provider?.label}`
+          ? t('multicastSectionBatch32.configure', {
+              name: provider?.label ?? '',
+            })
           : providerId
             ? webT()('a11yNamed.add', { name: selectedProvider?.label })
-            : 'Add destination'}
+            : t('multicastSection.addDestination')}
       </Dialog.Title>
       <Dialog.Description>
         {!providerId
           ? i18n.t('web:batch52.chooseDestination')
           : isCustom
             ? i18n.t('web:batch52.pasteRtmp')
-            : `Paste the stream key from your ${selectedProvider?.label} dashboard.`}
+            : t('multicastSectionBatch32.pasteStreamKey', {
+                name: selectedProvider?.label ?? '',
+              })}
       </Dialog.Description>
       <form
         onSubmit={(event) => {
@@ -286,7 +293,7 @@ function DestinationDialog({
                   className="self-start"
                   onClick={() => setProviderId(null)}
                 >
-                  ← Choose another destination
+                  {t('multicastSectionBatch32.chooseAnother')}
                 </Button>
               )}
               {error && <InlineError>{error}</InlineError>}
@@ -335,7 +342,9 @@ function DestinationDialog({
                     onChange={(event) => setStreamKey(event.target.value)}
                     placeholder={
                       savedTarget
-                        ? `Leave blank to keep the current key (···${savedTarget.keyLast4 ?? '····'})`
+                        ? t('multicastSectionBatch32.keepCurrentKey', {
+                            last4: savedTarget.keyLast4 ?? '····',
+                          })
                         : undefined
                     }
                   />
@@ -463,9 +472,11 @@ function DestinationDialog({
         title={
           savedTarget
             ? webT()('a11yNamed.removeQuestion', {
-                name: savedTarget.label ?? 'this destination',
+                name:
+                  savedTarget.label ??
+                  t('multicastSectionBatch32.thisDestination'),
               })
-            : 'Remove destination?'
+            : t('multistream.removeTitle')
         }
         description={t('multicastSection.thisStreamDestinationStopsReceiving')}
         confirmLabel={t('multicastSection.remove')}
@@ -572,8 +583,15 @@ function DestinationsGrid({
                   }
                   title={
                     target
-                      ? `${target.label || provider.label} · ${active ? 'enabled' : 'disabled'}`
-                      : `${provider.label} · not configured`
+                      ? t(
+                          active
+                            ? 'multicastSectionBatch32.enabledTitle'
+                            : 'multicastSectionBatch32.disabledTitle',
+                          { name: target.label || provider.label },
+                        )
+                      : t('multicastSectionBatch32.notConfiguredTitle', {
+                          name: provider.label,
+                        })
                   }
                   className={`border-border hover:border-primary/60 relative flex flex-col items-center gap-1.5 rounded-lg border p-2 text-center whitespace-normal transition-colors ${
                     !target

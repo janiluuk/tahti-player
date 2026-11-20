@@ -301,10 +301,12 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
             </dt>
             <dd>
               {!detail.analyzed
-                ? 'Not analyzed yet'
+                ? t('trackAnalysisSectionBatch32.notAnalyzedYet')
                 : detail.stale
-                  ? 'Out of date — the file or the analysis changed'
-                  : `Analyzed ${detail.analyzedAt ?? ''} UTC`}
+                  ? t('trackAnalysisSectionBatch32.outOfDate')
+                  : t('trackAnalysisSectionBatch32.analyzedAt', {
+                      date: detail.analyzedAt ?? '',
+                    })}
             </dd>
           </div>
         </dl>
@@ -354,7 +356,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
               aria-label={t('trackAnalysis.tapTempo')}
             >
               <HandIcon size={14} aria-hidden />
-              Tap
+              {t('trackAnalysisSectionBatch32.tap')}
             </Button>
           </Tooltip>
           <span

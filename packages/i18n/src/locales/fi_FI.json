@@ -14384,6 +14384,254 @@
       "sharedWithFans": "{{name}} jakaa tämän kappaleen fanitilaajilleen.",
       "signInIfYouHaveAccess": "Kirjaudu sisään, jos sinulla on jo pääsy.",
       "moreFrom": "Lisää artistilta {{artist}}"
+    },
+    "greenRoomSessionPanelBatch32": {
+      "sourceModerator": "Moderaattori",
+      "sourceFanSub": "Fanitilaaja",
+      "sourceManual": "Kutsuttu",
+      "sourcePublic": "Julkinen",
+      "guestsJoinAt": "Vieraat liittyvät osoitteessa {{url}}"
+    },
+    "mikseriImportPanelBatch32": {
+      "invalidTrack": "Liitä Mikseri-kappalesivu, virallinen upotus tai kappaleen numerotunnus.",
+      "confirmRights": "Vahvista, että omistat kappaleen tai sinulla on lupa upottaa se.",
+      "added": "{{title}} lisätty Mikseri.netistä.",
+      "removed": "{{title}} poistettu."
+    },
+    "pressKitSectionBatch32": {
+      "choosePhotos": "Valitse kuvat",
+      "readyToUpload": "Valmiina ladattavaksi",
+      "photosInKit": "{{selected}}/{{max}} kuvaa lehdistöpaketissa · uusi valinta pudottaa vanhimman pois",
+      "imageFallback": "kuva {{position}}",
+      "includeImage": "Ota {{name}} mukaan lehdistöpakettiin",
+      "artistFallback": "Artisti"
+    },
+    "gallerySectionBatch32": {
+      "chooseImages": "Valitse kuvat",
+      "readyToUpload": "Valmiina ladattavaksi"
+    },
+    "studioUpdatesViewBatch32": {
+      "artistFallback": "Artisti",
+      "queuedSend_one": "Lähetys jonossa {{count}} tilaajalle.",
+      "queuedSend_other": "Lähetys jonossa {{count}} tilaajalle.",
+      "sendQueued": "Lähetys jonossa.",
+      "sentAt": ", lähetetty {{date}}",
+      "draft": ", luonnos"
+    },
+    "grantReportAttributionToggleBatch32": {
+      "label": "Näytä nimeni vuosittaisessa apurahaselvityksessä"
+    },
+    "socialPostNowBatch32": {
+      "stateSent": "Lähetetty",
+      "stateQueued": "Jonossa",
+      "stateFailed": "Epäonnistui",
+      "triggerManual": "Julkaistu käsin",
+      "triggerReleasePublished": "Uusi julkaisu",
+      "triggerChannelLive": "Lähetys alkoi",
+      "queuing": "Lisätään jonoon…",
+      "postTo": "Julkaise: {{platform}}",
+      "fetchFailed": "haku epäonnistui"
+    },
+    "storageSharedBatch32": {
+      "localDisk": "Paikallinen levy",
+      "objectStorageR2": "Objektitallennus (R2)",
+      "notTrackedYet": "Ei vielä seurannassa",
+      "titleUsed": "{{title}}: käytetty"
+    },
+    "storageOverviewTabBatch32": {
+      "unlimitedQuota": "rajaton kiintiö",
+      "totalUsage": "Käyttö yhteensä",
+      "breakdownLabel": "Tallennustila tiedostotyypeittäin, yhteensä {{total}}",
+      "usedOfQuota": "{{used}} / {{quota}}"
+    },
+    "filesBrowserTabBatch32": {
+      "updatedFiles_one": "Päivitettiin {{count}} tiedosto.",
+      "updatedFiles_other": "Päivitettiin {{count}} tiedostoa.",
+      "deletedFiles_one": "Poistettiin {{count}} tiedosto.",
+      "deletedFiles_other": "Poistettiin {{count}} tiedostoa.",
+      "keptFiles_one": "{{count}} tiedosto jäi poistamatta, esimerkiksi linkitetyn Mixcloud-latauksen takia.",
+      "keptFiles_other": "{{count}} tiedostoa jäi poistamatta, esimerkiksi linkitetyn Mixcloud-latauksen takia.",
+      "totalSize": "Koko yhteensä:",
+      "acrossFiles_one": "{{count}} tiedostossa",
+      "acrossFiles_other": "{{count}} tiedostossa",
+      "newestOf": "(uusimmat {{shown}}/{{total}} osumasta; rajaa suodattimilla nähdäksesi loput)",
+      "fileCount_one": "{{count}} tiedosto",
+      "fileCount_other": "{{count}} tiedostoa",
+      "couldNotDelete": "Tiedostoa ”{{title}}” ei voitu poistaa: {{error}}"
+    },
+    "adminStreamManagerPanelBatch32": {
+      "unableToLoadStreams": "Livestriimejä ei voitu ladata: {{reason}}",
+      "rotationTag": "· rotaatio",
+      "slugTotalDuration": "/c/{{slug}} · kesto yhteensä {{duration}}",
+      "listeners_one": "{{formatted}} kuuntelija",
+      "listeners_other": "{{formatted}} kuuntelijaa",
+      "peak": "huippu {{formatted}}",
+      "rotationEmpty": "24/7-rotaatio tyhjä",
+      "restartDescription": "Kanava pysyy livenä; kuuntelijat voivat yhdistää hetkeksi uudelleen.",
+      "detailsDescription": "Livekanavan /c/{{slug}} tiedot."
+    },
+    "playsTabBatch32": {
+      "peakDay_one": "Huippupäivä: {{formatted}} kuuntelija",
+      "peakDay_other": "Huippupäivä: {{formatted}} kuuntelijaa",
+      "busiestDay_one": "Vilkkain päivä: {{date}} · {{formatted}} kuuntelukerta",
+      "busiestDay_other": "Vilkkain päivä: {{date}} · {{formatted}} kuuntelukertaa",
+      "dailyActivityEmpty": "Päivittäinen aktiivisuus näkyy ensimmäisen kuuntelukerran jälkeen.",
+      "playsValue_one": "{{formatted}} kuuntelukerta",
+      "playsValue_other": "{{formatted}} kuuntelukertaa"
+    },
+    "listenerLocationsBatch32": {
+      "countriesEmpty": "Maat näkyvät, kun ihmiset kuuntelevat.",
+      "citiesEmpty_one": "Kaupungit näkyvät, kun samasta kaupungista on vähintään {{count}} kuuntelukerta.",
+      "citiesEmpty_other": "Kaupungit näkyvät, kun samasta kaupungista on vähintään {{count}} kuuntelukertaa."
+    },
+    "hourlyDialogBatch32": {
+      "title": "Kuuntelukerrat tunneittain",
+      "titleWithDate": "Kuuntelukerrat tunneittain · {{date}}",
+      "busiestHourValue": "Kuuntelukerrat vilkkaimpana tuntina",
+      "playsValue_one": "{{formatted}} kuuntelukerta",
+      "playsValue_other": "{{formatted}} kuuntelukertaa"
+    },
+    "processingFailedAlertBatch32": {
+      "failedWithReason": "Käsittely epäonnistui: {{reason}}",
+      "failedForFile": "Tämän tiedoston käsittely epäonnistui."
+    },
+    "studioEpisodeReviewViewBatch32": {
+      "renderQueued": "Renderöinti jonossa - seuraa edistymistä arkistoeditorissa.",
+      "publicDetailsSaved": "Ohjelman julkiset tiedot tallennettu.",
+      "episodeNumber": "Jakso #{{number}}",
+      "showFallback": "Ohjelma",
+      "episodeStatus": "Jakson #{{number}} tila: {{status}}."
+    },
+    "releaseStatsPanelBatch32": {
+      "downloads_one": "{{formatted}} lataus",
+      "downloads_other": "{{formatted}} latausta",
+      "noStatsYet": "Ei vielä tilastoja",
+      "playsCountLabel": "kuuntelukertaa"
+    },
+    "releaseSmartLinksPanelBatch32": {
+      "addedToRelease": "{{title}} lisätty julkaisuun.",
+      "removedFromRelease": "{{title}} poistettu julkaisusta.",
+      "missingPluginBefore": "Määritä {{services}} kohdassa",
+      "missingPluginAfter": "(tuonti, upotus tai vienti), jotta voit käyttää näiden lisäosien stream-osoitteita.",
+      "listJoinAnd": " ja ",
+      "missingUrls": "Älylinkkien osoitteita puuttuu: {{services}}.",
+      "slugPlaceholder": "polku tai koko URL",
+      "views_one": "{{count}} katselu · /r/{{slug}}",
+      "views_other": "{{count}} katselua · /r/{{slug}}",
+      "noMatchQuery": "Mikään kirjaston kohde ei vastaa hakua ”{{query}}”.",
+      "noMatch": "Mikään kirjaston kohde ei vastaa hakua."
+    },
+    "promptScoreBridgePanelBatch32": {
+      "fileTooLarge": "Tiedosto on liian suuri fraasiksi. Käytä lyhyttä MIDI-pätkää.",
+      "notMidi": "Tiedostoa ei voitu lukea MIDI-tiedostona.",
+      "fileHint": ".mid tai .midi, muutama tahti toimii parhaiten",
+      "analysed": "Analysoitu",
+      "snippetCopied": "Kehotteen pätkä kopioitu"
+    },
+    "trackAnalysisSectionBatch32": {
+      "notAnalyzedYet": "Ei vielä analysoitu",
+      "outOfDate": "Vanhentunut – tiedosto tai analyysi on muuttunut",
+      "analyzedAt": "Analysoitu {{date}} UTC",
+      "tap": "Napauta"
+    },
+    "playlistExportDialogBatch32": {
+      "title": "Vie “{{name}}”",
+      "exported_one": "Vietiin {{count}} kappale kohteeseen {{path}}",
+      "exported_other": "Vietiin {{count}} kappaletta kohteeseen {{path}}",
+      "absoluteNote": "Mukana ovat täydet polut, joten lista toimii tällä tietokoneella mutta ei koneella, jonka kansiorakenne on erilainen.",
+      "outsideRoot_one": "{{count}} tiedosto on tallennuskansion ulkopuolella ja kirjoitettiin muodossa ../ – se löytyy vain, jos kansiorakenne on muualla sama.",
+      "outsideRoot_other": "{{count}} tiedostoa on tallennuskansion ulkopuolella ja kirjoitettiin muodossa ../ – ne löytyvät vain, jos kansiorakenne on muualla sama.",
+      "otherDrive_one": "{{count}} tiedosto on toisella levyllä, ja se kirjoitettiin täytenä polkuna.",
+      "otherDrive_other": "{{count}} tiedostoa on toisella levyllä, ja ne kirjoitettiin täysinä polkuina.",
+      "relativeNote": "Kaikki tiedostot ovat tallennuskansion sisällä, joten lista toimii edelleen, jos siirrät sen yhdessä musiikin kanssa."
+    },
+    "multicastSectionBatch32": {
+      "destinationFallback": "kohde",
+      "saved": "{{name}} tallennettu.",
+      "removed": "{{name}} poistettu.",
+      "configure": "Määritä {{name}}",
+      "pasteStreamKey": "Liitä stream-avain {{name}}-hallintapaneelistasi.",
+      "chooseAnother": "← Valitse toinen kohde",
+      "keepCurrentKey": "Jätä tyhjäksi, niin nykyinen avain säilyy (···{{last4}})",
+      "thisDestination": "tämä kohde",
+      "enabledTitle": "{{name}} · käytössä",
+      "disabledTitle": "{{name}} · pois käytöstä",
+      "notConfiguredTitle": "{{name}} · ei määritetty"
+    },
+    "messageContactsBatch32": {
+      "followEachOther": "Seuraatte toisianne",
+      "showAll": "Näytä kaikki {{count}}"
+    },
+    "mapCommentFormBatch32": {
+      "yourNotes": "Muistiinpanosi",
+      "notesFor": "Muistiinpanot: “{{title}}”…",
+      "labelFor": "{{label}}: {{title}}",
+      "savedOnDevice": "Tallennettu tälle laitteelle.",
+      "persistsInBrowser": "Säilyy tässä selaimessa (localStorage)."
+    },
+    "connectedStatusBarBatch32": {
+      "tracks_one": "{{formatted}} kappale",
+      "tracks_other": "{{formatted}} kappaletta",
+      "noNotifications": "Ei uusia ilmoituksia",
+      "newNotifications_one": "{{formatted}} uusi ilmoitus",
+      "newNotifications_other": "{{formatted}} uutta ilmoitusta",
+      "noUnreadMessages": "Ei lukemattomia viestejä",
+      "unreadMessages_one": "{{formatted}} lukematon viesti",
+      "unreadMessages_other": "{{formatted}} lukematonta viestiä",
+      "localLibrary_one": "Paikallinen kirjasto: {{formatted}} kappale tällä laitteella",
+      "localLibrary_other": "Paikallinen kirjasto: {{formatted}} kappaletta tällä laitteella"
+    },
+    "channelNavigationEditorBatch32": {
+      "singleTabHint": "Välilehtipalkki näkyy vasta, kun välilehtiä on kaksi – yhdellä ei ole mitään vaihdettavaa.",
+      "multiTabHint": "Valitse, mitkä osiot näkyvät kunkin välilehden alla. Osio, jota ei ole liitetty mihinkään välilehteen, näkyy aina valitusta välilehdestä riippumatta.",
+      "tabLabel": "Välilehden {{number}} nimi",
+      "tabLabelPlaceholder": "Välilehden {{number}} nimi (esim. Julkaisut)",
+      "tabNumber": "välilehti {{number}}",
+      "removeName": "Poista {{name}}",
+      "sectionsUnder": "Osiot kohdassa {{name}}"
+    },
+    "backupRestoreDialogBatch32": {
+      "couldNotChooseFolder": "Kansiota ei voitu valita.",
+      "restored": "Palautettiin {{tracks}} ja {{playlists}}.",
+      "trackCount_one": "{{formatted}} kappale",
+      "trackCount_other": "{{formatted}} kappaletta",
+      "playlistCount_one": "{{formatted}} soittolista",
+      "playlistCount_other": "{{formatted}} soittolistaa",
+      "editCount_one": "{{formatted}} käsin muokattu tagi",
+      "editCount_other": "{{formatted}} käsin muokattua tagia",
+      "filesNotFound_one": "{{formatted}} tiedostoa ei löytynyt",
+      "filesNotFound_other": "{{formatted}} tiedostoa ei löytynyt",
+      "couldNotBeRead_one": "{{formatted}} tiedostoa ei voitu lukea",
+      "couldNotBeRead_other": "{{formatted}} tiedostoa ei voitu lukea",
+      "playlistsRenamed_one": "{{formatted}} soittolista nimettiin uudelleen, koska nimi oli varattu",
+      "playlistsRenamed_other": "{{formatted}} soittolistaa nimettiin uudelleen, koska nimi oli varattu",
+      "backupSummary": "Varmuuskopio {{date}} UTC: {{tracks}}, {{playlists}}, {{edits}}.",
+      "filesFound": "{{found}}/{{total}} tiedostoa löytyi.",
+      "filesFoundSomeMissing": "{{found}}/{{total}} tiedostoa löytyi; {{missing}} puuttuu (ne ohitetaan).",
+      "notFoundPrefix": "Ei löytynyt:",
+      "notFoundExamples": "Ei löytynyt, esimerkiksi:",
+      "restore": "Palauta"
+    },
+    "adminUserEditPanelBatch32": {
+      "roleBoard": "Hallitus",
+      "roleArtist": "Artisti",
+      "roleListener": "Kuuntelija",
+      "userDetailsSaved": "Käyttäjän tiedot tallennettu.",
+      "trackCount_one": "{{count}} kappale",
+      "trackCount_other": "{{count}} kappaletta",
+      "releaseCount_one": "{{count}} julkaisu",
+      "releaseCount_other": "{{count}} julkaisua",
+      "collectionCount_one": "{{count}} kokoelma",
+      "collectionCount_other": "{{count}} kokoelmaa",
+      "loading": "Ladataan…",
+      "unitsYtd": "yksikköä tänä vuonna",
+      "active": "aktiivista",
+      "liveHours": "{{hours}} livetuntia",
+      "listenerAccount": "Kuuntelijatili",
+      "suspendedSince": "Jäädytetty",
+      "restoreNote": ". Palauttaminen lähettää käyttäjälle kirjautumislinkin sähköpostilla.",
+      "suspensionNote": "Jäädytys estää kirjautumisen heti ja kirjataan lokiin. Käyttäjä saa perustelusi sähköpostilla ja näkee sen yrittäessään kirjautua.",
+      "profilePicture": "Käyttäjän {{name}} profiilikuva"
     }
   },
   "studioEditor": {

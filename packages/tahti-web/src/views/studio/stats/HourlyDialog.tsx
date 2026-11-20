@@ -17,8 +17,10 @@ export function HourlyDialog({ state }: { state: StatsData }) {
     >
       <Dialog.Title>
         {selectedDay
-          ? `Hourly plays · ${formatDate(selectedDay)}`
-          : 'Hourly plays'}
+          ? t('hourlyDialogBatch32.titleWithDate', {
+              date: formatDate(selectedDay),
+            })
+          : t('hourlyDialogBatch32.title')}
       </Dialog.Title>
       <Dialog.Description>
         {t('hourlyDialog.distributionOfPlaysAcrossThe')}
@@ -30,11 +32,14 @@ export function HourlyDialog({ state }: { state: StatsData }) {
           <ListeningClock
             values={hourly}
             labels={{
-              busiestHour: 'Busiest hour',
-              busiestHourValue: 'Plays in busiest hour',
+              busiestHour: t('library.busiestHour'),
+              busiestHourValue: t('hourlyDialogBatch32.busiestHourValue'),
             }}
             formatValue={(value) =>
-              `${value.toLocaleString(dateLocaleTag())} plays`
+              t('hourlyDialogBatch32.playsValue', {
+                count: value,
+                formatted: value.toLocaleString(dateLocaleTag()),
+              })
             }
             formatHour={(hour) => `${String(hour).padStart(2, '0')}:00`}
           />

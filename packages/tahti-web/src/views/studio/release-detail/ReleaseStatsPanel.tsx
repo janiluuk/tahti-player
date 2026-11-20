@@ -147,8 +147,12 @@ export function ReleaseStatsPanel({
                 id: track.id,
                 label: track.title,
                 sublabel: insights
-                  ? `${insights.totalDownloads.toLocaleString(dateLocaleTag())} downloads`
-                  : 'No stats yet',
+                  ? t('releaseStatsPanelBatch32.downloads', {
+                      count: insights.totalDownloads,
+                      formatted:
+                        insights.totalDownloads.toLocaleString(dateLocaleTag()),
+                    })
+                  : t('releaseStatsPanelBatch32.noStatsYet'),
                 value: insights?.totalPlays ?? 0,
                 onClick: () => {
                   void navigate({
@@ -165,7 +169,10 @@ export function ReleaseStatsPanel({
             <p className="text-foreground-secondary mb-4 text-sm">
               {t('releaseStatsPanel.anonymizedCountriesForThisRelease')}
             </p>
-            <ListenerWorldMap data={totals.countries} countLabel="plays" />
+            <ListenerWorldMap
+              data={totals.countries}
+              countLabel={t('releaseStatsPanelBatch32.playsCountLabel')}
+            />
           </StudioPanel>
         </>
       )}

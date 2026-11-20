@@ -67,15 +67,31 @@ export function StatusBarContent({
   className,
 }: StatusBarContentProps) {
   const { t } = useTranslation('web');
-  const soundsLabel = `${soundCount.toLocaleString(dateLocaleTag())} track${soundCount === 1 ? '' : 's'}`;
+  const soundsLabel = t('connectedStatusBarBatch32.tracks', {
+    count: soundCount,
+    formatted: soundCount.toLocaleString(dateLocaleTag()),
+  });
   const notificationsLabel =
     unreadNotifications === 0
-      ? 'No new notifications'
-      : `${unreadNotifications.toLocaleString(dateLocaleTag())} new notification${unreadNotifications === 1 ? '' : 's'}`;
+      ? t('connectedStatusBarBatch32.noNotifications')
+      : t('connectedStatusBarBatch32.newNotifications', {
+          count: unreadNotifications,
+          formatted: unreadNotifications.toLocaleString(dateLocaleTag()),
+        });
   const messagesLabel =
     unreadMessages === 0
-      ? 'No unread messages'
-      : `${unreadMessages.toLocaleString(dateLocaleTag())} unread message${unreadMessages === 1 ? '' : 's'}`;
+      ? t('connectedStatusBarBatch32.noUnreadMessages')
+      : t('connectedStatusBarBatch32.unreadMessages', {
+          count: unreadMessages,
+          formatted: unreadMessages.toLocaleString(dateLocaleTag()),
+        });
+  const localLibraryLabel =
+    localTrackCount == null
+      ? ''
+      : t('connectedStatusBarBatch32.localLibrary', {
+          count: localTrackCount,
+          formatted: localTrackCount.toLocaleString(dateLocaleTag()),
+        });
 
   return (
     <div
@@ -149,15 +165,12 @@ export function StatusBarContent({
           </Tooltip>
         ) : null}
         {localTrackCount != null ? (
-          <Tooltip
-            content={`Local library: ${localTrackCount.toLocaleString(dateLocaleTag())} track${localTrackCount === 1 ? '' : 's'} on this device`}
-            side="top"
-          >
+          <Tooltip content={localLibraryLabel} side="top">
             <span
               className="text-foreground-secondary inline-flex items-center gap-1.5 px-1.5 py-1"
               data-testid="status-bar-local-library"
               role="img"
-              aria-label={`Local library: ${localTrackCount.toLocaleString(dateLocaleTag())} tracks on this device`}
+              aria-label={localLibraryLabel}
             >
               <FolderIcon size={16} aria-hidden />
               <span className="tabular-nums">

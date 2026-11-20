@@ -14,7 +14,7 @@ const VISIBLE_CONTACTS = 12;
 
 const relation = (contact: MessageContact) =>
   contact.followsYou && contact.followedByYou
-    ? 'You follow each other'
+    ? webT()('messageContactsBatch32.followEachOther')
     : contact.followsYou
       ? webT()('messageContactsStates.followsYou')
       : webT()('messageContactsStates.youFollow');
@@ -97,7 +97,7 @@ export function MessageContacts({
           className="self-start"
           onClick={() => setShowAll(true)}
         >
-          Show all {contacts.length}
+          {t('messageContactsBatch32.showAll', { count: contacts.length })}
         </Button>
       ) : null}
     </section>

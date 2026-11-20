@@ -14384,6 +14384,254 @@
       "sharedWithFans": "{{name}} shares this track with their fan subscribers.",
       "signInIfYouHaveAccess": "Sign in to listen if you already have access.",
       "moreFrom": "More from {{artist}}"
+    },
+    "greenRoomSessionPanelBatch32": {
+      "sourceModerator": "Moderator",
+      "sourceFanSub": "Fan subscriber",
+      "sourceManual": "Invited",
+      "sourcePublic": "Public",
+      "guestsJoinAt": "Guests join at {{url}}"
+    },
+    "mikseriImportPanelBatch32": {
+      "invalidTrack": "Paste a Mikseri track page, official track embed, or numeric track ID.",
+      "confirmRights": "Confirm that you own the track or have permission to embed it.",
+      "added": "{{title}} added from Mikseri.net.",
+      "removed": "{{title}} removed."
+    },
+    "pressKitSectionBatch32": {
+      "choosePhotos": "Choose photos",
+      "readyToUpload": "Ready to upload",
+      "photosInKit": "{{selected}} of {{max}} photos in the press kit · choosing another drops the oldest choice",
+      "imageFallback": "image {{position}}",
+      "includeImage": "Include {{name}} in press kit",
+      "artistFallback": "Artist"
+    },
+    "gallerySectionBatch32": {
+      "chooseImages": "Choose images",
+      "readyToUpload": "Ready to upload"
+    },
+    "studioUpdatesViewBatch32": {
+      "artistFallback": "Artist",
+      "queuedSend_one": "Queued send to {{count}} subscriber.",
+      "queuedSend_other": "Queued send to {{count}} subscribers.",
+      "sendQueued": "Send queued.",
+      "sentAt": ", sent {{date}}",
+      "draft": ", draft"
+    },
+    "grantReportAttributionToggleBatch32": {
+      "label": "Show my name in the annual grant report"
+    },
+    "socialPostNowBatch32": {
+      "stateSent": "Sent",
+      "stateQueued": "Queued",
+      "stateFailed": "Failed",
+      "triggerManual": "Posted by hand",
+      "triggerReleasePublished": "New release",
+      "triggerChannelLive": "Went live",
+      "queuing": "Queuing…",
+      "postTo": "Post to {{platform}}",
+      "fetchFailed": "fetch failed"
+    },
+    "storageSharedBatch32": {
+      "localDisk": "Local disk",
+      "objectStorageR2": "Object storage (R2)",
+      "notTrackedYet": "Not tracked yet",
+      "titleUsed": "{{title}} used"
+    },
+    "storageOverviewTabBatch32": {
+      "unlimitedQuota": "unlimited quota",
+      "totalUsage": "Total usage",
+      "breakdownLabel": "File type storage breakdown totaling {{total}}",
+      "usedOfQuota": "{{used}} of {{quota}}"
+    },
+    "filesBrowserTabBatch32": {
+      "updatedFiles_one": "Updated {{count}} file.",
+      "updatedFiles_other": "Updated {{count}} files.",
+      "deletedFiles_one": "Deleted {{count}} file.",
+      "deletedFiles_other": "Deleted {{count}} files.",
+      "keptFiles_one": "{{count}} could not be deleted, for example because of a linked Mixcloud upload.",
+      "keptFiles_other": "{{count}} could not be deleted, for example because of a linked Mixcloud upload.",
+      "totalSize": "Total size:",
+      "acrossFiles_one": "across {{count}} file",
+      "acrossFiles_other": "across {{count}} files",
+      "newestOf": "(the newest {{shown}} of {{total}} matching; narrow the filters to see the rest)",
+      "fileCount_one": "{{count}} file",
+      "fileCount_other": "{{count}} files",
+      "couldNotDelete": "Could not delete \"{{title}}\": {{error}}"
+    },
+    "adminStreamManagerPanelBatch32": {
+      "unableToLoadStreams": "Unable to load live streams: {{reason}}",
+      "rotationTag": "· rotation",
+      "slugTotalDuration": "/c/{{slug}} · total duration {{duration}}",
+      "listeners_one": "{{formatted}} listener",
+      "listeners_other": "{{formatted}} listeners",
+      "peak": "{{formatted}} peak",
+      "rotationEmpty": "24/7 rotation empty",
+      "restartDescription": "The channel stays live; listeners may briefly reconnect.",
+      "detailsDescription": "Live channel details for /c/{{slug}}."
+    },
+    "playsTabBatch32": {
+      "peakDay_one": "Peak day: {{formatted}} listener",
+      "peakDay_other": "Peak day: {{formatted}} listeners",
+      "busiestDay_one": "Busiest day: {{date}} · {{formatted}} play",
+      "busiestDay_other": "Busiest day: {{date}} · {{formatted}} plays",
+      "dailyActivityEmpty": "Daily activity appears after your first play.",
+      "playsValue_one": "{{formatted}} play",
+      "playsValue_other": "{{formatted}} plays"
+    },
+    "listenerLocationsBatch32": {
+      "countriesEmpty": "Countries show as people listen.",
+      "citiesEmpty_one": "Cities show once at least {{count}} listen shares one.",
+      "citiesEmpty_other": "Cities show once at least {{count}} listens share one."
+    },
+    "hourlyDialogBatch32": {
+      "title": "Hourly plays",
+      "titleWithDate": "Hourly plays · {{date}}",
+      "busiestHourValue": "Plays in busiest hour",
+      "playsValue_one": "{{formatted}} play",
+      "playsValue_other": "{{formatted}} plays"
+    },
+    "processingFailedAlertBatch32": {
+      "failedWithReason": "Processing failed: {{reason}}",
+      "failedForFile": "Processing failed for this file."
+    },
+    "studioEpisodeReviewViewBatch32": {
+      "renderQueued": "Render queued — check the archive editor for progress.",
+      "publicDetailsSaved": "Public show details saved.",
+      "episodeNumber": "Episode #{{number}}",
+      "showFallback": "Show",
+      "episodeStatus": "Episode #{{number}} is {{status}}."
+    },
+    "releaseStatsPanelBatch32": {
+      "downloads_one": "{{formatted}} download",
+      "downloads_other": "{{formatted}} downloads",
+      "noStatsYet": "No stats yet",
+      "playsCountLabel": "plays"
+    },
+    "releaseSmartLinksPanelBatch32": {
+      "addedToRelease": "{{title}} added to release.",
+      "removedFromRelease": "{{title}} removed from the release.",
+      "missingPluginBefore": "Set {{services}} in",
+      "missingPluginAfter": "(import, embed, or export) to use those add-on stream URLs.",
+      "listJoinAnd": " and ",
+      "missingUrls": "Missing smart-link URLs: {{services}}.",
+      "slugPlaceholder": "slug or full URL",
+      "views_one": "{{count}} view · /r/{{slug}}",
+      "views_other": "{{count}} views · /r/{{slug}}",
+      "noMatchQuery": "No library items match “{{query}}”.",
+      "noMatch": "No library items match."
+    },
+    "promptScoreBridgePanelBatch32": {
+      "fileTooLarge": "That file is too large for a phrase. Use a short MIDI clip.",
+      "notMidi": "This file could not be read as MIDI.",
+      "fileHint": ".mid or .midi, a few bars works best",
+      "analysed": "Analysed",
+      "snippetCopied": "Prompt snippet copied"
+    },
+    "trackAnalysisSectionBatch32": {
+      "notAnalyzedYet": "Not analyzed yet",
+      "outOfDate": "Out of date — the file or the analysis changed",
+      "analyzedAt": "Analyzed {{date}} UTC",
+      "tap": "Tap"
+    },
+    "playlistExportDialogBatch32": {
+      "title": "Export “{{name}}”",
+      "exported_one": "Exported {{count}} track to {{path}}",
+      "exported_other": "Exported {{count}} tracks to {{path}}",
+      "absoluteNote": "Full paths were written, so the list works on this computer but not on one with a different folder layout.",
+      "outsideRoot_one": "{{count}} file is outside the folder you saved to and is written with ../ — it only resolves if that folder layout is the same elsewhere.",
+      "outsideRoot_other": "{{count}} files are outside the folder you saved to and are written with ../ — they only resolve if that folder layout is the same elsewhere.",
+      "otherDrive_one": "{{count}} file is on another drive and was written as full paths.",
+      "otherDrive_other": "{{count}} files are on another drive and were written as full paths.",
+      "relativeNote": "Every file sits inside the folder you saved to, so the list keeps working if you move it together with the music."
+    },
+    "multicastSectionBatch32": {
+      "destinationFallback": "destination",
+      "saved": "Saved {{name}}.",
+      "removed": "Removed {{name}}.",
+      "configure": "Configure {{name}}",
+      "pasteStreamKey": "Paste the stream key from your {{name}} dashboard.",
+      "chooseAnother": "← Choose another destination",
+      "keepCurrentKey": "Leave blank to keep the current key (···{{last4}})",
+      "thisDestination": "this destination",
+      "enabledTitle": "{{name}} · enabled",
+      "disabledTitle": "{{name}} · disabled",
+      "notConfiguredTitle": "{{name}} · not configured"
+    },
+    "messageContactsBatch32": {
+      "followEachOther": "You follow each other",
+      "showAll": "Show all {{count}}"
+    },
+    "mapCommentFormBatch32": {
+      "yourNotes": "Your notes",
+      "notesFor": "Notes for “{{title}}”…",
+      "labelFor": "{{label}} for {{title}}",
+      "savedOnDevice": "Saved on this device.",
+      "persistsInBrowser": "Persists in this browser (localStorage)."
+    },
+    "connectedStatusBarBatch32": {
+      "tracks_one": "{{formatted}} track",
+      "tracks_other": "{{formatted}} tracks",
+      "noNotifications": "No new notifications",
+      "newNotifications_one": "{{formatted}} new notification",
+      "newNotifications_other": "{{formatted}} new notifications",
+      "noUnreadMessages": "No unread messages",
+      "unreadMessages_one": "{{formatted}} unread message",
+      "unreadMessages_other": "{{formatted}} unread messages",
+      "localLibrary_one": "Local library: {{formatted}} track on this device",
+      "localLibrary_other": "Local library: {{formatted}} tracks on this device"
+    },
+    "channelNavigationEditorBatch32": {
+      "singleTabHint": "The tab bar only shows once there's a second tab — with just one, there's nothing to switch between.",
+      "multiTabHint": "Pick which sections appear under each tab. A section left unassigned to every tab always shows, no matter which tab is active.",
+      "tabLabel": "Tab {{number}} label",
+      "tabLabelPlaceholder": "Tab {{number}} label (e.g. Releases)",
+      "tabNumber": "tab {{number}}",
+      "removeName": "Remove {{name}}",
+      "sectionsUnder": "Sections shown under {{name}}"
+    },
+    "backupRestoreDialogBatch32": {
+      "couldNotChooseFolder": "Could not choose a folder.",
+      "restored": "Restored {{tracks}} and {{playlists}}.",
+      "trackCount_one": "{{formatted}} track",
+      "trackCount_other": "{{formatted}} tracks",
+      "playlistCount_one": "{{formatted}} playlist",
+      "playlistCount_other": "{{formatted}} playlists",
+      "editCount_one": "{{formatted}} hand-edited tag",
+      "editCount_other": "{{formatted}} hand-edited tags",
+      "filesNotFound_one": "{{formatted}} file was not found",
+      "filesNotFound_other": "{{formatted}} files were not found",
+      "couldNotBeRead_one": "{{formatted}} could not be read",
+      "couldNotBeRead_other": "{{formatted}} could not be read",
+      "playlistsRenamed_one": "{{formatted}} playlist was renamed because the name was taken",
+      "playlistsRenamed_other": "{{formatted}} playlists were renamed because the name was taken",
+      "backupSummary": "Backup from {{date}} UTC: {{tracks}}, {{playlists}}, {{edits}}.",
+      "filesFound": "{{found}} of {{total}} files found.",
+      "filesFoundSomeMissing": "{{found}} of {{total}} files found; {{missing}} not found (they will be skipped).",
+      "notFoundPrefix": "Not found:",
+      "notFoundExamples": "Not found, for example:",
+      "restore": "Restore"
+    },
+    "adminUserEditPanelBatch32": {
+      "roleBoard": "Board",
+      "roleArtist": "Artist",
+      "roleListener": "Listener",
+      "userDetailsSaved": "User details saved.",
+      "trackCount_one": "{{count}} track",
+      "trackCount_other": "{{count}} tracks",
+      "releaseCount_one": "{{count}} release",
+      "releaseCount_other": "{{count}} releases",
+      "collectionCount_one": "{{count}} collection",
+      "collectionCount_other": "{{count}} collections",
+      "loading": "Loading…",
+      "unitsYtd": "units YTD",
+      "active": "active",
+      "liveHours": "{{hours}} live hours",
+      "listenerAccount": "Listener account",
+      "suspendedSince": "Suspended",
+      "restoreNote": ". Restoring it emails them a sign-in link.",
+      "suspensionNote": "Suspension blocks sign-in immediately and is audited. They are emailed your reason, and see it when they try to sign in.",
+      "profilePicture": "{{name}} profile picture"
     }
   },
   "studioEditor": {

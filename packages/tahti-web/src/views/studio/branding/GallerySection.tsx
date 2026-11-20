@@ -103,8 +103,8 @@ export function GallerySection({ kit }: { kit: PressKitState }) {
             labels={{
               title: t('gallerySection.dropGalleryImagesHere'),
               description: t('gallerySection.jpegPngOrWebp'),
-              browse: 'Choose images',
-              selected: 'Ready to upload',
+              browse: t('gallerySectionBatch32.chooseImages'),
+              selected: t('gallerySectionBatch32.readyToUpload'),
             }}
             onFiles={(files) => {
               setSelectedGalleryFiles(Array.from(files));

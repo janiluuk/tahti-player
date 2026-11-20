@@ -30,20 +30,26 @@ const PLATFORM_KEYS: Record<SocialPostPlatform, keyof SocialAutoPostSettings> =
     INSTAGRAM: 'instagram',
   };
 
-const STATE_BADGE: Record<
+const STATE_BADGE = {
+  SENT: { label: 'socialPostNowBatch32.stateSent', color: 'green' },
+  PENDING: { label: 'socialPostNowBatch32.stateQueued', color: 'orange' },
+  FAILED: { label: 'socialPostNowBatch32.stateFailed', color: 'red' },
+} as const satisfies Record<
   SocialPostLog['state'],
   { label: string; color: 'green' | 'orange' | 'red' }
-> = {
-  SENT: { label: 'Sent', color: 'green' },
-  PENDING: { label: 'Queued', color: 'orange' },
-  FAILED: { label: 'Failed', color: 'red' },
-};
+>;
 
-const TRIGGER_LABEL: Record<string, string> = {
-  manual: 'Posted by hand',
-  release_published: 'New release',
-  channel_live: 'Went live',
-};
+const TRIGGER_LABEL_KEYS = {
+  manual: 'socialPostNowBatch32.triggerManual',
+  release_published: 'socialPostNowBatch32.triggerReleasePublished',
+  channel_live: 'socialPostNowBatch32.triggerChannelLive',
+} as const;
+
+function isKnownTrigger(
+  trigger: string,
+): trigger is keyof typeof TRIGGER_LABEL_KEYS {
+  return Object.hasOwn(TRIGGER_LABEL_KEYS, trigger);
+}
 
 export function connectedPlatforms(
   settings: SocialAutoPostSettings,
@@ -72,7 +78,9 @@ export function SocialPostNow({
     void fetchSocialPosts().then((result) => {
       setPosts(result.data);
       setPostsError(
-        result.data === null ? (result.meta.reason ?? 'fetch failed') : null,
+        result.data === null
+          ? (result.meta.reason ?? t('socialPostNowBatch32.fetchFailed'))
+          : null,
       );
     });
   };
@@ -145,7 +153,11 @@ export function SocialPostNow({
               type="submit"
             >
               <SendIcon size={14} aria-hidden className="mr-1.5" />
-              {posting ? 'Queuing…' : `Post to ${PLATFORM_NAMES[selected]}`}
+              {posting
+                ? t('socialPostNowBatch32.queuing')
+                : t('socialPostNowBatch32.postTo', {
+                    platform: PLATFORM_NAMES[selected],
+                  })}
             </Button>
           </div>
         </form>
@@ -164,11 +176,14 @@ export function SocialPostNow({
               <li key={post.id} className="flex flex-col gap-1 py-2">
                 <span className="flex flex-wrap items-center gap-2">
                   <Badge variant="pill" color={STATE_BADGE[post.state].color}>
-                    {STATE_BADGE[post.state].label}
+                    {t(STATE_BADGE[post.state].label)}
                   </Badge>
                   <span className="text-foreground-secondary text-xs">
                     {PLATFORM_NAMES[post.platform]} ·{' '}
-                    {TRIGGER_LABEL[post.trigger] ?? post.trigger} ·{' '}
+                    {isKnownTrigger(post.trigger)
+                      ? t(TRIGGER_LABEL_KEYS[post.trigger])
+                      : post.trigger}{' '}
+                    ·{' '}
                     {new Date(post.sentAt ?? post.createdAt).toLocaleString(
                       dateLocaleTag(),
                     )}

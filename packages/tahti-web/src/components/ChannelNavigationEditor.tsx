@@ -21,11 +21,11 @@ export function ChannelNavigationEditor({
 }) {
   const { t } = useTranslation('web');
   const updateLabel = (index: number, label: string) => {
-    onChange(tabs.map((t, i) => (i === index ? { ...t, label } : t)));
+    onChange(tabs.map((tab, i) => (i === index ? { ...tab, label } : tab)));
   };
 
   const updateItemIds = (index: number, itemIds: string[]) => {
-    onChange(tabs.map((t, i) => (i === index ? { ...t, itemIds } : t)));
+    onChange(tabs.map((tab, i) => (i === index ? { ...tab, itemIds } : tab)));
   };
 
   const removeTab = (index: number) => {
@@ -43,8 +43,8 @@ export function ChannelNavigationEditor({
     <div className="flex flex-col gap-4">
       <p className="text-foreground-secondary text-xs">
         {tabs.length <= 1
-          ? "The tab bar only shows once there's a second tab — with just one, there's nothing to switch between."
-          : 'Pick which sections appear under each tab. A section left unassigned to every tab always shows, no matter which tab is active.'}
+          ? t('channelNavigationEditorBatch32.singleTabHint')
+          : t('channelNavigationEditorBatch32.multiTabHint')}
       </p>
       {tabs.map((tab, i) => (
         <div
@@ -53,9 +53,16 @@ export function ChannelNavigationEditor({
         >
           <div className="flex items-center gap-1.5">
             <Input
-              aria-label={`Tab ${i + 1} label`}
+              aria-label={t('channelNavigationEditorBatch32.tabLabel', {
+                number: i + 1,
+              })}
               size="sm"
-              placeholder={`Tab ${i + 1} label (e.g. Releases)`}
+              placeholder={t(
+                'channelNavigationEditorBatch32.tabLabelPlaceholder',
+                {
+                  number: i + 1,
+                },
+              )}
               value={tab.label}
               maxLength={24}
               onChange={(e) => updateLabel(i, e.target.value)}
@@ -69,7 +76,13 @@ export function ChannelNavigationEditor({
                 type="button"
                 size="icon-sm"
                 variant="text"
-                aria-label={`Remove ${tab.label || `tab ${i + 1}`}`}
+                aria-label={t('channelNavigationEditorBatch32.removeName', {
+                  name:
+                    tab.label ||
+                    t('channelNavigationEditorBatch32.tabNumber', {
+                      number: i + 1,
+                    }),
+                })}
                 onClick={() => removeTab(i)}
               >
                 <Trash2Icon
@@ -86,7 +99,13 @@ export function ChannelNavigationEditor({
               items={candidateItems}
               selected={tab.itemIds}
               onChange={(itemIds) => updateItemIds(i, itemIds)}
-              aria-label={`Sections shown under ${tab.label || `tab ${i + 1}`}`}
+              aria-label={t('channelNavigationEditorBatch32.sectionsUnder', {
+                name:
+                  tab.label ||
+                  t('channelNavigationEditorBatch32.tabNumber', {
+                    number: i + 1,
+                  }),
+              })}
             />
           ) : (
             <p className="text-foreground-secondary text-xs">

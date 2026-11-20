@@ -27,12 +27,12 @@ import { GreenRoomInviteForm } from './GreenRoomInviteForm';
 
 const REFRESH_MS = 20_000;
 
-const SOURCE_LABEL: Record<GreenRoomInvite['source'], string> = {
-  MODERATOR: 'Moderator',
-  FAN_SUB: 'Fan subscriber',
-  MANUAL: 'Invited',
-  PUBLIC: 'Public',
-};
+const SOURCE_LABEL_KEYS = {
+  MODERATOR: 'greenRoomSessionPanelBatch32.sourceModerator',
+  FAN_SUB: 'greenRoomSessionPanelBatch32.sourceFanSub',
+  MANUAL: 'greenRoomSessionPanelBatch32.sourceManual',
+  PUBLIC: 'greenRoomSessionPanelBatch32.sourcePublic',
+} as const satisfies Record<GreenRoomInvite['source'], string>;
 
 /** The green room of the broadcast in progress: open it, see who's been
  * invited and who has joined, and take guests off the list. */
@@ -142,7 +142,9 @@ export function GreenRoomSessionPanel() {
           {session.enabled && guestUrl ? (
             <div className="flex items-center gap-2 text-xs">
               <span className="text-foreground-secondary min-w-0 flex-1 truncate">
-                Guests join at {guestUrl}
+                {t('greenRoomSessionPanelBatch32.guestsJoinAt', {
+                  url: guestUrl,
+                })}
               </span>
               <CopyButton
                 text={guestUrl}
@@ -169,7 +171,7 @@ export function GreenRoomSessionPanel() {
                       {invite.displayName || invite.username}
                     </span>
                     <Badge variant="pill" color="secondary">
-                      {SOURCE_LABEL[invite.source]}
+                      {t(SOURCE_LABEL_KEYS[invite.source])}
                     </Badge>
                     <Badge
                       variant="pill"

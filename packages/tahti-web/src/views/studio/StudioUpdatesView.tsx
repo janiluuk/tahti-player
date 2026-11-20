@@ -77,7 +77,10 @@ export function StudioUpdatesView({
   const isEmpty = posts.length === 0 && drafts.length === 0;
   const storyAuthor = {
     username: user?.username ?? 'artist',
-    displayName: user?.displayName || user?.username || 'Artist',
+    displayName:
+      user?.displayName ||
+      user?.username ||
+      t('studioUpdatesViewBatch32.artistFallback'),
     avatarUrl: user?.avatarUrl ?? null,
   };
 
@@ -123,8 +126,8 @@ export function StudioUpdatesView({
       }
       toast.success(
         r.queued != null
-          ? `Queued send to ${r.queued} subscribers.`
-          : 'Send queued.',
+          ? t('studioUpdatesViewBatch32.queuedSend', { count: r.queued })
+          : t('studioUpdatesViewBatch32.sendQueued'),
       );
       reload();
     } catch {
@@ -233,7 +236,12 @@ export function StudioUpdatesView({
                           }
                           authorAvatarSrc={storyAuthor.avatarUrl}
                           onOpen={() => setPreviewPost(p)}
-                          openLabel={`Preview ${postTitle}`}
+                          openLabel={t(
+                            'studioUpdatesViewLabels.previewPosttitle',
+                            {
+                              postTitle,
+                            },
+                          )}
                         />
                         <div className="flex shrink-0 gap-1">
                           <Button
@@ -316,8 +324,12 @@ export function StudioUpdatesView({
                             : t('studioUpdatesViewStates.allSubscribers')}
                           {d.state ? `, ${d.state}` : ''}
                           {d.sentAt
-                            ? `, sent ${new Date(d.sentAt).toLocaleString(dateLocaleTag())}`
-                            : ', draft'}
+                            ? t('studioUpdatesViewBatch32.sentAt', {
+                                date: new Date(d.sentAt).toLocaleString(
+                                  dateLocaleTag(),
+                                ),
+                              })
+                            : t('studioUpdatesViewBatch32.draft')}
                         </p>
                         {newsletterDeliverySummary(d.delivery) ? (
                           <p className="text-foreground-secondary mt-0.5 text-xs">

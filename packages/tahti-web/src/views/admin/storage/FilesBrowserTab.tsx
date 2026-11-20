@@ -394,16 +394,16 @@ export function FilesBrowserTab() {
           onApplied={(updated) => {
             setSelectedIds(new Set());
             setNotice(
-              `Updated ${updated} ${updated === 1 ? 'file' : 'files'}.`,
+              t('filesBrowserTabBatch32.updatedFiles', { count: updated }),
             );
             reload();
           }}
           onDeleted={(deleted, kept) => {
             setSelectedIds(new Set());
             setNotice(
-              `Deleted ${deleted} ${deleted === 1 ? 'file' : 'files'}.` +
+              t('filesBrowserTabBatch32.deletedFiles', { count: deleted }) +
                 (kept > 0
-                  ? ` ${kept} could not be deleted, for example because of a linked Mixcloud upload.`
+                  ? ` ${t('filesBrowserTabBatch32.keptFiles', { count: kept })}`
                   : ''),
             );
             reload();
@@ -419,14 +419,18 @@ export function FilesBrowserTab() {
 
       {!loading && sortedFiles.length > 0 ? (
         <div className="text-foreground-secondary text-xs">
-          Total size:{' '}
+          {t('filesBrowserTabBatch32.totalSize')}{' '}
           <span className="text-foreground font-semibold">
             {formatBytes(totalSizeBytes)}
           </span>{' '}
-          across {sortedFiles.length}{' '}
-          {sortedFiles.length === 1 ? 'file' : 'files'}
+          {t('filesBrowserTabBatch32.acrossFiles', {
+            count: sortedFiles.length,
+          })}
           {total > sortedFiles.length
-            ? ` (the newest ${sortedFiles.length} of ${total} matching; narrow the filters to see the rest)`
+            ? ` ${t('filesBrowserTabBatch32.newestOf', {
+                shown: sortedFiles.length,
+                total,
+              })}`
             : ''}
         </div>
       ) : null}
@@ -469,8 +473,10 @@ export function FilesBrowserTab() {
                       </span>
                     </Link>
                     <span className="text-foreground-secondary shrink-0 text-xs">
-                      {g.fileCount} {g.fileCount === 1 ? 'file' : 'files'} ·{' '}
-                      {formatBytes(g.totalBytes)}
+                      {t('filesBrowserTabBatch32.fileCount', {
+                        count: g.fileCount,
+                      })}{' '}
+                      · {formatBytes(g.totalBytes)}
                     </span>
                   </div>
                   <ul className="divide-border [&>li:nth-child(even)]:bg-background-secondary/40 divide-y">
@@ -573,7 +579,12 @@ export function FilesBrowserTab() {
           }
           void deleteAdminFile(file.id).then((result) => {
             if (!result.ok) {
-              setNotice(`Could not delete "${file.title}": ${result.error}`);
+              setNotice(
+                t('filesBrowserTabBatch32.couldNotDelete', {
+                  title: file.title,
+                  error: result.error,
+                }),
+              );
             }
             reload();
           });

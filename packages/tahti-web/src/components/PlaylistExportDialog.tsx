@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, Dialog, FilterChips, Loader } from '@tahti-player/ui';
 
 import type {
@@ -10,36 +10,44 @@ import type {
   NativePlaylistSummary,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
+import { webT } from '../lib/webT';
 
 /** What the finished export means for moving the file, in plain words. */
 export function describeExport(
   result: NativeExportResult,
   style: NativeExportStyle,
+  t: TFunction<'web'> = webT(),
 ): { title: string; description?: string } {
-  const title = `Exported ${result.written} ${result.written === 1 ? 'track' : 'tracks'} to ${result.path}`;
+  const title = t('playlistExportDialogBatch32.exported', {
+    count: result.written,
+    path: result.path,
+  });
   if (style === 'absolute') {
     return {
       title,
-      description:
-        'Full paths were written, so the list works on this computer but not on one with a different folder layout.',
+      description: t('playlistExportDialogBatch32.absoluteNote'),
     };
   }
   const notes: string[] = [];
   if (result.outsideRoot > 0) {
     notes.push(
-      `${result.outsideRoot} ${result.outsideRoot === 1 ? 'file is' : 'files are'} outside the folder you saved to and ${result.outsideRoot === 1 ? 'is' : 'are'} written with ../ — ${result.outsideRoot === 1 ? 'it only resolves' : 'they only resolve'} if that folder layout is the same elsewhere.`,
+      t('playlistExportDialogBatch32.outsideRoot', {
+        count: result.outsideRoot,
+      }),
     );
   }
   if (result.absoluteFallback > 0) {
     notes.push(
-      `${result.absoluteFallback} ${result.absoluteFallback === 1 ? 'file is' : 'files are'} on another drive and ${result.absoluteFallback === 1 ? 'was' : 'were'} written as full paths.`,
+      t('playlistExportDialogBatch32.otherDrive', {
+        count: result.absoluteFallback,
+      }),
     );
   }
   return {
     title,
     description: notes.length
       ? notes.join(' ')
-      : 'Every file sits inside the folder you saved to, so the list keeps working if you move it together with the music.',
+      : t('playlistExportDialogBatch32.relativeNote'),
   };
 }
 
@@ -63,7 +71,7 @@ export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
     try {
       const result = await library.playlists.exportM3u(playlist.id, style);
       if (result) {
-        const message = describeExport(result, style);
+        const message = describeExport(result, style, t);
         toast.success(message.title, { description: message.description });
         onClose();
       }
@@ -83,7 +91,9 @@ export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
       isOpen={playlist !== null}
       onClose={() => (busy ? undefined : onClose())}
     >
-      <Dialog.Title>Export “{playlist?.name}”</Dialog.Title>
+      <Dialog.Title>
+        {t('playlistExportDialogBatch32.title', { name: playlist?.name ?? '' })}
+      </Dialog.Title>
       <Dialog.Description>
         {t('playlistExportDialog.savesAnM3u8FileUtf')}
       </Dialog.Description>
