@@ -29,7 +29,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [hearthis-collection-live-run.md](hearthis-collection-live-run.md) | One live tahti hearthis collection run |
 | open    | [artwork-preset-backfill.md](artwork-preset-backfill.md) | Run the artwork-preset cover backfill after tahti-org#1033 is merged |
 | open    | [listings-news-opening-post.md](listings-news-opening-post.md) | Update the listings news opening post once an admin is signed in |
-| partial | [finnish-api-notifications.md](finnish-api-notifications.md) | Language panel persists uiLocale; left: remaining API notification templates (org) |
 | open    | [board-track-edit-product-call.md](board-track-edit-product-call.md) | Decide how board members edit a track |
 | open    | [embed-downloads-product-call.md](embed-downloads-product-call.md) | Decide whether an embed offers downloads |
 | open    | [artist-groups-org-e2e.md](artist-groups-org-e2e.md) | Ship the org side of artist groups and cover it with e2e |
@@ -49,7 +48,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Library Playlists + Go live takeover shipped (next-30); left: Go live stepper polish |
-| partial | [finnish-localization.md](finnish-localization.md) | UI Finnish largely shipped; left: API notification bodies (blocked — see finnish-api-notifications.md) |
+| partial | [finnish-localization.md](finnish-localization.md) | UI Finnish largely shipped; API notification bodies done in org; left: leftover chrome / legal / brands |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; stage embed stays one widget (0.0.376); left: embed downloads (product call) |
 | partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Library Playlists + Go live takeover (next-30); left: phase 3 Go live stepper polish |

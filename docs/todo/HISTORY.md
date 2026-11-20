@@ -1,3 +1,9 @@
+## 2026-11-20 — API notification bodies (org FI/EN)
+
+Org stores in-app notification title/body in the recipient’s `uiLocale`.
+Folded `finnish-api-notifications.md`; Language panel + hydrate already
+shipped. `finnish-localization.md` left open for leftover UI chrome.
+
 ## 2026-11-20 — Listen news first + mobile bottom menu + Finnish batch 31
 
 Listen puts the Latest news widget block first by default (above the radio row
