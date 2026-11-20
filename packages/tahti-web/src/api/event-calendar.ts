@@ -44,7 +44,7 @@ function errorText(err: unknown, fallback: string) {
 function mockCalendarRows(): CalendarEvent[] {
   const base = Date.now();
   const shifted = mockEvents.map((event, index) => {
-    const startAt = new Date(base + (index * 4 - 6) * DAY).toISOString();
+    const startAt = new Date(base + (index * 4 + 2) * DAY).toISOString();
     return { ...event, ...MOCK_HOST, startAt, endAt: null };
   });
   return [
@@ -56,7 +56,7 @@ function mockCalendarRows(): CalendarEvent[] {
         description: 'Back-to-back closing set on the roof terrace.',
         place: 'Kaiku',
         location: 'Helsinki, Finland',
-        startAt: new Date(base + 2 * DAY).toISOString(),
+        startAt: new Date(base + 3 * DAY).toISOString(),
         status: 'PUBLISHED',
       }),
       artistDisplayName: 'Northern Lights',

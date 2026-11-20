@@ -56,23 +56,17 @@ test('artist: Broadcast agenda chips filter the Coming up list', async ({
   }
 });
 
-test('artist: Go live opens from the Broadcast hub and the sub-nav moves between Broadcast pages', async ({
+test('artist: Go live opens from the Broadcast hub as a takeover', async ({
   page,
 }) => {
   await open(page, '/studio/broadcast');
   await page.getByRole('main').getByRole('link', { name: 'Go live' }).click();
   await expect(page).toHaveURL(/\/studio\/go-live/);
-  const broadcast = page.getByRole('navigation', { name: 'Broadcast pages' });
-  await expect(broadcast.getByRole('link')).toHaveText([
-    'Go live',
-    'Schedule',
-    'Shows',
-    'Channel',
-  ]);
+  // Go live hides Studio chrome (no Broadcast pages sub-nav).
   await expect(
-    broadcast.getByRole('link', { name: 'Go live' }),
-  ).toHaveAttribute('aria-current', 'page');
-  await broadcast.getByRole('link', { name: 'Schedule' }).click();
+    page.getByRole('navigation', { name: 'Broadcast pages' }),
+  ).toHaveCount(0);
+  await open(page, '/studio/schedule');
   await expect(page).toHaveURL(/\/studio\/schedule$/);
   await page
     .getByRole('navigation', { name: 'Studio pages' })
