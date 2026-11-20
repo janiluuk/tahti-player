@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import {
+  useTranslation,
+  type ParseKeys,
+  type TFunction,
+} from '@tahti-player/i18n';
 import { Badge, Button, InlineError, Select, Textarea } from '@tahti-player/ui';
 
 import {
@@ -15,49 +19,62 @@ import { dateLocaleTag } from '../../lib/locale';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import { StudioPanel } from '../StudioPanel';
 
-const TYPE_LABELS: Record<AccountRestrictionType, string> = {
-  LOGIN: 'Sign-in',
-  UPLOAD: 'Uploads',
-  LIVE_SHOW_BOOKING: 'Live show booking',
-};
+const TYPE_LABEL_KEYS = {
+  LOGIN: 'adminUserRestrictionsPanelBatch31.typeLogin',
+  UPLOAD: 'adminUserRestrictionsPanelBatch31.typeUpload',
+  LIVE_SHOW_BOOKING: 'adminUserRestrictionsPanelBatch31.typeLiveShowBooking',
+} as const satisfies Record<AccountRestrictionType, ParseKeys<'web'>>;
 
-const TYPE_HELP: Record<AccountRestrictionType, string> = {
-  LOGIN:
-    'Blocks signing in and signs the account out on every device. No notification is sent.',
-  UPLOAD:
-    'Blocks uploads and imports (SoundCloud, Google Drive, hearthis.at, Mixcloud, Spotify) and editor tracks. The user is notified with the reason, and again when you lift it.',
-  LIVE_SHOW_BOOKING:
-    'Blocks scheduling live shows and booking venue shows. The user is notified with the reason, and again when you lift it.',
-};
+const TYPE_HELP_KEYS = {
+  LOGIN: 'adminUserRestrictionsPanelBatch31.helpLogin',
+  UPLOAD: 'adminUserRestrictionsPanelBatch31.helpUpload',
+  LIVE_SHOW_BOOKING: 'adminUserRestrictionsPanelBatch31.helpLiveShowBooking',
+} as const satisfies Record<AccountRestrictionType, ParseKeys<'web'>>;
 
-const DURATIONS = [
-  { id: '', label: 'Until lifted' },
-  { id: '1', label: '1 day' },
-  { id: '7', label: '7 days' },
-  { id: '30', label: '30 days' },
-  { id: '90', label: '90 days' },
-  { id: '365', label: '1 year' },
-];
+function durationOptions(t: TFunction<'web'>) {
+  return [
+    { id: '', label: t('adminUserRestrictionsPanelBatch31.untilLiftedOption') },
+    ...[1, 7, 30, 90].map((count) => ({
+      id: String(count),
+      label: t('adminUserRestrictionsPanelBatch31.days', { count }),
+    })),
+    { id: '365', label: t('adminUserRestrictionsPanelBatch31.oneYear') },
+  ];
+}
 
-function describeRestriction(restriction: AccountRestriction): string {
+function describeRestriction(
+  restriction: AccountRestriction,
+  t: TFunction<'web'>,
+): string {
+  const format = (value: string) =>
+    new Date(value).toLocaleDateString(dateLocaleTag());
   const parts = [
-    `Since ${new Date(restriction.bannedAt).toLocaleDateString(dateLocaleTag())}`,
+    t('adminUserRestrictionsPanelBatch31.since', {
+      date: format(restriction.bannedAt),
+    }),
   ];
   if (restriction.liftedAt) {
     parts.push(
-      `lifted ${new Date(restriction.liftedAt).toLocaleDateString(dateLocaleTag())}`,
+      t('adminUserRestrictionsPanelBatch31.liftedOn', {
+        date: format(restriction.liftedAt),
+      }),
     );
   } else if (restriction.expiresAt) {
+    const date = format(restriction.expiresAt);
     parts.push(
-      `${isRestrictionActive(restriction) ? 'until' : 'expired'} ${new Date(
-        restriction.expiresAt,
-      ).toLocaleDateString(dateLocaleTag())}`,
+      isRestrictionActive(restriction)
+        ? t('adminUserRestrictionsPanelBatch31.until', { date })
+        : t('adminUserRestrictionsPanelBatch31.expired', { date }),
     );
   } else {
-    parts.push('until lifted');
+    parts.push(t('adminUserRestrictionsPanelBatch31.untilLifted'));
   }
   if (restriction.bannedByUsername) {
-    parts.push(`by @${restriction.bannedByUsername}`);
+    parts.push(
+      t('adminUserRestrictionsPanelBatch31.byUser', {
+        username: restriction.bannedByUsername,
+      }),
+    );
   }
   return parts.join(' · ');
 }
@@ -148,19 +165,24 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
                   <span className="min-w-0">
                     <span className="flex items-center gap-2">
                       <Badge variant="pill" color="red">
-                        {TYPE_LABELS[item.type]}
+                        {t(TYPE_LABEL_KEYS[item.type])}
                       </Badge>
                       <span className="break-words">{item.reason}</span>
                     </span>
                     <span className="text-foreground-secondary text-xs">
-                      {describeRestriction(item)}
+                      {describeRestriction(item, t)}
                     </span>
                   </span>
                   <Button
                     size="sm"
                     variant="secondary"
                     disabled={busy}
-                    aria-label={`Lift ${TYPE_LABELS[item.type].toLowerCase()} restriction`}
+                    aria-label={t(
+                      'adminUserRestrictionsPanelBatch31.liftType',
+                      {
+                        type: t(TYPE_LABEL_KEYS[item.type]).toLowerCase(),
+                      },
+                    )}
                     onClick={() => void lift(item)}
                   >
                     {t('adminUserRestrictionsPanel.lift')}
@@ -188,18 +210,18 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
                   setType(value as AccountRestrictionType)
                 }
                 options={(
-                  Object.keys(TYPE_LABELS) as AccountRestrictionType[]
-                ).map((id) => ({ id, label: TYPE_LABELS[id] }))}
+                  Object.keys(TYPE_LABEL_KEYS) as AccountRestrictionType[]
+                ).map((id) => ({ id, label: t(TYPE_LABEL_KEYS[id]) }))}
               />
               <Select
                 label={t('adminUserRestrictionsFields.duration')}
                 value={duration}
                 onValueChange={setDuration}
-                options={DURATIONS}
+                options={durationOptions(t)}
               />
             </div>
             <p className="text-foreground-secondary text-xs">
-              {TYPE_HELP[type]}
+              {t(TYPE_HELP_KEYS[type])}
             </p>
             <Textarea
               submitOnModEnter
@@ -222,16 +244,18 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
           {past.length > 0 ? (
             <details className="text-sm">
               <summary className="text-foreground-secondary cursor-pointer text-xs uppercase">
-                Past restrictions ({past.length})
+                {t('adminUserRestrictionsPanelBatch31.pastRestrictions', {
+                  count: past.length,
+                })}
               </summary>
               <ul className="divide-border mt-2 divide-y">
                 {past.map((item) => (
                   <li key={item.id} className="py-2">
                     <span className="block">
-                      {TYPE_LABELS[item.type]}: {item.reason}
+                      {t(TYPE_LABEL_KEYS[item.type])}: {item.reason}
                     </span>
                     <span className="text-foreground-secondary text-xs">
-                      {describeRestriction(item)}
+                      {describeRestriction(item, t)}
                     </span>
                   </li>
                 ))}

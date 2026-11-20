@@ -1,7 +1,7 @@
 import { Cast, InfoIcon, SettingsIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import { Box, Button, PluginStoreItem, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -81,17 +81,24 @@ export function MulticastCategory() {
                 author="Multicast"
                 description={
                   target
-                    ? `${target.rtmpUrl}${target.keyLast4 ? ` · key ···${target.keyLast4}` : ''}`
+                    ? target.keyLast4
+                      ? t('remainingCategoriesBatch31.targetWithKey', {
+                          url: target.rtmpUrl,
+                          last4: target.keyLast4,
+                        })
+                      : target.rtmpUrl
                     : destination.rtmpUrlHint
-                      ? `Mirror your live stream via ${destination.rtmpUrlHint}.`
-                      : 'Mirror your live stream to a custom RTMP server.'
+                      ? t('remainingCategoriesBatch31.mirrorVia', {
+                          hint: destination.rtmpUrlHint,
+                        })
+                      : t('remainingCategoriesBatch31.mirrorCustom')
                 }
                 categories={[
                   target
                     ? target.enabled
                       ? t('remainingCategoriesStates.enabled')
                       : t('remainingCategoriesStates.disabled')
-                    : 'Not configured',
+                    : t('remainingCategoriesBatch31.notConfigured'),
                 ]}
                 isInstalled={configured}
                 onInstall={() =>
@@ -101,8 +108,8 @@ export function MulticastCategory() {
                   })
                 }
                 labels={{
-                  install: 'Configure',
-                  installed: 'Configured',
+                  install: t('remainingCategories.configure'),
+                  installed: t('remainingCategoriesBatch31.configured'),
                 }}
                 accessory={
                   <div className="flex items-center gap-1">
@@ -168,9 +175,11 @@ export function MulticastCategory() {
         title={
           pendingRemove
             ? webT()('a11yNamed.removeQuestion', {
-                name: pendingRemove.label ?? 'this destination',
+                name:
+                  pendingRemove.label ??
+                  t('remainingCategoriesBatch31.thisDestination'),
               })
-            : 'Remove destination?'
+            : t('multistream.removeTitle')
         }
         description={t(
           'remainingCategories.thisStreamDestinationStopsReceiving',
@@ -278,29 +287,22 @@ export function DiscoveryCategory() {
   );
 }
 
-const DISCOVER_WIDGET_DETAILS: Record<DiscoverWidgetId, string> = {
+const DISCOVER_WIDGET_DETAIL_KEYS = {
   'this-week-most-played':
-    'See the tracks getting the most attention across Tahti this week.',
+    'remainingCategoriesBatch31.widgetThisWeekMostPlayed',
   'this-week-least-played':
-    'Find overlooked tracks from this week and give them a listen.',
-  'new-to-you':
-    'Get recommendations from artists and tracks you have not heard yet.',
-  'latest-tracks': 'Browse the newest tracks published by Tahti artists.',
-  'most-played':
-    'Explore the most-played tracks across the full Tahti catalog.',
-  loved: 'Discover tracks that the Tahti community is saving and enjoying.',
-  'artist-of-the-week': 'Meet a featured artist that changes each week.',
-  'random-artist':
-    'Get a fresh artist pick on a schedule you choose on Discover.',
-  'public-playlists':
-    'Find public playlists to follow, play, and embed from the Discover page.',
-  'tahti-selects':
-    'Play the tracks currently in the curated Tahti Selects rotation.',
-  'latest-releases':
-    'See the newest albums, EPs and singles and open their smart links.',
-  'random-track':
-    'Play one track at random from the genres you pick, and roll again.',
-};
+    'remainingCategoriesBatch31.widgetThisWeekLeastPlayed',
+  'new-to-you': 'remainingCategoriesBatch31.widgetNewToYou',
+  'latest-tracks': 'remainingCategoriesBatch31.widgetLatestTracks',
+  'most-played': 'remainingCategoriesBatch31.widgetMostPlayed',
+  loved: 'remainingCategoriesBatch31.widgetLoved',
+  'artist-of-the-week': 'remainingCategoriesBatch31.widgetArtistOfTheWeek',
+  'random-artist': 'remainingCategoriesBatch31.widgetRandomArtist',
+  'public-playlists': 'remainingCategoriesBatch31.widgetPublicPlaylists',
+  'tahti-selects': 'remainingCategoriesBatch31.widgetTahtiSelects',
+  'latest-releases': 'remainingCategoriesBatch31.widgetLatestReleases',
+  'random-track': 'remainingCategoriesBatch31.widgetRandomTrack',
+} as const satisfies Record<DiscoverWidgetId, ParseKeys<'web'>>;
 
 function DiscoverWidgetPlugins() {
   const { t } = useTranslation('web');
@@ -348,8 +350,8 @@ function DiscoverWidgetPlugins() {
             key={id}
             name={t(WIDGET_LABEL_KEYS[id])}
             author="Tahti"
-            description={DISCOVER_WIDGET_DETAILS[id]}
-            category="Discover"
+            description={t(DISCOVER_WIDGET_DETAIL_KEYS[id])}
+            category={t('nav.discover')}
             isInstalled={enabledWidgets.includes(id)}
             onInstall={() => addWidget(id)}
             labels={{ installed: t('settingsAddOns.added') }}

@@ -34,6 +34,8 @@ import { useAuthStore, type AuthUser } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import {
   BROWSER_STATIONS_BLOCK_ID,
+  LATEST_NEWS_BLOCK_ID,
+  NEWS_WIDGET_TYPE_ID,
   useListenerWidgetsStore,
 } from '../stores/listenerWidgetsStore';
 import { ListenView } from './ListenView';
@@ -330,6 +332,42 @@ describe('ListenView block order', () => {
       await paired.findByRole('heading', { name: 'Tahti Selects' }),
     ).toBeTruthy();
     expect(blockIds()).not.toContain('selects');
+  });
+
+  it('leads with the news widget when there is no saved order', async () => {
+    returningListener();
+    useListenerWidgetsStore.setState({
+      instances: [
+        {
+          id: 'news-1',
+          typeId: NEWS_WIDGET_TYPE_ID,
+          input: '',
+          label: 'Latest news',
+          addedAt: '2026-11-01T00:00:00.000Z',
+        },
+      ],
+      listenOrder: [],
+    });
+    await renderListen();
+    expect(blockIds()[0]).toBe(LATEST_NEWS_BLOCK_ID);
+    expect(blockIds()[1]).toBe('recently-played');
+  });
+
+  it('keeps the news widget above the radio row for a new listener', async () => {
+    useListenerWidgetsStore.setState({
+      instances: [
+        {
+          id: 'news-1',
+          typeId: NEWS_WIDGET_TYPE_ID,
+          input: '',
+          label: 'Latest news',
+          addedAt: '2026-11-01T00:00:00.000Z',
+        },
+      ],
+      listenOrder: [],
+    });
+    await renderListen();
+    expect(blockIds().slice(0, 2)).toEqual([LATEST_NEWS_BLOCK_ID, 'radio']);
   });
 
   it('puts a widget added from the store above every section', async () => {

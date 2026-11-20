@@ -1,4 +1,4 @@
-import { ListPlusIcon, MusicIcon, PlayIcon, PlusIcon } from 'lucide-react';
+import { ListPlusIcon, MusicIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -38,7 +38,6 @@ import type {
   StudioRelease,
   StudioSound,
 } from '../../../api/studio-types';
-import { CatalogTrackSearch } from '../../../components/CatalogTrackSearch';
 import { CollectionSortSounds } from '../../../components/CollectionSortSounds';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import {
@@ -61,6 +60,7 @@ import { toastWithUndo } from '../../../lib/undoToast';
 import { useEditMode } from '../../../lib/useEditMode';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { useStudioContributions } from '../useStudioContributions';
+import { PlaylistAddItemsPanel } from './PlaylistAddItemsPanel';
 import { playlistTrackOrderOptions } from './playlistTrackOrderOptions';
 
 export function StudioPlaylistEditorView({ slug }: { slug: string }) {
@@ -79,8 +79,6 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [addSoundId, setAddSoundId] = useState('');
-  const [addReleaseId, setAddReleaseId] = useState('');
   const [saving, setSaving] = useState(false);
   const [pendingCoverDelete, setPendingCoverDelete] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<{
@@ -186,7 +184,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
       if (itemId) {
         toastWithUndo(success, {
           undo: () => removeStudioCollectionItem(slug, itemId),
-          undoneMessage: 'Removed again.',
+          undoneMessage: t('studioPlaylistEditorViewBatch31.removedAgain'),
           onUndone: () => void refreshItems(),
         });
       } else {
@@ -487,7 +485,9 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
 
               <StudioPanel
                 title={t('playlistEditor.tracks')}
-                description={`${items.length} item${items.length === 1 ? '' : 's'}`}
+                description={t('studioPlaylistEditorViewBatch31.itemCount', {
+                  count: items.length,
+                })}
                 action={
                   editing && items.length > 1 ? (
                     <CollectionSortSounds
@@ -506,11 +506,15 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
               >
                 {tracks.length === 0 ? (
                   <PageEmpty
-                    title={`This ${kindLabel.toLowerCase()} is empty`}
+                    title={t(
+                      isDjSet
+                        ? 'studioPlaylistEditorViewBatch31.emptyDjSet'
+                        : 'studioPlaylistEditorViewBatch31.emptyPlaylist',
+                    )}
                     description={
                       editing
-                        ? 'Add sound tracks or whole releases below.'
-                        : 'Click Edit details to add tracks.'
+                        ? t('studioPlaylistEditorViewBatch31.addBelow')
+                        : t('studioPlaylistEditorViewBatch31.clickEditDetails')
                     }
                     action={
                       editing ? undefined : (
@@ -560,7 +564,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                             title:
                               item.sound?.title ??
                               item.release?.title ??
-                              'this item',
+                              t('studioPlaylistEditorViewBatch31.thisItem'),
                           });
                         },
                         onPlayNow: (t) => {
@@ -625,88 +629,12 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                 )}
 
                 {editing ? (
-                  <div className="border-border mt-4 grid gap-3 border-t pt-4 sm:grid-cols-2">
-                    <div className="flex flex-col gap-2">
-                      <Select
-                        label={t('playlistEditor.addFromLibrary')}
-                        value={addSoundId}
-                        onValueChange={setAddSoundId}
-                        options={[
-                          {
-                            id: '',
-                            label: t('studioPlaylistEditorView.selectTrack'),
-                          },
-                          ...sounds
-                            .filter(
-                              (a) =>
-                                !items.some((item) => item.sound?.id === a.id),
-                            )
-                            .map((a) => ({ id: a.id, label: a.title })),
-                        ]}
-                      />
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        disabled={!addSoundId}
-                        onClick={() => {
-                          void addItem(
-                            { soundId: addSoundId },
-                            'Track added.',
-                            () => setAddSoundId(''),
-                          );
-                        }}
-                      >
-                        <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                        {t('playlistEditor.addTrack')}
-                      </Button>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Select
-                        label={t('playlistEditor.addRelease')}
-                        value={addReleaseId}
-                        onValueChange={setAddReleaseId}
-                        options={[
-                          {
-                            id: '',
-                            label: t('studioPlaylistEditorView.selectRelease'),
-                          },
-                          ...releases.map((r) => ({
-                            id: r.id,
-                            label: r.title,
-                          })),
-                        ]}
-                      />
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        disabled={!addReleaseId}
-                        onClick={() => {
-                          void addItem(
-                            { releaseId: addReleaseId },
-                            'Release added.',
-                            () => setAddReleaseId(''),
-                          );
-                        }}
-                      >
-                        <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                        {t('playlistEditor.addRelease')}
-                      </Button>
-                    </div>
-                    <div className="sm:col-span-2">
-                      <CatalogTrackSearch
-                        label={t('playlistEditor.addAnyPublicTrack')}
-                        excludeIds={items.flatMap((item) =>
-                          item.sound ? [item.sound.id] : [],
-                        )}
-                        onAdd={(track) =>
-                          addItem(
-                            { soundId: track.id },
-                            `Added ${track.title}.`,
-                          )
-                        }
-                      />
-                    </div>
-                  </div>
+                  <PlaylistAddItemsPanel
+                    sounds={sounds}
+                    releases={releases}
+                    items={items}
+                    addItem={addItem}
+                  />
                 ) : null}
               </StudioPanel>
             </>
@@ -722,7 +650,9 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
           >
             <Dialog.Title>{t('playlistEditor.uploadCover')}</Dialog.Title>
             <Dialog.Description>
-              Choose an image for this {kindLabel}&apos;s cover art.
+              {t('studioPlaylistEditorViewBatch31.chooseCoverImage', {
+                kind: kindLabel,
+              })}
             </Dialog.Description>
             <div className="mt-4">
               <FilePicker

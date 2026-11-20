@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import {
   Button,
   InlineError,
@@ -24,19 +24,17 @@ import { SettingsHint } from './SettingsFields';
 
 export const OAUTH_PLATFORMS: Record<
   SocialOAuthPlatform,
-  { name: string; templateMax: number; connectHint: string }
+  { name: string; templateMax: number; connectHintKey: ParseKeys<'web'> }
 > = {
   twitter: {
     name: 'X / Twitter',
     templateMax: 280,
-    connectHint:
-      'You sign in on X, and connecting posts a short test message to your account.',
+    connectHintKey: 'socialOAuthPlatformBatch31.connectHintTwitter',
   },
   instagram: {
     name: 'Instagram',
     templateMax: 2200,
-    connectHint:
-      'You sign in with Facebook. Needs an Instagram professional account linked to a Facebook Page.',
+    connectHintKey: 'socialOAuthPlatformBatch31.connectHintInstagram',
   },
 };
 
@@ -79,7 +77,9 @@ export function SocialOAuthPlatform({
         setError(result.error);
         return;
       }
-      toast.success(`${copy.name} settings saved.`);
+      toast.success(
+        t('socialOAuthPlatformBatch31.settingsSaved', { name: copy.name }),
+      );
       onChanged(result.data);
     });
   };
@@ -91,7 +91,9 @@ export function SocialOAuthPlatform({
         setError(result.error);
         return;
       }
-      toast.success(`${copy.name} disconnected.`);
+      toast.success(
+        t('socialOAuthPlatformBatch31.disconnected', { name: copy.name }),
+      );
       onChanged(null);
     });
   };
@@ -108,7 +110,7 @@ export function SocialOAuthPlatform({
             ? webT()('templateText.connectedAs', {
                 name: status.accountLabel ?? copy.name,
               })
-            : 'Not connected'}
+            : t('socialOAuthPlatformBatch31.notConnected')}
         </span>
       </div>
       <form
@@ -139,15 +141,19 @@ export function SocialOAuthPlatform({
               onChange={(event) => setTemplate(event.target.value)}
             />
             <SettingsHint>
-              Fills in {'{artist}'}, {'{release}'}, {'{smart_link}'} and{' '}
-              {'{channel_url}'}.
+              {t('socialOAuthPlatformBatch31.templateFields', {
+                artist: '{artist}',
+                release: '{release}',
+                smartLink: '{smart_link}',
+                channelUrl: '{channel_url}',
+              })}
               {platform === 'instagram'
-                ? ' Instagram posts need an image: the release cover, a channel image or your profile picture.'
+                ? ` ${t('socialOAuthPlatformBatch31.instagramImageHint')}`
                 : ''}
             </SettingsHint>
           </>
         ) : (
-          <SettingsHint>{copy.connectHint}</SettingsHint>
+          <SettingsHint>{t(copy.connectHintKey)}</SettingsHint>
         )}
         {error ? <InlineError>{error}</InlineError> : null}
         <div className="flex flex-wrap justify-end gap-2">
@@ -175,7 +181,7 @@ export function SocialOAuthPlatform({
                 window.location.assign(socialOAuthStartUrl(platform))
               }
             >
-              Connect {copy.name}
+              {t('socialOAuthPlatformBatch31.connectName', { name: copy.name })}
             </Button>
           ) : null}
         </div>

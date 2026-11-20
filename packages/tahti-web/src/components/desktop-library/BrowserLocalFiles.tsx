@@ -15,13 +15,6 @@ import {
 import { PageEmpty } from '../PageStates';
 import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
 
-const FILE_LABELS = {
-  title: 'Add audio files',
-  description:
-    'File names are remembered on this device. Audio blobs clear on reload — choose the same files again to play. Uploading to your Tahti archive is Studio → Upload.',
-  browse: 'Choose files',
-};
-
 /** Browser-only library: files are kept in memory, no desktop catalog. */
 export function BrowserLocalFiles() {
   const { t } = useTranslation('web');
@@ -62,8 +55,12 @@ export function BrowserLocalFiles() {
     }
     toast.success(
       added.length === 1
-        ? `Ready “${added[0]?.title}”.`
-        : `Ready ${added.length} files.`,
+        ? i18n.t('web:browserLocalFilesBatch31.readyNamed', {
+            name: added[0]?.title ?? '',
+          })
+        : i18n.t('web:browserLocalFilesBatch31.readyFiles', {
+            count: added.length,
+          }),
     );
   };
 
@@ -72,7 +69,11 @@ export function BrowserLocalFiles() {
       <FilePicker
         accept="audio/*"
         multiple
-        labels={FILE_LABELS}
+        labels={{
+          title: t('browserLocalFilesBatch31.addAudioFiles'),
+          description: t('browserLocalFilesBatch31.addAudioFilesHint'),
+          browse: t('browserLocalFilesBatch31.chooseFiles'),
+        }}
         onFiles={onFiles}
       />
       <p className="border-border bg-background-secondary text-foreground-secondary rounded-md border px-2 py-1.5 text-xs">
@@ -91,8 +92,10 @@ export function BrowserLocalFiles() {
               items={playableItems}
               emptyMessage={
                 query.trim()
-                  ? `No playable files match “${query.trim()}”.`
-                  : 'No playable files. Re-import the files below to play them.'
+                  ? t('browserLocalFilesBatch31.noMatch', {
+                      query: query.trim(),
+                    })
+                  : t('browserLocalFilesBatch31.noPlayable')
               }
               toolbarStart={
                 <FilterBar
@@ -123,9 +126,9 @@ export function BrowserLocalFiles() {
                   }
                 }
                 toast.success(
-                  items.length === 1
-                    ? 'Removed 1 track.'
-                    : `Removed ${items.length} tracks.`,
+                  i18n.t('web:browserLocalFilesBatch31.removedTracks', {
+                    count: items.length,
+                  }),
                 );
               }}
               compactActions
@@ -143,7 +146,9 @@ export function BrowserLocalFiles() {
                       {track.title}
                     </p>
                     <p className="text-foreground-secondary truncate text-xs">
-                      Re-import {track.fileName} to play
+                      {t('browserLocalFilesBatch31.reimportToPlay', {
+                        fileName: track.fileName,
+                      })}
                     </p>
                   </div>
                   <Tooltip content={t('browserLocalFiles.remove')} side="top">

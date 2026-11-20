@@ -5,11 +5,11 @@ import { ExternalLink, SelectableTiles } from '@tahti-player/ui';
 
 import {
   collectingSocietyPointers,
-  DISCOGS_GUIDE_STEPS,
   DISCOGS_SUBMIT_URL,
+  discogsGuideSteps,
   guideTiles,
-  MUSICBRAINZ_GUIDE_STEPS,
   MUSICBRAINZ_SUBMIT_URL,
+  musicbrainzGuideSteps,
   POST_RELEASE_CLAIM_LINKS,
 } from './distribution-content';
 import { GuideDetail } from './GuideDetail';
@@ -30,7 +30,7 @@ export function GuidesTab() {
       {selectedGuide === 'musicbrainz' && (
         <GuideDetail
           title="MusicBrainz"
-          steps={MUSICBRAINZ_GUIDE_STEPS}
+          steps={musicbrainzGuideSteps(t)}
           href={MUSICBRAINZ_SUBMIT_URL}
           linkLabel={t('guidesTabBatch30.openMusicBrainzEditor')}
         />
@@ -38,7 +38,7 @@ export function GuidesTab() {
       {selectedGuide === 'discogs' && (
         <GuideDetail
           title="Discogs"
-          steps={DISCOGS_GUIDE_STEPS}
+          steps={discogsGuideSteps(t)}
           href={DISCOGS_SUBMIT_URL}
           linkLabel={t('guidesTabBatch30.searchDiscogs')}
         />

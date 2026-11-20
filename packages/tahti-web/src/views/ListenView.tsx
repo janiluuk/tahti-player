@@ -57,6 +57,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import {
   isWidgetBlockId,
+  LATEST_NEWS_BLOCK_ID,
   mergeBlockOrder,
   useListenerWidgetsStore,
 } from '../stores/listenerWidgetsStore';
@@ -106,8 +107,12 @@ function orderListenBlocks(
 /** Someone new to Listen (signed out, or nothing played yet) starts on the
  * radio channels; a saved section order still wins in `orderListenBlocks`. */
 function radioRowFirst(blocks: SortableBlock[]): SortableBlock[] {
-  const radio = blocks.find((block) => block.id === RADIO_BLOCK_ID);
-  return radio ? [radio, ...blocks.filter((block) => block !== radio)] : blocks;
+  return blockFirst(blocks, RADIO_BLOCK_ID);
+}
+
+function blockFirst(blocks: SortableBlock[], id: string): SortableBlock[] {
+  const first = blocks.find((block) => block.id === id);
+  return first ? [first, ...blocks.filter((block) => block !== first)] : blocks;
 }
 
 const HistoryView = lazy(() =>
@@ -434,8 +439,9 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     },
   ];
   const newListener = !signedIn || history.length === 0;
-  const visibleBlocks = (
-    newListener ? radioRowFirst(dashboardBlocks) : dashboardBlocks
+  const visibleBlocks = blockFirst(
+    newListener ? radioRowFirst(dashboardBlocks) : dashboardBlocks,
+    LATEST_NEWS_BLOCK_ID,
   ).filter((block) => !hiddenListenBlockIds.includes(block.id));
   const orderedBlocks = orderListenBlocks(visibleBlocks, listenOrder);
 

@@ -18,6 +18,7 @@ import {
   type BroadcastDetailsValues,
 } from '../../../components/BroadcastDetailsFields';
 import { ImageUploadField } from '../../../components/ImageUploadField';
+import { dateLocaleTag } from '../../../lib/locale';
 import {
   DEFAULT_BROADCAST_HOUR,
   formatDate,
@@ -28,9 +29,15 @@ import {
   nextFriday,
   pad,
   toLocalParts,
-  WEEKDAY_LABELS,
 } from './schedule-helpers';
 import type { ScheduleForm } from './useScheduleForm';
+
+function weekdayName(day: number) {
+  return new Intl.DateTimeFormat(dateLocaleTag(), {
+    weekday: 'short',
+    timeZone: 'UTC',
+  }).format(new Date(Date.UTC(2024, 0, 7 + day)));
+}
 
 const tomorrow = new Date(Date.now() + MILLISECONDS_PER_DAY);
 tomorrow.setHours(DEFAULT_BROADCAST_HOUR, 0, 0, 0);
@@ -132,7 +139,9 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
             variant="secondary"
             onClick={() => setQuickDate(tomorrow)}
           >
-            Tomorrow at {pad(DEFAULT_BROADCAST_HOUR)}:00
+            {t('scheduleEditorDialogBatch31.tomorrowAt', {
+              time: `${pad(DEFAULT_BROADCAST_HOUR)}:00`,
+            })}
           </Button>
           <Button
             size="sm"
@@ -197,7 +206,7 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
             disabled={Boolean(selectedShowId)}
             value={showScheduleNote}
             onChange={(event) => setShowScheduleNote(event.target.value)}
-            placeholder="e.g. Fridays 20:00"
+            placeholder={t('scheduleEditorDialogBatch31.whenItAirsPlaceholder')}
           />
           <Select
             label={t('scheduleEditor.visibility')}
@@ -272,7 +281,9 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
             multiple
             items={FREQUENCY_DAY_ORDER.map((day) => ({
               id: String(day),
-              label: `Every ${WEEKDAY_LABELS[day]}`,
+              label: t('scheduleEditorDialogBatch31.everyWeekday', {
+                day: weekdayName(day),
+              }),
             }))}
             selected={frequencyDays.map(String)}
             onChange={(ids) => setFrequencyDays(ids.map(Number))}
@@ -340,8 +351,11 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
         <div className="border-border flex flex-wrap items-center justify-between gap-3 border-t pt-4">
           <p className="text-foreground-secondary text-xs">
             {date && time
-              ? `${formatDate(fromLocalParts(date, time)!)} at ${formatTime(fromLocalParts(date, time)!)}`
-              : 'No next broadcast selected'}
+              ? t('scheduleEditorDialogBatch31.dateAtTime', {
+                  date: formatDate(fromLocalParts(date, time)!),
+                  time: formatTime(fromLocalParts(date, time)!),
+                })
+              : t('scheduleEditorDialogBatch31.noNextBroadcast')}
           </p>
           <div className="flex flex-wrap gap-2">
             <Button

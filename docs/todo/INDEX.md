@@ -39,8 +39,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [mobile-bottom-nav-readability.md](mobile-bottom-nav-readability.md) | Mobile bottom menu too thin; cut off by the Android gesture bar |
-| open    | [discover-news-widget-top.md](discover-news-widget-top.md) | Move the news widget to the top of the Discover page |
+| partial | [mobile-bottom-nav-readability.md](mobile-bottom-nav-readability.md) | Taller bar that grows by the gesture-bar inset, bigger labels/icons; left: check on a real Android phone |
 | open    | [pattern-detection-grants-ui.md](pattern-detection-grants-ui.md) | Board grant preview anomaly chips + PATTERN_FRAUD_ALERT activity; left: pitch copy after org merge |
 | open    | [next-50.md](next-50.md) | Map of the 50 slice files in the Next 50 slices section |
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; left: native review |

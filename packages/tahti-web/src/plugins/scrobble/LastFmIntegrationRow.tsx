@@ -51,7 +51,7 @@ export function LastFmIntegrationRow() {
     } else {
       toast.error(
         status === 'unconfigured'
-          ? 'This server has no Last.fm API key. Use your own below.'
+          ? t('lastFmIntegrationRowBatch31.noServerKey')
           : status === 'login'
             ? t('lastFmIntegrationRowStates.signInAgainThenReconnect')
             : t('lastFmIntegrationRowStates.couldNotConnectLastFm'),
@@ -135,12 +135,11 @@ export function LastFmIntegrationRow() {
             onSubmit={(event) => void connectWithOwnKey(event)}
           >
             <p className="text-foreground-secondary text-xs">
-              Create an API account at{' '}
+              {t('lastFmIntegrationRowBatch31.ownKeyBefore')}{' '}
               <ExternalLink href="https://www.last.fm/api/account/create">
                 last.fm/api
               </ExternalLink>
-              , then paste its key and shared secret. They&apos;re used for your
-              account only.
+              {t('lastFmIntegrationRowBatch31.ownKeyAfter')}
             </p>
             <Input
               autoCapitalize="none"

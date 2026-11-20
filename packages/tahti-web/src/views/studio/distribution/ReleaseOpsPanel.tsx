@@ -159,7 +159,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         setBilling(b.data);
       })
       .catch(() => {
-        setCatalogError('Could not load the distribution details.');
+        setCatalogError(t('releaseOpsPanelBatch31.couldNotLoadDetails'));
         toast.error(i18n.t('web:toasts.couldNotLoadDistributionDetails'));
       })
       .finally(() => setLoading(false));
@@ -244,9 +244,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         }
         return;
       }
-      toast.success(
-        'Queued for distribution. We notify you once it is sent, or if it fails.',
-      );
+      toast.success(t('releaseOpsPanelBatch31.queuedForDistribution'));
       setCatalog((prev) =>
         prev ? { ...prev, revelatorStatus: r.data.revelatorStatus } : prev,
       );
@@ -301,8 +299,8 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       await navigator.clipboard.writeText(text);
       toast.success(
         mode === 'musicbrainz'
-          ? 'MusicBrainz prefill copied.'
-          : 'Discogs prefill copied.',
+          ? t('releaseOpsPanelStates.musicbrainzPrefillCopied')
+          : t('releaseOpsPanelStates.discogsPrefillCopied'),
       );
     } catch {
       toast.error(i18n.t('web:toasts.couldNotReadExportPack'));
@@ -415,10 +413,10 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
                 key={key}
                 label={
                   key === 'pLine'
-                    ? 'P-line'
+                    ? t('releaseOpsPanelBatch31.pLine')
                     : key === 'cLine'
-                      ? 'C-line'
-                      : 'Label imprint'
+                      ? t('releaseOpsPanelStates.cLine')
+                      : t('releaseOpsPanelStates.labelImprint')
                 }
                 value={form?.[key] ?? ''}
                 disabled={busy}

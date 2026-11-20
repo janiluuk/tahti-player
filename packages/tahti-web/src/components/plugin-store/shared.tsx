@@ -54,7 +54,9 @@ export function ConfigurableCard({
       onClose={host ? host.onClose : () => setOpen(false)}
       className={dialogClassName}
     >
-      <Dialog.Title>Configure {title}</Dialog.Title>
+      <Dialog.Title>
+        {t('sharedBatch31.configureName', { name: title })}
+      </Dialog.Title>
       <div className="mt-4 flex flex-col gap-4">{children}</div>
       <Dialog.Actions>
         <Dialog.Close>{t('pluginStoreShared.done')}</Dialog.Close>
@@ -74,7 +76,7 @@ export function ConfigurableCard({
           content={
             open
               ? webT()('a11yNamed.hideConfiguration', { name: title })
-              : `Configure ${title}`
+              : t('sharedBatch31.configureNameAction', { name: title })
           }
           side="top"
         >
@@ -85,7 +87,7 @@ export function ConfigurableCard({
             aria-label={
               open
                 ? webT()('a11yNamed.hideConfiguration', { name: title })
-                : `Configure ${title}`
+                : t('sharedBatch31.configureNameAction', { name: title })
             }
           >
             <SettingsIcon size={15} aria-hidden />
@@ -110,6 +112,7 @@ export function AudioPluginToggleRow({
   enabled: boolean;
   onToggle: () => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <PluginStoreItem
       name={name}
@@ -117,11 +120,14 @@ export function AudioPluginToggleRow({
       description={description}
       isInstalled={enabled}
       onInstall={onToggle}
-      labels={{ install: 'Activate', installed: 'Active' }}
+      labels={{
+        install: t('sharedBatch31.activate'),
+        installed: t('sharedBatch31.active'),
+      }}
       accessory={
         enabled ? (
           <Toggle
-            label={`${name} on`}
+            label={t('sharedBatch31.nameOn', { name })}
             checked={enabled}
             onChange={() => onToggle()}
           />
@@ -140,8 +146,8 @@ export function AudioPluginToggleRow({
 export function InstalledAvailableTabs({
   ids,
   renderItem,
-  emptyInstalled = 'Nothing installed yet — check Available below.',
-  emptyAvailable = 'Everything here is installed.',
+  emptyInstalled,
+  emptyAvailable,
 }: {
   ids: string[];
   renderItem: (id: string) => React.ReactNode;
@@ -181,7 +187,11 @@ export function InstalledAvailableTabs({
               ? t('pluginStoreSharedStates.nothingInstalled')
               : t('pluginStoreSharedStates.allInstalled')
           }
-          description={tab === 'installed' ? emptyInstalled : emptyAvailable}
+          description={
+            tab === 'installed'
+              ? (emptyInstalled ?? t('sharedBatch31.emptyInstalled'))
+              : (emptyAvailable ?? t('sharedBatch31.emptyAvailable'))
+          }
         />
       ) : (
         <div className="flex flex-col gap-2">

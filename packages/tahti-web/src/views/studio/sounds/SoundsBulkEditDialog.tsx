@@ -11,20 +11,13 @@ import {
 import type { StudioSoundsState } from './useStudioSoundsState';
 
 const LICENSES = [
-  ['', ''],
-  ['ALL_RIGHTS_RESERVED', 'All rights reserved'],
-  ['CC0', 'No rights reserved (CC0)'],
-  ['CC_BY', 'Creative Commons Attribution (CC BY)'],
-  ['CC_BY_SA', 'Creative Commons Attribution-ShareAlike (CC BY-SA)'],
-  ['CC_BY_NC', 'Creative Commons Attribution-NonCommercial (CC BY-NC)'],
-  [
-    'CC_BY_NC_SA',
-    'Creative Commons Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)',
-  ],
-  [
-    'CC_BY_NC_ND',
-    'Creative Commons Attribution-NonCommercial-NoDerivatives (CC BY-NC-ND)',
-  ],
+  ['ALL_RIGHTS_RESERVED', 'advancedTabBatch31.licenseAllRightsReserved'],
+  ['CC0', 'advancedTabBatch31.licenseCc0'],
+  ['CC_BY', 'advancedTabBatch31.licenseCcBy'],
+  ['CC_BY_SA', 'advancedTabBatch31.licenseCcBySa'],
+  ['CC_BY_NC', 'advancedTabBatch31.licenseCcByNc'],
+  ['CC_BY_NC_SA', 'advancedTabBatch31.licenseCcByNcSa'],
+  ['CC_BY_NC_ND', 'advancedTabBatch31.licenseCcByNcNd'],
 ] as const;
 
 type VisibilityChoice = '' | 'public' | 'private';
@@ -166,7 +159,13 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
             onValueChange={setGenre}
             options={[
               { id: '', label: leaveUnchanged },
-              ...genreOptions.map((value) => ({ id: value, label: value })),
+              ...genreOptions.map((value) => ({
+                id: value,
+                label:
+                  value === 'Other'
+                    ? t('soundsBulkEditDialogBatch31.otherGenre')
+                    : value,
+              })),
             ]}
           />
         </div>
@@ -278,10 +277,10 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
             label={t('library.soundsBulkLicense')}
             value={license}
             onValueChange={setLicense}
-            options={LICENSES.map(([id, label]) => ({
-              id,
-              label: id ? label : leaveUnchanged,
-            }))}
+            options={[
+              { id: '', label: leaveUnchanged },
+              ...LICENSES.map(([id, labelKey]) => ({ id, label: t(labelKey) })),
+            ]}
           />
         </div>
         <div className="flex flex-col gap-1.5 text-sm">

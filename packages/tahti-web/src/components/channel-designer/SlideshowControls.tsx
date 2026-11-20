@@ -80,8 +80,10 @@ export function SlideshowControls({
             <div className="flex items-center justify-between gap-2">
               <Eyebrow>
                 {images.length === 1
-                  ? 'Single image preview'
-                  : `Slideshow · ${images.length} images`}
+                  ? t('slideshowControlsBatch31.singleImagePreview')
+                  : t('slideshowControlsBatch31.slideshowImages', {
+                      count: images.length,
+                    })}
               </Eyebrow>
               <span className="text-foreground-secondary text-xs">
                 {previewIndex + 1} / {images.length}
@@ -111,7 +113,9 @@ export function SlideshowControls({
               <Button
                 variant="text"
                 className={`border-border relative block h-16 w-full overflow-hidden rounded-md border p-0 ${index === previewIndex ? 'border-primary ring-primary ring-2' : ''}`}
-                aria-label={`Preview slideshow image ${index + 1}`}
+                aria-label={t('slideshowControlsBatch31.previewImageN', {
+                  n: index + 1,
+                })}
                 aria-pressed={index === previewIndex}
                 onClick={() => onPreviewIndexChange(index)}
               >
@@ -184,7 +188,7 @@ export function SlideshowControls({
             labels={{
               title: t('slideshowControlsFields.dropSlideshowImagesHere'),
               description: t('slideshowControlsFields.jpegPngOrWebpUp'),
-              browse: 'Browse images',
+              browse: t('slideshowControlsBatch31.browseImages'),
             }}
             onFiles={(files) => {
               void onFilesPicked(files).then(() => onPickerOpenChange(false));

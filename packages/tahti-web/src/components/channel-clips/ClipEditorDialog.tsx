@@ -29,12 +29,19 @@ import { ConfirmDialog } from '../ConfirmDialog';
 import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
 
 const effects = [
-  ['removeRumble', 'Remove rumble'],
-  ['compress', 'Even out voice'],
-  ['deEss', 'Soften “s” sounds'],
-  ['warmth', 'Warmth'],
-  ['clarity', 'Clarity'],
-  ['normalize', 'Match channel volume'],
+  ['removeRumble', 'clipEditorDialogBatch31.removeRumble'],
+  ['compress', 'clipEditorDialogBatch31.evenOutVoice'],
+  ['deEss', 'clipEditorDialogBatch31.softenS'],
+  ['warmth', 'clipEditorDialogBatch31.warmth'],
+  ['clarity', 'clipEditorDialogBatch31.clarity'],
+  ['normalize', 'clipEditorDialogBatch31.matchChannelVolume'],
+] as const;
+
+const presets = [
+  ['original', 'clipEditorDialogBatch31.presetOriginal'],
+  ['natural', 'clipEditorDialogBatch31.presetNatural'],
+  ['warm', 'clipEditorDialogBatch31.presetWarm'],
+  ['radio', 'clipEditorDialogBatch31.presetRadio'],
 ] as const;
 
 export function ClipEditorDialog({
@@ -142,15 +149,11 @@ export function ClipEditorDialog({
           return;
         }
         if (next.renderToken !== pending) {
-          throw new Error(
-            'This clip was edited elsewhere. Generate a new preview.',
-          );
+          throw new Error(t('clipEditorDialogBatch31.editedElsewhere'));
         }
         setSource(next);
         if (next.draftStatus === 'ERROR') {
-          throw new Error(
-            'The preview could not be rendered. Check the trim and try again.',
-          );
+          throw new Error(t('clipEditorDialogBatch31.previewRenderFailed'));
         }
         if (next.draftStatus === 'READY') {
           setPending(null);
@@ -340,7 +343,9 @@ export function ClipEditorDialog({
               className="flex flex-col gap-3"
               aria-label={t('clipEditor.audio')}
             >
-              <h3 className="font-bold">1. Audio</h3>
+              <h3 className="font-bold">
+                {t('clipEditorDialogBatch31.stepAudio')}
+              </h3>
               <Input
                 label={t('clipEditor.clipTitle')}
                 value={title}
@@ -470,10 +475,10 @@ export function ClipEditorDialog({
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {(
                   [
-                    ['startSec', 'Start (s)'],
-                    ['endSec', 'End (s)'],
-                    ['fadeInSec', 'Fade in (s)'],
-                    ['fadeOutSec', 'Fade out (s)'],
+                    ['startSec', t('clipEditorDialogBatch31.startSeconds')],
+                    ['endSec', t('clipEditorDialogBatch31.endSeconds')],
+                    ['fadeInSec', t('clipEditorDialogBatch31.fadeInSeconds')],
+                    ['fadeOutSec', t('clipEditorDialogBatch31.fadeOutSeconds')],
                   ] as const
                 ).map(([key, label]) => (
                   <Input
@@ -531,14 +536,11 @@ export function ClipEditorDialog({
               className="flex flex-col gap-3"
               aria-label={t('clipEditor.voiceSound')}
             >
-              <h3 className="font-bold">2. Voice sound</h3>
+              <h3 className="font-bold">
+                {t('clipEditorDialogBatch31.stepVoice')}
+              </h3>
               <div className="flex flex-wrap gap-2">
-                {[
-                  'Original voice',
-                  'Natural voice',
-                  'Warm voice',
-                  'Radio voice',
-                ].map((preset) => (
+                {presets.map(([preset, labelKey]) => (
                   <Button
                     key={preset}
                     size="sm"
@@ -546,7 +548,7 @@ export function ClipEditorDialog({
                     onClick={() =>
                       update({
                         ...ORIGINAL_VOICE,
-                        ...(preset !== 'Original voice'
+                        ...(preset !== 'original'
                           ? {
                               removeRumble: true,
                               compress: true,
@@ -554,20 +556,20 @@ export function ClipEditorDialog({
                               normalize: true,
                             }
                           : {}),
-                        warmth: preset === 'Warm voice',
-                        clarity: preset === 'Radio voice',
+                        warmth: preset === 'warm',
+                        clarity: preset === 'radio',
                       })
                     }
                   >
-                    {preset}
+                    {t(labelKey)}
                   </Button>
                 ))}
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                {effects.map(([key, label]) => (
+                {effects.map(([key, labelKey]) => (
                   <Toggle
                     key={key}
-                    label={label}
+                    label={t(labelKey)}
                     showLabel
                     checked={settings[key]}
                     onChange={(value) => update({ [key]: value })}
@@ -575,8 +577,7 @@ export function ClipEditorDialog({
                 ))}
               </div>
               <p className="text-foreground-secondary text-xs">
-                Match channel volume uses −14 LUFS with a −1.5 dB true-peak
-                ceiling. Preview plays the final broadcast level.
+                {t('clipEditorDialogBatch31.matchVolumeHint')}
               </p>
               {!valid && (
                 <InlineError>
@@ -588,14 +589,14 @@ export function ClipEditorDialog({
                 onClick={() => void renderPreview()}
               >
                 {pending
-                  ? 'Rendering preview…'
+                  ? t('clipEditorDialogBatch31.renderingPreview')
                   : busy
                     ? t('clipEditorDialogStates.working')
                     : t('clipEditorDialogStates.generatePreview')}
               </Button>
               <p role="status" className="text-sm">
                 {pending
-                  ? 'Your current on-air clip is unchanged while this preview renders.'
+                  ? t('clipEditorDialogBatch31.onAirUnchanged')
                   : previewReady
                     ? t('clipEditorDialogStates.previewReadyListenToProcessed')
                     : t('clipEditorDialogStates.generateAPreviewToHear')}
@@ -605,7 +606,9 @@ export function ClipEditorDialog({
               className="flex flex-col gap-3"
               aria-label={t('clipEditor.placement')}
             >
-              <h3 className="font-bold">3. When it plays</h3>
+              <h3 className="font-bold">
+                {t('clipEditorDialogBatch31.stepWhen')}
+              </h3>
               <Select
                 label={t('clipEditor.placement')}
                 value={placement.placement}

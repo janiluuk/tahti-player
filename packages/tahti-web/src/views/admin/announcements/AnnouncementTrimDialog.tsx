@@ -103,7 +103,7 @@ export function AnnouncementTrimDialog({
     };
     const invalid =
       fields.endSec.trim() === ''
-        ? 'Set where the clip ends.'
+        ? t('announcementTrimDialogBatch31.setClipEnd')
         : validateAnnouncementTrim(trim, durationSec);
     if (invalid) {
       setError(invalid);
@@ -123,7 +123,9 @@ export function AnnouncementTrimDialog({
 
   return (
     <Dialog.Root isOpen={clip !== null} onClose={onClose} className="max-w-lg">
-      <Dialog.Title>Trim {clip?.title}</Dialog.Title>
+      <Dialog.Title>
+        {t('announcementTrimDialogBatch31.title', { title: clip?.title ?? '' })}
+      </Dialog.Title>
       <Dialog.Description>
         {t('announcementTrimDialog.theTrimIsAlwaysCut')}
       </Dialog.Description>
@@ -175,7 +177,9 @@ export function AnnouncementTrimDialog({
           </div>
           {durationSec != null ? (
             <p className="text-foreground-secondary text-xs">
-              The original is {durationSec} s long.
+              {t('announcementTrimDialogBatch31.originalLength', {
+                seconds: durationSec,
+              })}
             </p>
           ) : null}
           {error ? <InlineError>{error}</InlineError> : null}
