@@ -24,7 +24,7 @@ export function MotionCirculateControl({
   if (circulatedAt && message === null) {
     return (
       <p className="text-foreground-secondary text-xs">
-        Circulated to members for seconds on{' '}
+        {t('motionCirculateControlBatch34.circulatedOn')}{' '}
         <ListingDate value={circulatedAt} />.
       </p>
     );
@@ -64,9 +64,9 @@ export function MotionCirculateControl({
               return;
             }
             setMessage(
-              result.notified === 1
-                ? 'Sent to 1 member.'
-                : `Sent to ${result.notified} members.`,
+              t('motionCirculateControlBatch34.sentToMembers', {
+                count: result.notified,
+              }),
             );
           });
         }}

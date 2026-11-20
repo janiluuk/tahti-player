@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, Button, Input, Textarea } from '@tahti-player/ui';
 
 import {
@@ -18,23 +18,32 @@ import { MotionDiscussion } from './MotionDiscussion';
 import { MotionProposerActions } from './MotionProposerActions';
 import { MotionSecondControl } from './MotionSecondControl';
 
-function stateBadge(state: string): {
+function stateBadge(
+  state: string,
+  t: TFunction<'web'>,
+): {
   color: 'green' | 'orange' | 'secondary';
   label: string;
 } {
   if (state === 'OPEN') {
-    return { color: 'green', label: 'Open' };
+    return { color: 'green', label: t('governanceLabels.motionStateOpen') };
   }
   if (state === 'CLOSED') {
-    return { color: 'secondary', label: 'Closed' };
+    return {
+      color: 'secondary',
+      label: t('governanceLabels.motionStateClosed'),
+    };
   }
   if (state === 'DRAFT') {
-    return { color: 'orange', label: 'DRAFT' };
+    return { color: 'orange', label: t('motionCardBatch34.stateDraft') };
   }
   return { color: 'orange', label: state };
 }
 
-function advisoryResultLabel(motion: GovernanceMotion): string | null {
+function advisoryResultLabel(
+  motion: GovernanceMotion,
+  t: TFunction<'web'>,
+): string | null {
   if (motion.state !== 'CLOSED' || !motion.tally) {
     return null;
   }
@@ -42,15 +51,17 @@ function advisoryResultLabel(motion: GovernanceMotion): string | null {
   const favoredNo = motion.tally.NO > motion.tally.YES;
   const majority = favoredYes ? 'YES' : favoredNo ? 'NO' : null;
   const result = majority
-    ? `Advisory result: members favored ${majority}`
-    : 'Advisory result: no majority';
+    ? t('motionCardBatch34.advisoryFavored', {
+        choice: voteChoiceLabel(majority, t),
+      })
+    : t('motionCardBatch34.advisoryNoMajority');
   if (!motion.youVoted || !motion.yourChoice || !majority) {
     return result;
   }
   const won = motion.yourChoice === majority;
   return won
-    ? `${result}. You voted with the majority.`
-    : `${result}. You voted with the minority.`;
+    ? t('motionCardBatch34.votedWithMajority', { result })
+    : t('motionCardBatch34.votedWithMinority', { result });
 }
 
 function isExpiredMotion(motion: GovernanceMotion): boolean {
@@ -102,8 +113,8 @@ export function MotionCard({
   const expired = isExpiredMotion(motion);
   const badge = expired
     ? { color: 'secondary' as const, label: t('motionCardFields.expired') }
-    : stateBadge(motion.state);
-  const resultLabel = advisoryResultLabel(motion);
+    : stateBadge(motion.state, t);
+  const resultLabel = advisoryResultLabel(motion, t);
   const eligibleVoters = motion.eligibleMemberCount ?? memberCount;
   const m = motion;
 
@@ -128,10 +139,14 @@ export function MotionCard({
         </Badge>
       </div>
       <p className="text-foreground-secondary mt-1 text-xs">
-        {m.proposer ? `Proposed by ${m.proposer}` : 'Motion'}
-        {typeof m.totalVotes === 'number' ? `, ${m.totalVotes} votes` : ''}
+        {m.proposer
+          ? t('motionCardBatch34.proposedBy', { name: m.proposer })
+          : t('motionCardBatch34.motion')}
+        {typeof m.totalVotes === 'number'
+          ? t('motionCardBatch34.votes', { count: m.totalVotes })
+          : ''}
         {typeof m.commentCount === 'number'
-          ? `, ${m.commentCount} comments`
+          ? t('motionCardBatch34.comments', { count: m.commentCount })
           : ''}
       </p>
       {description !== undefined && editing ? (
@@ -146,7 +161,9 @@ export function MotionCard({
               closeAt: new Date(editCloseAt).toISOString(),
             }).then((r) => {
               setSavingEdit(false);
-              setActionMsg(r.ok ? 'Motion updated.' : r.error);
+              setActionMsg(
+                r.ok ? t('motionCardBatch34.motionUpdated') : r.error,
+              );
               if (r.ok) {
                 setEditing(false);
                 onChanged();
@@ -225,8 +242,10 @@ export function MotionCard({
       {m.state === 'DRAFT' && (
         <p className="text-foreground-secondary mt-1 text-xs">
           {m.openAt
-            ? `Voting opens ${numericDate(new Date(m.openAt))} after circulation period (bylaws §9).`
-            : 'Voting opens after circulation period (bylaws §9).'}
+            ? t('motionCardBatch34.votingOpensOn', {
+                date: numericDate(new Date(m.openAt)),
+              })
+            : t('motionCardBatch34.votingOpensAfterCirculation')}
         </p>
       )}
       <MotionSecondControl motion={m} onChanged={onChanged} />

@@ -1,4 +1,4 @@
-import type { TFunction } from '@tahti-player/i18n';
+import type { ParseKeys, TFunction } from '@tahti-player/i18n';
 
 import type { ChannelGalleryMode } from '../../api/channel-gallery';
 
@@ -35,15 +35,15 @@ export function galleryModes(
 }
 
 export const SLIDESHOW_PRESETS = [
-  ['FADE', 'Fade'],
-  ['ZOOM', 'Zoom'],
-  ['PAN', 'Pan'],
-  ['BLUR_CROSS', 'Blur crossfade'],
-  ['PARTICLE_DISSOLVE', 'Particle dissolve'],
-  ['GLITCH_WIPE', 'Glitch wipe'],
-  ['CUBE_FLIP', 'Cube flip'],
-  ['LIQUID_DISTORTION', 'Liquid distortion'],
-] as const;
+  ['FADE', 'slideshowOptionsBatch34.fade'],
+  ['ZOOM', 'slideshowOptionsBatch34.zoom'],
+  ['PAN', 'slideshowOptionsBatch34.pan'],
+  ['BLUR_CROSS', 'slideshowOptionsBatch34.blurCrossfade'],
+  ['PARTICLE_DISSOLVE', 'slideshowOptionsBatch34.particleDissolve'],
+  ['GLITCH_WIPE', 'slideshowOptionsBatch34.glitchWipe'],
+  ['CUBE_FLIP', 'slideshowOptionsBatch34.cubeFlip'],
+  ['LIQUID_DISTORTION', 'slideshowOptionsBatch34.liquidDistortion'],
+] as const satisfies ReadonlyArray<readonly [string, ParseKeys<'web'>]>;
 
 /** Gallery images are kept as newline-separated text; this is the list. */
 export const splitGalleryImages = (text: string) =>

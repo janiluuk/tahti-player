@@ -79,8 +79,10 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
       }
       toast.success(
         action === 'remove'
-          ? 'Message removed.'
-          : `${message.handle} can no longer post in this chat.`,
+          ? t('chatMessagesPanelBatch34.messageRemoved')
+          : t('chatMessagesPanelBatch34.handleBanned', {
+              handle: message.handle,
+            }),
       );
       if (action === 'ban') {
         onBanned?.();
@@ -199,8 +201,10 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
         destructive
         title={
           pending?.action === 'ban'
-            ? `Ban ${pending.message.handle} from this chat?`
-            : 'Remove this message?'
+            ? t('chatMessagesPanelBatch34.banHandleTitle', {
+                handle: pending.message.handle,
+              })
+            : t('chatMessagesPanelBatch34.removeMessageTitle')
         }
         description={
           pending?.action === 'ban'

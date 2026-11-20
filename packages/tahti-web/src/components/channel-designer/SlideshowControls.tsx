@@ -213,7 +213,10 @@ export function SlideshowControls({
             label={t('slideshowControls.transition')}
             value={preset}
             onValueChange={onPresetChange}
-            options={SLIDESHOW_PRESETS.map(([id, label]) => ({ id, label }))}
+            options={SLIDESHOW_PRESETS.map(([id, labelKey]) => ({
+              id,
+              label: t(labelKey),
+            }))}
           />
           <Slider
             label={t('slideshowControlsLabels.intervalIntervals', { interval })}

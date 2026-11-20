@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 
 import type {
   NativeFilterOptions,
@@ -128,8 +128,13 @@ export function DesktopLibraryDialogs({
         destructive
         title={
           pendingRemoval && pendingRemoval.ids.length > 1
-            ? `Remove ${pendingRemoval.ids.length.toLocaleString('en-US')} tracks from the library?`
-            : 'Remove this track from the library?'
+            ? t('desktopLibraryDialogsBatch34.removeTracksTitle', {
+                count: pendingRemoval.ids.length,
+                n: pendingRemoval.ids.length.toLocaleString(
+                  i18n.language.replace('_', '-'),
+                ),
+              })
+            : t('desktopLibraryDialogsBatch34.removeTrackTitle')
         }
         description={t('desktopLibraryDialogs.theyAreOnlyRemovedFrom')}
         confirmLabel={t('desktopLibraryDialogs.remove')}
@@ -146,7 +151,9 @@ export function DesktopLibraryDialogs({
         isOpen={rootToRemove !== null}
         destructive
         title={t('desktopLibraryDialogs.stopWatchingThisFolder')}
-        description={`“${rootToRemove ? basename(rootToRemove.path) : ''}” will no longer be scanned for new files. Its tracks stay in your library and no files on disk are touched.`}
+        description={t('desktopLibraryDialogsBatch34.stopWatchingDescription', {
+          name: rootToRemove ? basename(rootToRemove.path) : '',
+        })}
         confirmLabel={t('desktopLibraryDialogs.stopWatching')}
         onCancel={() => setRootToRemove(null)}
         onConfirm={() => {

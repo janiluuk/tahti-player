@@ -7,7 +7,7 @@ import { Badge, Button, InlineError, Select, Textarea } from '@tahti-player/ui';
 import {
   CORRECTION_DETAILS_MAX,
   CORRECTION_DETAILS_MIN,
-  CORRECTION_SUBJECT_LABELS,
+  CORRECTION_SUBJECT_LABEL_KEYS,
   fetchMyCorrections,
   requestCorrection,
   withdrawCorrection,
@@ -61,7 +61,7 @@ function CorrectionItem({
     <li className="flex flex-col gap-1 py-2 text-sm first:pt-0 last:pb-0">
       <div className="flex flex-wrap items-center gap-2">
         <span className="font-medium">
-          {CORRECTION_SUBJECT_LABELS[correction.subject]}
+          {t(CORRECTION_SUBJECT_LABEL_KEYS[correction.subject])}
         </span>
         <Badge variant="pill" color={state.color}>
           {state.label}
@@ -167,8 +167,8 @@ export function CorrectionsPanel() {
           value={subject}
           onValueChange={(value) => setSubject(value as CorrectionSubject)}
           options={(
-            Object.keys(CORRECTION_SUBJECT_LABELS) as CorrectionSubject[]
-          ).map((id) => ({ id, label: CORRECTION_SUBJECT_LABELS[id] }))}
+            Object.keys(CORRECTION_SUBJECT_LABEL_KEYS) as CorrectionSubject[]
+          ).map((id) => ({ id, label: t(CORRECTION_SUBJECT_LABEL_KEYS[id]) }))}
         />
         <Textarea
           submitOnModEnter

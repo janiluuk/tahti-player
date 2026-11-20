@@ -257,6 +257,9 @@ export function AdminActivityView({
   const scopes = [...new Set(logs.map((l) => l.source.scope))].sort();
   const totalPages = Math.max(1, Math.ceil(total / PAGE_LIMIT));
   const exportTopic = topic === 'ALL' ? undefined : topic;
+  const topicLabelKey = ADMIN_AUDIT_TOPICS.find(
+    (item) => item.id === topic,
+  )?.labelKey;
 
   const content = (
     <StudioPanel>
@@ -264,9 +267,7 @@ export function AdminActivityView({
         {topic !== 'ALL'
           ? t('adminActivityViewBatch33.eventCountInTopic', {
               count: total,
-              topic:
-                ADMIN_AUDIT_TOPICS.find((item) => item.id === topic)?.label ??
-                topic,
+              topic: topicLabelKey ? t(topicLabelKey) : topic,
             })
           : t('adminActivityViewBatch33.eventCount', { count: total })}{' '}
         {t('adminActivityViewBatch33.listensNote')}{' '}
@@ -287,7 +288,7 @@ export function AdminActivityView({
           { id: 'ALL', label: t('adminActivityViewFields.allActivity') },
           ...ADMIN_AUDIT_TOPICS.map((item) => ({
             id: item.id,
-            label: item.label,
+            label: t(item.labelKey),
           })),
         ]}
         selected={topic}

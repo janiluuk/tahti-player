@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { mockFixture } from './mock-overrides';
 import {
@@ -9,9 +11,6 @@ import {
 import { requestJson, RequestJsonError } from './request-json';
 
 export type ChannelStaffRole = 'owner' | 'moderator';
-
-export const RECIPIENT_UNAVAILABLE_MESSAGE =
-  'This account is no longer available';
 
 function isRecipientUnavailable(err: unknown): boolean {
   return (
@@ -33,7 +32,7 @@ function dmFailure(err: unknown, fallback: string): DmFailure {
   if (isRecipientUnavailable(err)) {
     return {
       ok: false,
-      error: RECIPIENT_UNAVAILABLE_MESSAGE,
+      error: i18n.t('web:messagesApiBatch34.recipientUnavailable'),
       recipientUnavailable: true,
     };
   }

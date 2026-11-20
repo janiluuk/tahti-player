@@ -28,9 +28,9 @@ export function AdminUserDeletePanel({
   const [done, setDone] = useState<AdminAccountDeletionResult | null>(null);
 
   const blocked = isSelf
-    ? 'You can’t delete your own account here.'
+    ? t('adminUserDeletePanelBatch34.cannotDeleteSelf')
     : user.isBoard
-      ? 'Remove the board role before deleting a board member.'
+      ? t('adminUserDeletePanelBatch34.removeBoardRoleFirst')
       : null;
 
   const close = () => {
@@ -63,9 +63,10 @@ export function AdminUserDeletePanel({
     >
       {done ? (
         <p className="text-sm" role="status">
-          Account deleted. {done.fanSubscriptionsCanceled} fan subscriptions
-          cancelled, {done.newsletterSubscribersRemoved} newsletter sign-ups
-          removed.
+          {t('adminUserDeletePanelBatch34.accountDeleted', {
+            subscriptions: done.fanSubscriptionsCanceled,
+            signups: done.newsletterSubscribersRemoved,
+          })}
         </p>
       ) : (
         <>

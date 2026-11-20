@@ -14917,6 +14917,242 @@
       "openImageNamed": "Avaa kuva {{position}}/{{total}}: {{caption}}",
       "imageAlt": "{{title}}, kuva {{position}}",
       "slideshowLabel": "Kuvia tapahtumasta {{title}}"
+    },
+    "chatMessagesPanelBatch34": {
+      "messageRemoved": "Viesti poistettu.",
+      "handleBanned": "{{handle}} ei voi enää kirjoittaa tähän keskusteluun.",
+      "banHandleTitle": "Annetaanko käyttäjälle {{handle}} porttikielto tähän keskusteluun?",
+      "removeMessageTitle": "Poistetaanko tämä viesti?"
+    },
+    "chatBansPanelBatch34": {
+      "unnamedVisitor": "Nimetön vierailija {{hash}}",
+      "bannedAt": "Porttikielto annettu",
+      "liftBanOn": "Poista porttikielto: {{name}}",
+      "canPostAgain": "{{name}} voi taas kirjoittaa."
+    },
+    "channelChatSettingsBatch34": {
+      "chatSettingSaved": "Keskusteluasetus tallennettu."
+    },
+    "motionCirculateControlBatch34": {
+      "circulatedOn": "Lähetetty jäsenille kannatettavaksi",
+      "sentToMembers_one": "Lähetetty {{count}} jäsenelle.",
+      "sentToMembers_other": "Lähetetty {{count}} jäsenelle."
+    },
+    "motionCardBatch34": {
+      "stateDraft": "LUONNOS",
+      "advisoryFavored": "Neuvoa-antava tulos: jäsenet kannattivat vaihtoehtoa {{choice}}",
+      "advisoryNoMajority": "Neuvoa-antava tulos: ei enemmistöä",
+      "votedWithMajority": "{{result}}. Äänestit enemmistön kanssa.",
+      "votedWithMinority": "{{result}}. Äänestit vähemmistön kanssa.",
+      "proposedBy": "Esittäjä: {{name}}",
+      "motion": "Esitys",
+      "votes_one": ", {{count}} ääni",
+      "votes_other": ", {{count}} ääntä",
+      "comments_one": ", {{count}} kommentti",
+      "comments_other": ", {{count}} kommenttia",
+      "motionUpdated": "Esitys päivitetty.",
+      "votingOpensOn": "Äänestys avautuu {{date}} kiertoajan jälkeen (sääntöjen 9 §).",
+      "votingOpensAfterCirculation": "Äänestys avautuu kiertoajan jälkeen (sääntöjen 9 §)."
+    },
+    "electionsPanelBatch34": {
+      "cancelledWithReason": "Peruttu: {{reason}}",
+      "cancelled": "Peruttu",
+      "nominationsOpenUntil": "Ehdokasasettelu päättyy",
+      "nominationsOpen": "Ehdokasasettelu auki",
+      "nominationsClosed": "Ehdokasasettelu päättynyt, odottaa kokousta",
+      "seats_one": "{{count}} paikka",
+      "seats_other": "{{count}} paikkaa"
+    },
+    "annualReportsPanelBatch34": {
+      "filedWithRegister": "· toimitettu rekisteriin",
+      "corrected": "· korjattu",
+      "annualReportYear": "Vuosikertomus {{year}}"
+    },
+    "libraryRootsBlockBatch34": {
+      "rescan": "Skannaa uudelleen",
+      "trackCount_one": "{{count}} kappale",
+      "trackCount_other": "{{count}} kappaletta",
+      "missingCount": " · {{n}} puuttuu",
+      "folderNotFound": "Kansiota ei löydy: liitä asema uudelleen tai linkitä uudelleen",
+      "relinkName": "Linkitä uudelleen: {{name}}"
+    },
+    "desktopLibraryDialogsBatch34": {
+      "removeTracksTitle_one": "Poistetaanko {{n}} kappale kirjastosta?",
+      "removeTracksTitle_other": "Poistetaanko {{n}} kappaletta kirjastosta?",
+      "removeTrackTitle": "Poistetaanko tämä kappale kirjastosta?",
+      "stopWatchingDescription": "Kansiosta ”{{name}}” ei enää etsitä uusia tiedostoja. Sen kappaleet pysyvät kirjastossasi, eikä levyllä oleviin tiedostoihin kosketa."
+    },
+    "desktopLibraryContentBatch34": {
+      "checkMissingFiles": "Tarkista puuttuvat tiedostot ({{n}})",
+      "importProgress": "Tuodaan {{done}}/{{total}}, {{imported}} tuotu",
+      "importFailed": ", {{n}} epäonnistui",
+      "importSkipped": ", {{n}} ohitettu",
+      "kindArtists": "Artisti",
+      "kindAlbums": "Albumi",
+      "kindGenres": "Tyylilaji",
+      "kindComposers": "Säveltäjä",
+      "kindFolders": "Kansio",
+      "noArtistGroups": "Ei vielä artistiryhmiä",
+      "noAlbumGroups": "Ei vielä albumiryhmiä",
+      "noGenreGroups": "Ei vielä tyylilajiryhmiä",
+      "noComposerGroups": "Ei vielä säveltäjäryhmiä",
+      "noFolderGroups": "Ei vielä kansioryhmiä",
+      "clearArtistFilter": "Poista artistisuodatin",
+      "clearAlbumFilter": "Poista albumisuodatin",
+      "clearGenreFilter": "Poista tyylilajisuodatin",
+      "clearComposerFilter": "Poista säveltäjäsuodatin",
+      "clearFolderFilter": "Poista kansiosuodatin",
+      "importFilesToFill": "Tuo tiedostoja täyttääksesi tämän näkymän.",
+      "filters": "Suodattimet",
+      "filtersActiveLabel": "Suodattimet ({{n}} käytössä)",
+      "filtersCount": "Suodattimet ({{n}})"
+    },
+    "governanceCorrectionsBatch34": {
+      "subjectMemberRegister": "Omat jäsenrekisteritietoni",
+      "subjectGovernanceRecord": "Hallinnon asiakirja"
+    },
+    "adminAuditTopicsBatch34": {
+      "finance": "Talous ja apurahat",
+      "subscriptions": "Fanitilaukset",
+      "membership": "Jäsenyys ja rekisteri",
+      "decisions": "Esitykset, äänestykset ja päätökset",
+      "officers": "Hallitus ja roolit",
+      "meetings": "Kokoukset ja asiakirjat",
+      "radio": "Radiovaraukset"
+    },
+    "messagesApiBatch34": {
+      "recipientUnavailable": "Tämä tili ei ole enää käytettävissä"
+    },
+    "slideshowOptionsBatch34": {
+      "fade": "Häivytys",
+      "zoom": "Zoomaus",
+      "pan": "Panorointi",
+      "blurCrossfade": "Sumea ristihäivytys",
+      "particleDissolve": "Partikkelihajotus",
+      "glitchWipe": "Häiriöpyyhkäisy",
+      "cubeFlip": "Kuutiokäännös",
+      "liquidDistortion": "Nestemäinen vääristymä"
+    },
+    "adminAnnouncementsBatch34": {
+      "timesNotNegative": "Aikojen pitää olla vähintään nolla sekuntia.",
+      "endAfterStart": "Lopun pitää olla alun jälkeen.",
+      "endPastClip": "Loppu ei voi olla leikkeen pituuden ({{duration}} s) jälkeen.",
+      "fadesTooLong": "Häivytykset voivat olla enintään 30 sekuntia.",
+      "fadesLongerThanClip": "Häivytykset ovat pidempiä kuin rajattu leike."
+    },
+    "previewTracksPlaceholderBatch34": {
+      "latestRelease": "Uusin julkaisu",
+      "liveSession": "Livesessio",
+      "featuredTrack": "Nostettu kappale",
+      "aboutName": "Tietoa: {{name}}",
+      "bioPlaceholder": "Artistiesittelysi näkyy tässä vierailijoille."
+    },
+    "channelVizPackPickerBatch34": {
+      "noPack": "Ei pakettia",
+      "noPackDescription": "Käytä yllä valittua visualisoinnin esiasetusta."
+    },
+    "adminUserDeletePanelBatch34": {
+      "cannotDeleteSelf": "Et voi poistaa omaa tiliäsi täällä.",
+      "removeBoardRoleFirst": "Poista hallitusrooli ennen kuin poistat hallituksen jäsenen.",
+      "accountDeleted": "Tili poistettu. Fanitilauksia peruttu: {{subscriptions}}, uutiskirjetilauksia poistettu: {{signups}}."
+    },
+    "writeTagsDialogBatch34": {
+      "failedNote": "{{n}} epäonnistui ({{reason}})",
+      "skippedNote": "{{n}} ohitettu",
+      "fieldsUnsupported_one": "{{n}} muokattu kenttä ei mahdu tiedostomuotoon, joten se jää vain kirjastoon",
+      "fieldsUnsupported_other": "{{n}} muokattua kenttää ei mahdu tiedostomuotoon, joten ne jäävät vain kirjastoon",
+      "wroteTags_one": "Tunnisteet kirjoitettu {{n}} tiedostoon.",
+      "wroteTags_other": "Tunnisteet kirjoitettu {{n}} tiedostoon.",
+      "willBeWritten_one": "{{n}} tiedosto kirjoitetaan",
+      "willBeWritten_other": "{{n}} tiedostoa kirjoitetaan",
+      "noEditsNote": "; {{n}} ilman muokkauksia",
+      "supportedFormats": "Tuetut muodot: {{formats}}. WAV ei tallenna albumin artistia eikä levyn numeroa, joten ne muokkaukset jäävät vain kirjastoon."
+    },
+    "trackExportPanelBatch34": {
+      "uploadFailed": "Lataus epäonnistui.",
+      "checkingStatus": "Tarkistetaan viennin tilaa…"
+    },
+    "venueShowsSectionBatch34": {
+      "chooseStart": "Valitse, milloin keikka alkaa.",
+      "endAfterStart": "Keikan pitää päättyä alkamisen jälkeen.",
+      "cancelShowOn": "Peru keikka {{when}}",
+      "cancelDescription": "Keikka {{when}} poistetaan tapahtumapaikan sivulta ja sen kalenterisyötteestä. Jos artisti varasi sen, hänelle ilmoitetaan.",
+      "keepIt": "Pidä se"
+    },
+    "publishToReleaseSectionBatch34": {
+      "noReleaseYet": "Sinulla ei ole vielä julkaisua.",
+      "createOneInStudio": "Luo sellainen kohdassa Studio → Julkaisut",
+      "addedTo": "Lisätty julkaisuun",
+      "beingProcessed": ". Sitä käsitellään siellä."
+    },
+    "playlistDialogBatch34": {
+      "trackCount_one": "{{count}} kappale",
+      "trackCount_other": "{{count}} kappaletta",
+      "untitledTrack": "Nimetön kappale",
+      "replaceDescription": "Tämä poistaa kaikki rotaatiossa olevat kappaleet ja korvaa ne soittolistalla \"{{name}}\".",
+      "replaceDescriptionUnnamed": "Tämä poistaa kaikki rotaatiossa olevat kappaleet ja korvaa ne tällä soittolistalla.",
+      "addDescription": "Tämä lisää soittolistan \"{{name}}\" kappaleet nykyiseen rotaatioon.",
+      "addDescriptionUnnamed": "Tämä lisää tämän soittolistan kappaleet nykyiseen rotaatioon."
+    },
+    "spotifyCardBatch34": {
+      "loadFailed": "Spotify-profiiliasi ei voitu ladata.",
+      "linked": "Linkitetty",
+      "linkedName": "Linkitetty: {{name}}"
+    },
+    "oAuthServiceCardBatch34": {
+      "bandcampLoadFailed": "Bandcamp-julkaisujasi ei voitu ladata.",
+      "soundcloudLoadFailed": "SoundCloud-kappaleitasi ei voitu ladata.",
+      "importedItems_one": "Tuotiin {{count}} kohde.",
+      "importedItems_other": "Tuotiin {{count}} kohdetta.",
+      "queuedAll_one": "{{count}} SoundCloud-kappale lisätty tuontijonoon. Seuraa etenemistä kohdassa Studio → Lataa.",
+      "queuedAll_other": "Kaikki {{count}} SoundCloud-kappaletta lisätty tuontijonoon. Seuraa etenemistä kohdassa Studio → Lataa.",
+      "queuedImport": "Tuonti lisätty jonoon ({{count}}). Seuraa etenemistä kohdassa Studio → Lataa.",
+      "connected": "Yhdistetty.",
+      "connectedAs": "Yhdistetty käyttäjänä {{username}}.",
+      "mixcloudHint": "Lähettääksesi miksauksen Mixcloudiin avaa kappaleen muokkausikkuna (✎ kappaleessa) ja käytä sen Vienti-välilehteä.",
+      "bandcampImportUnavailable": "Katalogin tuonti ei ole vielä käytettävissä Bandcampille.",
+      "trackCount_one": "{{count}} kappale",
+      "trackCount_other": "{{count}} kappaletta",
+      "connectName": "Yhdistä {{name}}"
+    },
+    "hearthisCardBatch34": {
+      "createdPlaylist": "Soittolista ”{{name}}” luotu.",
+      "removedPlaylist": "”{{name}}” poistettu.",
+      "importStarted_one": "Tuonti aloitettu, {{count}} kohde…",
+      "importStarted_other": "Tuonti aloitettu, {{count}} kohdetta…",
+      "importedWithFailures": "Tuotiin {{imported}}; {{failed}} ei voitu tuoda.",
+      "importedCoversFailed": "Tuotiin {{items}}; {{covers}} ei voitu tallentaa.",
+      "importCompleted": "Tuonti valmis — {{items}} lisätty soittolistaan.",
+      "itemCount_one": "{{count}} kohde",
+      "itemCount_other": "{{count}} kohdetta",
+      "coverCount_one": "{{count}} kansikuvaa",
+      "coverCount_other": "{{count}} kansikuvaa",
+      "importFailed": "hearthis.at-tuonti epäonnistui.",
+      "importStartedNamed": "Tuonti aloitettu: ”{{name}}”…",
+      "createdWithFailures": "Luotiin ”{{name}}”, {{imported}} kohdetta; {{failed}} epäonnistui.",
+      "createdCoversFailed": "Luotiin ”{{name}}”, {{imported}} kohdetta; {{covers}} ei voitu tallentaa.",
+      "createdCompleted": "Tuonti valmis — luotiin ”{{name}}”, {{items}}.",
+      "importSelected": "Tuo valitut ({{count}})",
+      "selectItem": "Valitse {{title}}",
+      "importAsCollectionNamed": "Tuo {{title}} kokoelmana",
+      "preview": "Esikuuntele",
+      "queueTrack": "Lisää jonoon: {{title}}",
+      "noTracksFound": "Tältä profiililta ei löytynyt kappaleita.",
+      "noSetsFound": "Tältä profiililta ei löytynyt settejä.",
+      "premiumNote": "Omien kappaleiden vienti hearthis.at-palveluun vaatii hearthis.at Premium -tilin — tuonti hearthis.atista toimii millä tahansa tilillä."
+    },
+    "googleDriveImportBatch34": {
+      "openFailed": "Google Drivea ei voitu avata.",
+      "opening": "Avataan Google Drivea…"
+    },
+    "suggestStationFormBatch34": {
+      "thanks": "Kiitos — lähetetty Tahti-tiimin arvioitavaksi."
+    },
+    "widgetCardBatch34": {
+      "couldNotLoad": "Lataus epäonnistui: {{title}}",
+      "artistProfile": "Artistin {{name}} profiilikuva",
+      "trackCount_one": "{{count}} kappale",
+      "trackCount_other": "{{count}} kappaletta"
     }
   },
   "studioEditor": {

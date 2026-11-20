@@ -75,14 +75,27 @@ export function WriteTagsDialog({
       onClose();
       const notes = [
         result.failed.length
-          ? `${n(result.failed.length)} failed (${result.failed[0]?.reason})`
+          ? t('writeTagsDialogBatch34.failedNote', {
+              n: n(result.failed.length),
+              reason: result.failed[0]?.reason,
+            })
           : '',
-        result.skipped.length ? `${n(result.skipped.length)} skipped` : '',
+        result.skipped.length
+          ? t('writeTagsDialogBatch34.skippedNote', {
+              n: n(result.skipped.length),
+            })
+          : '',
         result.fieldsUnsupported
-          ? `${n(result.fieldsUnsupported)} edited fields have no place in the file format and stay in the library only`
+          ? t('writeTagsDialogBatch34.fieldsUnsupported', {
+              count: result.fieldsUnsupported,
+              n: n(result.fieldsUnsupported),
+            })
           : '',
       ].filter(Boolean);
-      const message = `Wrote tags to ${n(result.written)} ${result.written === 1 ? 'file' : 'files'}.`;
+      const message = t('writeTagsDialogBatch34.wroteTags', {
+        count: result.written,
+        n: n(result.written),
+      });
       if (result.failed.length && result.written === 0) {
         toast.error(i18n.t('web:toasts.noFilesChanged'), {
           description: notes.join('; '),
@@ -123,13 +136,21 @@ export function WriteTagsDialog({
       ) : (
         <div className="flex max-h-[45vh] flex-col gap-2 overflow-y-auto py-2 text-sm">
           <p role="status">
-            {n(preview.writable)} {preview.writable === 1 ? 'file' : 'files'}{' '}
-            will be written
-            {preview.noEdits ? `; ${n(preview.noEdits)} have no edits` : ''}.
+            {t('writeTagsDialogBatch34.willBeWritten', {
+              count: preview.writable,
+              n: n(preview.writable),
+            })}
+            {preview.noEdits
+              ? t('writeTagsDialogBatch34.noEditsNote', {
+                  n: n(preview.noEdits),
+                })
+              : ''}
+            .
           </p>
           <p className="text-foreground-secondary text-xs">
-            Supported formats: {preview.formats.join(', ')}. WAV stores no album
-            artist or disc number; those edits stay in the library only.
+            {t('writeTagsDialogBatch34.supportedFormats', {
+              formats: preview.formats.join(', '),
+            })}
           </p>
           {preview.skipped.length > 0 ? (
             <div className="flex flex-col gap-0.5 text-xs">

@@ -53,11 +53,11 @@ export function VenueShowsSection({
     const start = toIso(startAt);
     const end = toIso(endAt);
     if (!start) {
-      setError('Choose when the show starts.');
+      setError(t('venueShowsSectionBatch34.chooseStart'));
       return;
     }
     if (end && end <= start) {
-      setError('The show must end after it starts.');
+      setError(t('venueShowsSectionBatch34.endAfterStart'));
       return;
     }
     setBusy(true);
@@ -109,7 +109,9 @@ export function VenueShowsSection({
               <div className="flex flex-col">
                 <span className="font-medium">
                   {formatShow(show)}
-                  {show.state === 'LIVE' ? ' · Live now' : ''}
+                  {show.state === 'LIVE'
+                    ? ` · ${t('venueDetailView.liveNow')}`
+                    : ''}
                 </span>
                 {show.description ? (
                   <span className="text-foreground-secondary text-xs">
@@ -121,7 +123,9 @@ export function VenueShowsSection({
                 <Button
                   size="sm"
                   variant="secondary"
-                  aria-label={`Cancel show on ${formatShow(show)}`}
+                  aria-label={t('venueShowsSectionBatch34.cancelShowOn', {
+                    when: formatShow(show),
+                  })}
                   onClick={() => setCancelling(show)}
                 >
                   {t('venueShowsSection.cancelShow')}
@@ -138,11 +142,13 @@ export function VenueShowsSection({
         title={t('venueShowsSection.cancelThisShow')}
         description={
           cancelling
-            ? `${formatShow(cancelling)} will be taken off the venue page and its calendar feed. If an artist booked it, they are notified.`
+            ? t('venueShowsSectionBatch34.cancelDescription', {
+                when: formatShow(cancelling),
+              })
             : ''
         }
         confirmLabel={t('venueShowsSection.cancelShow')}
-        cancelLabel="Keep it"
+        cancelLabel={t('venueShowsSectionBatch34.keepIt')}
         onCancel={() => setCancelling(null)}
         onConfirm={() => {
           if (cancelling) {

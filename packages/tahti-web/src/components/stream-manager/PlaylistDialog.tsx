@@ -52,7 +52,10 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
                   {collection.name}
                 </span>
                 <span className="block text-xs opacity-75">
-                  {collection.itemCount ?? collection.items?.length ?? 0} tracks
+                  {t('playlistDialogBatch34.trackCount', {
+                    count:
+                      collection.itemCount ?? collection.items?.length ?? 0,
+                  })}
                 </span>
               </Button>
             ))}
@@ -75,7 +78,7 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
                       {item.position + 1}.{' '}
                       {item.sound?.title ??
                         item.release?.title ??
-                        'Untitled track'}
+                        t('playlistDialogBatch34.untitledTrack')}
                     </li>
                   ))}
                 </ul>
@@ -133,8 +136,16 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
         }
         description={
           pendingApply?.replace
-            ? `This removes every track currently in rotation and replaces it with "${selectedCollection?.name ?? 'this playlist'}".`
-            : `This adds "${selectedCollection?.name ?? 'this playlist'}"'s tracks to the current rotation.`
+            ? selectedCollection
+              ? t('playlistDialogBatch34.replaceDescription', {
+                  name: selectedCollection.name,
+                })
+              : t('playlistDialogBatch34.replaceDescriptionUnnamed')
+            : selectedCollection
+              ? t('playlistDialogBatch34.addDescription', {
+                  name: selectedCollection.name,
+                })
+              : t('playlistDialogBatch34.addDescriptionUnnamed')
         }
         confirmLabel={
           rotationBusy

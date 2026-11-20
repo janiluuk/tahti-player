@@ -1,11 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  fetchOlderMessages,
-  RECIPIENT_UNAVAILABLE_MESSAGE,
-  sendDm,
-  startConversation,
-} from './messages';
+import { fetchOlderMessages, sendDm, startConversation } from './messages';
 
 const unavailable = () =>
   new Response(
@@ -25,7 +20,7 @@ describe('DM send and start errors', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(unavailable());
     await expect(sendDm('c1', 'hi')).resolves.toEqual({
       ok: false,
-      error: RECIPIENT_UNAVAILABLE_MESSAGE,
+      error: 'This account is no longer available',
       recipientUnavailable: true,
     });
   });
@@ -34,7 +29,7 @@ describe('DM send and start errors', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(unavailable());
     await expect(startConversation('gone')).resolves.toEqual({
       ok: false,
-      error: RECIPIENT_UNAVAILABLE_MESSAGE,
+      error: 'This account is no longer available',
       recipientUnavailable: true,
     });
   });

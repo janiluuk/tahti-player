@@ -118,7 +118,11 @@ export function ChannelChatSettings({
             description={t('channelChatSettings.whenThisIsOffListeners')}
             value={profile.chatEnabled}
             onChange={(value) =>
-              saveSwitch('chatEnabled', value, 'Chat setting saved.')
+              saveSwitch(
+                'chatEnabled',
+                value,
+                t('channelChatSettingsBatch34.chatSettingSaved'),
+              )
             }
           />
           <SettingsToggle
@@ -126,7 +130,11 @@ export function ChannelChatSettings({
             description={t('channelChatSettings.listenersSeeHowManyPeople')}
             value={profile.showDailyListeners ?? true}
             onChange={(value) =>
-              saveSwitch('showDailyListeners', value, 'Chat setting saved.')
+              saveSwitch(
+                'showDailyListeners',
+                value,
+                t('channelChatSettingsBatch34.chatSettingSaved'),
+              )
             }
           />
         </div>

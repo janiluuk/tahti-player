@@ -151,7 +151,7 @@ describe('MessagesView with an unavailable account', () => {
     await renderView(conversation());
     const sendSpy = vi.spyOn(api, 'sendDm').mockResolvedValue({
       ok: false,
-      error: api.RECIPIENT_UNAVAILABLE_MESSAGE,
+      error: 'This account is no longer available',
       recipientUnavailable: true,
     });
     fireEvent.change(screen.getByPlaceholderText('Write a message…'), {

@@ -14917,6 +14917,242 @@
       "openImageNamed": "Open image {{position}} of {{total}}: {{caption}}",
       "imageAlt": "{{title}}, image {{position}}",
       "slideshowLabel": "Photos from {{title}}"
+    },
+    "chatMessagesPanelBatch34": {
+      "messageRemoved": "Message removed.",
+      "handleBanned": "{{handle}} can no longer post in this chat.",
+      "banHandleTitle": "Ban {{handle}} from this chat?",
+      "removeMessageTitle": "Remove this message?"
+    },
+    "chatBansPanelBatch34": {
+      "unnamedVisitor": "Unnamed visitor {{hash}}",
+      "bannedAt": "Banned",
+      "liftBanOn": "Lift the ban on {{name}}",
+      "canPostAgain": "{{name}} can post again."
+    },
+    "channelChatSettingsBatch34": {
+      "chatSettingSaved": "Chat setting saved."
+    },
+    "motionCirculateControlBatch34": {
+      "circulatedOn": "Circulated to members for seconds on",
+      "sentToMembers_one": "Sent to {{count}} member.",
+      "sentToMembers_other": "Sent to {{count}} members."
+    },
+    "motionCardBatch34": {
+      "stateDraft": "DRAFT",
+      "advisoryFavored": "Advisory result: members favored {{choice}}",
+      "advisoryNoMajority": "Advisory result: no majority",
+      "votedWithMajority": "{{result}}. You voted with the majority.",
+      "votedWithMinority": "{{result}}. You voted with the minority.",
+      "proposedBy": "Proposed by {{name}}",
+      "motion": "Motion",
+      "votes_one": ", {{count}} vote",
+      "votes_other": ", {{count}} votes",
+      "comments_one": ", {{count}} comment",
+      "comments_other": ", {{count}} comments",
+      "motionUpdated": "Motion updated.",
+      "votingOpensOn": "Voting opens {{date}} after circulation period (bylaws §9).",
+      "votingOpensAfterCirculation": "Voting opens after circulation period (bylaws §9)."
+    },
+    "electionsPanelBatch34": {
+      "cancelledWithReason": "Cancelled: {{reason}}",
+      "cancelled": "Cancelled",
+      "nominationsOpenUntil": "Nominations open until",
+      "nominationsOpen": "Nominations open",
+      "nominationsClosed": "Nominations closed, waiting for the meeting",
+      "seats_one": "{{count}} seat",
+      "seats_other": "{{count}} seats"
+    },
+    "annualReportsPanelBatch34": {
+      "filedWithRegister": "· filed with the register",
+      "corrected": "· corrected",
+      "annualReportYear": "Annual report {{year}}"
+    },
+    "libraryRootsBlockBatch34": {
+      "rescan": "Rescan",
+      "trackCount_one": "{{count}} track",
+      "trackCount_other": "{{count}} tracks",
+      "missingCount": " · {{n}} missing",
+      "folderNotFound": "Folder not found — reconnect the drive or relink",
+      "relinkName": "Relink {{name}}"
+    },
+    "desktopLibraryDialogsBatch34": {
+      "removeTracksTitle_one": "Remove {{n}} track from the library?",
+      "removeTracksTitle_other": "Remove {{n}} tracks from the library?",
+      "removeTrackTitle": "Remove this track from the library?",
+      "stopWatchingDescription": "“{{name}}” will no longer be scanned for new files. Its tracks stay in your library and no files on disk are touched."
+    },
+    "desktopLibraryContentBatch34": {
+      "checkMissingFiles": "Check missing files ({{n}})",
+      "importProgress": "Importing {{done}} of {{total}} — {{imported}} imported",
+      "importFailed": ", {{n}} failed",
+      "importSkipped": ", {{n}} skipped",
+      "kindArtists": "Artist",
+      "kindAlbums": "Album",
+      "kindGenres": "Genre",
+      "kindComposers": "Composer",
+      "kindFolders": "Folder",
+      "noArtistGroups": "No artist groups yet",
+      "noAlbumGroups": "No album groups yet",
+      "noGenreGroups": "No genre groups yet",
+      "noComposerGroups": "No composer groups yet",
+      "noFolderGroups": "No folder groups yet",
+      "clearArtistFilter": "Clear Artist filter",
+      "clearAlbumFilter": "Clear Album filter",
+      "clearGenreFilter": "Clear Genre filter",
+      "clearComposerFilter": "Clear Composer filter",
+      "clearFolderFilter": "Clear Folder filter",
+      "importFilesToFill": "Import files to fill this view.",
+      "filters": "Filters",
+      "filtersActiveLabel": "Filters ({{n}} active)",
+      "filtersCount": "Filters ({{n}})"
+    },
+    "governanceCorrectionsBatch34": {
+      "subjectMemberRegister": "My member register details",
+      "subjectGovernanceRecord": "A governance record"
+    },
+    "adminAuditTopicsBatch34": {
+      "finance": "Finance & grants",
+      "subscriptions": "Fan subscriptions",
+      "membership": "Membership & register",
+      "decisions": "Motions, votes & resolutions",
+      "officers": "Board & roles",
+      "meetings": "Meetings & documents",
+      "radio": "Radio bookings"
+    },
+    "messagesApiBatch34": {
+      "recipientUnavailable": "This account is no longer available"
+    },
+    "slideshowOptionsBatch34": {
+      "fade": "Fade",
+      "zoom": "Zoom",
+      "pan": "Pan",
+      "blurCrossfade": "Blur crossfade",
+      "particleDissolve": "Particle dissolve",
+      "glitchWipe": "Glitch wipe",
+      "cubeFlip": "Cube flip",
+      "liquidDistortion": "Liquid distortion"
+    },
+    "adminAnnouncementsBatch34": {
+      "timesNotNegative": "Times must be zero or more seconds.",
+      "endAfterStart": "End must be after start.",
+      "endPastClip": "End can't be past the clip's length ({{duration}} s).",
+      "fadesTooLong": "Fades can be at most 30 seconds.",
+      "fadesLongerThanClip": "The fades are longer than the trimmed clip."
+    },
+    "previewTracksPlaceholderBatch34": {
+      "latestRelease": "Latest release",
+      "liveSession": "Live session",
+      "featuredTrack": "Featured track",
+      "aboutName": "About {{name}}",
+      "bioPlaceholder": "Your artist bio will appear here for visitors."
+    },
+    "channelVizPackPickerBatch34": {
+      "noPack": "No pack",
+      "noPackDescription": "Use the visualizer preset above."
+    },
+    "adminUserDeletePanelBatch34": {
+      "cannotDeleteSelf": "You can’t delete your own account here.",
+      "removeBoardRoleFirst": "Remove the board role before deleting a board member.",
+      "accountDeleted": "Account deleted. {{subscriptions}} fan subscriptions cancelled, {{signups}} newsletter sign-ups removed."
+    },
+    "writeTagsDialogBatch34": {
+      "failedNote": "{{n}} failed ({{reason}})",
+      "skippedNote": "{{n}} skipped",
+      "fieldsUnsupported_one": "{{n}} edited field has no place in the file format and stays in the library only",
+      "fieldsUnsupported_other": "{{n}} edited fields have no place in the file format and stay in the library only",
+      "wroteTags_one": "Wrote tags to {{n}} file.",
+      "wroteTags_other": "Wrote tags to {{n}} files.",
+      "willBeWritten_one": "{{n}} file will be written",
+      "willBeWritten_other": "{{n}} files will be written",
+      "noEditsNote": "; {{n}} have no edits",
+      "supportedFormats": "Supported formats: {{formats}}. WAV stores no album artist or disc number; those edits stay in the library only."
+    },
+    "trackExportPanelBatch34": {
+      "uploadFailed": "Upload failed.",
+      "checkingStatus": "Checking export status…"
+    },
+    "venueShowsSectionBatch34": {
+      "chooseStart": "Choose when the show starts.",
+      "endAfterStart": "The show must end after it starts.",
+      "cancelShowOn": "Cancel show on {{when}}",
+      "cancelDescription": "{{when}} will be taken off the venue page and its calendar feed. If an artist booked it, they are notified.",
+      "keepIt": "Keep it"
+    },
+    "publishToReleaseSectionBatch34": {
+      "noReleaseYet": "You don't have a release yet.",
+      "createOneInStudio": "Create one in Studio → Releases",
+      "addedTo": "Added to",
+      "beingProcessed": ". It's being processed there."
+    },
+    "playlistDialogBatch34": {
+      "trackCount_one": "{{count}} track",
+      "trackCount_other": "{{count}} tracks",
+      "untitledTrack": "Untitled track",
+      "replaceDescription": "This removes every track currently in rotation and replaces it with \"{{name}}\".",
+      "replaceDescriptionUnnamed": "This removes every track currently in rotation and replaces it with \"this playlist\".",
+      "addDescription": "This adds \"{{name}}\"'s tracks to the current rotation.",
+      "addDescriptionUnnamed": "This adds \"this playlist\"'s tracks to the current rotation."
+    },
+    "spotifyCardBatch34": {
+      "loadFailed": "Could not load your Spotify profile.",
+      "linked": "Linked",
+      "linkedName": "Linked: {{name}}"
+    },
+    "oAuthServiceCardBatch34": {
+      "bandcampLoadFailed": "Could not load your Bandcamp releases.",
+      "soundcloudLoadFailed": "Could not load your SoundCloud tracks.",
+      "importedItems_one": "Imported {{count}} item.",
+      "importedItems_other": "Imported {{count}} items.",
+      "queuedAll_one": "Queued all {{count}} SoundCloud track. Follow progress on Studio → Upload.",
+      "queuedAll_other": "Queued all {{count}} SoundCloud tracks. Follow progress on Studio → Upload.",
+      "queuedImport": "Queued import ({{count}}). Follow progress on Studio → Upload.",
+      "connected": "Connected.",
+      "connectedAs": "Connected as {{username}}.",
+      "mixcloudHint": "To send a mix to Mixcloud, open the track's edit dialog (✎ on the track) and use its Export tab.",
+      "bandcampImportUnavailable": "Catalog import is not available yet for Bandcamp.",
+      "trackCount_one": "{{count}} track",
+      "trackCount_other": "{{count}} tracks",
+      "connectName": "Connect {{name}}"
+    },
+    "hearthisCardBatch34": {
+      "createdPlaylist": "Created playlist “{{name}}”.",
+      "removedPlaylist": "Removed “{{name}}”.",
+      "importStarted_one": "Import started for {{count}} item…",
+      "importStarted_other": "Import started for {{count}} items…",
+      "importedWithFailures": "Imported {{imported}}; {{failed}} could not be imported.",
+      "importedCoversFailed": "Imported {{items}}; {{covers}} could not be stored.",
+      "importCompleted": "Import completed — {{items}} added to the playlist.",
+      "itemCount_one": "{{count}} item",
+      "itemCount_other": "{{count}} items",
+      "coverCount_one": "{{count}} cover",
+      "coverCount_other": "{{count}} covers",
+      "importFailed": "hearthis.at import failed.",
+      "importStartedNamed": "Import started for “{{name}}”…",
+      "createdWithFailures": "Created “{{name}}” with {{imported}} items; {{failed}} failed.",
+      "createdCoversFailed": "Created “{{name}}” with {{imported}} items; {{covers}} could not be stored.",
+      "createdCompleted": "Import completed — created “{{name}}” with {{items}}.",
+      "importSelected": "Import selected ({{count}})",
+      "selectItem": "Select {{title}}",
+      "importAsCollectionNamed": "Import {{title}} as collection",
+      "preview": "Preview",
+      "queueTrack": "Queue {{title}}",
+      "noTracksFound": "No tracks found for this profile.",
+      "noSetsFound": "No sets found for this profile.",
+      "premiumNote": "A hearthis.at Premium account is required to export your own tracks there — importing from hearthis.at works on any account."
+    },
+    "googleDriveImportBatch34": {
+      "openFailed": "Could not open Google Drive.",
+      "opening": "Opening Google Drive…"
+    },
+    "suggestStationFormBatch34": {
+      "thanks": "Thanks — sent to the Tahti team for review."
+    },
+    "widgetCardBatch34": {
+      "couldNotLoad": "Could not load {{title}}",
+      "artistProfile": "{{name}} profile",
+      "trackCount_one": "{{count}} track",
+      "trackCount_other": "{{count}} tracks"
     }
   },
   "studioEditor": {

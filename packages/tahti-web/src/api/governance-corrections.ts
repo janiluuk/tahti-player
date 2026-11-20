@@ -1,4 +1,4 @@
-import { i18n } from '@tahti-player/i18n';
+import { i18n, type ParseKeys } from '@tahti-player/i18n';
 
 import { requestJson } from './client-request';
 import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
@@ -18,9 +18,12 @@ export type GovernanceCorrection = {
   createdAt: string;
 };
 
-export const CORRECTION_SUBJECT_LABELS: Record<CorrectionSubject, string> = {
-  MEMBER_REGISTER: 'My member register details',
-  GOVERNANCE_RECORD: 'A governance record',
+export const CORRECTION_SUBJECT_LABEL_KEYS: Record<
+  CorrectionSubject,
+  ParseKeys<'web'>
+> = {
+  MEMBER_REGISTER: 'governanceCorrectionsBatch34.subjectMemberRegister',
+  GOVERNANCE_RECORD: 'governanceCorrectionsBatch34.subjectGovernanceRecord',
 };
 
 export const CORRECTION_DETAILS_MIN = 10;

@@ -20,13 +20,13 @@ function ReportDetails({ report }: { report: PublishedAnnualReport }) {
       <ListingDate value={report.approvedAt} />
       {report.filedAt ? (
         <>
-          <span>· filed with the register</span>
+          <span>{t('annualReportsPanelBatch34.filedWithRegister')}</span>
           <ListingDate value={report.filedAt} />
         </>
       ) : null}
       {report.correctedAt ? (
         <>
-          <span>· corrected</span>
+          <span>{t('annualReportsPanelBatch34.corrected')}</span>
           <ListingDate value={report.correctedAt} />
         </>
       ) : null}
@@ -82,10 +82,16 @@ export function AnnualReportsPanel() {
                   href={report.downloadUrl}
                   className="font-medium no-underline underline-offset-2 hover:underline"
                 >
-                  Annual report {report.year}
+                  {t('annualReportsPanelBatch34.annualReportYear', {
+                    year: report.year,
+                  })}
                 </ExternalLink>
               ) : (
-                <span className="font-medium">Annual report {report.year}</span>
+                <span className="font-medium">
+                  {t('annualReportsPanelBatch34.annualReportYear', {
+                    year: report.year,
+                  })}
+                </span>
               )}
               <div className="text-foreground-secondary mt-0.5 text-xs">
                 <ReportDetails report={report} />

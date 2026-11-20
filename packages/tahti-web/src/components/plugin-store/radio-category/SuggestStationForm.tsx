@@ -35,7 +35,7 @@ export function SuggestStationForm() {
         toast.error(r.error);
         return;
       }
-      const thanks = 'Thanks — sent to the Tahti team for review.';
+      const thanks = t('suggestStationFormBatch34.thanks');
       setMsg(thanks);
       toast.success(thanks);
       setName('');
@@ -44,7 +44,7 @@ export function SuggestStationForm() {
       setBitrate('');
       setStreamUrl('');
     } catch {
-      setMsg('Could not send the suggestion.');
+      setMsg(t('toasts.couldNotSendSuggestion'));
       toast.error(i18n.t('web:toasts.couldNotSendSuggestion'));
     } finally {
       setBusy(false);

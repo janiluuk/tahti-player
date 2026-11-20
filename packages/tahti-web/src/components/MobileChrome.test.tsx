@@ -119,4 +119,25 @@ describe('MobileBottomNav', () => {
     const link = nav.querySelector('a');
     expect(link?.className).toContain('text-xs');
   });
+
+  it('marks the open section with a filled pill, bold label and top bar', async () => {
+    const router = createRouter({
+      routeTree: createRootRoute({ component: () => <MobileBottomNav /> }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    const nav = await screen.findByTestId('mobile-bottom-nav');
+    const current = nav.querySelector('[aria-current="page"]');
+    expect(current).not.toBeNull();
+    expect(current?.className).toContain('font-bold');
+    expect(
+      current?.querySelector('[data-testid="mobile-nav-active-bar"]'),
+    ).not.toBeNull();
+    expect(current?.querySelector('.bg-primary\\/25')).not.toBeNull();
+    expect(
+      nav.querySelectorAll('[data-testid="mobile-nav-active-bar"]'),
+    ).toHaveLength(1);
+  });
 });

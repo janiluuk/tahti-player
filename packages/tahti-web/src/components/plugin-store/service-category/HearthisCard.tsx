@@ -49,9 +49,14 @@ import { SourceServiceIcon } from '../../SourceServiceIcon';
 import type { ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
 import { HearthisConnectForm } from './HearthisConnectForm';
+import {
+  collectionImportMessage,
+  playlistImportMessage,
+} from './hearthisImportMessages';
 import { readImportedIds, writeImportedIds } from './hearthisImports';
 
 const NEW_PLAYLIST_DESTINATION = '__new_playlist__';
+const LIBRARY_TABS = ['tracks', 'sets', 'collections', 'search'] as const;
 
 export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
   const { t } = useTranslation('web');
@@ -68,9 +73,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
   const [libraryBusy, setLibraryBusy] = useState(false);
   const [libraryLoadError, setLibraryLoadError] = useState<string | null>(null);
   const [searching, setSearching] = useState(false);
-  const [tab, setTab] = useState<'tracks' | 'sets' | 'collections' | 'search'>(
-    'tracks',
-  );
+  const [tab, setTab] = useState<(typeof LIBRARY_TABS)[number]>('tracks');
   const [q, setQ] = useState('');
   const [hits, setHits] = useState<HearthisTrack[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -232,16 +235,21 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
     setDestinationId(created.data.id);
     setNewDestinationName('');
     const createdId = created.data.id;
-    toastWithUndo(`Created playlist “${created.data.name}”.`, {
-      undo: () => deleteStudioCollection(created.data.slug),
-      undoneMessage: `Removed “${created.data.name}”.`,
-      onUndone: () => {
-        setDestinationCollections((current) =>
-          current.filter((collection) => collection.id !== createdId),
-        );
-        setDestinationId((current) => (current === createdId ? '' : current));
+    toastWithUndo(
+      t('hearthisCardBatch34.createdPlaylist', { name: created.data.name }),
+      {
+        undo: () => deleteStudioCollection(created.data.slug),
+        undoneMessage: t('hearthisCardBatch34.removedPlaylist', {
+          name: created.data.name,
+        }),
+        onUndone: () => {
+          setDestinationCollections((current) =>
+            current.filter((collection) => collection.id !== createdId),
+          );
+          setDestinationId((current) => (current === createdId ? '' : current));
+        },
       },
-    });
+    );
     return createdId;
   };
 
@@ -275,7 +283,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
     }
     setBusy(true);
     const notificationId = toast.loading(
-      `Import started for ${pendingTracks.length} item${pendingTracks.length === 1 ? '' : 's'}…`,
+      t('hearthisCardBatch34.importStarted', { count: pendingTracks.length }),
     );
     try {
       const result = await hearthisSourceAdapter.importTracks(
@@ -284,12 +292,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       );
       setSelected(new Set());
       markImported(result.items.map((item) => item.trackId));
-      const completionMessage =
-        result.failed > 0
-          ? `Imported ${result.imported}; ${result.failed} could not be imported.`
-          : result.artworkFailed > 0
-            ? `Imported ${result.imported} item${result.imported === 1 ? '' : 's'}; ${result.artworkFailed} cover${result.artworkFailed === 1 ? '' : 's'} could not be stored.`
-            : `Import completed — ${result.imported} item${result.imported === 1 ? '' : 's'} added to the playlist.`;
+      const completionMessage = playlistImportMessage(t, result);
       setMsg(completionMessage);
       const firstItem = result.items[0];
       if (firstItem) {
@@ -312,7 +315,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       }
     } catch (error) {
       const text =
-        error instanceof Error ? error.message : 'hearthis.at import failed.';
+        error instanceof Error
+          ? error.message
+          : t('hearthisCardBatch34.importFailed');
       setMsg(text);
       toast.error(text, { id: notificationId });
     } finally {
@@ -334,7 +339,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       toast.info(i18n.t('web:toasts.hearthisItemsAlreadyInLibrary'));
       return;
     }
-    const notificationId = toast.loading(`Import started for “${name}”…`);
+    const notificationId = toast.loading(
+      t('hearthisCardBatch34.importStartedNamed', { name }),
+    );
     try {
       const created = await createStudioCollection({
         name,
@@ -363,12 +370,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           () => undefined,
         );
       }
-      const completionMessage =
-        result.failed > 0
-          ? `Created “${name}” with ${result.imported} items; ${result.failed} failed.`
-          : result.artworkFailed > 0
-            ? `Created “${name}” with ${result.imported} items; ${result.artworkFailed} cover${result.artworkFailed === 1 ? '' : 's'} could not be stored.`
-            : `Import completed — created “${name}” with ${result.imported} item${result.imported === 1 ? '' : 's'}.`;
+      const completionMessage = collectionImportMessage(t, name, result);
       setMsg(completionMessage);
       toast.success(completionMessage, {
         id: notificationId,
@@ -462,16 +464,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       {handle && (
         <>
           <Tabs.Root
-            selectedIndex={Math.max(
-              0,
-              (['tracks', 'sets', 'collections', 'search'] as const).indexOf(
-                tab,
-              ),
-            )}
+            selectedIndex={Math.max(0, LIBRARY_TABS.indexOf(tab))}
             onChange={(index) => {
-              const next = (
-                ['tracks', 'sets', 'collections', 'search'] as const
-              )[index];
+              const next = LIBRARY_TABS[index];
               if (!next) {
                 return;
               }
@@ -617,7 +612,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                 onClick={() => void importSelection()}
               >
                 <DownloadIcon size={15} className="mr-1.5" aria-hidden />
-                Import selected ({selected.size})
+                {t('hearthisCardBatch34.importSelected', {
+                  count: selected.size,
+                })}
               </Button>
             </div>
           )}
@@ -636,7 +633,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                   className="border-border flex items-center gap-3 rounded-lg border p-3"
                 >
                   <Toggle
-                    label={`Select ${collection.title}`}
+                    label={t('hearthisCardBatch34.selectItem', {
+                      title: collection.title,
+                    })}
                     checked={selected.has(collection.id)}
                     onChange={() => toggleSelected(collection.id)}
                   />
@@ -652,7 +651,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                       {collection.title}
                     </p>
                     <p className="text-foreground-secondary text-xs">
-                      {collection.trackCount} items
+                      {t('hearthisCardBatch34.itemCount', {
+                        count: collection.trackCount,
+                      })}
                     </p>
                   </div>
                   <Tooltip
@@ -664,7 +665,12 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                       variant="secondary"
                       disabled={busy}
                       onClick={() => void importCollection(collection)}
-                      aria-label={`Import ${collection.title} as collection`}
+                      aria-label={t(
+                        'hearthisCardBatch34.importAsCollectionNamed',
+                        {
+                          title: collection.title,
+                        },
+                      )}
                     >
                       <FolderDownIcon size={15} />
                     </Button>
@@ -691,7 +697,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                     onClick={() => void importSelection()}
                   >
                     <FolderDownIcon size={15} className="mr-1.5" aria-hidden />
-                    Import selected ({selected.size})
+                    {t('hearthisCardBatch34.importSelected', {
+                      count: selected.size,
+                    })}
                   </Button>
                 </li>
               )}
@@ -704,7 +712,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                   className="border-border flex flex-wrap items-center gap-3 rounded-lg border px-3 py-2"
                 >
                   <Toggle
-                    label={`Select ${track.title}`}
+                    label={t('hearthisCardBatch34.selectItem', {
+                      title: track.title,
+                    })}
                     checked={selected.has(track.id)}
                     disabled={importedIds.has(track.id)}
                     onChange={() => toggleSelected(track.id)}
@@ -715,7 +725,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                     alt={track.title}
                     imageReveal={false}
                     onPlay={() => play(playableFromHearthis(track))}
-                    playLabel="Preview"
+                    playLabel={t('hearthisCardBatch34.preview')}
                     className="border-border shrink-0 rounded border"
                   />
                   <div className="min-w-0 flex-1">
@@ -730,7 +740,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                     <Button
                       size="icon-sm"
                       variant="secondary"
-                      aria-label={`Queue ${track.title}`}
+                      aria-label={t('hearthisCardBatch34.queueTrack', {
+                        title: track.title,
+                      })}
                       onClick={() => enqueue(playableFromHearthis(track))}
                     >
                       <ListPlus size={15} aria-hidden />
@@ -763,20 +775,23 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
               ))}
             </ul>
           )}
-
           {!libraryBusy &&
             !showLibraryError &&
             tab !== 'search' &&
             tab !== 'collections' &&
             visibleTracks.length === 0 && (
-              <PageEmpty title={`No ${tab} found for this profile.`} />
+              <PageEmpty
+                title={
+                  tab === 'sets'
+                    ? t('hearthisCardBatch34.noSetsFound')
+                    : t('hearthisCardBatch34.noTracksFound')
+                }
+              />
             )}
         </>
       )}
-
       <p className="text-foreground-secondary text-xs">
-        A hearthis.at Premium account is required to export your own tracks
-        there — importing from hearthis.at works on any account.
+        {t('hearthisCardBatch34.premiumNote')}
       </p>
     </ConfigurableCard>
   );
