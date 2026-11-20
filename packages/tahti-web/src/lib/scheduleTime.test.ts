@@ -31,4 +31,25 @@ describe('formatScheduleWindow', () => {
       ),
     ).toBe('Mon, Nov 3 · 18:00–19:00');
   });
+
+  it('shows the day and times of the given time zone', () => {
+    const at = '2026-11-03T23:30:00.000Z';
+    expect(formatScheduleWindow(at, null, ' · ', 'Asia/Tokyo')).toMatch(
+      /08[:.]30/,
+    );
+    expect(formatScheduleWindow(at, null, ' · ', 'America/New_York')).toMatch(
+      /(18|06)[:.]30/,
+    );
+  });
+
+  it('ignores an unknown time zone instead of throwing', () => {
+    expect(() =>
+      formatScheduleWindow(
+        '2026-11-03T16:00:00.000Z',
+        null,
+        ' · ',
+        'Mars/Base',
+      ),
+    ).not.toThrow();
+  });
 });

@@ -6,6 +6,7 @@ import { ListenView } from '../views/ListenView';
 import { appLayoutRoute } from './router-core';
 import {
   DiscoverView,
+  EventPostView,
   EventView,
   RadioScheduleView,
   RadioShowView,
@@ -130,5 +131,20 @@ export const eventRoute = createRoute({
   component: () => {
     const { eventId } = eventRoute.useParams();
     return <EventView eventId={eventId} />;
+  },
+});
+
+export const eventNewRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/events/new',
+  component: () => <EventPostView />,
+});
+
+export const eventEditRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/events/$eventId/edit',
+  component: () => {
+    const { eventId } = eventEditRoute.useParams();
+    return <EventPostView eventId={eventId} />;
   },
 });

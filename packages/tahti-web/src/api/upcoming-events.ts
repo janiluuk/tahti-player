@@ -1,4 +1,6 @@
 import type { FetchMeta } from './client';
+import { fetchEventCalendar } from './event-calendar';
+import type { ArtistEventVenue } from './events';
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -12,45 +14,29 @@ export type UpcomingEvent = {
   location: string;
   eventUrl: string | null;
   startAt: string;
+  endAt?: string | null;
+  timezone?: string | null;
   imageUrl?: string | null;
+  venue?: ArtistEventVenue | null;
   artistDisplayName: string;
   artistUsername: string;
   channelSlug: string | null;
   avatarUrl: string | null;
 };
 
-const DAY = 24 * 60 * 60 * 1000;
+const MOCK_WINDOW_MS = 90 * 24 * 60 * 60 * 1000;
 
-function mockUpcoming(): UpcomingEvent[] {
-  const at = (days: number) => new Date(Date.now() + days * DAY).toISOString();
-  return [
-    {
-      id: 'up-mock-1',
-      title: 'Album release show',
-      description: null,
-      place: 'Kuudes Linja',
-      location: 'Helsinki',
-      eventUrl: null,
-      startAt: at(3),
-      artistDisplayName: 'Northern Lights',
-      artistUsername: 'northern-lights',
-      channelSlug: 'northern-lights',
-      avatarUrl: null,
-    },
-    {
-      id: 'up-mock-2',
-      title: 'Late-night broadcast + open studio',
-      description: null,
-      place: 'Ääniwalli',
-      location: 'Helsinki',
-      eventUrl: null,
-      startAt: at(8),
-      artistDisplayName: 'Demo Artist',
-      artistUsername: 'demo',
-      channelSlug: 'demo',
-      avatarUrl: null,
-    },
-  ];
+async function mockUpcoming(limit: number): Promise<UpcomingEvent[]> {
+  const now = new Date();
+  const { data } = await fetchEventCalendar({
+    from: now,
+    to: new Date(now.getTime() + MOCK_WINDOW_MS),
+  });
+  return data
+    .filter(
+      (event) => event.status === 'PUBLISHED' && event.visibility === 'PUBLIC',
+    )
+    .slice(0, limit);
 }
 
 /** Upcoming events across all artists, soonest first (front page). */
@@ -60,7 +46,7 @@ export async function fetchUpcomingEvents(limit = 12): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: mockUpcoming(),
+      data: await mockUpcoming(limit),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

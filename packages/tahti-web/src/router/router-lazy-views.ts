@@ -527,3 +527,7 @@ export const EventView = lazyRouteComponent(
   () => import('../views/EventView'),
   'EventView',
 );
+export const EventPostView = lazyRouteComponent(
+  () => import('../views/EventPostView'),
+  'EventPostView',
+);

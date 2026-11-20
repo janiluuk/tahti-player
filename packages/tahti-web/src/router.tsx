@@ -150,6 +150,8 @@ import {
 } from './router/routes-library';
 import {
   discoverRoute,
+  eventEditRoute,
+  eventNewRoute,
   eventRoute,
   listenFavoritesRoute,
   listenFeedRoute,
@@ -242,6 +244,8 @@ const routeTree = rootRoute.addChildren([
     radioRoute,
     radioShowRoute,
     radioStationRoute,
+    eventNewRoute,
+    eventEditRoute,
     eventRoute,
     scheduleRoute,
     tagSearchRoute,

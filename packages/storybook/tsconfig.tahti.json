@@ -24,6 +24,7 @@
     "src/tahti-web/PlayableTrackTable.stories.tsx",
     "src/Combobox.stories.tsx",
     "src/Dialog.stories.tsx",
+    "src/ImageCropDialog.stories.tsx",
     "src/MediaArtwork.stories.tsx",
     "src/PlayerBar.stories.tsx",
     "src/PlayerWorkspace.stories.tsx",

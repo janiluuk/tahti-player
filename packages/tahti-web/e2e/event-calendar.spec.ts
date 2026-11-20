@@ -78,3 +78,34 @@ test('an artist answers an event invite from Studio Events', async ({
   await page.getByRole('button', { name: 'Accept' }).click();
   await expect(page.getByText('Accepted', { exact: true })).toBeVisible();
 });
+
+test('Discover Events lists upcoming events and opens the event page', async ({
+  page,
+}) => {
+  await page.goto('/discover?tab=events');
+  const panel = page.getByTestId('discover-events');
+  await expect(panel).toBeVisible();
+  await panel
+    .getByTestId('discover-event-card')
+    .first()
+    .getByRole('link')
+    .click();
+  await expect(page).toHaveURL(/\/events\//);
+  await expect(page.getByTestId('event-banner-backdrop')).toBeAttached();
+});
+
+test('a signed-in user posts an event from Discover Events', async ({
+  page,
+}) => {
+  await signIn(page);
+  await page.goto('/discover?tab=events');
+  await page.getByRole('link', { name: 'Post event' }).click();
+  await expect(page).toHaveURL(/\/events\/new$/);
+  await page.getByRole('textbox', { name: 'Title' }).fill('Garage jam');
+  await page.getByRole('textbox', { name: 'Place' }).fill('Garage');
+  await page.getByRole('textbox', { name: 'Location' }).fill('Tampere');
+  await page.getByLabel('Start').fill('2030-06-21T20:00');
+  await page.getByRole('button', { name: 'Publish' }).click();
+  await expect(page).toHaveURL(/\/events\/evt-mock-/);
+  await expect(page.getByTestId('event-page')).toBeVisible();
+});

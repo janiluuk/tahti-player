@@ -62,6 +62,27 @@ body,
   }
 }
 
+@keyframes tahti-event-backdrop-drift {
+  from {
+    transform: translate3d(-4%, -3%, 0) scale(1.05) rotate(-2deg);
+  }
+  to {
+    transform: translate3d(4%, 3%, 0) scale(1.18) rotate(2deg);
+  }
+}
+
+.tahti-event-backdrop-drift {
+  animation: tahti-event-backdrop-drift 38s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tahti-event-backdrop-drift {
+    animation: none;
+    will-change: auto;
+  }
+}
+
 :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
 :root[data-custom-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
   background-color: var(--background);

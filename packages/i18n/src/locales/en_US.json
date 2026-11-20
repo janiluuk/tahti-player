@@ -14852,6 +14852,44 @@
     },
     "myVenuesViewBatch33": {
       "noMatch": "No venues match “{{query}}”"
+    },
+    "discoverEvents": {
+      "tab": "Events",
+      "post": "Post event",
+      "signInToPost": "Sign in to post an event.",
+      "loading": "Loading events…",
+      "loadFailed": "Could not load events",
+      "emptyTitle": "No upcoming events",
+      "emptyDescription": "Nothing is on the calendar yet. Post the first one."
+    },
+    "eventForm": {
+      "postTitle": "Post an event",
+      "postSubtitle": "Gigs, club nights, listening sessions: anything people can come to.",
+      "editTitle": "Edit event",
+      "signInTitle": "Sign in to post an event",
+      "signInDescription": "Anyone with a Tahti account can post an event to the calendar.",
+      "signIn": "Sign in",
+      "notYours": "That event is not yours to edit.",
+      "posted": "Posted {{title}}.",
+      "saved": "Saved {{title}}.",
+      "bannerTitle": "Banner (optional)",
+      "bannerDescription": "A wide image shown at the top of the event page. You crop it to fit after choosing.",
+      "bannerChoose": "Choose image",
+      "bannerReplace": "Choose another image",
+      "bannerUploading": "Uploading banner…",
+      "bannerPreview": "Banner preview",
+      "bannerRemove": "Remove banner",
+      "cropTitle": "Crop banner",
+      "cropDescription": "Drag to choose what shows in the wide banner.",
+      "cropZoom": "Zoom",
+      "cropCancel": "Cancel",
+      "cropConfirm": "Use banner"
+    },
+    "eventPage": {
+      "backToEvents": "Back to events",
+      "bannerAlt": "Banner for {{title}}",
+      "edit": "Edit event",
+      "venue": "Venue"
     }
   },
   "studioEditor": {

@@ -1,5 +1,6 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import {
+  CalendarDaysIcon,
   ChevronDownIcon,
   CompassIcon,
   MapPinIcon,
@@ -53,6 +54,7 @@ import type {
 } from '../api/types';
 import { DirectoryArtistsBrowser } from '../components/DirectoryArtistsBrowser';
 import { DiscoverAddWidgetButton } from '../components/discover/DiscoverAddWidgetButton';
+import { DiscoverEventsPanel } from '../components/discover/DiscoverEventsPanel';
 import { DiscoverFeedPanel } from '../components/discover/DiscoverFeedPanel';
 import {
   DiscoverPartiesPanel,
@@ -121,6 +123,7 @@ const DISCOVER_TABS: Array<{
 }> = [
   { id: 'discover', labelKey: 'discover.tabDiscover', icon: CompassIcon },
   { id: 'feed', labelKey: 'discover.tabFeed', icon: NewspaperIcon },
+  { id: 'events', labelKey: 'discoverEvents.tab', icon: CalendarDaysIcon },
   { id: 'parties', labelKey: 'discover.tabParties', icon: PartyPopperIcon },
   { id: 'artists', labelKey: 'discover.tabArtists', icon: UsersIcon },
   { id: 'groups', labelKey: 'discover.tabGroups', icon: UsersRoundIcon },
@@ -506,6 +509,8 @@ export function DiscoverView() {
             }
           />
         ) : null}
+
+        {activeTab === 'events' ? <DiscoverEventsPanel /> : null}
 
         {activeTab === 'parties' ? <DiscoverPartiesPanel /> : null}
 
