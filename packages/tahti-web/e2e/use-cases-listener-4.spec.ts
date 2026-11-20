@@ -18,14 +18,18 @@ test('a new listener signs up, signs in and has no Studio or channel prompt', as
   await join.getByRole('button', { name: 'Create account' }).click();
 
   const signedIn = page.getByRole('button', { name: /^Signed in as/ });
-  const signInButton = page.getByRole('button', { name: 'Sign in' });
-  await expect(signedIn.or(signInButton)).toBeVisible();
-  if (await signInButton.isVisible()) {
-    await signInButton.click();
-    const signIn = page.getByRole('dialog', { name: /Sign in/i });
-    await signIn.getByLabel('Email').fill(email);
-    await signIn.getByLabel('Password', { exact: true }).fill(password);
-    await signIn.getByRole('button', { name: 'Sign in' }).click();
+  // Mock join ends on "Check your email" with a Sign in action that opens
+  // the Log in form (title is "Log in", submit is still "Sign in").
+  const continueSignIn = page
+    .getByRole('dialog')
+    .getByRole('button', { name: 'Sign in' });
+  await expect(signedIn.or(continueSignIn)).toBeVisible();
+  if (await continueSignIn.isVisible()) {
+    await continueSignIn.click();
+    const logIn = page.getByRole('dialog', { name: /Log in|Sign in/i });
+    await logIn.getByLabel('Email').fill(email);
+    await logIn.getByLabel('Password', { exact: true }).fill(password);
+    await logIn.getByRole('button', { name: 'Sign in' }).click();
   }
   await expect(signedIn).toBeVisible();
 

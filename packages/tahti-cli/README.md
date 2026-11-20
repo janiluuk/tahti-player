@@ -10,7 +10,7 @@ development; see [`docs/todo/tahti-cli-tool.md`](../../docs/todo/tahti-cli-tool.
 
 ## Scope
 
-Read-only commands, plus `import` (folder upload), `sounds upload`, `hearthis release` (hearthis.at Set or track → draft release), `hearthis collection` (hearthis.at Set → collection), `collections create`, `hearthis import-embeds` (hearthis.at embeds → real uploads) and `shell` (interactive
+Read-only commands, plus `import` (folder upload), `sounds upload`, `hearthis release` (hearthis.at Set or track → draft release), `hearthis collection` (hearthis.at Set → collection), `hearthis import-sets` (every Set of a hearthis.at account → collections), `collections create`, `hearthis import-embeds` (hearthis.at embeds → real uploads) and `shell` (interactive
 TUI with mpv playback). Capability catalogs used by Tahti Player
 (`GET /api/me/import-plugins`, `GET /api/me/export-plugins`) are **not** CLI
 commands yet — call them with `curl`/`fetch` against the same API if you need
@@ -113,6 +113,13 @@ it reuses or uploads a sound for each of the owner's tracks, creates the
 collection once (Set title, description and cover) and adds the sounds in Set
 order. `tahti collections create` makes an empty one by hand.
 
+To import **every** Set of an account in one go (local audio + cover art,
+shared ledger, resumable):
+
+```bash
+tahti hearthis import-sets --from-user yaniho --out ~/Music/hearthis
+```
+
 ```bash
 pnpm --filter @tahti-player/tahti-cli exec tahti hearthis user-sets yaniho
 pnpm --filter @tahti-player/tahti-cli exec tahti hearthis collection https://hearthis.at/set/428061-9675121/ --out ~/Music/hearthis --type mix-series --dry-run
@@ -120,6 +127,9 @@ pnpm --filter @tahti-player/tahti-cli exec tahti hearthis collection https://hea
 pnpm --filter @tahti-player/tahti-cli exec tahti collections create "Nightriders" --type mix-series --private --cover-url https://img.hearthis.at/…/cover.jpg
 ```
 
+- Track titles drop the album/EP/LP prefix and track number, so
+  `Yaniho - Euphorizer EP - 01 - intro` uploads as `intro` (Set order kept).
+  Collection names like `Yaniho - Euphorizer EP` become `Euphorizer EP`.
 - Use the same `--out` (or `--ledger`) for every Set and release of the
   account, so the runs share one ledger.
 - A track that is not downloadable, or fails to download or upload, is skipped
@@ -250,6 +260,7 @@ Every command accepts `--json` (prints the API response unchanged) and
 | `tahti hearthis set <permalink-or-url> [--json]`                                                                                                                                     | `GET /api/v1/imports/hearthis/sets/:permalink/tracks`                                                           | Tracks in one Set (#, title, artist, duration, downloadable, filename)                                                                                                                                                                             |
 | `tahti hearthis download-set <permalink-or-url> [--out <dir>] [--layout <l>] [--own] [--title <t>] [--dry-run] [--force] [--json]`                                                   | same set-tracks route + hearthis.at `download_url`                                                              | Writes `Artist/Album (year)/NN - Track.ext` for downloadable tracks (lossless original when offered); `--layout album` writes `Artist - Album (year)/NN - Track.ext`, `--layout set` writes `Set/Track.ext`; `--own` skips other uploaders' tracks; several permalinks run one after another, with a progress line per track on stderr; `--exclude <regex>` and `--tracks 1,3-5` pick tracks (the others stay on disk with `--sync`); `--cover-name folder` saves `folder.jpg`; every downloaded folder gets a `.hearthis-set.json`, and `--resync <dir>` syncs all of them again with the same options; `--sync` re-downloads files whose size changed and deletes ones no longer in the Set (a track's old copy in another format is only removed once the new file exists); `--flac` converts WAV/AIFF with ffmpeg (an original that is really MP3 stays MP3 even when its download name says .wav; the Content-Type decides); the Set cover is saved as `cover.jpg` |
 | `tahti hearthis collection <set-url-or-permalink> [--out <dir>] [--ledger <path>] [--name <t>] [--slug <s>] [--type <t>] [--private \| --visibility <v>] [--tracks <list>] [--flac] [--wait <seconds>] [--strict] [--dry-run] [--json]` | set-tracks route, `GET /api/me/sound` (paged), `GET /api/me/collections[/:slug]`, the upload routes, `GET /api/me/sound/processing`, `POST /api/me/collections`, `.../cover/from-url`, `POST /api/me/collections/:slug/items` | Each track's sound (uploaded, reused from the ledger or library, skipped) and collection result (added, already there, processing, skipped), plus a summary and the Studio URL; exits 1 when anything was skipped or left; write scope |
+| `tahti hearthis import-sets --from-user <handle> [--out <dir>] [--match <regex>] [--no-cover-art] [--skip-embeds] [--wait <seconds>] [--force] [--dry-run] [--json]` | hearthis.at user Sets + `hearthis collection` per Set | One-liner: every Set of a hearthis.at account → Tahti collections with local uploads and cover art; shared ledger under `--out`; resumable via `<out>/.tahti-hearthis-import-sets.json`; write scope |
 | `tahti hearthis release <set-or-track-url> [--out <dir>] [--ledger <path>] [--title <t>] [--type <t>] [--date <YYYY-MM-DD>] [--tracks <list>] [--flac] [--force-new] [--dry-run] [--json]` | set-tracks route (or hearthis.at's public API for one track), `GET /api/me/releases`, `GET /api/me/sound` (paged), the upload routes, `GET /api/me/sound/:id`, `POST /api/me/releases`, `POST /api/me/releases/:id/artwork/from-url` | The release, its tracks with their upload status, and the Studio URL of the new draft release; write scope |
 | `tahti shell`                                                                                                                                                                        | library / search / radio / presets + mpv IPC                                                                    | Interactive TUI; library play uses `GET /api/me/sound/:id/editor/source`                                                                                                                                                                           |
 

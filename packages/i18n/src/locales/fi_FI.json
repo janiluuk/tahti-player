@@ -15133,6 +15133,7 @@
       "createdCoversFailed": "Luotiin ”{{name}}”, {{imported}} kohdetta; {{covers}} ei voitu tallentaa.",
       "createdCompleted": "Tuonti valmis — luotiin ”{{name}}”, {{items}}.",
       "importSelected": "Tuo valitut ({{count}})",
+      "importCoverArt": "Tuo kansikuvat",
       "selectItem": "Valitse {{title}}",
       "importAsCollectionNamed": "Tuo {{title}} kokoelmana",
       "preview": "Esikuuntele",

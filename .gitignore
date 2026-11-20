@@ -32,4 +32,8 @@ packages/tahti-web/docs/listener-shots/
 .agent-token-log.md
 /.desktop-build/
 
+# Local hearthis.at → collection import workspace (scripts/import-yaniho-sets.mjs)
+.yaniho-hearthis-import/
+
+
 /artifacts/android/

@@ -206,30 +206,78 @@ export function splitAlbumSetTitle(title, fallbackArtist) {
   return { artist: artist || fallbackArtist, album: album || text, year };
 }
 
-export function cleanAlbumTrackTitle(title, { artist, album }) {
-  let text = String(title ?? '')
-    .replace(/\s+/g, ' ')
-    .trim();
+const ALBUM_KIND = String.raw`(?:LP|EP|Album|Single|Mixtape|Mix)`;
+
+/**
+ * Strip artist / album / track-number prefixes so an upload is titled with
+ * the track name only. Examples:
+ *   "Yaniho - Euphorizer EP - 01 - intro" → "intro"
+ *   "Mute8 LP - 02 - Ditpik" → "Ditpik"
+ *   "Sisufuzz LP - 11- Dive (2026 rework)" → "Dive (2026 rework)"
+ *
+ * Pass `{ artist, album }` from `splitAlbumSetTitle(setTitle, owner)` when
+ * importing a Set so "Artist - Album - NN - Title" cleans even without an
+ * LP/EP marker in the album name.
+ */
+export function cleanAlbumTrackTitle(title, { artist, album } = {}) {
+  const original = String(title ?? '').trim();
+  let text = original.replace(/\s+/g, ' ');
+  const baseline = text;
+
+  // "… Something LP/EP/Album - NN - Track" — keep a leading " - " so a
+  // featured-artist credit before the album ("Yaniho, Acraze - …") survives,
+  // then strip a lone album-artist prefix below.
   text = text.replace(
-    /(^|\s-\s)[^-]*?\b(?:LP|EP)\s+-\s+\d{1,3}(?:\.\d+)?\s*[-.]\s*/i,
+    new RegExp(
+      String.raw`(^|\s-\s)[^-]*?\b${ALBUM_KIND}\b\s*-\s*\d{1,3}(?:\.\d+)?\s*[-.]\s*`,
+      'i',
+    ),
     (_match, lead) => lead,
   );
+
   if (album) {
     text = text.replace(
       new RegExp(
-        `\\s+-\\s+${escapeRegExp(album)}\\s+-\\s+\\d{1,3}\\s+-\\s+`,
+        String.raw`(^|\s-\s)${escapeRegExp(album)}\s*-\s*\d{1,3}(?:\.\d+)?\s*[-.]\s*`,
         'i',
       ),
-      ' - ',
+      (_match, lead) => lead,
     );
   }
+
   if (artist) {
     text = text.replace(
-      new RegExp(`^${escapeRegExp(artist)}\\s+-\\s+`, 'i'),
+      new RegExp(String.raw`^${escapeRegExp(artist)}\s+-\s+`, 'i'),
       '',
     );
   }
-  return text || title;
+
+  // Leftover leading track number ("01 - ", "08.5 - ", "11- ")
+  text = text.replace(/^\d{1,3}(?:\.\d+)?\s*[-.]\s+/, '');
+
+  text = text.replace(/\s+/g, ' ').trim().replace(/^-\s+/, '');
+  // DJ-set titles and other non-album names stay byte-for-byte so library
+  // matching and --fail paths that key on the hearthis.at title still work.
+  if (text === baseline) {
+    return original;
+  }
+  return text || original;
+}
+
+/**
+ * Clean every planned Set track's upload title using the Set name, keeping
+ * `sourceTitle` as the original hearthis.at title for library matching.
+ */
+export function withCleanImportTitles(tracks, setTitle, owner = null) {
+  const split = splitAlbumSetTitle(setTitle, owner || 'Unknown');
+  return tracks.map((track) => {
+    const sourceTitle = track.sourceTitle ?? track.title;
+    const title = cleanAlbumTrackTitle(sourceTitle, split);
+    if (title === sourceTitle) {
+      return track.sourceTitle ? track : { ...track, sourceTitle };
+    }
+    return { ...track, sourceTitle, title };
+  });
 }
 
 export function layoutRelativePath(
