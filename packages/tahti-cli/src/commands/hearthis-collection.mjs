@@ -315,6 +315,7 @@ export async function hearthisToCollection(
     outDir,
     ledgerPath,
     dryRun,
+    log,
   });
   result.ledgerPath = known.ledger.path;
   const rows = planRows(plan.tracks, known.known, dryRun, known.conflicts).map(
@@ -530,7 +531,13 @@ export async function runHearthisCollection(config, input, options = {}) {
   );
   const exitCode = result.stopped || (!options.dryRun && incomplete) ? 1 : 0;
   if (json) {
-    return { output: JSON.stringify(result, null, 2), exitCode };
+    return {
+      output: JSON.stringify(result, null, 2),
+      exitCode,
+      rows: result.rows,
+      collectionUrl: result.collectionUrl,
+      stopped: result.stopped,
+    };
   }
   const parts = [planHeader(result)];
   if (result.rows.length > 0) {
@@ -541,5 +548,11 @@ export async function runHearthisCollection(config, input, options = {}) {
       ? `Stopped: ${result.stopped}`
       : summaryLine(result, options.dryRun),
   );
-  return { output: parts.join('\n\n'), exitCode };
+  return {
+    output: parts.join('\n\n'),
+    exitCode,
+    rows: result.rows,
+    collectionUrl: result.collectionUrl,
+    stopped: result.stopped,
+  };
 }

@@ -110,6 +110,12 @@ export function stubApis({
           : [],
       });
     }
+    if (
+      method === 'POST' &&
+      /^\/api\/me\/sound\/[^/]+\/import-embed$/.test(path)
+    ) {
+      return json({ status: 'importing' }, 202);
+    }
     if (path.startsWith('/api/me/sound/')) {
       const id = decodeURIComponent(path.split('/').pop() ?? '');
       return json({ id, title: `title of ${id}`, durationSec: null });

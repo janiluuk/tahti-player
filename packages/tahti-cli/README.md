@@ -114,7 +114,8 @@ collection once (Set title, description and cover) and adds the sounds in Set
 order. `tahti collections create` makes an empty one by hand.
 
 To import **every** Set of an account in one go (local audio + cover art,
-shared ledger, resumable):
+shared ledger, resumable — retries while uploads process, localizes embeds
+that lack a stored page URL using the Set track URL):
 
 ```bash
 tahti hearthis import-sets --from-user yaniho --out ~/Music/hearthis

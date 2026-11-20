@@ -1,7 +1,7 @@
 import { mkdir, readdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 
-import { apiGet, buildQuery, CliError } from '../api-client.mjs';
+import { apiGet, apiPost, buildQuery, CliError } from '../api-client.mjs';
 import { uploadSoundFile } from '../sound-upload.mjs';
 import { downloadHearthisSet } from './hearthis-download-set.mjs';
 import { soundMetadataFor } from './hearthis-release-meta.mjs';
@@ -231,6 +231,69 @@ export function findLibraryMatch(track, sounds) {
 }
 
 /**
+ * When a planned track conflicts with a hearthis.at embed that has no stored
+ * page URL, pass the Set track's URL so the API can localize it in place.
+ * Success (or "already has real audio") moves the sound into `known`.
+ */
+export async function localizeEmbedConflicts(
+  config,
+  tracks,
+  conflicts,
+  known,
+  ledger,
+  { dryRun = false, log = () => {} } = {},
+) {
+  let localized = 0;
+  for (const track of tracks) {
+    const conflict = conflicts.get(track.id);
+    if (!conflict || !track.url) {
+      continue;
+    }
+    if (!/hearthis\.at embed/i.test(conflict.reason ?? '')) {
+      continue;
+    }
+    if (dryRun) {
+      continue;
+    }
+    try {
+      await apiPost(
+        `/api/me/sound/${encodeURIComponent(conflict.soundId)}/import-embed`,
+        { trackUrl: track.url },
+        config,
+      );
+      known.set(track.id, {
+        soundId: conflict.soundId,
+        from: 'library',
+        matchedBy: 'localized embed',
+      });
+      rememberSound(ledger, track, conflict.soundId, 'localized embed');
+      conflicts.delete(track.id);
+      localized += 1;
+      log(
+        `Localizing embed ${conflict.soundId} from ${track.url} for "${track.title}"…`,
+      );
+    } catch (error) {
+      if (
+        error instanceof CliError &&
+        /already has real audio/i.test(error.message)
+      ) {
+        known.set(track.id, {
+          soundId: conflict.soundId,
+          from: 'library',
+          matchedBy: 'localized embed',
+        });
+        rememberSound(ledger, track, conflict.soundId, 'localized embed');
+        conflicts.delete(track.id);
+        localized += 1;
+        continue;
+      }
+      conflict.reason = `${conflict.reason}; import-embed: ${error?.message ?? error}`;
+    }
+  }
+  return localized;
+}
+
+/**
  * Which planned tracks already have a Tahti sound: the ledger first, then the
  * library. Ledger entries whose sound is gone from a fully read library are
  * dropped so the track uploads again. Library matches are written into the
@@ -239,7 +302,7 @@ export function findLibraryMatch(track, sounds) {
 export async function resolveKnownSounds(
   config,
   tracks,
-  { outDir, ledgerPath = null, dryRun = false },
+  { outDir, ledgerPath = null, dryRun = false, log = () => {} },
 ) {
   const ledger = await readLedger(ledgerFilePath(outDir, ledgerPath));
   const migrated = await importReleaseStates(outDir, ledger);
@@ -285,9 +348,18 @@ export async function resolveKnownSounds(
       );
     }
   }
+  const localized = await localizeEmbedConflicts(
+    config,
+    tracks,
+    conflicts,
+    known,
+    ledger,
+    { dryRun, log },
+  );
   const changed =
     migrated > 0 ||
     dropped.length > 0 ||
+    localized > 0 ||
     [...known.values()].some((entry) => entry.from === 'library');
   if (changed && !dryRun) {
     await writeLedger(ledger);
@@ -299,7 +371,16 @@ export async function resolveKnownSounds(
       (sound.status === 'PENDING' || sound.status === 'PROCESSING') &&
       now - Date.parse(sound.createdAt ?? '') > STUCK_AFTER_MS,
   );
-  return { ledger, known, conflicts, stuck, dropped, migrated, library };
+  return {
+    ledger,
+    known,
+    conflicts,
+    stuck,
+    dropped,
+    migrated,
+    localized,
+    library,
+  };
 }
 
 /**

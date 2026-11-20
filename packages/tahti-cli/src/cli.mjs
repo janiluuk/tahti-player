@@ -834,7 +834,7 @@ collection with the same name stops the run (fill it with --slug).
   {
     path: ['hearthis', 'import-sets'],
     usage:
-      'tahti hearthis import-sets --from-user <handle> [--out <dir>] [--match <regex>] [--no-cover-art] [--skip-embeds] [--wait <seconds>] [--force] [--dry-run] [--json]',
+      'tahti hearthis import-sets --from-user <handle> [--out <dir>] [--match <regex>] [--no-cover-art] [--skip-embeds] [--wait <seconds>] [--retries <n>] [--rounds <n>] [--force] [--dry-run] [--json]',
     summary:
       'Import every hearthis.at Set of an account as Tahti collections (local audio + cover art)',
     details: `One-liner for a full discography import. Lists every Set on hearthis.at for
@@ -842,13 +842,17 @@ collection with the same name stops the run (fill it with --slug).
 creates one Tahti collection per Set (title, description, cover), rehosts each
 track's cover, and adds the sounds in Set order. Smaller Sets run first.
 Resumable: finished Sets are recorded in <out>/.tahti-hearthis-import-sets.json
-and skipped on the next run unless --force.
+and skipped on the next run unless --force. Incomplete Sets (still processing)
+are retried in-process and on the next run. Embed conflicts without a stored
+page URL are localized using the Set track URL.
   --from-user <h>   hearthis.at handle (required), e.g. yaniho
   --out <dir>       Download + ledger + state folder (default: .)
   --match <regex>   Only Sets whose title matches (case-insensitive)
   --no-cover-art    Skip rehosting each track's cover onto the sound
   --skip-embeds     Do not convert existing hearthis.at embeds first
   --wait <seconds>  Processing wait per Set (default: ${DEFAULT_PROCESSING_WAIT_SEC})
+  --retries <n>     Per-Set retries while tracks are still processing (default: 3)
+  --rounds <n>      Full queue passes for remaining pending Sets (default: 2)
   --force           Re-import Sets already marked done in the state file
   --dry-run         Show the queue without downloading or writing`,
     options: {
@@ -859,6 +863,8 @@ and skipped on the next run unless --force.
       'no-cover-art': { type: 'boolean', default: false },
       'skip-embeds': { type: 'boolean', default: false },
       wait: { type: 'string' },
+      retries: { type: 'string' },
+      rounds: { type: 'string' },
       force: { type: 'boolean', default: false },
       'dry-run': { type: 'boolean', default: false },
     },
@@ -872,6 +878,8 @@ and skipped on the next run unless --force.
         wait: values.wait
           ? Number.parseInt(values.wait, 10)
           : DEFAULT_PROCESSING_WAIT_SEC,
+        retries: values.retries ? Number.parseInt(values.retries, 10) : 3,
+        rounds: values.rounds ? Number.parseInt(values.rounds, 10) : 2,
         force: values.force,
         dryRun: values['dry-run'],
         json: values.json,
