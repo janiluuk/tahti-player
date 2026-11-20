@@ -461,10 +461,13 @@ test('admin radio recognises rotation playback and uses the standard playlist ed
   await expect(
     page.getByRole('button', { name: 'Play Tahti Radio stream' }),
   ).toBeVisible();
-  await expect(page.getByText('10:34 total')).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Current rotation (2)' }),
   ).toBeVisible();
+
+  await page.goto('/admin/radio?tab=playlist');
+  await expect(page.getByText('Night Transit').first()).toBeVisible();
+  await expect(page.getByText('10:34 total')).toBeVisible();
   await expect(
     page.getByRole('row').filter({ has: page.getByRole('cell') }),
   ).toHaveCount(2);
