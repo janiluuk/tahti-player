@@ -1,4 +1,4 @@
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Alert, Button, Meter } from '@tahti-player/ui';
 
 import type { BroadcastUsage } from '../../../api/broadcast';
@@ -14,16 +14,19 @@ export function formatLiveTime(seconds: number): string {
   return minutes ? `${hours}h ${minutes}m` : `${hours}h`;
 }
 
-export function usageWarning(usage: BroadcastUsage): string | null {
+export function usageWarning(
+  usage: BroadcastUsage,
+  t: TFunction<'web'>,
+): string | null {
   const level = usage.blocked ? 'blocked' : (usage.warningLevel ?? 'none');
   if (level === 'blocked') {
-    return 'Your live time for this week is used up. It resets Monday 00:00 UTC.';
+    return t('broadcastUsageMeterBatch30.blocked');
   }
   if (level === 'grace' || usage.inGrace) {
     const grace = usage.graceSeconds ?? 0;
     return grace > 0
-      ? `You've reached this week's live time. Your set has about ${grace} seconds left before it ends.`
-      : "You've reached this week's live time. Your set is wrapping up.";
+      ? t('broadcastUsageMeterBatch30.graceSecondsLeft', { count: grace })
+      : t('broadcastUsageMeterBatch30.graceWrappingUp');
   }
   if (level === '45m' || level === '55m') {
     const left =
@@ -31,8 +34,8 @@ export function usageWarning(usage: BroadcastUsage): string | null {
         ? null
         : formatLiveTime(usage.secondsRemaining);
     return left
-      ? `Only ${left} of live time left this week.`
-      : 'You are close to this week’s live time.';
+      ? t('broadcastUsageMeterBatch30.onlyLeft', { left })
+      : t('broadcastUsageMeterBatch30.closeToCap');
   }
   return null;
 }
@@ -42,7 +45,7 @@ export function BroadcastUsageMeter({ usage }: { usage: BroadcastUsage }) {
   if (usage.unlimited) {
     return null;
   }
-  const warning = usageWarning(usage);
+  const warning = usageWarning(usage, t);
   const exhausted = usage.blocked || usage.inGrace;
   const used = formatLiveTime(usage.secondsUsed);
   const cap = formatLiveTime(usage.weeklyCapSeconds);
@@ -54,7 +57,7 @@ export function BroadcastUsageMeter({ usage }: { usage: BroadcastUsage }) {
           {t('broadcastUsageMeter.weeklyLiveTime')}
         </span>
         <span className="text-foreground tabular-nums">
-          {used} of {cap} used this week
+          {t('broadcastUsageMeterBatch30.usedOfCap', { used, cap })}
         </span>
       </div>
       <Meter
@@ -72,7 +75,7 @@ export function BroadcastUsageMeter({ usage }: { usage: BroadcastUsage }) {
         <Alert tone={exhausted ? 'error' : warning ? 'warning' : 'info'}>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span>
-              {warning ?? 'Membership gives you unlimited live time.'}
+              {warning ?? t('broadcastUsageMeterBatch30.membershipUnlimited')}
             </span>
             {usage.showUpgradeCta ? (
               <Button

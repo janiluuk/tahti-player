@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { useTranslation, type TFunction } from '@tahti-player/i18n';
+import {
+  useTranslation,
+  type ParseKeys,
+  type TFunction,
+} from '@tahti-player/i18n';
 import {
   Badge,
   BreadcrumbCurrent,
@@ -19,166 +23,161 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 
-const CRITICAL_VENDORS = [
+type VendorStatus = 'live' | 'pending' | 'blocked';
+
+type VendorSpec = {
+  name: string;
+  labelKey?: ParseKeys<'web'>;
+  serviceKey: ParseKeys<'web'>;
+  dpaRequired: boolean;
+  status: VendorStatus;
+  blockerKey: ParseKeys<'web'>;
+};
+
+const CRITICAL_VENDORS: readonly VendorSpec[] = [
   {
     name: 'Fiber ISP',
-    service: 'Business fiber (symmetric gigabit, static IP)',
+    labelKey: 'adminVendorsViewBatch30.fiberIspName',
+    serviceKey: 'adminVendorsViewBatch30.fiberIspService',
     dpaRequired: false,
     status: 'pending',
-    blocker:
-      'Confirm production circuit, static IP, support contact, and failover test.',
+    blockerKey: 'adminVendorsViewBatch30.fiberIspBlocker',
   },
   {
     name: 'UpCloud',
-    service: 'VPS / object storage disaster recovery',
+    serviceKey: 'adminVendorsViewBatch30.upcloudService',
     dpaRequired: true,
     status: 'pending',
-    blocker:
-      'Confirm production account, R2/backup ownership, restore test, and DPA.',
+    blockerKey: 'adminVendorsViewBatch30.upcloudBlocker',
   },
   {
     name: 'Stripe',
-    service: 'Payments — platform and Connect payouts',
+    serviceKey: 'adminVendorsViewBatch30.stripeService',
     dpaRequired: true,
     status: 'pending',
-    blocker:
-      'Confirm live keys, webhook signing secret, Connect payouts, and DPA.',
+    blockerKey: 'adminVendorsViewBatch30.stripeBlocker',
   },
   {
     name: 'Domain registrar',
-    service: 'tahti.live DNS',
+    labelKey: 'adminVendorsViewBatch30.domainRegistrarName',
+    serviceKey: 'adminVendorsViewBatch30.domainRegistrarService',
     dpaRequired: false,
     status: 'pending',
-    blocker:
-      'Confirm domain ownership, renewal access, DNS records, and incident contact.',
+    blockerKey: 'adminVendorsViewBatch30.domainRegistrarBlocker',
   },
-] as const;
+];
 
-const INTEGRATION_VENDORS = [
+const INTEGRATION_VENDORS: readonly VendorSpec[] = [
   {
     name: 'Mixcloud',
-    service: 'OAuth / archive uploads',
+    serviceKey: 'adminVendorsViewBatch30.mixcloudService',
     dpaRequired: true,
     status: 'pending',
-    blocker: 'Confirm production OAuth callback, scopes, and DPA.',
+    blockerKey: 'adminVendorsViewBatch30.mixcloudBlocker',
   },
   {
     name: 'Revelator',
-    service: 'DSP distribution — ISRC registration, royalty pull-back',
+    serviceKey: 'adminVendorsViewBatch30.revelatorService',
     dpaRequired: true,
     status: 'blocked',
-    blocker:
-      'Sign the production distribution contract and issue a live API key from the Revelator partner dashboard, then set it in the distribution service config — Studio → Distribution reads it via fetchRevelatorBilling/payAndSubmitToRevelator and stays "not submitted" for every release until it is set.',
+    blockerKey: 'adminVendorsViewBatch30.revelatorBlocker',
   },
   {
     name: 'Email provider',
-    service: 'SMTP, newsletter dispatch, bounce webhook',
+    labelKey: 'adminVendorsViewBatch30.emailProviderName',
+    serviceKey: 'adminVendorsViewBatch30.emailProviderService',
     dpaRequired: true,
     status: 'blocked',
-    blocker:
-      'Production SMTP credentials, sender domain, bounce webhook, and DPA are missing.',
+    blockerKey: 'adminVendorsViewBatch30.emailProviderBlocker',
   },
   {
     name: 'hCaptcha',
-    service: 'Bot protection on signup and login',
+    serviceKey: 'adminVendorsViewBatch30.hcaptchaService',
     dpaRequired: false,
     status: 'pending',
-    blocker:
-      'Confirm production site/secret keys and verify fail-closed behavior.',
+    blockerKey: 'adminVendorsViewBatch30.hcaptchaBlocker',
   },
   {
     name: 'Bandcamp',
-    service: 'Import own releases into the archive',
+    serviceKey: 'adminVendorsViewBatch30.bandcampService',
     dpaRequired: true,
     status: 'blocked',
-    blocker:
-      'Import write endpoint and provider approval are still missing in the sibling API.',
+    blockerKey: 'adminVendorsViewBatch30.bandcampBlocker',
   },
   {
     name: 'SoundCloud',
-    service: 'Import own downloadable tracks into the archive',
+    serviceKey: 'adminVendorsViewBatch30.soundcloudService',
     dpaRequired: true,
     status: 'pending',
-    blocker:
-      'Confirm production OAuth app, download scopes, callback, and DPA.',
+    blockerKey: 'adminVendorsViewBatch30.soundcloudBlocker',
   },
   {
     name: 'Google Drive',
-    service: 'Cloud-storage import into the archive',
+    serviceKey: 'adminVendorsViewBatch30.googleDriveService',
     dpaRequired: true,
     status: 'pending',
-    blocker: 'Confirm production OAuth app, storage scopes, callback, and DPA.',
+    blockerKey: 'adminVendorsViewBatch30.googleDriveBlocker',
   },
   {
     name: 'Twitter / X',
-    service: 'Auto-post broadcast and release announcements',
+    serviceKey: 'adminVendorsViewBatch30.autoPostService',
     dpaRequired: false,
     status: 'blocked',
-    blocker:
-      'Provider app review, publishing credentials, and server-side posting contract are missing.',
+    blockerKey: 'adminVendorsViewBatch30.autoPostBlocker',
   },
   {
     name: 'Instagram',
-    service: 'Auto-post broadcast and release announcements',
+    serviceKey: 'adminVendorsViewBatch30.autoPostService',
     dpaRequired: false,
     status: 'blocked',
-    blocker:
-      'Provider app review, publishing credentials, and server-side posting contract are missing.',
+    blockerKey: 'adminVendorsViewBatch30.autoPostBlocker',
   },
   {
     name: 'AcoustID',
-    service: 'Track fingerprint / metadata lookup',
+    serviceKey: 'adminVendorsViewBatch30.acoustidService',
     dpaRequired: false,
     status: 'pending',
-    blocker:
-      'Confirm production API key, rate limits, attribution, and privacy terms.',
+    blockerKey: 'adminVendorsViewBatch30.acoustidBlocker',
   },
-] as const;
+];
 
 /** DSP/catalog partners with no vendor account of our own to configure —
  * artists self-serve through the provider's own portal. Tracked here so the
  * "what's left to do" list doesn't stop at Revelator; each references the
  * matching flow in Studio → Distribution. */
 const DISTRIBUTION_ACTIONS = [
-  {
-    name: 'Revelator',
-    action:
-      'Association-owned account (see Integrations below) — this is the one distribution vendor we configure centrally, not per-artist.',
-  },
-  {
-    name: 'Discogs',
-    action:
-      'No account needed from us — an artist submits their own release via Discogs’ "Submit a new release" form after export. Studio → Distribution → Guides has the exact steps and a prefilled-metadata copy button.',
-  },
+  { name: 'Revelator', actionKey: 'adminVendorsViewBatch30.revelatorAction' },
+  { name: 'Discogs', actionKey: 'adminVendorsViewBatch30.discogsAction' },
   {
     name: 'MusicBrainz',
-    action:
-      'Same as Discogs — self-service, no vendor account. The release editor in Studio → Distribution walks an artist through it and copies a prefill.',
+    actionKey: 'adminVendorsViewBatch30.musicbrainzAction',
   },
   {
     name: 'Spotify for Artists',
-    action:
-      'No vendor account — once Revelator delivery marks a release "delivered", the artist claims their own profile at artists.spotify.com. Nothing for us to configure beyond keeping Revelator delivery working.',
+    actionKey: 'adminVendorsViewBatch30.spotifyAction',
   },
   {
     name: 'Apple Music for Artists',
-    action:
-      'Same pattern as Spotify — artist self-claims at artists.apple.com after DSP delivery.',
+    actionKey: 'adminVendorsViewBatch30.appleMusicAction',
   },
   {
     name: 'YouTube Official Artist Channel',
-    action:
-      'Same pattern — artist requests their Official Artist Channel from YouTube directly; no vendor setup on our side.',
+    actionKey: 'adminVendorsViewBatch30.youtubeAction',
   },
-] as const;
+] as const satisfies ReadonlyArray<{
+  name: string;
+  actionKey: ParseKeys<'web'>;
+}>;
 
 type CooperativeActionStatus = 'needs-legal-review' | 'needs-board-decision';
 
-const COOPERATIVE_ACTION_STATUS_LABEL: Record<CooperativeActionStatus, string> =
-  {
-    'needs-legal-review': 'Needs legal review',
-    'needs-board-decision': 'Needs board decision',
-  };
+const COOPERATIVE_ACTION_STATUS_LABEL: Record<
+  CooperativeActionStatus,
+  ParseKeys<'web'>
+> = {
+  'needs-legal-review': 'adminVendorsViewBatch30.needsLegalReview',
+  'needs-board-decision': 'adminVendorsViewBatch30.needsBoardDecision',
+};
 
 /** Cooperative-governance and local-culture-organisation actions requested
  * for this page. None of this is legal advice or a confirmed procedure —
@@ -190,45 +189,49 @@ function cooperativeActions(t: TFunction<'web'>) {
       title: t(
         'adminVendorsView.confirmNonprofitCooperativeRegistrationStatus',
       ),
-      detail:
-        'Verify current registration (e.g. yhdistysrekisteri/osuuskuntarekisteri with the Finnish Patent and Registration Office, PRH) is active, bylaws are up to date, and officers on file match the current board.',
+      detail: t('adminVendorsViewBatch30.registrationDetail'),
       status: 'needs-legal-review',
     },
     {
       title: t('adminVendorsView.reviewCollectingSocietyAgreements'),
-      detail:
-        'Confirm membership/reporting status with Teosto and Gramex (see Studio → Distribution → Guides for the pointers already in-app) covers the association’s current activity, not just individual artists.',
+      detail: t('adminVendorsViewBatch30.collectingSocietyDetail'),
       status: 'needs-legal-review',
     },
     {
       title: t('adminVendorsView.confirmAnnualNonprofitActivityReport'),
-      detail:
-        'Check with the board’s accountant/auditor (tilintarkastaja or toiminnantarkastaja) what the annual report generator (Governance → Annual report generator) needs to satisfy statutory filing requirements.',
+      detail: t('adminVendorsViewBatch30.annualReportDetail'),
       status: 'needs-legal-review',
     },
     {
       title: t('adminVendorsView.decideCooperationTermsWithLocal'),
-      detail:
-        'For co-produced events or shared venues with other local culture organisations, agree who holds insurance/liability, and record the agreement — this tool cannot draft or verify that agreement.',
+      detail: t('adminVendorsViewBatch30.cooperationTermsDetail'),
       status: 'needs-board-decision',
     },
   ] as const;
 }
 
-type VendorStatus = 'live' | 'pending' | 'blocked';
-
 type Vendor = {
   name: string;
+  label: string;
   service: string;
   dpaRequired: boolean;
   status: VendorStatus;
   blocker: string;
 };
 
-const STATUS_LABEL: Record<VendorStatus, string> = {
-  live: 'Live',
-  pending: 'Verify before live',
-  blocked: 'Blocking launch',
+const localizeVendor = (spec: VendorSpec, t: TFunction<'web'>): Vendor => ({
+  name: spec.name,
+  label: spec.labelKey ? t(spec.labelKey) : spec.name,
+  service: t(spec.serviceKey),
+  dpaRequired: spec.dpaRequired,
+  status: spec.status,
+  blocker: t(spec.blockerKey),
+});
+
+const STATUS_LABEL: Record<VendorStatus, ParseKeys<'web'>> = {
+  live: 'adminVendorsViewStates.live',
+  pending: 'adminVendorsViewBatch30.verifyBeforeLive',
+  blocked: 'adminVendorsViewStates.blockingLaunch',
 };
 
 const STATUS_COLOR: Record<VendorStatus, 'green' | 'yellow' | 'red'> = {
@@ -248,14 +251,17 @@ function VendorTable({ vendors }: { vendors: readonly Vendor[] }) {
         >
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 font-medium">
-              {v.name}
+              {v.label}
               <Badge variant="pill" color={STATUS_COLOR[v.status]}>
-                {STATUS_LABEL[v.status]}
+                {t(STATUS_LABEL[v.status])}
               </Badge>
             </div>
             <div className="text-foreground-secondary text-xs">{v.service}</div>
             <div className="text-foreground-secondary mt-1 text-xs">
-              <span className="font-semibold">Launch check:</span> {v.blocker}
+              <span className="font-semibold">
+                {t('adminVendorsViewBatch30.launchCheck')}
+              </span>{' '}
+              {v.blocker}
             </div>
           </div>
           {v.dpaRequired ? (
@@ -287,7 +293,11 @@ export function AdminVendorsContent() {
     });
   }, [attempt]);
 
-  const integrationVendors: Vendor[] = INTEGRATION_VENDORS.map((vendor) => {
+  const criticalVendors = CRITICAL_VENDORS.map((spec) =>
+    localizeVendor(spec, t),
+  );
+  const integrationVendors: Vendor[] = INTEGRATION_VENDORS.map((spec) => {
+    const vendor = localizeVendor(spec, t);
     const liveStatus = integrations.find((row) => row.name === vendor.name);
     return {
       ...vendor,
@@ -295,7 +305,7 @@ export function AdminVendorsContent() {
       blocker: liveStatus?.live ? liveStatus.detail : vendor.blocker,
     };
   });
-  const allVendors: Vendor[] = [...CRITICAL_VENDORS, ...integrationVendors];
+  const allVendors: Vendor[] = [...criticalVendors, ...integrationVendors];
   const blockers = allVendors.filter((vendor) => vendor.status === 'blocked');
   const pending = allVendors.filter((vendor) => vendor.status === 'pending');
 
@@ -306,7 +316,11 @@ export function AdminVendorsContent() {
         classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
       >
         <StudioPanel
-          title={`${blockers.length} launch blockers · ${pending.length} checks pending`}
+          title={`${t('adminVendorsViewBatch30.launchBlockers', {
+            count: blockers.length,
+          })} · ${t('adminVendorsViewBatch30.checksPending', {
+            count: pending.length,
+          })}`}
           description={t('adminVendors.aVendorIsNotConsidered')}
         >
           {blockers.length > 0 ? (
@@ -314,7 +328,7 @@ export function AdminVendorsContent() {
               {blockers.map((vendor) => (
                 <li key={vendor.name}>
                   <span className="text-foreground font-medium">
-                    {vendor.name}:
+                    {vendor.label}:
                   </span>{' '}
                   {vendor.blocker}
                 </li>
@@ -360,7 +374,7 @@ export function AdminVendorsContent() {
         )}
 
         <StudioPanel title={t('adminVendors.criticalVendors')}>
-          <VendorTable vendors={CRITICAL_VENDORS} />
+          <VendorTable vendors={criticalVendors} />
         </StudioPanel>
 
         <StudioPanel title={t('adminVendors.integrations')}>
@@ -381,7 +395,7 @@ export function AdminVendorsContent() {
               >
                 <div className="font-medium">{row.name}</div>
                 <div className="text-foreground-secondary mt-0.5 text-xs">
-                  {row.action}
+                  {t(row.actionKey)}
                 </div>
               </li>
             ))}
@@ -407,7 +421,7 @@ export function AdminVendorsContent() {
                   </div>
                 </div>
                 <Badge variant="pill" color="orange">
-                  {COOPERATIVE_ACTION_STATUS_LABEL[row.status]}
+                  {t(COOPERATIVE_ACTION_STATUS_LABEL[row.status])}
                 </Badge>
               </li>
             ))}

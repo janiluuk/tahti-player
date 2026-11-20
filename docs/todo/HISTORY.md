@@ -1,3 +1,13 @@
+## 2026-11-20 — Radio station row actions + governance discussions restyle
+
+Radio page: the Radio station row has **Add new** (Your stations dialog) and a
+**Browse stations** icon button that opens the Radio Browser add-on's Configure
+dialog in place (turns the add-on on if it was off), instead of jumping to the
+plugin store. The "Add stations" panel under the stations is gone.
+`CardsRow` and `ListenSection` take an `actions` slot. Governance discussions
+list and topic page use `GovernancePanel` / `Box` cards (#2093). Finnish
+30-file batch logged in `finnish-localization.md`.
+
 ## 2026-11-19 — Next 30 slices 2 (ProWaveform, Go live, export, ops, admin)
 
 ProWaveform/ProMinimap deleted (EditorWaveSurfer-only); Go live Storybook

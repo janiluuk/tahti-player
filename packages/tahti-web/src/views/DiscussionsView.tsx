@@ -34,12 +34,7 @@ import { useAuthStore } from '../stores/authStore';
 
 type TopicFilter = 'all' | 'open' | 'following' | 'closed';
 
-const FILTERS: Array<{ id: TopicFilter; label: string }> = [
-  { id: 'all', label: 'All' },
-  { id: 'open', label: 'Open' },
-  { id: 'following', label: 'Following' },
-  { id: 'closed', label: 'Closed' },
-];
+const FILTER_IDS: TopicFilter[] = ['all', 'open', 'following', 'closed'];
 
 function matchesFilter(topic: DiscussionTopic, filter: TopicFilter): boolean {
   switch (filter) {
@@ -90,9 +85,9 @@ function TopicRow({ topic }: { topic: DiscussionTopic }) {
             </span>
             {unread ? (
               <Badge variant="pill" color="orange">
-                {topic.unreadCount === 1
-                  ? '1 new reply'
-                  : `${topic.unreadCount} new replies`}
+                {t('discussionsViewBatch30.newReplyCount', {
+                  count: topic.unreadCount,
+                })}
               </Badge>
             ) : null}
             {topic.status === 'CLOSED' ? (
@@ -108,24 +103,29 @@ function TopicRow({ topic }: { topic: DiscussionTopic }) {
                     {t('discussionsPage.muted')}
                   </>
                 ) : (
-                  'Following'
+                  t('discussionsViewBatch30.following')
                 )}
               </Badge>
             ) : null}
           </span>
           <span className="text-foreground-secondary flex flex-wrap items-center gap-x-1 text-xs">
             <span>
-              Started by {topic.createdBy} ·{' '}
+              {t('discussionsViewBatch30.startedBy', {
+                name: topic.createdBy,
+              })}{' '}
+              ·{' '}
               {topic.lastReplyBy
-                ? `last reply by ${topic.lastReplyBy}`
-                : 'last activity'}
+                ? t('discussionsViewBatch30.lastReplyBy', {
+                    name: topic.lastReplyBy,
+                  })
+                : t('discussionsViewBatch30.lastActivity')}
             </span>
             <ListingDate value={topic.lastPostAt} />
           </span>
         </span>
         <span className="text-foreground-secondary flex shrink-0 items-center gap-1 self-center text-xs">
           <MessageSquareIcon size={14} aria-hidden />
-          {topic.postCount === 1 ? '1 reply' : `${topic.postCount} replies`}
+          {t('discussionsViewBatch30.replyCount', { count: topic.postCount })}
         </span>
       </Link>
     </li>
@@ -161,6 +161,13 @@ export function DiscussionsView() {
   }, [user, attempt]);
 
   const retry = () => setAttempt((n) => n + 1);
+  const filterLabels: Record<TopicFilter, string> = {
+    all: t('discussionsViewBatch30.filterAll'),
+    open: t('discussionsViewBatch30.filterOpen'),
+    following: t('discussionsViewBatch30.following'),
+    closed: t('discussionsViewBatch30.filterClosed'),
+  };
+  const filters = FILTER_IDS.map((id) => ({ id, label: filterLabels[id] }));
 
   return (
     <ViewShell
@@ -213,7 +220,7 @@ export function DiscussionsView() {
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <FilterChips
-                  items={FILTERS}
+                  items={filters}
                   selected={filter}
                   onChange={(id) => setFilter(id as TopicFilter)}
                   aria-label={t('discussionsPage.filterDiscussions')}

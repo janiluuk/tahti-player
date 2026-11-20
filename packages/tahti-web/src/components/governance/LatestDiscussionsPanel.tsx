@@ -54,11 +54,15 @@ export function LatestDiscussionsPanel() {
               {topic.title}
             </Link>
             <span className="text-foreground-secondary text-xs">
-              {topic.postCount === 1 ? '1 reply' : `${topic.postCount} replies`}
+              {t('latestDiscussionsPanelBatch30.replyCount', {
+                count: topic.postCount,
+              })}
             </span>
             {topic.unreadCount ? (
               <Badge variant="pill" color="orange">
-                {topic.unreadCount} new
+                {t('latestDiscussionsPanelBatch30.newCount', {
+                  count: topic.unreadCount,
+                })}
               </Badge>
             ) : null}
           </li>

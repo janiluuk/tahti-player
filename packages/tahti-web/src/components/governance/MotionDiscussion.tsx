@@ -68,7 +68,7 @@ export function MotionDiscussion({
           c.id === target.id ? { ...c, body: '', removed: true } : c,
         ),
       );
-      onMessage('Comment removed.');
+      onMessage(t('motionDiscussionBatch30.commentRemoved'));
     });
   };
 
@@ -135,7 +135,8 @@ export function MotionDiscussion({
                 <li key={c.id} className="px-3 py-2">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="text-foreground-secondary text-xs">
-                      {c.authorDisplayName ?? 'Member'}
+                      {c.authorDisplayName ??
+                        t('motionDiscussionBatch30.member')}
                       {c.createdAt ? (
                         <>
                           {', '}
@@ -181,7 +182,7 @@ export function MotionDiscussion({
                     }
                     setComments((prev) => [...prev, r.data]);
                     setCommentBody('');
-                    onMessage('Comment posted.');
+                    onMessage(t('motionDiscussionBatch30.commentPosted'));
                     onChanged();
                   },
                 );

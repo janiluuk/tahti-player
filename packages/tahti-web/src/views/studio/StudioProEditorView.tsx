@@ -246,8 +246,16 @@ function ProEditor({ soundId }: { soundId: string }) {
           setRenderPendingVersionId(null);
           const text =
             version.status === 'READY'
-              ? `Version ${version.versionNumber} is ready${version.isActive ? ' and live' : " — activate it from Revision history when you're ready"}.`
-              : `Version ${version.versionNumber} failed to render.`;
+              ? version.isActive
+                ? t('studioProEditorViewBatch30.versionReadyLive', {
+                    number: version.versionNumber,
+                  })
+                : t('studioProEditorViewBatch30.versionReadyInactive', {
+                    number: version.versionNumber,
+                  })
+              : t('studioProEditorViewBatch30.versionFailed', {
+                  number: version.versionNumber,
+                });
           setMessage(text);
           if (version.status === 'READY') {
             toast.success(text);
@@ -286,7 +294,7 @@ function ProEditor({ soundId }: { soundId: string }) {
       if (editRevisionRef.current === revisionAtSave) {
         setDirty(false);
       }
-      setMessage('Draft saved.');
+      setMessage(t('toasts.draftSaved'));
       toast.success(i18n.t('web:toasts.draftSaved'));
     } catch {
       toast.error(i18n.t('web:toasts.couldNotSaveDraft'));
@@ -332,12 +340,18 @@ function ProEditor({ soundId }: { soundId: string }) {
       if (result.status === 'PENDING' || result.status === 'PROCESSING') {
         setRenderPendingVersionId(result.versionId);
         text = activate
-          ? `Rendering — this version will go live once it's ready. You can close the editor; we notify you when it's done.`
-          : `Rendering as a new revision — the current live version is untouched. You can close the editor; we notify you when it's done.`;
+          ? t('studioProEditorViewBatch30.renderingLive')
+          : t('studioProEditorViewBatch30.renderingNewRevision');
       } else {
         text = activate
-          ? `Render started — version ${result.versionId} will go live, ${result.status.toLowerCase()}.`
-          : `Saved as a new revision — version ${result.versionId}, ${result.status.toLowerCase()}. The current live version is untouched; activate it from Revision history when you're ready.`;
+          ? t('studioProEditorViewBatch30.renderStartedLive', {
+              versionId: result.versionId,
+              status: result.status.toLowerCase(),
+            })
+          : t('studioProEditorViewBatch30.savedAsNewRevision', {
+              versionId: result.versionId,
+              status: result.status.toLowerCase(),
+            });
       }
       setMessage(text);
       toast.success(text);
@@ -382,16 +396,14 @@ function ProEditor({ soundId }: { soundId: string }) {
         </div>
 
         <ViewShell
-          title={title || 'Pro editor'}
+          title={title || t('studioProEditorViewBatch30.proEditor')}
           classes={{ root: 'px-0 pt-0' }}
         >
           <ClientCapabilityNotice
             kind="partial"
             title={t('proEditor.studioEditor')}
           >
-            Trim mode keeps the draft/render pipeline. Multitrack mode ports
-            theDAW&apos;s browser rack + live mixer; bounce downloads a WAV you
-            can attach as a version after render.
+            {t('studioProEditorViewBatch30.capabilityNotice')}
           </ClientCapabilityNotice>
 
           <SegmentedControl
@@ -460,10 +472,15 @@ function ProEditor({ soundId }: { soundId: string }) {
                       );
                       if (uploaded.ok) {
                         toast.success(
-                          `Bounce uploaded as revision ${uploaded.versionNumber}.`,
+                          t('studioProEditorViewBatch30.bounceUploaded', {
+                            number: uploaded.versionNumber,
+                          }),
                         );
                         setMessage(
-                          `Bounce uploaded as revision ${uploaded.versionNumber} (${uploaded.status}).`,
+                          t('studioProEditorViewBatch30.bounceUploadedStatus', {
+                            number: uploaded.versionNumber,
+                            status: uploaded.status,
+                          }),
                         );
                       } else {
                         toast.error(uploaded.error);
@@ -561,9 +578,9 @@ function ProEditor({ soundId }: { soundId: string }) {
                         role="status"
                       >
                         {sessionSync === 'synced'
-                          ? 'Session synced to editor projects (arrange metadata). FX and audio stay in this browser (OPFS).'
+                          ? t('studioProEditorViewBatch30.sessionSynced')
                           : sessionSync === 'syncing'
-                            ? 'Syncing session…'
+                            ? t('studioProEditorViewBatch30.syncingSession')
                             : sessionSync === 'local'
                               ? t(
                                   'studioProEditorViewStates.localOnlyServerSyncUnavailable',
@@ -588,9 +605,8 @@ function ProEditor({ soundId }: { soundId: string }) {
                         </Button>
                       </div>
                       <p className="text-foreground-secondary text-sm">
-                        <strong>{t('proEditor.bounce')}</strong> uploads a WAV
-                        revision via sound versions. Full mix FX remain local
-                        until bounce.
+                        <strong>{t('proEditor.bounce')}</strong>{' '}
+                        {t('studioProEditorViewBatch30.bounceHelp')}
                       </p>
                       {message && (
                         <p
@@ -615,7 +631,9 @@ function ProEditor({ soundId }: { soundId: string }) {
           onClose={() => setRenderPromptOpen(false)}
         >
           <Dialog.Title>
-            Render “{versionLabel.trim() || defaultVersionLabel}”
+            {t('studioProEditorViewBatch30.renderTitle', {
+              label: versionLabel.trim() || defaultVersionLabel,
+            })}
           </Dialog.Title>
           <Dialog.Description>
             {t('proEditor.overwriteReplacesWhatAposS')}

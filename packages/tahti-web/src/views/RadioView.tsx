@@ -49,7 +49,6 @@ import {
   PageErrorBanner,
   PageLoading,
 } from '../components/PageStates';
-import { AddStationsPanel } from '../components/radio/AddStationsPanel';
 import { FavoriteStationsRow } from '../components/radio/FavoriteStationsRow';
 import { RadioBookedShowsPanel } from '../components/radio/RadioBookedShowsPanel';
 import { RadioFeaturedPanel } from '../components/radio/RadioFeaturedPanel';
@@ -66,6 +65,7 @@ import {
   type RadioOverlayItem,
 } from '../components/radio/RadioNowPlayingOverlay';
 import { RadioPlayerWidget } from '../components/radio/RadioPlayerWidget';
+import { RadioStationRowActions } from '../components/radio/RadioStationRowActions';
 import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
 import { RadioUpNextPanel } from '../components/RadioUpNextPanel';
 import { StationUnavailableNotice } from '../components/StationUnavailableNotice';
@@ -562,9 +562,11 @@ export function RadioView() {
           onRetry={radioPresets.retry}
           ownStations={ownStations}
           signedIn={signedIn}
+          actions={
+            <RadioStationRowActions onOwnStationsChange={setOwnStations} />
+          }
           data-testid="radio-stations-row"
         />
-        <AddStationsPanel onOwnStationsChange={setOwnStations} />
       </section>
 
       <TrackInfoDialog

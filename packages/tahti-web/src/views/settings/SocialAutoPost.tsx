@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import {
   Button,
   InlineError,
@@ -30,24 +30,24 @@ const PLATFORMS: Record<
   SocialAutoPostPlatform,
   {
     name: string;
-    accountLabel: string;
+    accountLabel: ParseKeys<'web'>;
     accountPlaceholder: string;
-    secretLabel: string;
+    secretLabel: ParseKeys<'web'>;
     templateMax: number;
   }
 > = {
   mastodon: {
     name: 'Mastodon',
-    accountLabel: 'Instance URL',
+    accountLabel: 'socialAutoPostBatch30.instanceUrl',
     accountPlaceholder: 'https://mastodon.social',
-    secretLabel: 'Access token',
+    secretLabel: 'socialAutoPostBatch30.accessToken',
     templateMax: 500,
   },
   bluesky: {
     name: 'Bluesky',
-    accountLabel: 'Handle',
+    accountLabel: 'socialAutoPostBatch30.handle',
     accountPlaceholder: 'you.bsky.social',
-    secretLabel: 'App password',
+    secretLabel: 'socialAutoPostBatch30.appPassword',
     templateMax: 300,
   },
 };
@@ -101,8 +101,8 @@ function PlatformForm({
       setSecret('');
       toast.success(
         status.connected
-          ? `${copy.name} settings saved.`
-          : `${copy.name} connected.`,
+          ? t('socialAutoPostBatch30.settingsSaved', { name: copy.name })
+          : t('socialAutoPostBatch30.connected', { name: copy.name }),
       );
       onChanged(result.data);
     });
@@ -115,7 +115,9 @@ function PlatformForm({
         setError(result.error);
         return;
       }
-      toast.success(`${copy.name} disconnected.`);
+      toast.success(
+        t('socialAutoPostBatch30.disconnected', { name: copy.name }),
+      );
       onChanged(null);
     });
   };
@@ -135,7 +137,7 @@ function PlatformForm({
             ? webT()('templateText.connectedAs', {
                 name: status.accountLabel ?? copy.name,
               })
-            : 'Not connected'}
+            : t('socialAutoPostBatch30.notConnected')}
         </span>
       </div>
       <form
@@ -147,18 +149,20 @@ function PlatformForm({
       >
         <div className="grid gap-3 sm:grid-cols-2">
           <Input
-            label={copy.accountLabel}
+            label={t(copy.accountLabel)}
             value={account}
             placeholder={copy.accountPlaceholder}
             onChange={(event) => setAccount(event.target.value)}
           />
           <Input
-            label={copy.secretLabel}
+            label={t(copy.secretLabel)}
             type="password"
             autoComplete="off"
             value={secret}
             placeholder={
-              status.connected ? 'Leave blank to keep the saved one' : ''
+              status.connected
+                ? t('socialAutoPostBatch30.leaveBlankToKeep')
+                : ''
             }
             onChange={(event) => setSecret(event.target.value)}
           />
@@ -182,11 +186,12 @@ function PlatformForm({
           onChange={(event) => setTemplate(event.target.value)}
         />
         <SettingsHint>
-          Fills in {'{artist}'}, {'{release}'}, {'{smart_link}'} and{' '}
-          {'{channel_url}'}.{' '}
+          {t('socialAutoPostBatch30.fillsInPlaceholders')}{' '}
           {status.connected
-            ? `If a post to ${copy.name} fails, we notify you.`
-            : `Connecting posts a short test message to your ${copy.name} account.`}
+            ? t('socialAutoPostBatch30.notifyOnFailure', { name: copy.name })
+            : t('socialAutoPostBatch30.connectingPostsTest', {
+                name: copy.name,
+              })}
         </SettingsHint>
         {error ? <InlineError>{error}</InlineError> : null}
         <div className="flex flex-wrap justify-end gap-2">
@@ -201,7 +206,11 @@ function PlatformForm({
             </Button>
           ) : null}
           <SaveButton
-            label={status.connected ? 'Save' : `Connect ${copy.name}`}
+            label={
+              status.connected
+                ? t('socialAutoPostBatch30.save')
+                : t('socialAutoPostBatch30.connectName', { name: copy.name })
+            }
             saving={saving}
             disabled={saving || !canSave}
             type="submit"

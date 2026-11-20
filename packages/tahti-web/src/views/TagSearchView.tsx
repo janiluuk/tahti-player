@@ -47,8 +47,10 @@ export function TagSearchView({ tag }: { tag?: string }) {
 
   return (
     <ViewShell
-      title={trimmed ? `#${trimmed}` : 'Search'}
-      subtitle={trimmed ? 'Tracks with this tag' : undefined}
+      title={trimmed ? `#${trimmed}` : t('tagSearchViewBatch30.search')}
+      subtitle={
+        trimmed ? t('tagSearchViewBatch30.tracksWithThisTag') : undefined
+      }
       data-testid="tag-search-view"
     >
       {!trimmed ? (
@@ -69,7 +71,7 @@ export function TagSearchView({ tag }: { tag?: string }) {
           title={
             isForceMock()
               ? `No tracks tagged “${trimmed}” in mock fixtures`
-              : `No public tracks tagged “${trimmed}” yet`
+              : t('tagSearchViewBatch30.noPublicTracksTagged', { tag: trimmed })
           }
           description={t('empties.tryATagFromATrack')}
           action={

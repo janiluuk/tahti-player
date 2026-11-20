@@ -517,15 +517,27 @@ describe('RadioView internet radio stations', () => {
     ).toBeTruthy();
   });
 
-  it('opens the radio directory from the add stations area', async () => {
+  it('opens the Radio Browser configure dialog from the station row', async () => {
     await renderRadio();
-    const panel = screen.getByTestId('radio-add-stations');
+    const actions = screen.getByTestId('radio-row-actions');
     fireEvent.click(
-      within(panel).getByRole('button', { name: /Browse stations/ }),
+      within(actions).getByRole('button', { name: 'Browse stations' }),
     );
-    const state = useSettingsModalStore.getState();
-    expect(state.isOpen).toBe(true);
-    expect(state.activeTab).toBe('plugin-store');
-    expect(state.pluginCategory).toBe('radio');
+    expect(
+      await screen.findByRole('dialog', {
+        name: /Configure Radio Browser directory/,
+      }),
+    ).toBeTruthy();
+    expect(useSettingsModalStore.getState().isOpen).toBe(false);
+  });
+
+  it('has no separate add stations area under the stations', async () => {
+    await renderRadio();
+    expect(screen.queryByTestId('radio-add-stations')).toBeNull();
+    expect(
+      within(screen.getByTestId('radio-row-actions')).getByRole('button', {
+        name: 'Add new',
+      }),
+    ).toBeTruthy();
   });
 });

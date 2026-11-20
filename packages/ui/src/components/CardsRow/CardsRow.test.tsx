@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { CardsRowWrapper as Wrapper } from './CardsRow.test-wrapper';
@@ -83,6 +83,16 @@ describe('CardsRow', () => {
     Wrapper.mount({ badge: 'Live', badgeColor: 'green' });
 
     expect(Wrapper.badge).toHaveClass('bg-accent-green');
+  });
+
+  it('puts section actions in the toolbar', () => {
+    Wrapper.mount({ actions: <button type="button">Add new</button> });
+
+    expect(
+      within(screen.getByTestId('cards-row-controls')).getByRole('button', {
+        name: 'Add new',
+      }),
+    ).toBeInTheDocument();
   });
 
   it('does not render a badge when badge is not set', () => {

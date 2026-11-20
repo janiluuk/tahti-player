@@ -17,6 +17,8 @@ export type ListenSectionProps = {
   emptyDescription?: string;
   onRetry: () => void;
   'data-testid'?: string;
+  /** Section-level buttons beside the heading, shown in every state. */
+  actions?: ReactNode;
   /** Rendered once the section is ready and has content; usually a
    * `CardsRow` or table that brings its own heading and `data-testid`. */
   children: ReactNode;
@@ -35,6 +37,7 @@ export function ListenSection({
   emptyDescription,
   onRetry,
   'data-testid': testId,
+  actions,
   children,
 }: ListenSectionProps) {
   const { t } = useTranslation('web');
@@ -48,7 +51,14 @@ export function ListenSection({
       data-status={status}
       aria-busy={status === 'loading'}
     >
-      <SectionTitle title={title} badge={badge} badgeColor={badgeColor} />
+      {actions ? (
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <SectionTitle title={title} badge={badge} badgeColor={badgeColor} />
+          <div className="flex items-center gap-2">{actions}</div>
+        </div>
+      ) : (
+        <SectionTitle title={title} badge={badge} badgeColor={badgeColor} />
+      )}
       {status === 'loading' ? (
         <PageLoading
           label={t('listenSection.loading', { title: title.toLowerCase() })}

@@ -2,18 +2,15 @@ import { Link } from '@tanstack/react-router';
 import {
   ArrowRightIcon,
   FileTextIcon,
-  HelpCircleIcon,
-  HistoryIcon,
   LandmarkIcon,
   LightbulbIcon,
-  MessagesSquareIcon,
   ScrollTextIcon,
   UsersIcon,
   VoteIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation, type TFunction } from '@tahti-player/i18n';
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   Button,
@@ -51,6 +48,10 @@ import { CorrectionsPanel } from '../components/governance/CorrectionsPanel';
 import { CurrentBoardPanel } from '../components/governance/CurrentBoardPanel';
 import { ElectionsPanel } from '../components/governance/ElectionsPanel';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
+import {
+  LoadErrorCaption,
+  quickLinks,
+} from '../components/governance/governanceQuickLinks';
 import { GovernanceStatChips } from '../components/governance/GovernanceStatChips';
 import { LatestDiscussionsPanel } from '../components/governance/LatestDiscussionsPanel';
 import { MotionCard } from '../components/governance/MotionCard';
@@ -61,64 +62,6 @@ import { meetingStateLabel } from '../lib/governanceLabels';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
-
-function LoadErrorCaption({
-  message,
-  onRetry,
-}: {
-  message: string;
-  onRetry: () => void;
-}) {
-  const { t } = useTranslation('web');
-  return (
-    <p className="text-foreground-secondary mb-2 text-xs" role="status">
-      {t('adminCoopText.couldNotRefreshList', { message })}{' '}
-      <Button
-        variant="plain"
-        size="flexible"
-        className="inline p-0 text-xs underline underline-offset-2"
-        onClick={onRetry}
-      >
-        {t('governanceViewText.retry')}
-      </Button>
-    </p>
-  );
-}
-
-function quickLinks(t: TFunction<'web'>) {
-  return [
-    {
-      to: '/governance/discussions' as const,
-      label: t('governanceView.discussions'),
-      icon: MessagesSquareIcon,
-    },
-    {
-      to: '/governance/feature-requests' as const,
-      label: t('governanceView.featureRequests'),
-      icon: VoteIcon,
-    },
-    {
-      to: '/governance/history' as const,
-      label: t('governanceView.closedDecisions'),
-      icon: HistoryIcon,
-    },
-    {
-      to: '/transparency' as const,
-      label: t('governanceView.transparencyLedger'),
-      icon: ScrollTextIcon,
-    },
-    {
-      to: '/governance/documents' as const,
-      label: t('governanceGuide.documentsTitle'),
-      icon: FileTextIcon,
-    },
-    {
-      to: '/governance/guide' as const,
-      label: t('governanceView.governanceHelp'),
-      icon: HelpCircleIcon,
-    },
-  ];
-}
 
 export function GovernanceView() {
   const { t } = useTranslation('web');
@@ -226,7 +169,9 @@ export function GovernanceView() {
       const reason =
         result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
       if (reason) {
-        setActionMsg(`Could not load more motions: ${reason}`);
+        setActionMsg(
+          t('governanceViewBatch30.couldNotLoadMoreMotions', { reason }),
+        );
         setLoadingMoreMotions(false);
         return;
       }
@@ -311,8 +256,9 @@ export function GovernanceView() {
       {user && !loading && forbidden && (
         <Box variant="secondary" className="flex flex-col gap-3">
           <p className="text-sm">
-            Motions are gated to active Tahti ry members. Signed in as @
-            {user.username}.
+            {t('governanceViewBatch30.motionsGated', {
+              username: user.username,
+            })}
           </p>
           <Button
             size="sm"
@@ -334,14 +280,18 @@ export function GovernanceView() {
             variant="secondary"
           >
             <p className="text-sm opacity-90">
-              {openMotionsCount === 1
-                ? '1 open motion still needs your vote.'
-                : `${openMotionsCount} open motions still need your vote.`}
+              {t('governanceViewBatch30.openMotionsNeedVote', {
+                count: openMotionsCount,
+              })}
             </p>
             <p className="text-xs">
-              {openMotionsTotal} open motion
-              {openMotionsTotal === 1 ? '' : 's'} · {openTopicsCount} topic
-              {openTopicsCount === 1 ? '' : 's'} you have not voted on
+              {t('governanceViewBatch30.openMotionCount', {
+                count: openMotionsTotal,
+              })}{' '}
+              ·{' '}
+              {t('governanceViewBatch30.topicsNotVotedCount', {
+                count: openTopicsCount,
+              })}
             </p>
             <ButtonLink
               to="/governance"
@@ -404,7 +354,9 @@ export function GovernanceView() {
                     >
                       <span className="min-w-0 truncate">{request.title}</span>
                       <span className="text-foreground-secondary shrink-0 text-xs">
-                        {request.voteCount} votes
+                        {t('governanceViewBatch30.voteCount', {
+                          count: request.voteCount,
+                        })}
                       </span>
                     </li>
                   ))}
@@ -415,7 +367,7 @@ export function GovernanceView() {
               onClick={closeSettings}
               className="text-foreground-secondary mt-1 text-xs hover:underline"
             >
-              View all topics →
+              {t('governanceViewBatch30.viewAllTopics')}
             </Link>
           </GovernancePanel>
         </div>
@@ -533,7 +485,10 @@ export function GovernanceView() {
                       <span className="font-medium">{document.title}</span>
                     )}
                     <div className="text-foreground-secondary mt-0.5 text-xs">
-                      {document.type} · version {document.version}
+                      {document.type} ·{' '}
+                      {t('governanceViewBatch30.version', {
+                        version: document.version,
+                      })}
                     </div>
                   </li>
                 ))}
@@ -568,15 +523,23 @@ export function GovernanceView() {
                         href={report.downloadUrl}
                         className="font-medium underline-offset-2 hover:underline"
                       >
-                        Q{report.quarter} {report.year} feature-request review
+                        {t('governanceViewBatch30.quarterlyReview', {
+                          quarter: report.quarter,
+                          year: report.year,
+                        })}
                       </a>
                     ) : (
                       <span className="font-medium">
-                        Q{report.quarter} {report.year} feature-request review
+                        {t('governanceViewBatch30.quarterlyReview', {
+                          quarter: report.quarter,
+                          year: report.year,
+                        })}
                       </span>
                     )}
                     <div className="text-foreground-secondary mt-0.5 text-xs">
-                      Prepared by {report.generatedByDisplayName}
+                      {t('governanceViewBatch30.preparedBy', {
+                        name: report.generatedByDisplayName,
+                      })}
                     </div>
                   </li>
                 ))}
@@ -609,7 +572,9 @@ export function GovernanceView() {
                     <span className="font-medium">{member.displayName}</span>
                     <span className="text-foreground-secondary ml-2 text-xs">
                       @{member.username}
-                      {member.isBoard ? ' · Board' : ''}
+                      {member.isBoard
+                        ? ` · ${t('governanceViewBatch30.board')}`
+                        : ''}
                     </span>
                   </li>
                 ))}
@@ -620,7 +585,7 @@ export function GovernanceView() {
               onClick={closeSettings}
               className="text-foreground-secondary mt-1 text-xs hover:underline"
             >
-              View full directory →
+              {t('governanceViewBatch30.viewFullDirectory')}
             </Link>
           </GovernancePanel>
           <CurrentBoardPanel />
@@ -682,7 +647,7 @@ export function GovernanceView() {
                 }
                 setDraftTitle('');
                 setDraftDescription('');
-                setActionMsg('Motion draft submitted for board review.');
+                setActionMsg(t('governanceViewBatch30.draftSubmitted'));
                 reload();
               });
             }}

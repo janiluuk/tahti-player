@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   type Dispatch,
+  type ReactNode,
   type SetStateAction,
 } from 'react';
 
@@ -69,6 +70,7 @@ export function RadioStationsRow({
   onRetry,
   ownStations = [],
   signedIn,
+  actions,
   'data-testid': testId = 'listen-radio',
 }: {
   presets: ListenSectionState<EnabledInternetRadioPreset[]>;
@@ -76,6 +78,7 @@ export function RadioStationsRow({
   onRetry: () => void;
   ownStations?: MyRadioStation[];
   signedIn: boolean;
+  actions?: ReactNode;
   'data-testid'?: string;
 }) {
   const playFromList = usePlayerStore((s) => s.playFromList);
@@ -232,8 +235,10 @@ export function RadioStationsRow({
           signedIn ? t('listen.addStationsFromStore') : undefined
         }
         onRetry={onRetry}
+        actions={actions}
       >
         <CardsRow
+          actions={actions}
           defaultLayout="cards"
           data-testid={testId}
           title={t('listen.radio')}

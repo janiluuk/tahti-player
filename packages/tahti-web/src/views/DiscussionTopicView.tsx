@@ -365,7 +365,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
                 <MessagesSquareIcon size={16} aria-hidden />
               </span>
               <span>
-                Opened by{' '}
+                {t('discussionTopicViewBatch30.openedBy')}{' '}
                 <span className="text-foreground font-semibold">
                   {topic.createdBy}
                 </span>
@@ -395,9 +395,9 @@ export function DiscussionTopicView({ id }: { id: string }) {
             aria-label={t('discussionTopic.replies')}
           >
             <h2 className="font-display text-lg font-bold">
-              {Math.max(topic.postCount, topic.posts.length) === 1
-                ? '1 reply'
-                : `${Math.max(topic.postCount, topic.posts.length)} replies`}
+              {t('discussionTopicViewBatch30.replyCount', {
+                count: Math.max(topic.postCount, topic.posts.length),
+              })}
             </h2>
             {topic.posts.length === 0 ? (
               <PageEmpty
@@ -448,14 +448,23 @@ export function DiscussionTopicView({ id }: { id: string }) {
                               {post.author}
                             </span>
                             <ListingDate value={post.createdAt} />
-                            {post.editedAt ? <span>(edited)</span> : null}
+                            {post.editedAt ? (
+                              <span>
+                                {t('discussionTopicViewBatch30.edited')}
+                              </span>
+                            ) : null}
                           </p>
                           <span className="flex items-center gap-1">
                             {post.mine ? null : (
                               <ReportButton
                                 targetType="DISCUSSION_POST"
                                 targetId={post.id}
-                                label={`the reply by ${post.author}`}
+                                label={t(
+                                  'discussionTopicViewBatch30.theReplyBy',
+                                  {
+                                    author: post.author,
+                                  },
+                                )}
                                 defaultReason="HARASSMENT"
                                 variant="text"
                               />

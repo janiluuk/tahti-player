@@ -1,5 +1,6 @@
 import { render, RenderResult, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { ReactNode } from 'react';
 
 import {
   CardsRow,
@@ -61,6 +62,7 @@ type MountOptions = {
   items?: CardsRowItem[];
   labels?: CardsRowLabels;
   defaultLayout?: 'cards' | 'list';
+  actions?: ReactNode;
 };
 
 export const CardsRowWrapper = {
@@ -72,6 +74,7 @@ export const CardsRowWrapper = {
       items = defaultItems,
       labels = defaultLabels,
       defaultLayout = 'cards',
+      actions,
     } = options;
 
     return render(
@@ -82,6 +85,7 @@ export const CardsRowWrapper = {
         items={items}
         labels={labels}
         defaultLayout={defaultLayout}
+        actions={actions}
       />,
     );
   },

@@ -86,7 +86,10 @@ function TrackCreditsRow({
               options={roleOptions}
               value={credit.role}
               disabled={saving}
-              label={`Role for credit ${index + 1} on ${track.title}`}
+              label={t('releaseTrackCreditsPanelBatch30.roleFor', {
+                n: index + 1,
+                title: track.title,
+              })}
               onValueChange={(role) => update(index, { role })}
             />
             <Input
@@ -94,7 +97,10 @@ function TrackCreditsRow({
               value={credit.name}
               placeholder={t('releaseTrackCreditsPanel.name')}
               disabled={saving}
-              aria-label={`Name for credit ${index + 1} on ${track.title}`}
+              aria-label={t('releaseTrackCreditsPanelBatch30.nameFor', {
+                n: index + 1,
+                title: track.title,
+              })}
               onChange={(event) => update(index, { name: event.target.value })}
             />
             <Input
@@ -105,7 +111,10 @@ function TrackCreditsRow({
               placeholder="@username"
               disabled={saving}
               maxLength={33}
-              aria-label={`Tahti username for credit ${index + 1} on ${track.title}`}
+              aria-label={t('releaseTrackCreditsPanelBatch30.usernameFor', {
+                n: index + 1,
+                title: track.title,
+              })}
               onChange={(event) => {
                 const raw = event.target.value
                   .trim()
