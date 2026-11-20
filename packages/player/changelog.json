@@ -4,7 +4,10 @@
     "description": "hearthis.at imports can pull cover art with each track, and the CLI can import every Set of an account as Tahti collections in one command.",
     "type": "feature",
     "contributors": ["jani"],
-    "tags": [{ "label": "Web", "color": "blue" }, { "label": "CLI", "color": "green" }]
+    "tags": [
+      { "label": "Web", "color": "blue" },
+      { "label": "CLI", "color": "green" }
+    ]
   },
   {
     "date": "2026-11-10T02:00",
