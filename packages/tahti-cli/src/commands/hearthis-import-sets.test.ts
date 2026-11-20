@@ -5,7 +5,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { runHearthisCollection } from './hearthis-collection.mjs';
 import { runHearthisImportEmbeds } from './hearthis-import-embeds.mjs';
-import { runHearthisImportSets } from './hearthis-import-sets.mjs';
+import {
+  classifyCollectionOutcome,
+  runHearthisImportSets,
+} from './hearthis-import-sets.mjs';
 import { fetchHearthisUserSets } from './hearthis-user-sets.mjs';
 
 vi.mock('./hearthis-user-sets.mjs', () => ({
@@ -24,6 +27,7 @@ vi.mock('./hearthis-import-embeds.mjs', () => ({
 }));
 
 vi.mock('./hearthis-collection.mjs', () => ({
+  DEFAULT_PROCESSING_WAIT_SEC: 600,
   runHearthisCollection: vi.fn(),
 }));
 
@@ -139,6 +143,7 @@ describe('runHearthisImportSets', () => {
     vi.mocked(runHearthisCollection).mockResolvedValue({
       output: 'plan',
       exitCode: 0,
+      rows: [],
     });
 
     const result = await runHearthisImportSets(config, {
@@ -155,5 +160,58 @@ describe('runHearthisImportSets', () => {
     expect(() =>
       readFileSync(join(outDir, '.tahti-hearthis-import-sets.json')),
     ).toThrow();
+  });
+
+  it('retries a Set that is still processing, then marks it done', async () => {
+    outDir = mkdtempSync(join(tmpdir(), 'tahti-import-sets-'));
+    vi.mocked(fetchHearthisUserSets).mockResolvedValue({
+      sets: [{ permalink: 'ep', title: 'EP', trackCount: 1 }],
+    });
+    vi.mocked(runHearthisCollection)
+      .mockResolvedValueOnce({
+        output: 'processing',
+        exitCode: 1,
+        rows: [{ item: 'processing' }],
+      })
+      .mockResolvedValueOnce({
+        output: 'ok',
+        exitCode: 0,
+        rows: [{ item: 'added' }],
+      });
+
+    const result = await runHearthisImportSets(config, {
+      fromUser: 'yaniho',
+      outDir,
+      convertEmbeds: false,
+      retries: 2,
+      rounds: 1,
+      wait: 1,
+      retryDelayMs: 0,
+      roundDelayMs: 0,
+      log: () => {},
+    });
+
+    expect(runHearthisCollection).toHaveBeenCalledTimes(2);
+    expect(result.exitCode).toBe(0);
+    const state = JSON.parse(
+      readFileSync(join(outDir, '.tahti-hearthis-import-sets.json'), 'utf8'),
+    );
+    expect(state.done.ep).toBeTruthy();
+    expect(state.pending).toEqual({});
+  });
+
+  it('classifies processing leftovers as pending, not failed', () => {
+    expect(
+      classifyCollectionOutcome({
+        exitCode: 1,
+        rows: [{ item: 'processing' }, { item: 'added' }],
+      }),
+    ).toEqual({ kind: 'pending', reason: 'tracks still processing' });
+    expect(
+      classifyCollectionOutcome({
+        exitCode: 0,
+        rows: [{ item: 'added' }],
+      }),
+    ).toEqual({ kind: 'done' });
   });
 });
