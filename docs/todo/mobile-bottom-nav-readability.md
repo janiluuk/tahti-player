@@ -15,6 +15,7 @@ Reported 2026-11-20.
 - `MobileBottomNav` now has `min-h: calc(var(--mobile-nav-h, 72px) + env(safe-area-inset-bottom))`, so it grows by the inset. `--mobile-nav-h` is 72px.
 - Labels `text-xs font-medium` (were 10px), icons 22px (were 18px).
 - Unit test in `MobileChrome.test.tsx`.
+- Active tab contrast (2026-11-20, "hard to see which section is open"): the open section gets a filled `bg-primary/25` pill behind the icon, a bold label in `text-foreground`, and a primary bar at the top edge; other tabs stay `text-foreground-secondary`.
 
 ## Left
 

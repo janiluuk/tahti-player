@@ -13,6 +13,7 @@ import {
 } from '../../api/sound-versions';
 import { fetchStudioReleases } from '../../api/studio';
 import type { StudioRelease } from '../../api/studio-types';
+import { releaseStateLabel } from '../../lib/releaseLabels';
 
 const CURRENT_AUDIO = '';
 
@@ -92,9 +93,9 @@ export function PublishToReleaseSection({
       </div>
       {releases.length === 0 ? (
         <p className="text-foreground-secondary text-sm">
-          You don&apos;t have a release yet.{' '}
+          {t('publishToReleaseSectionBatch34.noReleaseYet')}{' '}
           <Link to="/studio/releases" className="underline">
-            Create one in Studio → Releases
+            {t('publishToReleaseSectionBatch34.createOneInStudio')}
           </Link>
           .
         </p>
@@ -107,7 +108,7 @@ export function PublishToReleaseSection({
             onValueChange={setReleaseId}
             options={releases.map((release) => ({
               id: release.id,
-              label: `${release.title} · ${release.state.toLowerCase()}`,
+              label: `${release.title} · ${releaseStateLabel(release.state, t).toLowerCase()}`,
             }))}
           />
           {versions.length > 0 ? (
@@ -154,7 +155,7 @@ export function PublishToReleaseSection({
           </form>
           {added ? (
             <p className="text-sm" role="status">
-              Added to{' '}
+              {t('publishToReleaseSectionBatch34.addedTo')}{' '}
               <Link
                 to="/studio/releases/$id"
                 params={{ id: added.id }}
@@ -162,7 +163,7 @@ export function PublishToReleaseSection({
               >
                 {added.title}
               </Link>
-              . It&apos;s being processed there.
+              {t('publishToReleaseSectionBatch34.beingProcessed')}
             </p>
           ) : null}
         </>

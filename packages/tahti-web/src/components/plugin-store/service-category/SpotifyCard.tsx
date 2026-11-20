@@ -35,7 +35,7 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
       })
       .catch(() => {
         if (!cancelled) {
-          setMessage('Could not load your Spotify profile.');
+          setMessage(t('spotifyCardBatch34.loadFailed'));
         }
       });
     return () => {
@@ -96,8 +96,8 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
           isInstalled={Boolean(profile)}
           onInstall={open}
           labels={{
-            install: 'Configure',
-            installed: 'Configured',
+            install: t('hearthisCardStates.configure'),
+            installed: t('hearthisCardStates.configured'),
           }}
         />
       )}
@@ -109,7 +109,11 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
       ) : profile ? (
         <>
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span>Linked{profile.name ? `: ${profile.name}` : ''}</span>
+            <span>
+              {profile.name
+                ? t('spotifyCardBatch34.linkedName', { name: profile.name })
+                : t('spotifyCardBatch34.linked')}
+            </span>
             <ButtonLink to="/studio/collections" size="sm" variant="secondary">
               <ListPlusIcon size={14} aria-hidden className="mr-1.5" />{' '}
               {t('spotifyCard.addToACollection')}

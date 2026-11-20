@@ -227,19 +227,21 @@ export function validateAnnouncementTrim(
 ): string | null {
   const values = [trim.startSec, trim.endSec, trim.fadeInSec, trim.fadeOutSec];
   if (values.some((value) => !Number.isFinite(value) || value < 0)) {
-    return 'Times must be zero or more seconds.';
+    return i18n.t('web:adminAnnouncementsBatch34.timesNotNegative');
   }
   if (trim.endSec <= trim.startSec) {
-    return 'End must be after start.';
+    return i18n.t('web:adminAnnouncementsBatch34.endAfterStart');
   }
   if (durationSec != null && trim.endSec > durationSec) {
-    return `End can't be past the clip's length (${durationSec} s).`;
+    return i18n.t('web:adminAnnouncementsBatch34.endPastClip', {
+      duration: durationSec,
+    });
   }
   if (trim.fadeInSec > 30 || trim.fadeOutSec > 30) {
-    return 'Fades can be at most 30 seconds.';
+    return i18n.t('web:adminAnnouncementsBatch34.fadesTooLong');
   }
   if (trim.fadeInSec + trim.fadeOutSec > trim.endSec - trim.startSec) {
-    return 'The fades are longer than the trimmed clip.';
+    return i18n.t('web:adminAnnouncementsBatch34.fadesLongerThanClip');
   }
   return null;
 }

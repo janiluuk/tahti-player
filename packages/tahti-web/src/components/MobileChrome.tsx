@@ -109,14 +109,11 @@ export function MobileBottomNav({
             key={item.to}
             to={item.to}
             aria-current={active ? 'page' : undefined}
-            className={cn(
-              'flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-md px-1 py-1.5 text-xs font-medium',
-              active
-                ? 'text-primary-strong'
-                : 'text-foreground-secondary hover:text-foreground',
-            )}
+            className={navItemClass(active)}
           >
-            <Icon size={22} strokeWidth={active ? 2.5 : 2} />
+            <NavItemMarks active={active}>
+              <Icon size={22} strokeWidth={active ? 2.5 : 2} />
+            </NavItemMarks>
             <span className="truncate">{t(item.labelKey)}</span>
           </Link>
         );
@@ -129,19 +126,56 @@ export function MobileBottomNav({
         aria-label={t('nav.moreNavigation')}
         aria-expanded={moreOpen}
         className={cn(
-          'flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-md px-1 py-1.5 text-xs font-medium hover:bg-transparent',
-          moreActive || moreOpen
-            ? 'text-primary-strong'
-            : 'text-foreground-secondary hover:text-foreground',
+          navItemClass(moreActive || moreOpen),
+          'hover:bg-transparent',
         )}
       >
-        <EllipsisIcon
-          size={22}
-          strokeWidth={moreActive || moreOpen ? 2.5 : 2}
-        />
+        <NavItemMarks active={moreActive || moreOpen}>
+          <EllipsisIcon
+            size={22}
+            strokeWidth={moreActive || moreOpen ? 2.5 : 2}
+          />
+        </NavItemMarks>
         <span className="truncate">{t('nav.more')}</span>
       </Button>
     </nav>
+  );
+}
+
+function navItemClass(active: boolean): string {
+  return cn(
+    'relative flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-md px-1 py-1.5 text-xs',
+    active
+      ? 'text-foreground font-bold'
+      : 'text-foreground-secondary hover:text-foreground font-medium',
+  );
+}
+
+function NavItemMarks({
+  active,
+  children,
+}: {
+  active: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      {active ? (
+        <span
+          aria-hidden
+          data-testid="mobile-nav-active-bar"
+          className="bg-primary absolute -top-1.5 left-1/2 h-1 w-8 -translate-x-1/2 rounded-b-full"
+        />
+      ) : null}
+      <span
+        className={cn(
+          'flex h-8 w-14 items-center justify-center rounded-full transition-colors',
+          active ? 'bg-primary/25 text-primary-strong' : '',
+        )}
+      >
+        {children}
+      </span>
+    </>
   );
 }
 

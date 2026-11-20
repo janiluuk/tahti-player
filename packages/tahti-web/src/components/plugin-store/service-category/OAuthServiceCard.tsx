@@ -102,7 +102,7 @@ export function OAuthServiceCard({
       })
       .catch(() => {
         if (!cancelled) {
-          setBandcampMessage('Could not load your Bandcamp releases.');
+          setBandcampMessage(t('oAuthServiceCardBatch34.bandcampLoadFailed'));
           setBandcampImportAvailable(false);
         }
       })
@@ -137,7 +137,7 @@ export function OAuthServiceCard({
       })
       .catch(() => {
         if (!cancelled) {
-          setScMessage('Could not load your SoundCloud tracks.');
+          setScMessage(t('oAuthServiceCardBatch34.soundcloudLoadFailed'));
         }
       });
     return () => {
@@ -186,7 +186,7 @@ export function OAuthServiceCard({
       }
       setProfileUrl(value);
       setProfileDraft(value);
-      setProfileMsg('Saved.');
+      setProfileMsg(t('hearthisCardStates.saved'));
       toast.success(i18n.t('web:toasts.soundcloudProfileSaved'));
     } catch {
       toast.error(i18n.t('web:toasts.soundcloudProfileSaveFailed'));
@@ -219,7 +219,7 @@ export function OAuthServiceCard({
     try {
       const result = await adapter.importAlbum(album);
       const text = result.ok
-        ? `Imported ${result.count} item${result.count === 1 ? '' : 's'}.`
+        ? t('oAuthServiceCardBatch34.importedItems', { count: result.count })
         : result.error;
       setBandcampMessage(text);
       (result.ok ? toast.success : toast.error)(text);
@@ -241,8 +241,8 @@ export function OAuthServiceCard({
       );
       const text = r.ok
         ? all
-          ? `Queued all ${r.count} SoundCloud tracks. Follow progress on Studio → Upload.`
-          : `Queued import (${r.count}). Follow progress on Studio → Upload.`
+          ? t('oAuthServiceCardBatch34.queuedAll', { count: r.count })
+          : t('oAuthServiceCardBatch34.queuedImport', { count: r.count })
         : r.error;
       setScMessage(text);
       (r.ok ? toast.success : toast.error)(text);
@@ -274,14 +274,21 @@ export function OAuthServiceCard({
             }
             window.location.href = adapter.oauthUrl;
           }}
-          labels={{ install: 'Connect', installed: 'Connected' }}
+          labels={{
+            install: t('hearthisCardStates.connect'),
+            installed: t('library.uploadSourceConnected'),
+          }}
         />
       )}
     >
       {status?.connected ? (
         <>
           <p className="text-sm">
-            Connected{status.username ? ` as ${status.username}` : ''}.
+            {status.username
+              ? t('oAuthServiceCardBatch34.connectedAs', {
+                  username: status.username,
+                })
+              : t('oAuthServiceCardBatch34.connected')}
           </p>
           <Button
             size="sm"
@@ -296,8 +303,7 @@ export function OAuthServiceCard({
           </Button>
           {adapter.id === 'mixcloud' && (
             <p className="text-foreground-secondary border-border border-t pt-3 text-sm">
-              To send a mix to Mixcloud, open the track's edit dialog (✎ on the
-              track) and use its Export tab.
+              {t('oAuthServiceCardBatch34.mixcloudHint')}
             </p>
           )}
           {adapter.id === 'google-drive' && (
@@ -324,7 +330,7 @@ export function OAuthServiceCard({
               ) : !bandcampImportAvailable ? (
                 <p className="text-foreground-secondary text-sm">
                   {bandcampMessage ??
-                    'Catalog import is not available yet for Bandcamp.'}
+                    t('oAuthServiceCardBatch34.bandcampImportUnavailable')}
                 </p>
               ) : (
                 <ul className="flex flex-col gap-2">
@@ -345,9 +351,9 @@ export function OAuthServiceCard({
                           {album.title}
                         </div>
                         <div className="text-foreground-secondary text-xs">
-                          {album.type ?? 'Release'}
+                          {album.type ?? t('publishToRelease.release')}
                           {album.trackCount != null
-                            ? ` · ${album.trackCount} tracks`
+                            ? ` · ${t('oAuthServiceCardBatch34.trackCount', { count: album.trackCount })}`
                             : ''}
                         </div>
                       </div>
@@ -487,7 +493,9 @@ export function OAuthServiceCard({
                   window.location.href = adapter.oauthUrl;
                 }}
               >
-                Connect {plugin.name}
+                {t('oAuthServiceCardBatch34.connectName', {
+                  name: plugin.name,
+                })}
               </Button>
             </>
           )}

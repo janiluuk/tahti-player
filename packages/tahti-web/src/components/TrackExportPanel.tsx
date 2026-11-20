@@ -31,7 +31,7 @@ function describe(status: TrackExportStatus): string {
     case 'FAILED':
       return status.error
         ? webT()('templateText.uploadFailed', { name: status.error })
-        : 'Upload failed.';
+        : i18n.t('web:trackExportPanelBatch34.uploadFailed');
     case 'UPLOADING':
       return i18n.t('web:batch51.uploadingToMixcloud');
     default:
@@ -126,7 +126,7 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
             }
           >
             {loading
-              ? 'Checking export status…'
+              ? t('trackExportPanelBatch34.checkingStatus')
               : status
                 ? describe(status)
                 : i18n.t('web:batch51.sendToConnectedAccount')}

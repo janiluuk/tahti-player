@@ -11,8 +11,8 @@ function packTiles(t: TFunction<'web'>): SelectableTile[] {
   return [
     {
       id: NO_PACK,
-      label: 'No pack',
-      description: 'Use the visualizer preset above.',
+      label: t('channelVizPackPickerBatch34.noPack'),
+      description: t('channelVizPackPickerBatch34.noPackDescription'),
     },
     ...channelVizPacks(t).map((pack) => ({
       id: pack.id,

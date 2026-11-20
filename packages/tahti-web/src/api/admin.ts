@@ -62,13 +62,13 @@ export type AdminActivityEntry = {
  * `GOVERNANCE_AUDIT_TOPIC_IDS` in `../tahti-org` `@tahti/shared`. Kept local
  * so this package does not import the sibling. */
 export const ADMIN_AUDIT_TOPICS = [
-  { id: 'finance', label: 'Finance & grants' },
-  { id: 'subscriptions', label: 'Fan subscriptions' },
-  { id: 'membership', label: 'Membership & register' },
-  { id: 'decisions', label: 'Motions, votes & resolutions' },
-  { id: 'officers', label: 'Board & roles' },
-  { id: 'meetings', label: 'Meetings & documents' },
-  { id: 'radio', label: 'Radio bookings' },
+  { id: 'finance', labelKey: 'adminAuditTopicsBatch34.finance' },
+  { id: 'subscriptions', labelKey: 'adminAuditTopicsBatch34.subscriptions' },
+  { id: 'membership', labelKey: 'adminAuditTopicsBatch34.membership' },
+  { id: 'decisions', labelKey: 'adminAuditTopicsBatch34.decisions' },
+  { id: 'officers', labelKey: 'adminAuditTopicsBatch34.officers' },
+  { id: 'meetings', labelKey: 'adminAuditTopicsBatch34.meetings' },
+  { id: 'radio', labelKey: 'adminAuditTopicsBatch34.radio' },
 ] as const;
 
 export type AdminAuditTopicId = (typeof ADMIN_AUDIT_TOPICS)[number]['id'];

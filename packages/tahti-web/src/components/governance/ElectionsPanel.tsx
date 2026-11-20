@@ -1,7 +1,7 @@
 import { VoteIcon } from 'lucide-react';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, InlineLoader } from '@tahti-player/ui';
 
 import { BOARD_ROLE_LABELS } from '../../api/governance-board';
@@ -9,22 +9,26 @@ import {
   fetchGovernanceElections,
   type GovernanceElection,
 } from '../../api/governance-elections';
-import { webT } from '../../lib/webT';
 import { ListingDate } from '../ListingDate';
 import { PageEmpty, PageError } from '../PageStates';
 import { CandidacyControl } from './CandidacyControl';
 import { GovernancePanel } from './GovernancePanel';
 
-function electionStatus(election: GovernanceElection): ReactNode {
+function electionStatus(
+  election: GovernanceElection,
+  t: TFunction<'web'>,
+): ReactNode {
   if (election.cancelledAt) {
     return election.cancelReason
-      ? `Cancelled: ${election.cancelReason}`
-      : 'Cancelled';
+      ? t('electionsPanelBatch34.cancelledWithReason', {
+          reason: election.cancelReason,
+        })
+      : t('electionsPanelBatch34.cancelled');
   }
   if (election.decidedAt) {
     return (
       <>
-        {webT()('electionsPanelText.decided')}{' '}
+        {t('electionsPanelText.decided')}{' '}
         <ListingDate value={election.decidedAt} />
       </>
     );
@@ -32,14 +36,14 @@ function electionStatus(election: GovernanceElection): ReactNode {
   if (election.nominationsOpen) {
     return election.nominationsCloseAt ? (
       <>
-        Nominations open until{' '}
+        {t('electionsPanelBatch34.nominationsOpenUntil')}{' '}
         <ListingDate value={election.nominationsCloseAt} />
       </>
     ) : (
-      'Nominations open'
+      t('electionsPanelBatch34.nominationsOpen')
     );
   }
-  return 'Nominations closed, waiting for the meeting';
+  return t('electionsPanelBatch34.nominationsClosed');
 }
 
 function ElectionItem({
@@ -50,7 +54,7 @@ function ElectionItem({
   onChanged: () => void;
 }) {
   const { t } = useTranslation('web');
-  const seats = election.seats === 1 ? '1 seat' : `${election.seats} seats`;
+  const seats = t('electionsPanelBatch34.seats', { count: election.seats });
   return (
     <li className="flex flex-col gap-1.5 py-3 text-sm first:pt-0 last:pb-0">
       <div className="flex flex-wrap items-center gap-2">
@@ -63,7 +67,7 @@ function ElectionItem({
       </div>
       <div className="text-foreground-secondary text-xs">
         {BOARD_ROLE_LABELS[election.role]} · {seats} ·{' '}
-        {electionStatus(election)}
+        {electionStatus(election, t)}
       </div>
       {election.candidates.length === 0 ? (
         <PageEmpty title={t('empties.noCandidates')} />

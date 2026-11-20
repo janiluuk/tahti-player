@@ -8,6 +8,7 @@ import type { usePersistedCatalogTable } from '../../hooks/usePersistedCatalogTa
 import {
   type NativeFacetFilter,
   type NativeFacetGroup,
+  type NativeFacetKind,
   type NativeImportProvider,
   type NativeLibraryImportProgress,
   type NativeLibraryRoot,
@@ -17,7 +18,6 @@ import {
 } from '../../lib/nativeLibrary';
 import {
   BrowseTabs,
-  FACET_KIND_LABEL,
   FacetGroupList,
   facetTitle,
   LibraryTotalsLine,
@@ -145,6 +145,27 @@ export function DesktopLibraryContent({
   if (!library) {
     return <BrowserLocalFiles />;
   }
+  const kindLabel: Record<NativeFacetKind, string> = {
+    artists: t('desktopLibraryContentBatch34.kindArtists'),
+    albums: t('desktopLibraryContentBatch34.kindAlbums'),
+    genres: t('desktopLibraryContentBatch34.kindGenres'),
+    composers: t('desktopLibraryContentBatch34.kindComposers'),
+    folders: t('desktopLibraryContentBatch34.kindFolders'),
+  };
+  const noGroups: Record<NativeFacetKind, string> = {
+    artists: t('desktopLibraryContentBatch34.noArtistGroups'),
+    albums: t('desktopLibraryContentBatch34.noAlbumGroups'),
+    genres: t('desktopLibraryContentBatch34.noGenreGroups'),
+    composers: t('desktopLibraryContentBatch34.noComposerGroups'),
+    folders: t('desktopLibraryContentBatch34.noFolderGroups'),
+  };
+  const clearFilter: Record<NativeFacetKind, string> = {
+    artists: t('desktopLibraryContentBatch34.clearArtistFilter'),
+    albums: t('desktopLibraryContentBatch34.clearAlbumFilter'),
+    genres: t('desktopLibraryContentBatch34.clearGenreFilter'),
+    composers: t('desktopLibraryContentBatch34.clearComposerFilter'),
+    folders: t('desktopLibraryContentBatch34.clearFolderFilter'),
+  };
   const importFilesButton = (
     <Button size="sm" variant="secondary" onClick={onImportFiles}>
       <UploadIcon size={16} aria-hidden />
@@ -194,7 +215,9 @@ export function DesktopLibraryContent({
         ) : null}
         {unavailableCount > 0 ? (
           <Button variant="text" onClick={onRescanMissing} disabled={busy}>
-            Check missing files ({unavailableCount})
+            {t('desktopLibraryContentBatch34.checkMissingFiles', {
+              n: unavailableCount,
+            })}
           </Button>
         ) : null}
         {progress ? (
@@ -211,9 +234,21 @@ export function DesktopLibraryContent({
       </div>
       {progress ? (
         <p className="text-foreground-secondary text-xs">
-          Importing {progress.done} of {progress.total} — {progress.imported}{' '}
-          imported{progress.failed ? `, ${progress.failed} failed` : ''}
-          {progress.skipped ? `, ${progress.skipped} skipped` : ''}
+          {t('desktopLibraryContentBatch34.importProgress', {
+            done: progress.done,
+            total: progress.total,
+            imported: progress.imported,
+          })}
+          {progress.failed
+            ? t('desktopLibraryContentBatch34.importFailed', {
+                n: progress.failed,
+              })
+            : ''}
+          {progress.skipped
+            ? t('desktopLibraryContentBatch34.importSkipped', {
+                n: progress.skipped,
+              })
+            : ''}
         </p>
       ) : null}
       <LibraryRootsBlock
@@ -248,13 +283,11 @@ export function DesktopLibraryContent({
           />
         ) : (
           <PageEmpty
-            title={
-              facetLoading
-                ? 'Loading…'
-                : `No ${FACET_KIND_LABEL[browseKind].toLowerCase()} groups yet`
-            }
+            title={facetLoading ? t('loading.loading') : noGroups[browseKind]}
             description={
-              facetLoading ? undefined : 'Import files to fill this view.'
+              facetLoading
+                ? undefined
+                : t('desktopLibraryContentBatch34.importFilesToFill')
             }
             action={facetLoading ? undefined : importFilesButton}
             className="flex-1"
@@ -268,11 +301,11 @@ export function DesktopLibraryContent({
                 className="gap-1.5"
                 size="sm"
                 variant="secondary"
-                aria-label={`Clear ${FACET_KIND_LABEL[facetFilter.kind]} filter`}
+                aria-label={clearFilter[facetFilter.kind]}
                 onClick={onFacetClear}
               >
                 <XIcon size={12} aria-hidden />
-                {FACET_KIND_LABEL[facetFilter.kind]}:{' '}
+                {kindLabel[facetFilter.kind]}:{' '}
                 {facetTitle(facetFilter.kind, {
                   name: facetFilter.value,
                   secondary: facetFilter.secondary ?? '',
@@ -298,13 +331,19 @@ export function DesktopLibraryContent({
               variant={activeFilterCount ? 'secondary' : 'text'}
               aria-label={
                 activeFilterCount
-                  ? `Filters (${activeFilterCount} active)`
-                  : 'Filters'
+                  ? t('desktopLibraryContentBatch34.filtersActiveLabel', {
+                      n: activeFilterCount,
+                    })
+                  : t('desktopLibraryContentBatch34.filters')
               }
               onClick={onFiltersOpen}
             >
               <ListFilterIcon size={15} aria-hidden />
-              Filters{activeFilterCount ? ` (${activeFilterCount})` : ''}
+              {activeFilterCount
+                ? t('desktopLibraryContentBatch34.filtersCount', {
+                    n: activeFilterCount,
+                  })
+                : t('desktopLibraryContentBatch34.filters')}
             </Button>
           </FilterBar>
           {tracks.length ? (

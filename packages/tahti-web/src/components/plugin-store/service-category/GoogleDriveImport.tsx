@@ -48,13 +48,15 @@ export function GoogleDriveImport({
       setStep('importing');
       const result = await adapter.importFiles(files);
       const text = result.ok
-        ? `Queued import (${result.count}). Follow progress on Studio → Upload.`
+        ? t('oAuthServiceCardBatch34.queuedImport', { count: result.count })
         : result.error;
       setMessage(text);
       (result.ok ? toast.success : toast.error)(text);
     } catch (err) {
       setMessage(
-        err instanceof Error ? err.message : 'Could not open Google Drive.',
+        err instanceof Error
+          ? err.message
+          : t('googleDriveImportBatch34.openFailed'),
       );
     } finally {
       setStep('idle');
@@ -77,7 +79,7 @@ export function GoogleDriveImport({
           onClick={() => void choose()}
         >
           {step === 'opening'
-            ? 'Opening Google Drive…'
+            ? t('googleDriveImportBatch34.opening')
             : step === 'importing'
               ? t('googleDriveImportStates.queueingImport')
               : t('googleDriveImportStates.chooseFilesFromDrive')}

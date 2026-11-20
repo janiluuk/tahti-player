@@ -9,7 +9,6 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button, Loader, Toggle, Tooltip } from '@tahti-player/ui';
 
 import type { NativeLibraryRoot } from '../../lib/nativeLibrary';
-import { webT } from '../../lib/webT';
 import { basename } from './pathLabels';
 
 type Props = {
@@ -84,7 +83,7 @@ export function LibraryRootsBlock({
             ) : (
               <RefreshCwIcon size={14} aria-hidden />
             )}
-            Rescan
+            {t('libraryRootsBlockBatch34.rescan')}
           </Button>
         ) : null}
       </div>
@@ -113,12 +112,16 @@ export function LibraryRootsBlock({
                     }
                   >
                     {root.available
-                      ? `${root.trackCount} tracks${
+                      ? `${t('libraryRootsBlockBatch34.trackCount', {
+                          count: root.trackCount,
+                        })}${
                           root.missingCount
-                            ? ` · ${root.missingCount} missing`
+                            ? t('libraryRootsBlockBatch34.missingCount', {
+                                n: root.missingCount,
+                              })
                             : ''
                         }`
-                      : 'Folder not found — reconnect the drive or relink'}
+                      : t('libraryRootsBlockBatch34.folderNotFound')}
                   </p>
                 </div>
               </Tooltip>
@@ -129,7 +132,9 @@ export function LibraryRootsBlock({
                 <Button
                   size="icon-sm"
                   variant="text"
-                  aria-label={`Relink ${basename(root.path)}`}
+                  aria-label={t('libraryRootsBlockBatch34.relinkName', {
+                    name: basename(root.path),
+                  })}
                   onClick={() => onRelink(root)}
                   disabled={loading || rootBusy !== null}
                 >
@@ -145,7 +150,7 @@ export function LibraryRootsBlock({
                   size="icon-sm"
                   variant="text"
                   intent="danger"
-                  aria-label={webT()('templateText.stopWatching', {
+                  aria-label={t('templateText.stopWatching', {
                     name: basename(root.path),
                   })}
                   onClick={() => onStopWatching(root)}

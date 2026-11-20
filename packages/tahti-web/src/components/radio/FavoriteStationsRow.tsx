@@ -9,11 +9,6 @@ import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { useLibraryStore } from '../../stores/libraryStore';
 import { usePlayerStore } from '../../stores/playerStore';
 
-const ROW_LABELS = {
-  filterPlaceholder: 'Filter stations…',
-  nothingFound: 'Nothing matches that filter.',
-};
-
 export function FavoriteStationsRow() {
   const { t } = useTranslation('web');
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
@@ -45,10 +40,13 @@ export function FavoriteStationsRow() {
     <CardsRow
       data-testid="radio-favorites"
       title={t('favoriteStationsRowText.favoriteStations')}
-      badge="Favorites"
+      badge={t('nav.favorites')}
       badgeColor="red"
       items={items}
-      labels={ROW_LABELS}
+      labels={{
+        filterPlaceholder: t('listen.filterStations'),
+        nothingFound: t('listen.nothingFound'),
+      }}
       renderItem={({ playable }) => {
         const stationId = radioStationIdForPlayable(playable);
         return (
@@ -69,7 +67,7 @@ export function FavoriteStationsRow() {
             }
             subtitle={
               playable.artist === playable.title
-                ? 'Internet radio'
+                ? t('listen.internetRadioBadge')
                 : playable.artist
             }
             src={playable.coverUrl ?? placeholderArtworkUrl(playable.id)}

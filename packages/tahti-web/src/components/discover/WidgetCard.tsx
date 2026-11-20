@@ -21,6 +21,7 @@ import type { DiscoverArtistOfWeek } from '../../api/discover';
 import type { LatestRelease } from '../../api/latest-releases';
 import type { DiscoverCollection, DiscoverTrackItem } from '../../api/types';
 import { cn } from '../../lib/cn';
+import { releaseTypeLabel } from '../../lib/releaseLabels';
 import type { DiscoverWidgetId } from '../../stores/discoverStore';
 import { ListingDate } from '../ListingDate';
 import { PageEmpty, PageError } from '../PageStates';
@@ -155,7 +156,9 @@ export function WidgetCard({
         </div>
       ) : error ? (
         <PageError
-          title={`Could not load ${title.toLowerCase()}`}
+          title={t('widgetCardBatch34.couldNotLoad', {
+            title: title.toLowerCase(),
+          })}
           description={error}
           onRetry={onRetry}
         />
@@ -164,7 +167,9 @@ export function WidgetCard({
           <div className="relative size-40 overflow-hidden rounded-full">
             <MediaArtwork
               src={artist.avatarUrl ?? undefined}
-              alt={`${artist.displayName} profile`}
+              alt={t('widgetCardBatch34.artistProfile', {
+                name: artist.displayName,
+              })}
               seed={artist.channelSlug}
               size="fill"
               className="rounded-full"
@@ -226,7 +231,7 @@ export function WidgetCard({
                   ) : (
                     release.artistDisplayName
                   )}{' '}
-                  · {release.type.toLowerCase()} ·{' '}
+                  · {releaseTypeLabel(release.type, t).toLowerCase()} ·{' '}
                   <ListingDate value={release.releaseDate} />
                 </p>
               </div>
@@ -258,7 +263,10 @@ export function WidgetCard({
                   {collection.name}
                 </h3>
                 <p className="text-foreground-secondary truncate text-xs">
-                  {collection.ownerDisplayName} · {collection.itemCount} tracks
+                  {collection.ownerDisplayName} ·{' '}
+                  {t('widgetCardBatch34.trackCount', {
+                    count: collection.itemCount,
+                  })}
                 </p>
               </div>
             </Link>
@@ -284,7 +292,9 @@ export function WidgetCard({
         onClose={() => setConfigureOpen(false)}
         className="max-w-lg"
       >
-        <Dialog.Title>Configure {title}</Dialog.Title>
+        <Dialog.Title>
+          {t('widgetCardLabels.configureTitle', { title })}
+        </Dialog.Title>
         <Dialog.Description>
           {t('discoverWidgetCard.adjustHowThisWidgetBehaves')}
         </Dialog.Description>

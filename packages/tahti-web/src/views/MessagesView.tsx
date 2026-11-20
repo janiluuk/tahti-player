@@ -15,7 +15,6 @@ import {
   fetchConversation,
   fetchConversations,
   fetchOlderMessages,
-  RECIPIENT_UNAVAILABLE_MESSAGE,
   searchUsers,
   sendDm,
   startConversation,
@@ -414,7 +413,7 @@ export function MessagesView({
                     role="status"
                     className="border-border text-foreground-secondary border-t p-3 text-sm"
                   >
-                    {RECIPIENT_UNAVAILABLE_MESSAGE}
+                    {t('messagesApiBatch34.recipientUnavailable')}
                   </p>
                 ) : (
                   <form

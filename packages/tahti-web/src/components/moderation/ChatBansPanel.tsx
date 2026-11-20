@@ -2,7 +2,7 @@ import { Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -17,9 +17,12 @@ import { moderationTime } from './moderationTime';
 
 /** A ban set from a message carries the name its sender posted under. Older
  * bans were typed in by hash and have nothing but that to show. */
-function banName(ban: ChatBan): string {
+function banName(ban: ChatBan, t: TFunction<'web'>): string {
   return (
-    ban.handle?.trim() || `Unnamed visitor ${ban.fingerprintHash.slice(0, 8)}`
+    ban.handle?.trim() ||
+    t('chatBansPanelBatch34.unnamedVisitor', {
+      hash: ban.fingerprintHash.slice(0, 8),
+    })
   );
 }
 
@@ -65,9 +68,11 @@ export function ChatBansPanel({ slug: slugProp }: Props) {
               className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
             >
               <div className="min-w-0">
-                <div className="font-semibold break-words">{banName(ban)}</div>
+                <div className="font-semibold break-words">
+                  {banName(ban, t)}
+                </div>
                 <div className="text-foreground-secondary text-xs">
-                  Banned{' '}
+                  {t('chatBansPanelBatch34.bannedAt')}{' '}
                   <time dateTime={ban.bannedAt}>
                     {moderationTime(ban.bannedAt)}
                   </time>
@@ -77,14 +82,20 @@ export function ChatBansPanel({ slug: slugProp }: Props) {
                 <Button
                   size="icon-sm"
                   variant="text"
-                  aria-label={`Lift the ban on ${banName(ban)}`}
+                  aria-label={t('chatBansPanelBatch34.liftBanOn', {
+                    name: banName(ban, t),
+                  })}
                   onClick={() => {
                     void unbanChat(slug, ban).then((result) => {
                       if (!result.ok) {
                         toast.error(result.error);
                         return;
                       }
-                      toast.success(`${banName(ban)} can post again.`);
+                      toast.success(
+                        t('chatBansPanelBatch34.canPostAgain', {
+                          name: banName(ban, t),
+                        }),
+                      );
                       reload();
                     });
                   }}
