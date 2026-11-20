@@ -2,6 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from './client';
 import {
+  mockEventGallery,
   mockEvents,
   normalizeEvent,
   type ArtistEvent,
@@ -58,6 +59,7 @@ function mockCalendarRows(): CalendarEvent[] {
         location: 'Helsinki, Finland',
         startAt: new Date(base + 3 * DAY).toISOString(),
         status: 'PUBLISHED',
+        gallery: mockEventGallery,
       }),
       artistDisplayName: 'Northern Lights',
       artistUsername: 'northern-lights',

@@ -25,12 +25,14 @@ import {
   fetchMyEvents,
   updateEvent,
   type ArtistEvent,
+  type ArtistEventGalleryImage,
   type ArtistEventVenue,
 } from '../../api/events';
 import type { VenueDirectoryItem } from '../../api/types';
 import { toDatetimeLocalValue } from '../../lib/datetimeLocal';
 import { PageLoading } from '../PageStates';
 import { EventBannerField } from './EventBannerField';
+import { EventGalleryField } from './EventGalleryField';
 import { EventPreviewDialog } from './EventPreviewDialog';
 import { EventShareTargets } from './EventShareTargets';
 
@@ -79,6 +81,11 @@ export function EventForm({
   const [eventUrl, setEventUrl] = useState('');
   const [ticketUrl, setTicketUrl] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [gallery, setGallery] = useState<ArtistEventGalleryImage[]>([]);
+  const [galleryUploading, setGalleryUploading] = useState(false);
+  const [savedGallery, setSavedGallery] = useState<ArtistEventGalleryImage[]>(
+    [],
+  );
   const [startAt, setStartAt] = useState('');
   const [endAt, setEndAt] = useState('');
   const [timezone, setTimezone] = useState(editing ? '' : viewerTimeZone());
@@ -131,6 +138,8 @@ export function EventForm({
     setEventUrl(event.eventUrl ?? '');
     setTicketUrl(event.ticketUrl ?? '');
     setImageUrl(event.imageUrl ?? '');
+    setGallery(event.gallery ?? []);
+    setSavedGallery(event.gallery ?? []);
     setStartAt(toDatetimeLocalValue(event.startAt));
     setEndAt(event.endAt ? toDatetimeLocalValue(event.endAt) : '');
     setTimezone(event.timezone ?? '');
@@ -151,9 +160,20 @@ export function EventForm({
       venueId,
       visibility: fansOnly ? ('FANS' as const) : ('PUBLIC' as const),
     };
+    const nextGallery = gallery.map((image) => ({
+      url: image.url,
+      caption: image.caption.trim(),
+    }));
+    // Send `gallery` only when it changed, so saving keeps working against
+    // an API that does not accept the field yet.
+    const galleryField =
+      JSON.stringify(nextGallery) !== JSON.stringify(savedGallery)
+        ? { gallery: nextGallery }
+        : {};
     return eventId === undefined
       ? createEvent({
           ...fields,
+          ...galleryField,
           eventUrl: eventUrl.trim() || undefined,
           ticketUrl: ticketUrl.trim() || undefined,
           imageUrl: imageUrl.trim() || undefined,
@@ -162,6 +182,7 @@ export function EventForm({
         })
       : updateEvent(eventId, {
           ...fields,
+          ...galleryField,
           eventUrl: eventUrl.trim(),
           ticketUrl: ticketUrl.trim(),
           imageUrl: imageUrl.trim(),
@@ -176,7 +197,8 @@ export function EventForm({
     place.trim() &&
     location.trim() &&
     startAt &&
-    !endBeforeStart,
+    !endBeforeStart &&
+    !galleryUploading,
   );
   const venueChoices: ArtistEventVenue[] = [
     ...venues.map((venue) => ({
@@ -210,6 +232,7 @@ export function EventForm({
     status: 'PUBLISHED',
     publishedAt: null,
     participants: [],
+    gallery,
   };
 
   if (loadingEvent) {
@@ -343,6 +366,12 @@ export function EventForm({
           onChange={(event) => setDescription(event.target.value)}
           rows={3}
           placeholder={t('eventCreate.whatShouldPeopleExpectSet')}
+        />
+        <EventGalleryField
+          value={gallery}
+          onChange={setGallery}
+          seed={eventId ?? 'new-event'}
+          onUploadingChange={setGalleryUploading}
         />
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Input

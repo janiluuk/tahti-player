@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { parseDiscoverSearch } from '../lib/discoverTabs';
 import { googleCalendarUrl } from './event-calendar';
-import { normalizeEvent } from './events';
+import { normalizeEvent, normalizeEventGallery } from './events';
 
 describe('event calendar helpers', () => {
   it('fills the fields an older API leaves out', () => {
@@ -16,6 +16,23 @@ describe('event calendar helpers', () => {
     expect(event.status).toBe('PUBLISHED');
     expect(event.participants).toEqual([]);
     expect(event.endAt).toBeNull();
+    expect(event.gallery).toEqual([]);
+  });
+
+  it('keeps gallery images with a url and defaults a missing caption', () => {
+    expect(
+      normalizeEventGallery([
+        { url: 'https://cdn.example/1.jpg', caption: 'Doors' },
+        { url: 'https://cdn.example/2.jpg' },
+        { caption: 'no url' },
+        null,
+        'https://cdn.example/3.jpg',
+      ]),
+    ).toEqual([
+      { url: 'https://cdn.example/1.jpg', caption: 'Doors' },
+      { url: 'https://cdn.example/2.jpg', caption: '' },
+    ]);
+    expect(normalizeEventGallery(undefined)).toEqual([]);
   });
 
   it('builds a Google Calendar link with a two-hour default end', () => {

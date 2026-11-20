@@ -38,7 +38,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| partial | [discover-events-tab.md](discover-events-tab.md) | Events tab, posting for any signed-in user, banner crop, event page backdrop built; left: e2e run, EventPostView story, filters (need org upcoming filters) |
+| partial | [discover-events-tab.md](discover-events-tab.md) | Events tab, posting for any signed-in user, banner crop, event page backdrop built; left: e2e run, EventPostView story, filters (need org upcoming filters), event gallery API deploy (tahti-org#1122 merged) |
 | partial | [mobile-bottom-nav-readability.md](mobile-bottom-nav-readability.md) | Taller bar that grows by the gesture-bar inset, bigger labels/icons; left: check on a real Android phone |
 | open    | [pattern-detection-grants-ui.md](pattern-detection-grants-ui.md) | Board grant preview anomaly chips + PATTERN_FRAUD_ALERT activity; left: pitch copy after org merge |
 | open    | [next-50.md](next-50.md) | Map of the 50 slice files in the Next 50 slices section |

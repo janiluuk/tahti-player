@@ -26,6 +26,7 @@ import {
 } from '../api/event-calendar';
 import { EventBannerBackdrop } from '../components/events/EventBannerBackdrop';
 import { EventCard } from '../components/events/EventCard';
+import { EventGallery } from '../components/events/EventGallery';
 import {
   PageEmpty,
   PageErrorBanner,
@@ -162,6 +163,11 @@ export function EventView({ eventId }: { eventId: string }) {
       {event.description ? (
         <p className="text-sm whitespace-pre-wrap">{event.description}</p>
       ) : null}
+      <EventGallery
+        images={event.gallery}
+        title={event.title}
+        seed={event.id}
+      />
       <div className="flex flex-wrap items-center gap-3 text-sm">
         {event.status !== 'CANCELLED' ? (
           <ExternalLink

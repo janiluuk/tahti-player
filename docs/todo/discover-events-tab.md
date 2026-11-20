@@ -48,12 +48,11 @@ Thumbnail gallery on the event page; full-screen slideshow that moves with
 the keyboard (arrows, Home/End) and the mouse wheel / trackpad scroll; every
 image has a caption. Go-ahead given to change tahti-org.
 
-- [ ] tahti-org: `gallery` on events as a list of `{ url, caption }` (max 30,
-      caption max 300 chars, http(s) urls), migration, POST/PATCH validation,
-      returned by the event, calendar and upcoming endpoints; tests; own PR.
-- [ ] Web: `gallery` in `ArtistEvent` / inputs; form field to upload images
-      (user media), add captions, reorder and remove; event page thumbnail
-      grid (`MediaArtwork`) opening a full-screen slideshow with captions,
-      keyboard and wheel navigation (extend `ImageLightbox`).
-- [ ] Storybook + unit tests; deploy the API first.
+- Shipped: tahti-org `ArtistEvent.gallery` (tahti-org#1122, migration
+  `20261120120000_artist_event_gallery`); web gallery field, event page grid
+  and full-screen `ImageLightbox` (wheel / PageUp / PageDown / swipe,
+  captions) on `feat/web-event-gallery`. The lightbox is full screen for every
+  caller now (artist gallery, admin user too).
+- [ ] Deploy the API (migration) to production; until then saving an event
+      with gallery images fails, events without images save as before.
 

@@ -1,6 +1,10 @@
 import type { FetchMeta } from './client';
 import { fetchEventCalendar } from './event-calendar';
-import type { ArtistEventVenue } from './events';
+import {
+  normalizeEventGallery,
+  type ArtistEventGalleryImage,
+  type ArtistEventVenue,
+} from './events';
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -18,6 +22,7 @@ export type UpcomingEvent = {
   timezone?: string | null;
   imageUrl?: string | null;
   venue?: ArtistEventVenue | null;
+  gallery: ArtistEventGalleryImage[];
   artistDisplayName: string;
   artistUsername: string;
   channelSlug: string | null;
@@ -54,7 +59,15 @@ export async function fetchUpcomingEvents(limit = 12): Promise<{
     const { data } = await requestJson<UpcomingEvent[]>(
       `/api/v1/events/upcoming?limit=${limit}`,
     );
-    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
+    return {
+      data: Array.isArray(data)
+        ? data.map((row) => ({
+            ...row,
+            gallery: normalizeEventGallery(row.gallery),
+          }))
+        : [],
+      meta: { source: 'api' },
+    };
   } catch (err) {
     return {
       data: [],
