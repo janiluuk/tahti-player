@@ -29,6 +29,12 @@ const EVENT_COLORS: Record<
   active: 'cyan',
 };
 
+const EVENT_STATUS_KEYS = {
+  completed: 'workersPanelBatch33.statusCompleted',
+  failed: 'workersPanelBatch33.statusFailed',
+  active: 'workersPanelBatch33.statusActive',
+} as const satisfies Record<AdminWorkerJobEvent['status'], string>;
+
 function emptyLanes(coverage: AdminWorkerLaneCoverage[]): string[] {
   return coverage
     .filter((row) => row.onlineWorkers === 0)
@@ -75,7 +81,9 @@ function WorkerHistoryDialog({
       onClose={onClose}
       className="max-w-lg"
     >
-      <Dialog.Title>{worker?.name} job history</Dialog.Title>
+      <Dialog.Title>
+        {t('workersPanelBatch33.jobHistory', { name: worker?.name ?? '' })}
+      </Dialog.Title>
       {error ? (
         <InlineError>{error}</InlineError>
       ) : history === null ? (
@@ -97,7 +105,7 @@ function WorkerHistoryDialog({
                   </span>
                 </span>
                 <Badge variant="pill" color={EVENT_COLORS[event.status]}>
-                  {event.status}
+                  {t(EVENT_STATUS_KEYS[event.status])}
                 </Badge>
               </div>
               <time
@@ -154,8 +162,11 @@ export function WorkersPanel() {
       title={t('workersPanel.workers')}
       description={
         offline && offline.length > 0
-          ? `${offline.length} of ${workers?.length} offline (no heartbeat recently).`
-          : 'Background job workers and what they ran last.'
+          ? t('workersPanelBatch33.offlineCount', {
+              offline: offline.length,
+              total: workers?.length ?? 0,
+            })
+          : t('workersPanelBatch33.description')
       }
     >
       {error ? (
@@ -211,7 +222,9 @@ export function WorkersPanel() {
                       worker.hostname,
                       worker.pid != null ? `pid ${worker.pid}` : null,
                       worker.updatedAt
-                        ? `seen ${humanizePastDate(worker.updatedAt)}`
+                        ? t('workersPanelBatch33.seen', {
+                            when: humanizePastDate(worker.updatedAt),
+                          })
                         : null,
                     ]
                       .filter(Boolean)
@@ -219,7 +232,9 @@ export function WorkersPanel() {
                   </div>
                   {worker.lastJobName ? (
                     <div className="text-foreground-secondary text-xs">
-                      Last job: {worker.lastJobName}
+                      {t('workersPanelBatch33.lastJob', {
+                        name: worker.lastJobName,
+                      })}
                       {worker.lastJobStatus ? ` (${worker.lastJobStatus})` : ''}
                       {worker.lastJobAt
                         ? ` · ${humanizePastDate(worker.lastJobAt)}`

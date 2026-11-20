@@ -96,7 +96,9 @@ export function AnnualReportActions({
             className="w-fit"
             onClick={() => setApproving(true)}
           >
-            Approve report {report.year}
+            {t('annualReportActionsBatch33.approveReport', {
+              year: report.year,
+            })}
           </Button>
         )
       ) : null}

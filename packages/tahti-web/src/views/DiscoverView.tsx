@@ -289,9 +289,11 @@ export function DiscoverView() {
               items: res.data,
               subtitle: res.authenticated
                 ? res.preferenceGenres.length > 0
-                  ? `Based on ${res.preferenceGenres.join(', ')}`
+                  ? t('discoverViewBatch33.basedOnGenres', {
+                      genres: res.preferenceGenres.join(', '),
+                    })
                   : undefined
-                : 'Sign in for picks based on your taste',
+                : t('discoverViewBatch33.signInForPicks'),
             };
           }
           case 'loved': {
@@ -672,13 +674,10 @@ export function DiscoverView() {
                           onValueChange={(value) =>
                             setRandomArtistRotationDays(Number(value))
                           }
-                          options={[
-                            { id: '1', label: '1 day' },
-                            { id: '3', label: '3 days' },
-                            { id: '7', label: '7 days' },
-                            { id: '14', label: '14 days' },
-                            { id: '30', label: '30 days' },
-                          ]}
+                          options={[1, 3, 7, 14, 30].map((count) => ({
+                            id: String(count),
+                            label: t('discoverViewBatch33.days', { count }),
+                          }))}
                         />
                       ) : undefined
                     }

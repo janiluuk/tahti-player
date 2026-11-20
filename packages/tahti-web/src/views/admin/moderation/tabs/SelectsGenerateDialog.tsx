@@ -58,7 +58,9 @@ export function SelectsGenerateDialog({
       />
       {mode === 'replace' && rotationSize > 0 ? (
         <InlineError className="mt-3" announce={false}>
-          This removes all {rotationSize} tracks in the current rotation.
+          {t('selectsGenerateDialogBatch33.removesAll', {
+            count: rotationSize,
+          })}
         </InlineError>
       ) : null}
       {error ? <InlineError className="mt-3">{error}</InlineError> : null}
@@ -94,7 +96,7 @@ export function SelectsGenerateDialog({
           }}
         >
           {pending
-            ? 'Filling…'
+            ? t('selectsGenerateDialogBatch33.filling')
             : mode === 'replace'
               ? t('selectsGenerateDialogStates.replaceRotation')
               : t('selectsGenerateDialogStates.addTracks')}

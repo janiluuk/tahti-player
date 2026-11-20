@@ -10,14 +10,6 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
-const SOULSEEK_ADDON = {
-  id: 'soulseek',
-  name: 'Soulseek',
-  author: 'Desktop add-on',
-  description:
-    'Search and download from Soulseek into your local library. Requires the desktop Tahti Player — the browser cannot speak the Soulseek protocol.',
-};
-
 export function SoulseekAddonCard() {
   const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
@@ -27,13 +19,16 @@ export function SoulseekAddonCard() {
     <>
       <PluginStoreItem
         icon={<SearchIcon size={22} aria-hidden />}
-        name={SOULSEEK_ADDON.name}
-        author={SOULSEEK_ADDON.author}
-        description={SOULSEEK_ADDON.description}
-        categories={['Desktop', 'Library']}
+        name="Soulseek"
+        author={t('soulseekAddonCardBatch33.author')}
+        description={t('soulseekAddonCardBatch33.description')}
+        categories={[
+          t('soulseekAddonCardBatch33.categoryDesktop'),
+          t('soulseekAddonCardBatch33.categoryLibrary'),
+        ]}
         isInstalled={false}
         onInstall={() => setOpen(true)}
-        labels={{ install: 'Configure' }}
+        labels={{ install: t('soulseekAddonCardBatch33.configure') }}
       />
       <Dialog.Root
         isOpen={open}

@@ -69,7 +69,9 @@ function useEmbedLoad<R extends { meta: FetchMeta }>(
         if (!cancelled) {
           setResult(null);
           setError(
-            err instanceof Error ? err.message : 'Could not load this embed.',
+            err instanceof Error
+              ? err.message
+              : webT()('embedViewsBatch33.couldNotLoad'),
           );
         }
       })
@@ -143,7 +145,10 @@ export function EmbedChannelView({ slug }: { slug: string }) {
               </h1>
               <p className="text-foreground-secondary truncate text-xs">
                 @{data.artist.username}
-                {data.state === 'LIVE' ? ' — LIVE' : ' — offline'}{' '}
+                {' — '}
+                {data.state === 'LIVE'
+                  ? t('embedViewsBatch33.live')
+                  : t('embedViewsBatch33.offline')}{' '}
               </p>
             </div>
             {playable ? (

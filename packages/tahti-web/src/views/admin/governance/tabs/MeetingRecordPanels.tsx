@@ -91,7 +91,13 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
 
   return (
     <CollapsibleRecord
-      label={`Conflicts of interest${records ? ` (${records.length})` : ''}`}
+      label={
+        records
+          ? t('meetingRecordPanelsBatch33.conflictsCount', {
+              count: records.length,
+            })
+          : t('meetingRecordPanelsBatch33.conflicts')
+      }
       open={open}
       onToggle={() => setOpen((value) => !value)}
     >
@@ -252,7 +258,18 @@ export function NoticeDeliveriesPanel({ meetingId }: { meetingId: string }) {
 
   return (
     <CollapsibleRecord
-      label={`Notice deliveries${records ? ` (${records.length} sent${bounced ? `, ${bounced} bounced` : ''})` : ''}`}
+      label={
+        !records
+          ? t('meetingRecordPanelsBatch33.notices')
+          : bounced
+            ? t('meetingRecordPanelsBatch33.noticesSentBounced', {
+                sent: records.length,
+                bounced,
+              })
+            : t('meetingRecordPanelsBatch33.noticesSent', {
+                sent: records.length,
+              })
+      }
       open={open}
       onToggle={() => setOpen((value) => !value)}
     >
@@ -273,10 +290,11 @@ export function NoticeDeliveriesPanel({ meetingId }: { meetingId: string }) {
                 <div className="font-medium">
                   {record.displayName && !record.displayName.includes('@')
                     ? record.displayName
-                    : 'Unnamed member'}
+                    : t('meetingRecordPanelsBatch33.unnamedMember')}
                 </div>
                 <div className="text-foreground-secondary text-xs">
-                  {record.email} · sent <ListingDate value={record.sentAt} />
+                  {record.email} · {t('meetingRecordPanelsBatch33.sentOn')}{' '}
+                  <ListingDate value={record.sentAt} />
                 </div>
               </div>
               {record.bouncedAt ? (

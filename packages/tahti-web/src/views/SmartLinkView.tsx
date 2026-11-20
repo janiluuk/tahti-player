@@ -155,7 +155,9 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
       <EntitySocialHeader
         title={data.release.title}
         imageUrl={data.release.artworkUrl}
-        imageAlt={`${data.release.title} cover`}
+        imageAlt={t('smartLinkViewBatch33.coverAlt', {
+          title: data.release.title,
+        })}
         subtitle={
           <Link
             to="/u/$username"
@@ -312,7 +314,11 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
 
       {data.featuredCollections.length > 0 ? (
         <section className="flex flex-col gap-2">
-          <Eyebrow>More from {data.artist.displayName}</Eyebrow>
+          <Eyebrow>
+            {t('trackPageBatch31.moreFrom', {
+              artist: data.artist.displayName,
+            })}
+          </Eyebrow>
           {data.featuredCollections.map((collection) => (
             <Link
               key={collection.slug}
@@ -325,7 +331,9 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
             >
               <strong>{collection.name}</strong>
               <span className="text-foreground-secondary">
-                {collection.itemCount ?? 0} items
+                {t('library.collectionItems', {
+                  count: collection.itemCount ?? 0,
+                })}
               </span>
             </Link>
           ))}

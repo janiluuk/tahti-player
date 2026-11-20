@@ -48,7 +48,8 @@ export function PublicGovernanceHistoryView() {
         size="sm"
         variant="secondary"
       >
-        <ScrollTextIcon size={14} aria-hidden className="mr-1.5" />← Governance
+        <ScrollTextIcon size={14} aria-hidden className="mr-1.5" />
+        {t('publicGovernanceHistoryViewBatch33.backToGovernance')}
       </ButtonLink>
 
       {!loading && motions.length > 0 && (
@@ -95,7 +96,9 @@ export function PublicGovernanceHistoryView() {
                     className="font-display"
                   />
                   <p className="text-foreground-secondary mt-1 text-xs">
-                    Proposed by {motion.proposer} · Closed{' '}
+                    {t('publicGovernanceHistoryViewBatch33.proposedByClosed', {
+                      name: motion.proposer,
+                    })}{' '}
                     <ListingDate value={motion.closedAt} />
                   </p>
                 </div>
@@ -105,8 +108,11 @@ export function PublicGovernanceHistoryView() {
               </div>
               <p className="text-sm">{motion.description}</p>
               <p className="text-foreground-secondary text-xs">
-                YES {motion.voteFor} · NO {motion.voteAgainst} · ABSTAIN{' '}
-                {motion.voteAbstain}
+                {t('publicGovernanceHistoryViewBatch33.voteTally', {
+                  yes: motion.voteFor,
+                  no: motion.voteAgainst,
+                  abstain: motion.voteAbstain,
+                })}
               </p>
             </Box>
           ))}

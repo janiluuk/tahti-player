@@ -57,7 +57,9 @@ export function ModerateChannelView({ slug }: { slug: string }) {
       setLoad({ state: 'ready', channel });
       if (channel) {
         syncDocumentMetadata(window.location.pathname, {
-          title: `${channel.displayName}: chat moderation · Tahti`,
+          title: i18n.t('web:moderateChannelViewBatch33.documentTitle', {
+            name: channel.displayName,
+          }),
         });
       }
     });
@@ -100,7 +102,9 @@ export function ModerateChannelView({ slug }: { slug: string }) {
       <EmptyState
         icon={<ShieldOff size={40} className="opacity-40" />}
         title={t('empties.youDonTModerateThisChannel')}
-        description={`@${user.username} is not a moderator of this channel's chat. Its owner adds moderators under Studio → Fans.`}
+        description={t('moderateChannelViewBatch33.notAModerator', {
+          username: user.username,
+        })}
         action={
           <ButtonLink
             to="/channel/$slug"
@@ -118,7 +122,9 @@ export function ModerateChannelView({ slug }: { slug: string }) {
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-6">
       <ViewShell
-        title={`${channel.displayName}: chat`}
+        title={t('moderateChannelViewBatch33.chatTitle', {
+          name: channel.displayName,
+        })}
         classes={{ root: 'px-0 pt-0' }}
       >
         <div className="flex flex-col gap-6">
@@ -126,7 +132,9 @@ export function ModerateChannelView({ slug }: { slug: string }) {
             <p className="text-foreground-secondary text-sm">
               {channel.isOwner
                 ? i18n.t('web:batch52.yourChannelModerators')
-                : `You moderate this chat for ${channel.displayName}. You can remove messages and ban people from posting.`}
+                : t('moderateChannelViewBatch33.youModerate', {
+                    name: channel.displayName,
+                  })}
             </p>
             <div className="flex flex-wrap gap-2">
               <ButtonLink

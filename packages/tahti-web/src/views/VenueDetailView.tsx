@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { CalendarPlusIcon, MapPinIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   ButtonAnchor,
@@ -52,10 +52,12 @@ export function VenueDetailView({ slug }: { slug: string }) {
             .filter(Boolean)
             .join(', ');
           syncDocumentMetadata(window.location.pathname, {
-            title: `${found.name} on Tahti`,
+            title: i18n.t('web:seo.onTahti', { name: found.name }),
             description:
               found.description ??
-              `${found.name}${place ? ` — ${place}` : ''} is a verified venue on Tahti.`,
+              i18n.t('web:seo.venueDescription', {
+                name: place ? `${found.name} — ${place}` : found.name,
+              }),
           });
         }
       })
@@ -63,7 +65,9 @@ export function VenueDetailView({ slug }: { slug: string }) {
         if (!cancelled) {
           setVenue(null);
           setLoadError(
-            err instanceof Error ? err.message : 'Could not load this venue.',
+            err instanceof Error
+              ? err.message
+              : i18n.t('web:venueDetailViewBatch33.loadError'),
           );
         }
       });
@@ -224,7 +228,7 @@ function VenueUpcomingShows({
           <CopyButton
             text={feedUrl}
             aria-label={t('venueDetailView.copyCalendarFeedLink')}
-            toastMessage="Calendar feed link copied. Subscribe to it in your calendar app to keep it up to date."
+            toastMessage={t('venueDetailViewBatch33.feedCopied')}
           />
         </div>
       </div>

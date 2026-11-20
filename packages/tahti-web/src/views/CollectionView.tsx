@@ -149,10 +149,16 @@ export function CollectionView({ slug }: { slug: string }) {
       return;
     }
     syncDocumentMetadata(window.location.pathname, {
-      title: `${collection.name} by ${collection.user.displayName} on Tahti`,
+      title: t('collectionViewBatch33.documentTitle', {
+        name: collection.name,
+        artist: collection.user.displayName,
+      }),
       description:
         collection.description ??
-        `Listen to ${collection.name}, a collection by ${collection.user.displayName} on Tahti.`,
+        t('collectionViewBatch33.documentDescription', {
+          name: collection.name,
+          artist: collection.user.displayName,
+        }),
       image: collection.coverUrl ?? placeholderArtworkUrl(collection.slug),
     });
   }, [
@@ -326,7 +332,7 @@ export function CollectionView({ slug }: { slug: string }) {
           imageAlt=""
           subtitle={
             <>
-              by{' '}
+              {t('collectionViewBatch33.by')}{' '}
               <Link
                 to="/u/$username"
                 params={{ username: collection.user.username }}
@@ -334,7 +340,9 @@ export function CollectionView({ slug }: { slug: string }) {
               >
                 {collection.user.displayName}
               </Link>
-              {collection.collaborative ? ' (collaborative)' : ''}
+              {collection.collaborative
+                ? ` ${t('collectionViewBatch33.collaborative')}`
+                : ''}
             </>
           }
           description={collection.description}
@@ -425,7 +433,7 @@ export function CollectionView({ slug }: { slug: string }) {
                   disabled={subscriptionBusy}
                   aria-pressed={subscription.subscribed}
                   aria-description={
-                    me ? undefined : 'Sign in to subscribe to this playlist'
+                    me ? undefined : t('collectionView.signInToSubscribeTo')
                   }
                 >
                   <BookmarkIcon size={15} aria-hidden className="mr-1.5" />

@@ -12,6 +12,12 @@ import {
 import { type AdminAddon } from '../../../api/admin';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 
+const RENDERS_BY_DEFAULT_KEYS = {
+  LISTENER: 'manageDialogBatch33.rendersByDefaultListener',
+  ARTIST: 'manageDialogBatch33.rendersByDefaultArtist',
+  ADMIN: 'manageDialogBatch33.rendersByDefaultAdmin',
+} as const satisfies Record<AdminAddon['scope'], string>;
+
 export function ManageDialog({
   addon,
   pending,
@@ -48,7 +54,9 @@ export function ManageDialog({
 
   return (
     <Dialog.Root isOpen={addon !== null} onClose={onClose} className="max-w-lg">
-      <Dialog.Title>Manage {addon?.name}</Dialog.Title>
+      <Dialog.Title>
+        {t('manageDialogBatch33.title', { name: addon?.name ?? '' })}
+      </Dialog.Title>
       {addon && (
         <form
           className="flex flex-col gap-4"
@@ -62,7 +70,7 @@ export function ManageDialog({
             try {
               JSON.parse(trimmed);
             } catch {
-              setConfigError('Not valid JSON.');
+              setConfigError(t('manageDialogBatch33.invalidJson'));
               return;
             }
             onSetDefaultConfig(addon, trimmed);
@@ -74,8 +82,7 @@ export function ManageDialog({
                 {t('manageDialog.enabledByDefault')}
               </p>
               <p className="text-foreground-secondary text-xs">
-                Renders for every {addon.scope.toLowerCase()} surface with no
-                explicit install.
+                {t(RENDERS_BY_DEFAULT_KEYS[addon.scope])}
               </p>
             </div>
             <Toggle

@@ -136,8 +136,10 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
                     </Badge>
                   </span>
                   <span className="text-foreground-secondary block text-xs">
-                    From {payout.subscriberDisplayName} ·{' '}
-                    <PayoutPeriod payout={payout} />
+                    {t('fanSubPayoutQueueBatch33.from', {
+                      name: payout.subscriberDisplayName,
+                    })}{' '}
+                    · <PayoutPeriod payout={payout} />
                   </span>
                 </span>
                 <span className="flex items-center gap-3">
@@ -167,7 +169,10 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
           </ul>
           {total > rows.length ? (
             <p className="text-foreground-secondary mt-2 text-xs">
-              Showing the newest {rows.length} of {total}.
+              {t('fanSubPayoutQueueBatch33.showingNewest', {
+                shown: rows.length,
+                total,
+              })}
             </p>
           ) : null}
         </>

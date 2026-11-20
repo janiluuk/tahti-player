@@ -127,7 +127,7 @@ export function RadioStationView({ stationId }: { stationId: string }) {
           <div className="group relative shrink-0" data-testid="station-cover">
             <MediaArtwork
               src={station.logoUrl}
-              alt={`${station.name} logo`}
+              alt={t('radioStationViewBatch33.logoAlt', { name: station.name })}
               size="lg"
               onPlay={playable ? togglePlay : undefined}
               isPlaying={playing}
@@ -217,7 +217,9 @@ export function RadioStationView({ stationId }: { stationId: string }) {
                     rel="noreferrer noopener"
                     size="icon-sm"
                     variant="secondary"
-                    aria-label={`${station.name} website`}
+                    aria-label={t('radioStationViewBatch33.website', {
+                      name: station.name,
+                    })}
                     data-testid="station-website"
                   >
                     <GlobeIcon size={16} aria-hidden />
@@ -233,7 +235,9 @@ export function RadioStationView({ stationId }: { stationId: string }) {
                     rel="noreferrer noopener"
                     size="icon-sm"
                     variant="secondary"
-                    aria-label={`${station.name} programme guide`}
+                    aria-label={t('radioStationViewBatch33.programmeGuide', {
+                      name: station.name,
+                    })}
                   >
                     <CalendarDaysIcon size={16} aria-hidden />
                   </ButtonAnchor>
@@ -253,8 +257,8 @@ export function RadioStationView({ stationId }: { stationId: string }) {
           station: item,
         }))}
         labels={{
-          filterPlaceholder: 'Filter stations…',
-          nothingFound: 'No stations match that filter.',
+          filterPlaceholder: t('listen.filterStations'),
+          nothingFound: t('radioStationViewBatch33.noStationsMatch'),
         }}
         renderItem={(item) => {
           const isPlaying =
