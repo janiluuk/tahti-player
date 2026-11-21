@@ -13,6 +13,7 @@ Let listeners and artists sign up and log in with Google and Facebook, next to e
 ## Decisions
 
 - Account linking: a Google login whose email Google reports as verified auto-links to the Tahti account with that email. Facebook never auto-links: an existing account gets `oauth_error=email_in_use` and links Facebook from Settings → Security while signed in. Disconnect is refused (409) when it is the account's last way to sign in.
+- Redirect URLs: production only (`api.tahti.live`). Beta and preview environments get no Google/Facebook sign-in; `/providers` returns an empty list there, so the buttons stay hidden.
 - Display name: the provider name must pass `safeDisplayName` (no emails as names); fall back to a generated username. The web shows a linked email only as account info in Settings → Security, never as a name.
 
 ## Web contract (as built in tahti-web)
@@ -23,10 +24,6 @@ Let listeners and artists sign up and log in with Google and Facebook, next to e
 - `GET /api/me/oauth-accounts`, `DELETE /api/me/oauth-accounts/:provider` (409 `{ error }` shown inline).
 - Set a first password: `AuthUser.hasPassword` (`GET /api/auth/me`; missing = `true` for older APIs). When `false`, Security → Password & email shows "Set a password" (`SetPasswordForm`) instead of the change form and `LinkedLoginsSection` hints next to Disconnect when only one login is linked. `POST /api/me/password/set { password }` → 204 (refresh + toast), 409 (refresh, change form), 400 (inline). Mock: `oauth.*` emails sign in without a password. Code: `src/api/account-credentials.ts` `setFirstPassword`, `src/components/SetPasswordForm.tsx`.
 - Code: `packages/tahti-web/src/api/oauth.ts`, `src/lib/oauthReturn.ts`, `src/components/OAuthSignInButtons.tsx`, `OAuthReturnHandler.tsx` (mounted in `AppShell`), `LinkedLoginsSection.tsx` (Security → Password & email).
-
-## Open questions
-
-- Which hosts get the redirect URLs (production, beta, preview environments).
 
 ## Plan
 
