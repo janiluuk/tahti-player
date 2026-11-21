@@ -241,6 +241,12 @@ export function isMockListenerEmail(email: string): boolean {
 /** Build a demo user for a mock sign-in. `listener@…` gets a plain listener
  * account; any other address gets a studio-ready artist whose channel slug
  * matches the username. */
+/** The mock Google/Facebook sign-in (`oauth.*@…`) is an account without a
+ * password, so the "Set a password" state can be tried in the mock app. */
+export function isMockSocialOnlyEmail(email: string): boolean {
+  return email.toLowerCase().startsWith('oauth.');
+}
+
 export function buildMockLoginUser(
   email: string,
   overrides?: Partial<AuthUser>,
@@ -282,6 +288,7 @@ export function buildMockLoginUser(
           channel: null,
         }
       : {}),
+    ...(isMockSocialOnlyEmail(email) ? { hasPassword: false } : {}),
     ...overrides,
   };
   // Seeded/demo accounts skip the "Finish your profile?" toast — they are

@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError } from '@tahti-player/ui';
 
+import { accountHasPassword } from '../api/account-credentials';
 import {
   fetchOAuthAccounts,
   OAUTH_PROVIDERS,
@@ -12,6 +13,7 @@ import {
   type OAuthProvider,
 } from '../api/oauth';
 import { beginOAuth } from '../lib/oauthReturn';
+import { useAuthStore } from '../stores/authStore';
 import { ConfirmDialog } from './ConfirmDialog';
 import { OAUTH_PROVIDER_NAMES, OAuthProviderIcon } from './OAuthProviderIcon';
 import { useOAuthProviders } from './OAuthSignInButtons';
@@ -24,6 +26,7 @@ export function LinkedLoginsSection() {
   const { t } = useTranslation('web');
   const headingId = useId();
   const providers = useOAuthProviders(true);
+  const hasPassword = useAuthStore((s) => accountHasPassword(s.user));
   const [accounts, setAccounts] = useState<OAuthAccount[]>([]);
   const [loadFailed, setLoadFailed] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,6 +47,7 @@ export function LinkedLoginsSection() {
   const linkedBy = new Map(
     accounts.map((account) => [account.provider, account]),
   );
+  const onlyWayIn = !hasPassword && accounts.length === 1;
   const rows = OAUTH_PROVIDERS.filter(
     (provider) => providers.includes(provider) || linkedBy.has(provider),
   );
@@ -127,6 +131,11 @@ export function LinkedLoginsSection() {
                   {t('oauthLogin.link')}
                 </Button>
               )}
+              {account && onlyWayIn ? (
+                <p className="text-foreground-secondary w-full text-xs">
+                  {t('oauthSetPassword.disconnectHint')}
+                </p>
+              ) : null}
             </li>
           );
         })}

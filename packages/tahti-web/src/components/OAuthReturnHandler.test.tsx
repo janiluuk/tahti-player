@@ -40,6 +40,14 @@ describe('readOAuthReturn', () => {
     expect(readOAuthReturn('?tab=devices')).toBeNull();
   });
 
+  it('reads email_required as its own code', () => {
+    expect(readOAuthReturn('?oauth_error=email_required&tab=x')).toEqual({
+      kind: 'error',
+      code: 'email_required',
+      search: '?tab=x',
+    });
+  });
+
   it('reads the two-factor challenge and strips it', () => {
     expect(readOAuthReturn('?t=30&oauth=totp&challengeId=ch-1')).toEqual({
       kind: 'totp',
@@ -151,6 +159,7 @@ describe('OAuthReturnHandler', () => {
     'email_in_use',
     'already_linked',
     'not_configured',
+    'email_required',
     'failed',
   ] as const)(
     'opens the auth dialog for oauth_error=%s and strips it',
@@ -174,5 +183,14 @@ describe('OAuthReturnHandler', () => {
       'That Google or Facebook account is already linked to another Tahti account.',
     );
     expect(useAuthModalStore.getState().isOpen).toBe(false);
+  });
+
+  it('explains a Facebook sign-in without an email', () => {
+    useAuthStore.setState({ user: signedInUser });
+    window.history.replaceState(null, '', '/?oauth_error=email_required');
+    render(<OAuthReturnHandler />);
+    expect(toast.error).toHaveBeenCalledWith(
+      "Facebook didn't share an email address. Allow email access when signing in with Facebook, or sign up with email.",
+    );
   });
 });

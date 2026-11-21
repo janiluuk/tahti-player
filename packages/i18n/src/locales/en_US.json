@@ -15448,7 +15448,8 @@
       "disconnectTitle": "Disconnect {{provider}}?",
       "disconnectDescription": "You can't sign in with {{provider}} until you link it again.",
       "disconnected": "{{provider}} disconnected.",
-      "loadFailed": "Could not load linked logins."
+      "loadFailed": "Could not load linked logins.",
+      "errorEmailRequired": "Facebook didn't share an email address. Allow email access when signing in with Facebook, or sign up with email."
     },
     "channelStageTrackMetaBatch36": {
       "upNext": "Up next:",
@@ -15473,6 +15474,14 @@
     "visualizerModeMenuBatch36": {
       "analyzer": "Analyzer",
       "current": "Visualizer: {{mode}}"
+    },
+    "oauthSetPassword": {
+      "heading": "Set a password",
+      "description": "You sign in with Google or Facebook. Set a password to also sign in with your email.",
+      "submit": "Set password",
+      "saving": "Setting…",
+      "setToast": "Password set. You can now also sign in with your email.",
+      "disconnectHint": "Set a password first to disconnect your only way to sign in."
     }
   },
   "studioEditor": {
