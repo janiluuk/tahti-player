@@ -15385,7 +15385,7 @@
     "queueConfirmDialogBatch35": {
       "title_one": "Queue {{count}} track?",
       "title_other": "Queue {{count}} tracks?",
-      "description_one": "This adds all {{count}} track from {{source}} to your play queue.",
+      "description_one": "This adds {{count}} track from {{source}} to your play queue.",
       "description_other": "This adds all {{count}} tracks from {{source}} to your play queue.",
       "confirm_one": "Queue {{count}} track",
       "confirm_other": "Queue {{count}} tracks"

@@ -15359,7 +15359,7 @@
       "saved_other": "Tallennettiin {{countLabel}} kappaletta listaan “{{name}}”.",
       "description_one": "Tallentaa jonosi {{countLabel}} paikallisen kappaleen jonon järjestyksessä soittolistaksi tälle laitteelle.",
       "description_other": "Tallentaa jonosi {{countLabel}} paikallista kappaletta jonon järjestyksessä soittolistaksi tälle laitteelle.",
-      "streamedNote_one": "{{count}} striimattua kappaletta (Tahti, radio tai live) ei voi tallentaa paikallisesti, joten se jää pois - käytä sille toimintoa “Tallenna jono pilvisoittolistaksi”.",
+      "streamedNote_one": "{{count}} striimattu kappale (Tahti, radio tai live) ei tallennu paikallisesti, joten se jää pois - käytä sille toimintoa ”Tallenna jono pilvisoittolistaksi”.",
       "streamedNote_other": "{{count}} striimattua kappaletta (Tahti, radio tai live) ei voi tallentaa paikallisesti, joten ne jäävät pois - käytä niille toimintoa “Tallenna jono pilvisoittolistaksi”."
     },
     "saveQueueAsPlaylistDialogBatch35": {
@@ -15385,7 +15385,7 @@
     "queueConfirmDialogBatch35": {
       "title_one": "Lisätäänkö {{count}} kappale jonoon?",
       "title_other": "Lisätäänkö {{count}} kappaletta jonoon?",
-      "description_one": "Tämä lisää kaikki {{count}} kappaleen kohteesta {{source}} soittojonoosi.",
+      "description_one": "Tämä lisää {{count}} kappaleen kohteesta {{source}} soittojonoosi.",
       "description_other": "Tämä lisää kaikki {{count}} kappaletta kohteesta {{source}} soittojonoosi.",
       "confirm_one": "Lisää {{count}} kappale jonoon",
       "confirm_other": "Lisää {{count}} kappaletta jonoon"
