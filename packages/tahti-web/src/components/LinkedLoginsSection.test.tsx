@@ -6,6 +6,8 @@ import {
   fetchOAuthProviders,
   unlinkOAuthAccount,
 } from '../api/oauth';
+import type { AuthUser } from '../api/types';
+import { useAuthStore } from '../stores/authStore';
 import { LinkedLoginsSection } from './LinkedLoginsSection';
 import { resetOAuthProvidersForTests } from './OAuthSignInButtons';
 
@@ -20,8 +22,18 @@ vi.mock('sonner', () => ({
   toast: { success: vi.fn(), error: vi.fn() },
 }));
 
+const HINT = 'Set a password first to disconnect your only way to sign in.';
+
+const user = {
+  id: 'u1',
+  email: 'liina@gmail.com',
+  username: 'liina',
+  displayName: 'Liina',
+} as AuthUser;
+
 describe('LinkedLoginsSection', () => {
   beforeEach(() => {
+    useAuthStore.setState({ user });
     resetOAuthProvidersForTests();
     vi.mocked(fetchOAuthProviders).mockResolvedValue({
       data: ['google', 'facebook'],
@@ -125,5 +137,40 @@ describe('LinkedLoginsSection', () => {
     const { container } = render(<LinkedLoginsSection />);
     await waitFor(() => expect(fetchOAuthAccounts).toHaveBeenCalled());
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('hints that a password comes first when the only login has no password', async () => {
+    useAuthStore.setState({ user: { ...user, hasPassword: false } });
+    render(<LinkedLoginsSection />);
+    expect(await screen.findByText(HINT)).toBeVisible();
+    expect(
+      screen.getByRole('button', { name: 'Disconnect Google' }),
+    ).toBeEnabled();
+  });
+
+  it('shows no hint with a password, a missing hasPassword or two logins', async () => {
+    useAuthStore.setState({ user: { ...user, hasPassword: true } });
+    const { unmount } = render(<LinkedLoginsSection />);
+    await screen.findByText('Linked · liina@gmail.com');
+    expect(screen.queryByText(HINT)).toBeNull();
+    unmount();
+
+    useAuthStore.setState({ user });
+    const second = render(<LinkedLoginsSection />);
+    await screen.findByText('Linked · liina@gmail.com');
+    expect(screen.queryByText(HINT)).toBeNull();
+    second.unmount();
+
+    useAuthStore.setState({ user: { ...user, hasPassword: false } });
+    vi.mocked(fetchOAuthAccounts).mockResolvedValue({
+      data: [
+        { provider: 'google', email: null, linkedAt: '2026-10-02T09:30:00Z' },
+        { provider: 'facebook', email: null, linkedAt: '2026-10-03T09:30:00Z' },
+      ],
+      meta: { source: 'api' },
+    });
+    render(<LinkedLoginsSection />);
+    expect(await screen.findAllByText('Linked')).toHaveLength(2);
+    expect(screen.queryByText(HINT)).toBeNull();
   });
 });

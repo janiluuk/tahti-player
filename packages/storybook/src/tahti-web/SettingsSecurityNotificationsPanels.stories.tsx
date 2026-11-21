@@ -79,6 +79,56 @@ export const LinkedLogins: Story = {
   },
 };
 
+/** An account created with Google/Facebook has no password: Password &
+ * email offers "Set a password" instead of the change form, and the only
+ * linked login carries a hint next to Disconnect. Setting one swaps in the
+ * change form. */
+export const NoPasswordAccount: Story = {
+  decorators: [
+    withTahtiRouter('/settings/security'),
+    withMockAuth({ ...MOCK_USERS.listener, hasPassword: false }),
+  ],
+  render: () => <SecurityPanel />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await selectTab(canvas, 'Password & email');
+    await expectVisible(
+      await canvas.findByRole('heading', { name: 'Set a password' }),
+    );
+    await expect(canvas.queryByLabelText('Current password')).toBeNull();
+    await expectVisible(
+      await canvas.findByText(
+        'Set a password first to disconnect your only way to sign in.',
+      ),
+    );
+    await userEvent.type(
+      canvas.getByLabelText('New password'),
+      'NewPassword123',
+    );
+    await userEvent.type(
+      canvas.getByLabelText('Confirm new password'),
+      'NewPassword123',
+    );
+    await userEvent.click(canvas.getByRole('button', { name: 'Set password' }));
+    const body = within(canvasElement.ownerDocument.body);
+    await expectVisible(
+      await body.findByText(
+        'Password set. You can now also sign in with your email.',
+      ),
+    );
+    await expectVisible(
+      await canvas.findByRole('heading', { name: 'Change password' }),
+    );
+    await waitFor(() =>
+      expect(
+        canvas.queryByText(
+          'Set a password first to disconnect your only way to sign in.',
+        ),
+      ).toBeNull(),
+    );
+  },
+};
+
 export const NotificationsAndMentions: Story = {
   decorators: [withTahtiRouter('/settings/notifications')],
   render: () => <SettingsNotificationsPanel />,

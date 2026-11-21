@@ -1,7 +1,9 @@
 import { i18n } from '@tahti-player/i18n';
 
+import { getMockSessionUser, setMockSessionUser } from './mock-session';
 import { isForceMock } from './mode';
-import { requestJson } from './request-json';
+import { requestJson, RequestJsonError } from './request-json';
+import type { AuthUser } from './types';
 
 export type PendingEmailChange = { newEmail: string; expiresAt: string };
 
@@ -36,6 +38,41 @@ export async function changePassword(
     return { ok: true, message: data.message };
   } catch (err) {
     return failure(err, 'Could not change the password');
+  }
+}
+
+/** A missing `hasPassword` (older API) counts as having one. */
+export function accountHasPassword(user: AuthUser | null | undefined): boolean {
+  return user?.hasPassword !== false;
+}
+
+export type SetFirstPasswordResult =
+  { ok: true } | { ok: false; alreadySet: boolean; error: string };
+
+/** Gives an account created with Google/Facebook its first password
+ * (`POST /api/me/password/set`). 409 means it already has one. */
+export async function setFirstPassword(
+  password: string,
+): Promise<SetFirstPasswordResult> {
+  if (isForceMock()) {
+    const user = getMockSessionUser();
+    if (user) {
+      setMockSessionUser({ ...user, hasPassword: true });
+    }
+    return { ok: true };
+  }
+  try {
+    await requestJson<void>('/api/me/password/set', {
+      method: 'POST',
+      body: JSON.stringify({ password }),
+    });
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      alreadySet: err instanceof RequestJsonError && err.status === 409,
+      error: err instanceof Error ? err.message : 'Could not set the password',
+    };
   }
 }
 

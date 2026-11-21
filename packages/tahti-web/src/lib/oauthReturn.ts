@@ -13,6 +13,7 @@ export const OAUTH_ERROR_KEYS: Record<OAuthErrorCode, ParseKeys<'web'>> = {
   email_in_use: 'oauthLogin.errorEmailInUse',
   already_linked: 'oauthLogin.errorAlreadyLinked',
   not_configured: 'oauthLogin.errorNotConfigured',
+  email_required: 'oauthLogin.errorEmailRequired',
   failed: 'oauthLogin.errorFailed',
 };
 

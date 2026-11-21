@@ -15448,7 +15448,8 @@
       "disconnectTitle": "Irrotetaanko {{provider}}?",
       "disconnectDescription": "Et voi kirjautua {{provider}}-tilillä ennen kuin linkität sen uudelleen.",
       "disconnected": "{{provider}} irrotettu.",
-      "loadFailed": "Linkitettyjä kirjautumisia ei voitu ladata."
+      "loadFailed": "Linkitettyjä kirjautumisia ei voitu ladata.",
+      "errorEmailRequired": "Facebook ei jakanut sähköpostiosoitetta. Salli sähköpostin käyttö, kun kirjaudut Facebookilla, tai rekisteröidy sähköpostilla."
     },
     "channelStageTrackMetaBatch36": {
       "upNext": "Seuraavaksi:",
@@ -15473,6 +15474,14 @@
     "visualizerModeMenuBatch36": {
       "analyzer": "Analysaattori",
       "current": "Visualisointi: {{mode}}"
+    },
+    "oauthSetPassword": {
+      "heading": "Aseta salasana",
+      "description": "Kirjaudut Google- tai Facebook-tilillä. Aseta salasana, niin voit kirjautua myös sähköpostiosoitteellasi.",
+      "submit": "Aseta salasana",
+      "saving": "Asetetaan…",
+      "setToast": "Salasana asetettu. Voit nyt kirjautua myös sähköpostiosoitteellasi.",
+      "disconnectHint": "Aseta ensin salasana, jotta voit irrottaa ainoan kirjautumistapasi."
     }
   },
   "studioEditor": {

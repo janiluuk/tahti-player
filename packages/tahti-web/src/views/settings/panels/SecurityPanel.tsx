@@ -3,12 +3,14 @@ import { KeyRound, Lock, MonitorSmartphone } from 'lucide-react';
 import { useTranslation } from '@tahti-player/i18n';
 import { Tabs } from '@tahti-player/ui';
 
+import { accountHasPassword } from '../../../api/account-credentials';
 import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
 import { ChangeEmailForm } from '../../../components/ChangeEmailForm';
 import { ChangePasswordForm } from '../../../components/ChangePasswordForm';
 import { DevicesSessionsPanel } from '../../../components/DevicesSessionsPanel';
 import { LinkedLoginsSection } from '../../../components/LinkedLoginsSection';
 import { SecurityTotpPanel } from '../../../components/SecurityTotpPanel';
+import { SetPasswordForm } from '../../../components/SetPasswordForm';
 import { useAuthStore } from '../../../stores/authStore';
 import {
   useSettingsModalStore,
@@ -47,7 +49,11 @@ export function SecurityPanel() {
           icon: <KeyRound size={14} />,
           content: (
             <div className="flex flex-col gap-8">
-              <ChangePasswordForm />
+              {accountHasPassword(user) ? (
+                <ChangePasswordForm />
+              ) : (
+                <SetPasswordForm />
+              )}
               <ChangeEmailForm currentEmail={user?.email ?? null} />
               <LinkedLoginsSection />
             </div>

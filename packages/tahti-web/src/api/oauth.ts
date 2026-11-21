@@ -17,6 +17,7 @@ export const OAUTH_ERROR_CODES = [
   'email_in_use',
   'already_linked',
   'not_configured',
+  'email_required',
   'failed',
 ] as const;
 

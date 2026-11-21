@@ -19,8 +19,9 @@ Let listeners and artists sign up and log in with Google and Facebook, next to e
 
 - `GET /api/auth/oauth/providers` → `{ providers }`; buttons show only for listed providers, none when empty or failing.
 - Start is a full-page navigation to `/api/auth/oauth/:provider/start?returnTo=<path>[&link=1]`. `returnTo` is the current path plus its query, so the API must append `oauth=ok` with `&` when `returnTo` already has a `?`.
-- Return: `?oauth=ok` → session refresh + toast + param stripped; `?oauth_error=<code>` (`cancelled`, `email_in_use`, `already_linked`, `not_configured`, `failed`; unknown → `failed`) → auth dialog with the message when signed out, a toast when signed in.
+- Return: `?oauth=ok` → session refresh + toast + param stripped; `?oauth_error=<code>` (`cancelled`, `email_in_use`, `already_linked`, `not_configured`, `email_required` (Facebook signup without an email), `failed`; unknown → `failed`) → auth dialog with the message when signed out, a toast when signed in.
 - `GET /api/me/oauth-accounts`, `DELETE /api/me/oauth-accounts/:provider` (409 `{ error }` shown inline).
+- Set a first password: `AuthUser.hasPassword` (`GET /api/auth/me`; missing = `true` for older APIs). When `false`, Security → Password & email shows "Set a password" (`SetPasswordForm`) instead of the change form and `LinkedLoginsSection` hints next to Disconnect when only one login is linked. `POST /api/me/password/set { password }` → 204 (refresh + toast), 409 (refresh, change form), 400 (inline). Mock: `oauth.*` emails sign in without a password. Code: `src/api/account-credentials.ts` `setFirstPassword`, `src/components/SetPasswordForm.tsx`.
 - Code: `packages/tahti-web/src/api/oauth.ts`, `src/lib/oauthReturn.ts`, `src/components/OAuthSignInButtons.tsx`, `OAuthReturnHandler.tsx` (mounted in `AppShell`), `LinkedLoginsSection.tsx` (Security → Password & email).
 
 ## Open questions
@@ -35,4 +36,5 @@ Let listeners and artists sign up and log in with Google and Facebook, next to e
 - [ ] Ops: create the Google and Facebook OAuth apps and add the secrets.
 - [ ] Deploy the API and check the web flow end to end on beta (real redirects, cookies, `returnTo` with a query).
 - [x] Mock-app e2e case in `e2e/roles-anonymous-listener.spec.ts` passes (2026-11-21).
-- [ ] Set a password from Settings for accounts created with Google/Facebook (forgot-password skips accounts without one; org follow-up).
+- [x] tahti-web: set a first password from Settings for accounts created with Google/Facebook, plus the `email_required` error (2026-11-21, branch `feat/web-oauth-set-password`).
+- [ ] tahti-org API: `hasPassword` on `/api/auth/me`, `POST /api/me/password/set`, `email_required`, forgot-password for accounts without a password (in progress).
