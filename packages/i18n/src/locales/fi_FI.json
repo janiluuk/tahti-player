@@ -12987,7 +12987,6 @@
       "couldNotUpdateAnnouncement": "Ilmoitusta ei voitu päivittää",
       "couldNotUpdatePageMusic": "Sivun musiikkia ei voitu päivittää",
       "couldNotLoadPreview": "Esikatselua ei voitu ladata",
-      "couldNotTrimClip": "Pätkää ei voitu leikata",
       "couldNotAddStation": "Asemaa ei voitu lisätä",
       "couldNotRemoveStation": "Asemaa ei voitu poistaa",
       "couldNotUpdateTopic": "Aihetta ei voitu päivittää",
@@ -15154,6 +15153,255 @@
       "artistProfile": "Artistin {{name}} profiilikuva",
       "trackCount_one": "{{count}} kappale",
       "trackCount_other": "{{count}} kappaletta"
+    },
+    "restrictionNoticeBatch35": {
+      "blockedUpload": "Lataukset on estetty",
+      "blockedLiveShowBooking": "Lähetysten varaaminen on estetty",
+      "blockedLogin": "Kirjautuminen on estetty",
+      "titleUntil": "{{blocked}}, päättyy",
+      "reason": "Syy: {{reason}}",
+      "askBoard": "Jos tämä on mielestäsi virhe, kysy hallitukselta kohdasta Ohje → Tuki."
+    },
+    "clientCapabilityNoticeBatch35": {
+      "notInClient": "Ei saatavilla tässä sovelluksessa",
+      "comingSoon": "Ei vielä saatavilla",
+      "partial": "Osittainen",
+      "linkOut": "Avautuu tahti.liveen",
+      "mockOnly": "Vain esikatselu"
+    },
+    "motionMeetingNoteBatch35": {
+      "takenUpAt": "Käsitelty kokouksessa",
+      "agendaItem": "esityslistan kohta {{position}}: {{title}}"
+    },
+    "channelVizPackLabelBatch35": {
+      "thisShowUses": "Tämä lähetys käyttää visualisointia {{pack}}"
+    },
+    "collectionContributionBatch35": {
+      "addedByUser": "Lisännyt @{{username}}",
+      "addedBy": "Lisännyt"
+    },
+    "governanceBoardBatch35": {
+      "roleChair": "Puheenjohtaja",
+      "roleViceChair": "Varapuheenjohtaja",
+      "roleSecretary": "Sihteeri",
+      "roleTreasurer": "Rahastonhoitaja",
+      "roleMember": "Hallituksen jäsen",
+      "roleDeputy": "Varajäsen"
+    },
+    "localLibraryBrowseBatch35": {
+      "artistGroups": "Artistilista",
+      "albumGroups": "Albumilista",
+      "genreGroups": "Tyylilajilista",
+      "composerGroups": "Säveltäjälista",
+      "folderGroups": "Kansiolista",
+      "unknownArtist": "Tuntematon artisti",
+      "unknownAlbum": "Tuntematon albumi",
+      "noGenre": "Ei tyylilajia",
+      "noComposer": "Ei säveltäjää",
+      "looseFiles": "Irralliset tiedostot",
+      "totalsOnDevice": "{{tracks}} · {{duration}} · {{size}} tällä laitteella"
+    },
+    "liveTimeBatch35": {
+      "minutes": "{{m}} min",
+      "hours": "{{h}} t",
+      "hoursMinutes": "{{h}} t {{m}} min"
+    },
+    "organizeFilesDialogBatch35": {
+      "leftAlone": "{{value}} jätettiin ennalleen",
+      "failed": "{{value}} epäonnistui ({{error}})",
+      "couldNotOrganize": "Tiedostoja ei voitu järjestää.",
+      "layoutHint": "Käytä tunnisteita {{tokens}}; “/” aloittaa kansion. Tiedostopääte säilyy.",
+      "planCopy_one": "{{value}} tiedosto kopioidaan",
+      "planCopy_other": "{{value}} tiedostoa kopioidaan",
+      "planMove_one": "{{value}} tiedosto siirretään",
+      "planMove_other": "{{value}} tiedostoa siirretään",
+      "planUnchanged": "; {{value}} jo paikallaan",
+      "planCollisions": "; {{value}} ohitettiin (nimi varattu)",
+      "planMissing": "; {{value}} puuttuu levyltä",
+      "originalsWatched_one": "{{value}} alkuperäinen on seuratussa kansiossa, ja seuraava skannaus lisää sen uudelleen uutena kappaleena.",
+      "originalsWatched_other": "{{value}} alkuperäistä on seuratussa kansiossa, ja seuraava skannaus lisää ne uudelleen uusina kappaleina.",
+      "moveConfirm_one": "Tämä siirtää {{value}} tiedoston nykyisestä kansiostaan kohteeseen {{destination}}. Muut ohjelmat eivät enää löydä sitä vanhasta sijainnista.",
+      "moveConfirm_other": "Tämä siirtää {{value}} tiedostoa nykyisistä kansioistaan kohteeseen {{destination}}. Muut ohjelmat eivät enää löydä niitä vanhoista sijainneista."
+    },
+    "membershipStatusPanelBatch35": {
+      "activatedWithNumber": "Jäsenyys aktivoitu — jäsen #{{number}}",
+      "activated": "Jäsenyys aktivoitu",
+      "activeMember": "Aktiivinen jäsen #{{number}}",
+      "renewalDueTail": ". Maksa uudelleen tästä paneelista, kun saat muistutuksen, tai tilaa Stripen kautta seuraavalla maksukerralla.",
+      "stripeSubscription": "(Stripe-tilaus).",
+      "processing": "Käsitellään…",
+      "subscribeAutoRenewal": "Tilaa automaattinen uusiminen ({{price}}/vuosi)",
+      "intro": "Tahti ry on jäsentensä hallinnoima voittoa tavoittelematon yhdistys. Vuosijäsenyys maksaa {{price}}/vuosi (verovähennyskelpoinen Suomessa oikeutetuille ammattilaisille). Tuo kuuntelijoille häviöttömän suoratoiston ja rajattomat livelähetykset.",
+      "payPerYear": "Maksa {{price}} / vuosi"
+    },
+    "directoryArtistsBrowserBatch35": {
+      "radioHost": "Radiojuontaja",
+      "activeNow": "Aktiivisena nyt ({{n}})",
+      "filters": "Suodattimet",
+      "filtersWithCount": "Suodattimet ({{n}})",
+      "showing": "Näytetään {{shown}}/{{total}} artistia",
+      "tryAnotherFilter": "Kokeile toista suodatinta",
+      "inGenre": " tyylilajissa {{genre}}"
+    },
+    "clearQueueConfirmDialogBatch35": {
+      "description_one": "Tämä poistaa {{count}} kappaleen soittojonostasi. Tätä ei voi perua.",
+      "description_other": "Tämä poistaa kaikki {{count}} kappaletta soittojonostasi. Tätä ei voi perua."
+    },
+    "channelPlaylistBlockBatch35": {
+      "pickAnother": "{{error}} Valitse toinen widgetin asetuksista tai yritä uudelleen.",
+      "openPlaylist": "Avaa soittolista →"
+    },
+    "channelChatPanelBatch35": {
+      "subscribersOnlyNote": "Vain fanitilaajat voivat kirjoittaa täällä. Voit silti seurata keskustelua.",
+      "completeCaptcha": "Suorita hCaptcha ennen liittymistä.",
+      "handlePlaceholder": "anonyymi nimimerkki",
+      "signedInAs": "Kirjautuneena @{{username}} - captchaa ei tarvita.",
+      "messageAs": "Viesti nimellä {{handle}}"
+    },
+    "catalogTrackSearchBatch35": {
+      "noMatch": "Haulla “{{query}}” ei löytynyt julkisia kappaleita."
+    },
+    "audioRevisionListBatch35": {
+      "mono": "mono",
+      "stereo": "stereo",
+      "savedAs": "Tallennettu versioksi v{{n}} — ei vielä julkinen. Esikuuntele se ja ota versio käyttöön, kun haluat sen julkiseksi. Jos sitä ei voida käsitellä, ilmoitamme sinulle.",
+      "previewVersion": "Esikuuntele v{{n}}"
+    },
+    "addToReleasePanelBatch35": {
+      "couldNotAdd": "Kappaleita ei voitu lisätä.",
+      "addedPartial": "Lisättiin {{added}}/{{total}} julkaisuun {{name}}.",
+      "addedMany_one": "Lisättiin {{count}} kappale julkaisuun {{name}}.",
+      "addedMany_other": "Lisättiin {{count}} kappaletta julkaisuun {{name}}.",
+      "selectedTracks_one": "{{count}} valittu kappale",
+      "selectedTracks_other": "{{count}} valittua kappaletta"
+    },
+    "addToPlaylistPanelBatch35": {
+      "tracks_one": "{{count}} kappale",
+      "tracks_other": "{{count}} kappaletta",
+      "addedPartial": "Lisättiin {{added}}/{{tracks}} soittolistaan {{name}}: {{error}}",
+      "addedTracks": "Lisättiin {{tracks}} soittolistaan {{name}}",
+      "createdAndAddedTracks": "Luotiin “{{name}}” ja lisättiin {{tracks}}",
+      "createdAndAddedTrack": "Luotiin “{{name}}” ja lisättiin kappale",
+      "createdToast": "Luotiin {{name}}.",
+      "removedToast": "Poistettiin {{name}}.",
+      "chooseForTracks": "Valitse soittolista kappaleille ({{tracks}}) tai luo uusi.",
+      "chooseForTrack": "Valitse soittolista kappaleelle “{{title}}” tai luo uusi.",
+      "signInSuffix": "tallentaaksesi kappaleita soittolistaan.",
+      "new": "Uusi"
+    },
+    "addToPlaylistDialogBatch35": {
+      "added_one": "Lisättiin {{value}} kappale soittolistaan “{{name}}”.",
+      "added_other": "Lisättiin {{value}} kappaletta soittolistaan “{{name}}”.",
+      "notAdded_one": "{{count}} kappaletta ei voitu lisätä, koska sitä ei ole enää kirjastossa.",
+      "notAdded_other": "{{count}} kappaletta ei voitu lisätä, koska niitä ei ole enää kirjastossa.",
+      "description": "{{summary}}. Kappaleet lisätään loppuun; sama kappale voi olla listalla useammin kuin kerran."
+    },
+    "jamRemoteBatch35": {
+      "searchFailed": "Haku epäonnistui",
+      "searchFailedHint": "Tarkista yhteys Tahti Playeriin ja yritä uudelleen.",
+      "noResults": "Ei tuloksia",
+      "noResultsHint": "Haulla ei löytynyt Tahti-kappaleita.",
+      "unpairedTitle": "Laitetta ei ole paritettu",
+      "unpairedHint": "Avaa Tahti Playerissa Asetukset → Integraatiot → Tahti Jam ja skannaa QR-koodi.",
+      "failedTitle": "Yhteyttä Tahti Playeriin ei saatu",
+      "failedHint": "Varmista, että Tahti Player on käynnissä, Tahti Jam on päällä ja tämä laite on samassa verkossa.",
+      "connectingTitle": "Yhdistetään Tahti Playeriin…",
+      "connectingHint": "Varmista, että Tahti Player on käynnissä ja Tahti Jam on päällä.",
+      "statusConnecting": "Yhdistetään",
+      "statusConnected": "Yhdistetty",
+      "statusReconnecting": "Yhdistetään uudelleen",
+      "statusDisconnected": "Yhteys katkennut",
+      "searchTahti": "Hae Tahdista",
+      "queueEmpty": "Jono on tyhjä",
+      "queueEmptyHint": "Hae Tahti-kappale ja lisää se jonoon."
+    },
+    "correctionsPanelBatch35": {
+      "waitingForTheBoard": "Odottaa hallitusta",
+      "boardsAnswer": "Hallituksen vastaus: {{note}}",
+      "sayWhatIsWrong": "Kerro, mikä on väärin ja mikä sen pitäisi olla."
+    },
+    "themeEditorBatch35": {
+      "red": "Punainen",
+      "edited": "muokattu",
+      "cssColor": "{{label}}: CSS-väri",
+      "nameRequired": "Teeman nimi on pakollinen.",
+      "editingBefore": "Muokkaat",
+      "dark": "tummaa",
+      "light": "vaaleaa",
+      "editingAfter": "versiota. Vaihda versiota yllä olevalla aurinko/kuu-painikkeella. Napsauta väriä säätääksesi sitä - tyhjä kenttä säilyttää pohjapaletin."
+    },
+    "studioRadioSubmissionPanelBatch35": {
+      "selectUpTo_one": "Valitse kirjastostasi enintään {{count}} yksittäinen äänitiedosto.",
+      "selectUpTo_other": "Valitse kirjastostasi enintään {{count}} yksittäistä äänitiedostoa.",
+      "submitCount": "Lähetä {{count}}"
+    },
+    "soundShareLinksSectionBatch35": {
+      "noExpiry": "Ei vanhene",
+      "anyoneWithTheLink": "Kuka tahansa, jolla on linkki"
+    },
+    "smartPlaylistsBatch35": {
+      "emptyHint": "Säännöt kuten “house, 120–128 BPM, arvio 4+, ei soitettu 30 päivään” pitävät listan itsestään ajan tasalla.",
+      "rulesNeedAttention": "Säännöt vaativat huomiota",
+      "tracksNow_one": "Nyt {{countLabel}} kappale",
+      "tracksNow_other": "Nyt {{countLabel}} kappaletta",
+      "snapshotName": "{{name}} (tilannekuva)",
+      "deleteDescription": "“{{name}}” poistetaan. Vain säännöt poistuvat; kappaleisiisi ja tiedostoihisi ei kosketa."
+    },
+    "signalCheckWidgetBatch35": {
+      "peakSilent": "huippu - hiljaista",
+      "peak": "huippu {{value}} dBFS",
+      "startStreaming": "Aloita lähetys OBS:ssä, Mixxxissä tai Traktorissa - tunnistamme sen automaattisesti."
+    },
+    "saveQueueLocalDialogBatch35": {
+      "skippedNote_one": "{{count}} paikallinen tiedosto ei ole kirjastossasi, eikä sitä tallennettu.",
+      "skippedNote_other": "{{count}} paikallista tiedostoa ei ole kirjastossasi, eikä niitä tallennettu.",
+      "saved_one": "Tallennettiin {{countLabel}} kappale listaan “{{name}}”.",
+      "saved_other": "Tallennettiin {{countLabel}} kappaletta listaan “{{name}}”.",
+      "description_one": "Tallentaa jonosi {{countLabel}} paikallisen kappaleen jonon järjestyksessä soittolistaksi tälle laitteelle.",
+      "description_other": "Tallentaa jonosi {{countLabel}} paikallista kappaletta jonon järjestyksessä soittolistaksi tälle laitteelle.",
+      "streamedNote_one": "{{count}} striimattua kappaletta (Tahti, radio tai live) ei voi tallentaa paikallisesti, joten se jää pois - käytä sille toimintoa “Tallenna jono pilvisoittolistaksi”.",
+      "streamedNote_other": "{{count}} striimattua kappaletta (Tahti, radio tai live) ei voi tallentaa paikallisesti, joten ne jäävät pois - käytä niille toimintoa “Tallenna jono pilvisoittolistaksi”."
+    },
+    "saveQueueAsPlaylistDialogBatch35": {
+      "description_one": "Luo uuden soittolistan jonosi {{count}} kappaleesta, joka kuuluu Tahdin katalogiin.",
+      "description_other": "Luo uuden soittolistan jonosi {{count}} kappaleesta, jotka kuuluvat Tahdin katalogiin.",
+      "otherSkipped_one": "{{count}} muu kappale jää pois.",
+      "otherSkipped_other": "{{count}} muuta kappaletta jää pois.",
+      "localSkipped_one": "{{count}} paikallinen tiedosto on tällä laitteella, eikä sitä voi lisätä pilvisoittolistaan - säilytä se toiminnolla “Tallenna jono paikalliseksi soittolistaksi”.",
+      "localSkipped_other": "{{count}} paikallista tiedostoa on tällä laitteella, eikä niitä voi lisätä pilvisoittolistaan - säilytä ne toiminnolla “Tallenna jono paikalliseksi soittolistaksi”."
+    },
+    "radioStationCoverBatch35": {
+      "coverUpdated": "Kanavan {{name}} kansikuva päivitetty.",
+      "editCoverImage": "Muokkaa kansikuvaa"
+    },
+    "radioBookingCalendarBatch35": {
+      "episodeNotPrepared": "Vuoro varattu, mutta ohjelman jaksoa ei voitu valmistella: {{error}}",
+      "booked": "Varattu {{hours}} h - {{when}}.",
+      "you": "sinä",
+      "toBookASlot": "varataksesi vuoron.",
+      "addShowDetails": "Lisää ohjelman tiedot lähetykseesi ({{date}}).",
+      "bookSlot": "Varaa {{hours}} h:n vuoro"
+    },
+    "queueConfirmDialogBatch35": {
+      "title_one": "Lisätäänkö {{count}} kappale jonoon?",
+      "title_other": "Lisätäänkö {{count}} kappaletta jonoon?",
+      "description_one": "Tämä lisää kaikki {{count}} kappaleen kohteesta {{source}} soittojonoosi.",
+      "description_other": "Tämä lisää kaikki {{count}} kappaletta kohteesta {{source}} soittojonoosi.",
+      "confirm_one": "Lisää {{count}} kappale jonoon",
+      "confirm_other": "Lisää {{count}} kappaletta jonoon"
+    },
+    "purchaseOrdersListBatch35": {
+      "summary_one": "{{count}} myynti, {{total}} ennen maksuja.",
+      "summary_other": "{{count}} myyntiä, {{total}} ennen maksuja."
+    },
+    "playableTrackTableBatch35": {
+      "removedNamed": "“{{title}}” poistettiin jonosta.",
+      "removedCount_one": "{{count}} kappale poistettiin jonosta.",
+      "removedCount_other": "{{count}} kappaletta poistettiin jonosta.",
+      "addedCount_one": "{{count}} kappale lisättiin jonoon.",
+      "addedCount_other": "{{count}} kappaletta lisättiin jonoon.",
+      "alreadyQueued": "“{{title}}” on jo jonossa.",
+      "addedNamed": "“{{title}}” lisättiin jonoon."
     }
   },
   "studioEditor": {

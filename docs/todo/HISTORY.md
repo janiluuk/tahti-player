@@ -1,3 +1,14 @@
+## 2026-11-21 — Next 50 slices (Finnish batch 35, label constants, tests-only code)
+
+Finnish batch 35: ~180 keys in 30 component files, the Jam phone remote,
+five notices, `BOARD_ROLE_LABELS` / `FACET_KIND_LABEL` as label keys,
+translatable live-time units, `EventPostView` story. Tests-only code removed:
+`SoundRow`, YouTube liked-songs parser, `groupFilesByUser`,
+`renderAnnouncementTrim`, `fetchStickyNotifications`, look-element
+adjacent/toggle helpers, `clampTimelineDuration`, `encodeWavPcm16Blob`;
+`SIDEBAR_UNLIT_INTENTIONAL` and `litStudioSubmenuDestinations` moved into
+their tests. Folded `view-first-and-test-hardening-leftovers.md`.
+
 ## 2026-11-20 — Smooth initial load (skeletons + reveal)
 
 Listen sections, Radio hero, artist profile, and route-chunk Suspense use

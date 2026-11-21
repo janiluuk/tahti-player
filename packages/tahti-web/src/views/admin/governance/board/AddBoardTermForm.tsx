@@ -1,18 +1,20 @@
 import { useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, InlineError, Input, Select } from '@tahti-player/ui';
 
 import { createAdminBoardTerm } from '../../../../api/admin/admin-governance-board';
 import {
-  BOARD_ROLE_LABELS,
+  BOARD_ROLE_LABEL_KEYS,
   type GovernanceBoardRole,
 } from '../../../../api/governance-board';
 import { MemberPicker, type PickedMember } from './MemberPicker';
 
-export const BOARD_ROLE_OPTIONS = (
-  Object.keys(BOARD_ROLE_LABELS) as GovernanceBoardRole[]
-).map((id) => ({ id, label: BOARD_ROLE_LABELS[id] }));
+export function boardRoleOptions(t: TFunction<'web'>) {
+  return (Object.keys(BOARD_ROLE_LABEL_KEYS) as GovernanceBoardRole[]).map(
+    (id) => ({ id, label: t(BOARD_ROLE_LABEL_KEYS[id]) }),
+  );
+}
 
 /** Record a member's board term. */
 export function AddBoardTermForm({
@@ -70,7 +72,7 @@ export function AddBoardTermForm({
         label={t('addBoardTerm.role')}
         value={role}
         onValueChange={(value) => setRole(value as GovernanceBoardRole)}
-        options={BOARD_ROLE_OPTIONS}
+        options={boardRoleOptions(t)}
       />
       <div className="flex flex-wrap gap-2">
         <Input

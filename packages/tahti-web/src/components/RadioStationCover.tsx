@@ -82,7 +82,9 @@ async function replaceCover(options: {
     }
   }
   options.onCoverChange?.(uploaded.data.url);
-  toast.success(`${options.label} cover updated.`);
+  toast.success(
+    webT()('radioStationCoverBatch35.coverUpdated', { name: options.label }),
+  );
 }
 
 export const RadioStationCoverEditButton: FC<
@@ -142,7 +144,9 @@ export const RadioStationCoverEditButton: FC<
           ) : (
             <PencilIcon size={16} aria-hidden />
           )}
-          {presentation === 'button' ? 'Edit cover image' : null}
+          {presentation === 'button'
+            ? webT()('radioStationCoverBatch35.editCoverImage')
+            : null}
         </Button>
       </Tooltip>
       <HiddenFileInput

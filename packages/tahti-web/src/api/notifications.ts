@@ -167,26 +167,6 @@ function buildMockNotifications(
   return items;
 }
 
-export async function fetchStickyNotifications(): Promise<{
-  data: TahtiNotification[];
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: mockNotifications(false),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const { data } = await requestJson<{
-      notifications: TahtiNotification[];
-    }>('/api/me/notifications?stickyOnly=true');
-    return { data: data.notifications, meta: { source: 'api' } };
-  } catch (err) {
-    return { data: [], meta: emptyMeta(err) };
-  }
-}
-
 export const NOTIFICATION_PAGE_SIZE = 20;
 
 /** Inbox filters, as tahti-org groups them (`?kind=`, NOTIFICATION_KIND_TYPES

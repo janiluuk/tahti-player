@@ -13,9 +13,19 @@ import {
   isStudioBroadcastGroup,
   isStudioDetailRoute,
   isStudioFansGroup,
-  litStudioSubmenuDestinations,
+  isSubmenuActive,
   SUBMENUS,
 } from './StudioNav';
+
+function litStudioSubmenuDestinations(current: string | undefined): string[] {
+  const section = getStudioPrimaryRoute(current);
+  if (!section || !(section in SUBMENUS)) {
+    return [];
+  }
+  return getStudioSubmenuItems(section as keyof typeof SUBMENUS)
+    .filter((item) => isSubmenuActive(current, item.to))
+    .map((item) => item.to);
+}
 
 describe('StudioNav section coverage', () => {
   // A submenu link whose own path doesn't resolve back to the primary

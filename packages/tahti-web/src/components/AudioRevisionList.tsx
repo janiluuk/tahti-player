@@ -1,7 +1,7 @@
 import { PauseIcon, PlayIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -33,8 +33,11 @@ export function versionPlayableId(soundId: string, versionId: string): string {
   return `sound-version:${soundId}:${versionId}`;
 }
 
-function formatRevisionMeta(version: SoundVersion): string {
-  const parts = [version.status];
+function formatRevisionMeta(
+  version: SoundVersion,
+  t: TFunction<'web'>,
+): string {
+  const parts = [soundStatusLabel(version.status, t)];
   if (version.durationSec) {
     parts.push(`${Math.round(version.durationSec)}s`);
   }
@@ -48,15 +51,21 @@ function formatRevisionMeta(version: SoundVersion): string {
     parts.push(`${(version.sourceSampleRateHz / 1000).toFixed(1)} kHz`);
   }
   if (version.sourceChannels) {
-    parts.push(version.sourceChannels === 1 ? 'mono' : 'stereo');
+    parts.push(
+      version.sourceChannels === 1
+        ? t('audioRevisionListBatch35.mono')
+        : t('audioRevisionListBatch35.stereo'),
+    );
   }
   return parts.join(' · ');
 }
 
 function RevisionMeta({ version }: { version: SoundVersion }) {
+  const { t } = useTranslation('web');
   return (
     <>
-      {formatRevisionMeta(version)} · <ListingDate value={version.createdAt} />
+      {formatRevisionMeta(version, t)} ·{' '}
+      <ListingDate value={version.createdAt} />
     </>
   );
 }
@@ -220,7 +229,7 @@ export function AudioRevisionList({
     setFile(null);
     setLabel('');
     setMessage(
-      `Saved as v${result.versionNumber} — not live yet. Preview it, then use this version when you want it public. If it can't be processed, we notify you.`,
+      t('audioRevisionListBatch35.savedAs', { n: result.versionNumber }),
     );
     load();
   };
@@ -421,7 +430,9 @@ export function AudioRevisionList({
                           ? webT()('a11yNamed.pauseVersion', {
                               n: version.versionNumber,
                             })
-                          : `Preview v${version.versionNumber}`
+                          : t('audioRevisionListBatch35.previewVersion', {
+                              n: version.versionNumber,
+                            })
                       }
                       onClick={() => void previewVersion(version, false)}
                     >

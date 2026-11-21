@@ -82,36 +82,11 @@ export type UserFileGroup = {
   fileCount: number;
 };
 
-/** Group a flat file list into per-user totals, sorted by usage descending —
- * the Files tab's "group by user" view and the storage chart's data source. */
-export function groupFilesByUser<T extends FileForGrouping>(
-  files: T[],
-): UserFileGroup[] {
-  const byUser = new Map<string, UserFileGroup>();
-  for (const file of files) {
-    const size = file.sizeBytes ?? 0;
-    const existing = byUser.get(file.userId);
-    if (existing) {
-      existing.totalBytes += size;
-      existing.fileCount += 1;
-    } else {
-      byUser.set(file.userId, {
-        userId: file.userId,
-        username: file.username,
-        displayName: file.displayName,
-        totalBytes: size,
-        fileCount: 1,
-      });
-    }
-  }
-  return [...byUser.values()].sort((a, b) => b.totalBytes - a.totalBytes);
-}
-
 export type UserFileRowGroup<T> = UserFileGroup & { files: T[] };
 
-/** Like `groupFilesByUser`, but keeps each user's own rows (in whatever
- * order `files` was already in — pass an already-sorted list to preserve
- * that sort within each group) instead of collapsing to totals only. */
+/** Group a flat file list per user with totals, sorted by usage descending.
+ * Each group keeps the user's own rows in whatever order `files` was already
+ * in, so pass an already-sorted list to preserve that sort within a group. */
 export function groupFileRowsByUser<T extends FileForGrouping>(
   files: T[],
 ): UserFileRowGroup<T>[] {

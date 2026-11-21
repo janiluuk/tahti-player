@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, InlineLoader } from '@tahti-player/ui';
 
-import { BOARD_ROLE_LABELS } from '../../api/governance-board';
+import { BOARD_ROLE_LABEL_KEYS } from '../../api/governance-board';
 import {
   fetchGovernanceElections,
   type GovernanceElection,
@@ -66,7 +66,7 @@ function ElectionItem({
         ) : null}
       </div>
       <div className="text-foreground-secondary text-xs">
-        {BOARD_ROLE_LABELS[election.role]} · {seats} ·{' '}
+        {t(BOARD_ROLE_LABEL_KEYS[election.role])} · {seats} ·{' '}
         {electionStatus(election, t)}
       </div>
       {election.candidates.length === 0 ? (

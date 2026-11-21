@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { encodeWavPcm16, encodeWavPcm16Blob } from './wav';
+import { encodeWavPcm16 } from './wav';
 
 function readString(view: DataView, offset: number, length: number): string {
   let s = '';
@@ -58,17 +58,5 @@ describe('encodeWavPcm16', () => {
     expect(view.getInt16(46, true)).toBe(0x7fff);
     expect(view.getInt16(48, true)).toBe(-0x8000);
     expect(view.getInt16(50, true)).toBe(-0x8000);
-  });
-});
-
-describe('encodeWavPcm16Blob', () => {
-  it('produces a Blob with the audio/wav MIME type and matching byte length', async () => {
-    const left = Float64Array.from([0, 0.5]);
-    const right = Float64Array.from([0, -0.5]);
-    const blob = encodeWavPcm16Blob({ left, right }, 44100);
-    expect(blob.type).toBe('audio/wav');
-    expect(blob.size).toBe(44 + left.length * 4);
-    const buf = await blob.arrayBuffer();
-    expect(String.fromCharCode(...new Uint8Array(buf, 0, 4))).toBe('RIFF');
   });
 });

@@ -113,7 +113,7 @@ export function ChannelPlaylistBlock({
         title={t('loadErrors.couldNotLoadPlaylist')}
         description={
           editing
-            ? `${loadError} Pick another in widget settings, or try again.`
+            ? t('channelPlaylistBlockBatch35.pickAnother', { error: loadError })
             : loadError
         }
         onRetry={() => setAttempt((n) => n + 1)}
@@ -164,7 +164,7 @@ export function ChannelPlaylistBlock({
           }}
           className="text-primary-strong text-xs font-semibold underline-offset-2 hover:underline"
         >
-          Open playlist →
+          {t('channelPlaylistBlockBatch35.openPlaylist')}
         </Link>
       </div>
       {playables.length === 0 ? (

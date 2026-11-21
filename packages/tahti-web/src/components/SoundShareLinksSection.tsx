@@ -2,7 +2,7 @@ import { CheckIcon, LinkIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   CopyButton,
@@ -24,17 +24,17 @@ import { PageEmpty, PageError } from './PageStates';
 
 const EXPIRY_OPTIONS = [1, 3, 7, 30, 0] as const;
 
-function formatExpiry(expiresAt: string | null): string {
+function formatExpiry(expiresAt: string | null, t: TFunction<'web'>): string {
   if (!expiresAt) {
-    return 'No expiry';
+    return t('soundShareLinksSectionBatch35.noExpiry');
   }
   const remainingDays = Math.max(
     0,
     Math.ceil((new Date(expiresAt).getTime() - Date.now()) / 86_400_000),
   );
   return remainingDays === 0
-    ? 'Expired'
-    : `${remainingDays} day${remainingDays === 1 ? '' : 's'} left`;
+    ? t('stashFilesPanelBatch30.expired')
+    : t('stashFilesPanelBatch30.daysLeft', { count: remainingDays });
 }
 
 function shareLinkFor(soundId: string, token: string): string {
@@ -153,13 +153,13 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
               <span className="text-foreground-secondary">
                 {share.granteeUsername
                   ? `@${share.granteeUsername}`
-                  : 'Anyone with the link'}
+                  : t('soundShareLinksSectionBatch35.anyoneWithTheLink')}
                 {' · '}
                 {share.permission === 'DOWNLOAD'
                   ? t('soundShareLinksSectionStates.playDownload')
                   : t('soundShareLinksSectionStates.playOnly')}
                 {' · '}
-                {formatExpiry(share.expiresAt)}
+                {formatExpiry(share.expiresAt, t)}
               </span>
               {/* System rule: any field displaying a URL pairs it with
                   CopyButton (@tahti-player/ui) inline — never a bare
@@ -174,7 +174,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
                   text={shareLinkFor(soundId, share.token)}
                   aria-label={t('soundShareLinksSection.copyShareLink')}
                   variant="text"
-                  toastMessage="Link copied."
+                  toastMessage={t('channelShare.linkCopied')}
                 />
                 <Tooltip content={t('soundShare.revokeAria')} side="top">
                   <Button
@@ -210,7 +210,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
           label={t('soundShareLinksSection.limitToAUsernameOptional')}
           value={granteeUsername}
           onChange={(e) => setGranteeUsername(e.target.value)}
-          placeholder="@username, or leave empty for link access"
+          placeholder={t('stashFilesPanelBatch30.shareWithPlaceholder')}
           description={t('soundShareLinksSection.aNamedMemberGetsA')}
         />
         <Select
@@ -231,7 +231,10 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
           onValueChange={(value) => setExpiryDays(Number(value))}
           options={EXPIRY_OPTIONS.map((days) => ({
             id: String(days),
-            label: days === 0 ? 'Never' : `${days} day${days === 1 ? '' : 's'}`,
+            label:
+              days === 0
+                ? t('soundShareLinksSectionLeftovers.never')
+                : t('stashFilesPanelBatch30.days', { count: days }),
           }))}
         />
         <Button size="sm" disabled={busy} type="submit">

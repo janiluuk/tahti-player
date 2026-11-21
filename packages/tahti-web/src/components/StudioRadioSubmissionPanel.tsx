@@ -166,7 +166,9 @@ export function StudioRadioSubmissionPanel() {
           {t('studioRadioSubmissionPanel.submitTracksToTahtiRadio')}
         </Dialog.Title>
         <Dialog.Description>
-          Select up to {MAX_TRACKS} single audio files from your library.
+          {t('studioRadioSubmissionPanelBatch35.selectUpTo', {
+            count: MAX_TRACKS,
+          })}
         </Dialog.Description>
         <form
           onSubmit={(event) => {
@@ -185,7 +187,9 @@ export function StudioRadioSubmissionPanel() {
                 >
                   <span className="min-w-0 flex-1 text-sm">{item.title}</span>
                   <span className="text-foreground-secondary text-xs">
-                    {existing ? statusLabel(existing.status) : 'Ready'}
+                    {existing
+                      ? statusLabel(existing.status)
+                      : t('library.statusReady')}
                   </span>
                   <Toggle
                     label={t('studioRadioSubmissionPanelLabels.selectTitle', {
@@ -221,7 +225,11 @@ export function StudioRadioSubmissionPanel() {
               {t('studioRadioSubmissionPanel.cancel')}
             </Dialog.Close>
             <Button disabled={busy || selected.length === 0} type="submit">
-              Submit {selected.length || ''}
+              {selected.length
+                ? t('studioRadioSubmissionPanelBatch35.submitCount', {
+                    count: selected.length,
+                  })
+                : t('sharingTabStates.submit')}
             </Button>
           </Dialog.Actions>
         </form>

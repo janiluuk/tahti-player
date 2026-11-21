@@ -1,15 +1,17 @@
 import type { ReactNode } from 'react';
 
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
+
 export type CapabilityKind =
   'not-in-client' | 'coming-soon' | 'partial' | 'link-out' | 'mock-only';
 
-const KIND_LABEL: Record<CapabilityKind, string> = {
-  'not-in-client': 'Not available in this client',
-  'coming-soon': 'Not available yet',
-  partial: 'Partial',
-  'link-out': 'Opens tahti.live',
-  'mock-only': 'Preview only',
-};
+const KIND_LABEL = {
+  'not-in-client': 'clientCapabilityNoticeBatch35.notInClient',
+  'coming-soon': 'clientCapabilityNoticeBatch35.comingSoon',
+  partial: 'clientCapabilityNoticeBatch35.partial',
+  'link-out': 'clientCapabilityNoticeBatch35.linkOut',
+  'mock-only': 'clientCapabilityNoticeBatch35.mockOnly',
+} as const satisfies Record<CapabilityKind, ParseKeys<'web'>>;
 
 /**
  * Honest UX callout for surfaces that are missing, thin, link-out, or mock-only.
@@ -28,6 +30,7 @@ export function ClientCapabilityNotice({
   action?: ReactNode;
   className?: string;
 }) {
+  const { t } = useTranslation('web');
   return (
     <aside
       role="note"
@@ -35,7 +38,7 @@ export function ClientCapabilityNotice({
     >
       <div className="flex flex-wrap items-center gap-2">
         <span className="border-border text-foreground-secondary inline-block rounded border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
-          {KIND_LABEL[kind]}
+          {t(KIND_LABEL[kind])}
         </span>
         {title && (
           <span className="text-foreground text-sm font-semibold">{title}</span>

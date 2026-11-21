@@ -6,7 +6,6 @@ import {
   formatFileDate,
   formatQuota,
   groupFileRowsByUser,
-  groupFilesByUser,
   usagePercent,
 } from './storageFormat';
 
@@ -75,52 +74,6 @@ describe('formatFileDate', () => {
   });
 });
 
-describe('groupFilesByUser', () => {
-  const files = [
-    {
-      userId: 'u-1',
-      username: 'dj-moonlight',
-      displayName: 'DJ Moonlight',
-      sizeBytes: 100,
-    },
-    {
-      userId: 'u-2',
-      username: 'kaiku-collective',
-      displayName: 'Kaiku Collective',
-      sizeBytes: 500,
-    },
-    {
-      userId: 'u-1',
-      username: 'dj-moonlight',
-      displayName: 'DJ Moonlight',
-      sizeBytes: 50,
-    },
-    {
-      userId: 'u-3',
-      username: 'no-size',
-      displayName: 'No Size',
-      sizeBytes: null,
-    },
-  ];
-
-  it('sums sizes per user and sorts by usage descending', () => {
-    const groups = groupFilesByUser(files);
-    expect(groups.map((g) => g.userId)).toEqual(['u-2', 'u-1', 'u-3']);
-    expect(groups[0]).toMatchObject({ totalBytes: 500, fileCount: 1 });
-    expect(groups[1]).toMatchObject({ totalBytes: 150, fileCount: 2 });
-  });
-
-  it('treats a null sizeBytes as 0 rather than dropping the file', () => {
-    const groups = groupFilesByUser(files);
-    const noSize = groups.find((g) => g.userId === 'u-3');
-    expect(noSize).toMatchObject({ totalBytes: 0, fileCount: 1 });
-  });
-
-  it('returns an empty array for an empty input', () => {
-    expect(groupFilesByUser([])).toEqual([]);
-  });
-});
-
 describe('groupFileRowsByUser', () => {
   const files = [
     {
@@ -149,6 +102,18 @@ describe('groupFileRowsByUser', () => {
     const dj = groups.find((g) => g.userId === 'u-1')!;
     expect(dj.files).toEqual([files[0], files[2]]);
     expect(dj).toMatchObject({ totalBytes: 150, fileCount: 2 });
+  });
+
+  it('treats a null sizeBytes as 0 rather than dropping the file', () => {
+    const groups = groupFileRowsByUser([
+      {
+        userId: 'u-3',
+        username: 'no-size',
+        displayName: 'No Size',
+        sizeBytes: null,
+      },
+    ]);
+    expect(groups[0]).toMatchObject({ totalBytes: 0, fileCount: 1 });
   });
 
   it('returns an empty array for an empty input', () => {

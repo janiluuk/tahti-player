@@ -65,7 +65,7 @@ function varGroups(t: TFunction<'web'>): VarGroup[] {
         { key: 'accent-blue', label: t('themeEditorMore.blue') },
         { key: 'accent-orange', label: t('themeEditorMore.orange') },
         { key: 'accent-cyan', label: t('themeEditorMore.cyan') },
-        { key: 'accent-red', label: 'Red' },
+        { key: 'accent-red', label: t('themeEditorBatch35.red') },
       ],
     },
   ];
@@ -259,7 +259,7 @@ function ColorTokenRow({
         </span>
         {overridden ? (
           <span className="text-foreground-secondary font-mono text-[10px] uppercase">
-            edit
+            {t('themeEditorBatch35.edited')}
           </span>
         ) : null}
         <ChevronDownIcon
@@ -286,7 +286,9 @@ function ColorTokenRow({
               value={value}
               onChange={(event) => onChange(event.target.value)}
               placeholder={placeholder}
-              aria-label={`${field.label} CSS color`}
+              aria-label={t('themeEditorBatch35.cssColor', {
+                label: field.label,
+              })}
               className="font-mono text-xs"
             />
             {overridden ? (
@@ -411,7 +413,7 @@ export function ThemeEditor() {
   const save = () => {
     const trimmed = name.trim();
     if (!trimmed) {
-      setNameError('Theme name is required.');
+      setNameError(t('themeEditorBatch35.nameRequired'));
       setSaveMsg(null);
       return;
     }
@@ -443,7 +445,7 @@ export function ThemeEditor() {
     try {
       parsed = JSON.parse(importJson);
     } catch {
-      setImportMsg('Not valid JSON.');
+      setImportMsg(t('manageDialogBatch33.invalidJson'));
       return;
     }
     const result = importCustomTheme(parsed);
@@ -505,9 +507,11 @@ export function ThemeEditor() {
         </Button>
       </form>
       <p className="text-foreground-secondary text-xs">
-        Editing the <strong>{dark ? 'dark' : 'light'}</strong> variant. Use the
-        sun/moon control above to switch. Click a color to tune it — blank keeps
-        the base palette.
+        {t('themeEditorBatch35.editingBefore')}{' '}
+        <strong>
+          {dark ? t('themeEditorBatch35.dark') : t('themeEditorBatch35.light')}
+        </strong>{' '}
+        {t('themeEditorBatch35.editingAfter')}
       </p>
 
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">

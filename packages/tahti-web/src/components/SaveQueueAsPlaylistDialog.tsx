@@ -63,10 +63,15 @@ export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
     setBusy(false);
     setName('');
     onClose();
-    toastWithUndo(`Saved ${created.data.name}.`, {
-      undo: () => deleteStudioCollection(created.data.slug),
-      undoneMessage: `Removed ${created.data.name}.`,
-    });
+    toastWithUndo(
+      t('multicastSectionBatch32.saved', { name: created.data.name }),
+      {
+        undo: () => deleteStudioCollection(created.data.slug),
+        undoneMessage: t('multicastSectionBatch32.removed', {
+          name: created.data.name,
+        }),
+      },
+    );
   };
 
   return (
@@ -75,13 +80,13 @@ export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
         {t('saveQueueAsPlaylistDialog.saveQueueAsPlaylist')}
       </Dialog.Title>
       <Dialog.Description>
-        Creates a new playlist from the {soundIds.length}{' '}
-        {soundIds.length === 1 ? 'track' : 'tracks'} in your queue that are part
-        of the Tahti catalog.
+        {t('saveQueueAsPlaylistDialogBatch35.description', {
+          count: soundIds.length,
+        })}
         {skipped - localCount > 0 &&
-          ` ${skipped - localCount} other ${skipped - localCount === 1 ? 'track isn’t' : 'tracks aren’t'} included.`}
+          ` ${t('saveQueueAsPlaylistDialogBatch35.otherSkipped', { count: skipped - localCount })}`}
         {localCount > 0 &&
-          ` ${localCount} local ${localCount === 1 ? 'file lives' : 'files live'} on this device and can’t be added to a cloud playlist — use “Save queue as local playlist” to keep ${localCount === 1 ? 'it' : 'them'}.`}
+          ` ${t('saveQueueAsPlaylistDialogBatch35.localSkipped', { count: localCount })}`}
       </Dialog.Description>
       <form
         onSubmit={(event) => {

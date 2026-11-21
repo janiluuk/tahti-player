@@ -62,7 +62,7 @@ export function AddToPlaylistDialog({
           setLoadError(
             error instanceof Error
               ? error.message
-              : 'Could not load playlists.',
+              : t('playlistsBrowserBatch30.couldNotLoad'),
           );
         }
       });
@@ -81,12 +81,16 @@ export function AddToPlaylistDialog({
       const playlist = await target();
       const added = await library.playlists.addTracks(playlist.id, ids);
       toast.success(
-        added === 1
-          ? `Added 1 track to “${playlist.name}”.`
-          : `Added ${added.toLocaleString('en-US')} tracks to “${playlist.name}”.`,
+        t('addToPlaylistDialogBatch35.added', {
+          count: added,
+          value: added.toLocaleString('en-US'),
+          name: playlist.name,
+        }),
         added < ids.length
           ? {
-              description: `${ids.length - added} could not be added because they are no longer in the library.`,
+              description: t('addToPlaylistDialogBatch35.notAdded', {
+                count: ids.length - added,
+              }),
             }
           : undefined,
       );
@@ -108,8 +112,7 @@ export function AddToPlaylistDialog({
     <Dialog.Root isOpen={isOpen} onClose={() => (busy ? undefined : onClose())}>
       <Dialog.Title>{t('addToPlaylistDialog.addToPlaylist')}</Dialog.Title>
       <Dialog.Description>
-        {summary}. Tracks are added to the end; the same track can appear more
-        than once.
+        {t('addToPlaylistDialogBatch35.description', { summary })}
       </Dialog.Description>
       <div className="flex max-h-[45vh] flex-col gap-1 overflow-y-auto py-2">
         {playlists === null ? (

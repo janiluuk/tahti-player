@@ -1,6 +1,10 @@
 import { ListPlusIcon } from 'lucide-react';
 
-import { useTranslation, type TFunction } from '@tahti-player/i18n';
+import {
+  useTranslation,
+  type ParseKeys,
+  type TFunction,
+} from '@tahti-player/i18n';
 import { Button, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -31,21 +35,21 @@ function browseTabs(
   ];
 }
 
-export const FACET_KIND_LABEL: Record<NativeFacetKind, string> = {
-  artists: 'Artist',
-  albums: 'Album',
-  genres: 'Genre',
-  composers: 'Composer',
-  folders: 'Folder',
-};
+const FACET_GROUPS_LABEL = {
+  artists: 'localLibraryBrowseBatch35.artistGroups',
+  albums: 'localLibraryBrowseBatch35.albumGroups',
+  genres: 'localLibraryBrowseBatch35.genreGroups',
+  composers: 'localLibraryBrowseBatch35.composerGroups',
+  folders: 'localLibraryBrowseBatch35.folderGroups',
+} as const satisfies Record<NativeFacetKind, ParseKeys<'web'>>;
 
-const UNKNOWN_LABEL: Record<NativeFacetKind, string> = {
-  artists: 'Unknown artist',
-  albums: 'Unknown album',
-  genres: 'No genre',
-  composers: 'No composer',
-  folders: 'Loose files',
-};
+const UNKNOWN_LABEL = {
+  artists: 'localLibraryBrowseBatch35.unknownArtist',
+  albums: 'localLibraryBrowseBatch35.unknownAlbum',
+  genres: 'localLibraryBrowseBatch35.noGenre',
+  composers: 'localLibraryBrowseBatch35.noComposer',
+  folders: 'localLibraryBrowseBatch35.looseFiles',
+} as const satisfies Record<NativeFacetKind, ParseKeys<'web'>>;
 
 export function BrowseTabs({
   value,
@@ -87,6 +91,7 @@ export function LibraryTotalsLine({
 }: {
   totals: NativeLibraryTotals | null;
 }) {
+  const { t } = useTranslation('web');
   if (!totals || totals.trackCount === 0) {
     return null;
   }
@@ -95,16 +100,18 @@ export function LibraryTotalsLine({
       className="text-foreground-secondary text-xs"
       data-testid="library-totals"
     >
-      {pluralTracks(totals.trackCount)} ·{' '}
-      {formatTotalDuration(totals.durationSec)} ·{' '}
-      {formatLibrarySize(totals.sizeBytes)} on this device
+      {t('localLibraryBrowseBatch35.totalsOnDevice', {
+        tracks: pluralTracks(totals.trackCount),
+        duration: formatTotalDuration(totals.durationSec),
+        size: formatLibrarySize(totals.sizeBytes),
+      })}
     </p>
   );
 }
 
 export function facetTitle(kind: NativeFacetKind, group: NativeFacetGroup) {
   if (!group.name) {
-    return UNKNOWN_LABEL[kind];
+    return webT()(UNKNOWN_LABEL[kind]);
   }
   if (kind === 'folders') {
     const trimmed = group.name.replace(/[\\/]+$/, '');
@@ -116,7 +123,9 @@ export function facetTitle(kind: NativeFacetKind, group: NativeFacetGroup) {
 function facetSubtitle(kind: NativeFacetKind, group: NativeFacetGroup) {
   const parts: string[] = [];
   if (kind === 'albums') {
-    parts.push(group.secondary || 'Unknown artist');
+    parts.push(
+      group.secondary || webT()('localLibraryBrowseBatch35.unknownArtist'),
+    );
     if (group.year) {
       parts.push(String(group.year));
     }
@@ -145,7 +154,7 @@ export function FacetGroupList({
   return (
     <ul
       className="tahti-hide-scrollbar flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto"
-      aria-label={`${FACET_KIND_LABEL[kind]} groups`}
+      aria-label={t(FACET_GROUPS_LABEL[kind])}
     >
       {groups.map((group) => (
         <li

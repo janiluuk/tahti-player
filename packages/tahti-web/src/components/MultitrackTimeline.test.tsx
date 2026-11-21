@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 
 import type { EditorTimeline } from '../api/studio-types';
 import {
-  clampTimelineDuration,
   moveTimelineClip,
   normalizeTimeline,
   reorderTimelineTracks,
@@ -58,7 +57,6 @@ describe('multitrack timeline model', () => {
       moveTimelineClip(timeline, 'a', 'clip', 200).tracks[0]?.clips[0]
         ?.startSec,
     ).toBe(90);
-    expect(clampTimelineDuration(200, 90)).toBe(90);
   });
   it('reorders tracks and toggles their mix state', () => {
     expect(reorderTimelineTracks(timeline, 'b', 'up').tracks[0]?.id).toBe('b');

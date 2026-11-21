@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
 
+import { dateLocaleTag } from '../lib/locale';
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
 import { toastWithUndo } from '../lib/undoToast';
 import { usePlayerStore } from '../stores/playerStore';
@@ -56,16 +57,22 @@ export function SaveQueueLocalDialog({ isOpen, onClose, library }: Props) {
       const skippedCount = trackIds.length - added;
       const skippedNote =
         skippedCount > 0
-          ? ` ${skippedCount} local ${skippedCount === 1 ? 'file is' : 'files are'} not in your library and weren’t saved.`
+          ? ` ${t('saveQueueLocalDialogBatch35.skippedNote', { count: skippedCount })}`
           : '';
       toastWithUndo(
-        `Saved ${added.toLocaleString('en-US')} ${added === 1 ? 'track' : 'tracks'} to “${playlist.name}”.${skippedNote}`,
+        `${t('saveQueueLocalDialogBatch35.saved', {
+          count: added,
+          countLabel: added.toLocaleString(dateLocaleTag()),
+          name: playlist.name,
+        })}${skippedNote}`,
         {
           undo: async () => {
             await library.playlists.delete(playlist.id);
             return { ok: true as const };
           },
-          undoneMessage: `Removed “${playlist.name}”.`,
+          undoneMessage: t('toasts.removedNamedQuotes', {
+            name: playlist.name,
+          }),
         },
       );
       setName('');
@@ -87,11 +94,12 @@ export function SaveQueueLocalDialog({ isOpen, onClose, library }: Props) {
         {t('saveQueueLocalDialog.saveQueueAsLocalPlaylist')}
       </Dialog.Title>
       <Dialog.Description>
-        Saves the {trackIds.length.toLocaleString('en-US')} local{' '}
-        {trackIds.length === 1 ? 'track' : 'tracks'} in your queue, in queue
-        order, to a playlist on this device.
+        {t('saveQueueLocalDialogBatch35.description', {
+          count: trackIds.length,
+          countLabel: trackIds.length.toLocaleString(dateLocaleTag()),
+        })}
         {streamed > 0
-          ? ` ${streamed} streamed ${streamed === 1 ? 'track (Tahti, radio or live)' : 'tracks (Tahti, radio or live)'} can’t be stored locally and ${streamed === 1 ? 'isn’t' : 'aren’t'} included — use “Save queue to cloud playlist” for those.`
+          ? ` ${t('saveQueueLocalDialogBatch35.streamedNote', { count: streamed })}`
           : ''}
       </Dialog.Description>
       <form

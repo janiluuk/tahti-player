@@ -160,31 +160,3 @@ function isListenSidebarRoute(path: string): boolean {
     path.startsWith('/v/')
   );
 }
-
-export const SIDEBAR_UNLIT_INTENTIONAL: readonly string[] = [
-  '/login',
-  '/join',
-  '/apply',
-  '/signup',
-  '/verify',
-  '/email-change',
-  '/forgot-password',
-  '/reset-password',
-  '/setup-password',
-  '/onboarding',
-  '/about',
-  '/privacy',
-  '/terms',
-  '/agpl',
-  '/what-is-it',
-  '/how-it-works',
-  '/for-artists',
-  '/status',
-  '/news',
-  '/whats-new',
-  '/transparency',
-  '/venues',
-  '/schedule',
-  '/messages',
-  '/search',
-];

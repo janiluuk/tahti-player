@@ -63,8 +63,10 @@ export function MembershipStatusPanel({
       if ('activated' in res && res.activated) {
         setMessage(
           res.memberNumber != null
-            ? `Membership activated — member #${res.memberNumber}`
-            : 'Membership activated',
+            ? t('membershipStatusPanelBatch35.activatedWithNumber', {
+                number: res.memberNumber,
+              })
+            : t('membershipStatusPanelBatch35.activated'),
         );
         onChange();
       }
@@ -101,7 +103,9 @@ export function MembershipStatusPanel({
     return (
       <Box variant="tertiary" className="flex-col items-start gap-3">
         <Badge variant="pill" color="green">
-          Active member #{membership.memberNumber ?? '—'}
+          {t('membershipStatusPanelBatch35.activeMember', {
+            number: membership.memberNumber ?? '—',
+          })}
         </Badge>
         <p className="text-foreground-secondary text-sm">
           {t('membershipStatus.thankYouForSupportingThe')}
@@ -116,14 +120,15 @@ export function MembershipStatusPanel({
           !membership.subscriptionMigrationRequired && (
             <p className="text-foreground-secondary text-sm">
               {t('membershipStatus.renewalDueAround')}{' '}
-              <ListingDate value={renewalDueAt} />. Pay again from this panel
-              when reminded, or subscribe via Stripe on your next checkout.
+              <ListingDate value={renewalDueAt} />
+              {t('membershipStatusPanelBatch35.renewalDueTail')}
             </p>
           )}
         {membership.hasStripeSubscription && renewalDueAt && (
           <p className="text-foreground-secondary text-sm">
             {t('membershipStatus.nextRenewalAround')}{' '}
-            <ListingDate value={renewalDueAt} /> (Stripe subscription).
+            <ListingDate value={renewalDueAt} />{' '}
+            {t('membershipStatusPanelBatch35.stripeSubscription')}
           </p>
         )}
         {error && <InlineError>{error}</InlineError>}
@@ -141,8 +146,10 @@ export function MembershipStatusPanel({
         ) : membership.subscriptionMigrationRequired ? (
           <Button size="sm" disabled={busy} onClick={pay}>
             {busy
-              ? 'Processing…'
-              : `Subscribe for auto-renewal (${euros(membership.priceCents ?? 0)}/year)`}
+              ? t('membershipStatusPanelBatch35.processing')
+              : t('membershipStatusPanelBatch35.subscribeAutoRenewal', {
+                  price: euros(membership.priceCents ?? 0),
+                })}
           </Button>
         ) : null}
       </Box>
@@ -161,10 +168,9 @@ export function MembershipStatusPanel({
             : t('membershipStatusPanelStates.completeYourMembership')}
         </h3>
         <p className="text-foreground-secondary mt-1 text-sm">
-          Tahti ry is a member-governed nonprofit. Annual membership is{' '}
-          {euros(membership.priceCents ?? 0)}/year (tax-deductible for eligible
-          professionals in Finland). Adds lossless streaming for listeners and
-          unlimited live broadcasting.
+          {t('membershipStatusPanelBatch35.intro', {
+            price: euros(membership.priceCents ?? 0),
+          })}
         </p>
       </div>
       <p className="text-xs font-semibold tracking-wide uppercase">
@@ -200,8 +206,10 @@ export function MembershipStatusPanel({
         onClick={pay}
       >
         {busy
-          ? 'Processing…'
-          : `Pay ${euros(membership.priceCents ?? 0)} / year`}
+          ? t('membershipStatusPanelBatch35.processing')
+          : t('membershipStatusPanelBatch35.payPerYear', {
+              price: euros(membership.priceCents ?? 0),
+            })}
       </Button>
     </Box>
   );

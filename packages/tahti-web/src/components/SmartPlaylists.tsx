@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, EditIconButton, Loader, Tooltip } from '@tahti-player/ui';
 
+import { dateLocaleTag } from '../lib/locale';
 import type {
   NativeSmartDefinition,
   NativeSmartPlaylist,
@@ -161,8 +162,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
         />
       ) : lists.length === 0 ? (
         <p className="text-foreground-secondary text-xs">
-          Rules like “house, 120–128 BPM, rating 4+, not played in 30 days” keep
-          themselves up to date.
+          {t('smartPlaylistsBatch35.emptyHint')}
         </p>
       ) : (
         <ul className="flex flex-col gap-1">
@@ -180,8 +180,12 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                   {counts[list.id] === undefined
                     ? '…'
                     : counts[list.id]! < 0
-                      ? 'Rules need attention'
-                      : `${counts[list.id]!.toLocaleString('en-US')} tracks now`}{' '}
+                      ? t('smartPlaylistsBatch35.rulesNeedAttention')
+                      : t('smartPlaylistsBatch35.tracksNow', {
+                          count: counts[list.id],
+                          countLabel:
+                            counts[list.id]!.toLocaleString(dateLocaleTag()),
+                        })}{' '}
                   · {describeRules(list)}
                 </span>
               </span>
@@ -286,7 +290,11 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
         isOpen={snapshotOf !== null}
         title={t('smartPlaylists.saveAFixedCopyDoes')}
         confirmLabel={t('smartPlaylists.saveCopy')}
-        initialName={snapshotOf ? `${snapshotOf.name} (snapshot)` : ''}
+        initialName={
+          snapshotOf
+            ? t('smartPlaylistsBatch35.snapshotName', { name: snapshotOf.name })
+            : ''
+        }
         onClose={() => setSnapshotOf(null)}
         onSubmit={async (name) => {
           if (!snapshotOf) {
@@ -296,17 +304,22 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
             snapshotOf.id,
             name,
           );
-          toastWithUndo(`Created “${playlist.name}”.`, {
-            undo: async () => {
-              await library.analysis.smart.remove(playlist.id);
-              return { ok: true };
+          toastWithUndo(
+            t('playlistsBrowserBatch30.createdNamed', { name: playlist.name }),
+            {
+              undo: async () => {
+                await library.analysis.smart.remove(playlist.id);
+                return { ok: true };
+              },
+              undoneMessage: t('toasts.deletedNamedQuotes', {
+                name: playlist.name,
+              }),
+              onUndone: () => {
+                onPlaylistCreated();
+                void load();
+              },
             },
-            undoneMessage: `Deleted “${playlist.name}”.`,
-            onUndone: () => {
-              onPlaylistCreated();
-              void load();
-            },
-          });
+          );
           onPlaylistCreated();
         }}
       />
@@ -314,7 +327,9 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
         destructive
         isOpen={deleting !== null}
         title={t('smartPlaylists.deleteThisSmartPlaylist')}
-        description={`“${deleting?.name ?? ''}” will be deleted. Only the rules go; your tracks and files are not touched.`}
+        description={t('smartPlaylistsBatch35.deleteDescription', {
+          name: deleting?.name ?? '',
+        })}
         confirmLabel={t('smartPlaylists.delete')}
         onCancel={() => setDeleting(null)}
         onConfirm={() => {

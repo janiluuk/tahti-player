@@ -8,7 +8,7 @@ import {
   fetchAdminBoardTerms,
   type AdminBoardTerm,
 } from '../../../../api/admin/admin-governance-board';
-import { BOARD_ROLE_LABELS } from '../../../../api/governance-board';
+import { BOARD_ROLE_LABEL_KEYS } from '../../../../api/governance-board';
 import {
   PageEmpty,
   PageError,
@@ -121,7 +121,7 @@ export function BoardTermsPanel() {
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-medium">{term.displayName}</span>
                   <span className="text-foreground-secondary text-xs">
-                    {BOARD_ROLE_LABELS[term.role]}
+                    {t(BOARD_ROLE_LABEL_KEYS[term.role])}
                   </span>
                   <Badge variant="pill" color={status.color}>
                     {status.label}

@@ -23,13 +23,20 @@ export function QueueConfirmDialog({
   const { t } = useTranslation('web');
   return (
     <Dialog.Root isOpen={isOpen} onClose={onCancel}>
-      <Dialog.Title>Queue {count} tracks?</Dialog.Title>
+      <Dialog.Title>
+        {t('queueConfirmDialogBatch35.title', { count })}
+      </Dialog.Title>
       <Dialog.Description>
-        This adds all {count} tracks from {sourceLabel} to your play queue.
+        {t('queueConfirmDialogBatch35.description', {
+          count,
+          source: sourceLabel,
+        })}
       </Dialog.Description>
       <Dialog.Actions>
         <Dialog.Close>{t('queueConfirmDialogText.cancel')}</Dialog.Close>
-        <Button onClick={onConfirm}>Queue {count} tracks</Button>
+        <Button onClick={onConfirm}>
+          {t('queueConfirmDialogBatch35.confirm', { count })}
+        </Button>
       </Dialog.Actions>
     </Dialog.Root>
   );

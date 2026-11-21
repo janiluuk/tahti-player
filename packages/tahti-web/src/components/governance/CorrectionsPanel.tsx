@@ -1,7 +1,7 @@
 import { PencilLineIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import { Badge, Button, InlineError, Select, Textarea } from '@tahti-player/ui';
 
 import {
@@ -22,12 +22,21 @@ import { GovernancePanel } from './GovernancePanel';
 
 const STATE_LABELS: Record<
   CorrectionState,
-  { label: string; color: 'yellow' | 'green' | 'red' | 'secondary' }
+  {
+    labelKey: ParseKeys<'web'>;
+    color: 'yellow' | 'green' | 'red' | 'secondary';
+  }
 > = {
-  OPEN: { label: 'Waiting for the board', color: 'yellow' },
-  ACCEPTED: { label: 'Accepted', color: 'green' },
-  REJECTED: { label: 'Rejected', color: 'red' },
-  WITHDRAWN: { label: 'Withdrawn', color: 'secondary' },
+  OPEN: {
+    labelKey: 'correctionsPanelBatch35.waitingForTheBoard',
+    color: 'yellow',
+  },
+  ACCEPTED: { labelKey: 'correctionsQueuePanelMore.accepted', color: 'green' },
+  REJECTED: { labelKey: 'correctionsQueuePanelMore.rejected', color: 'red' },
+  WITHDRAWN: {
+    labelKey: 'correctionsQueuePanelMore.withdrawn',
+    color: 'secondary',
+  },
 };
 
 function CorrectionItem({
@@ -64,7 +73,7 @@ function CorrectionItem({
           {t(CORRECTION_SUBJECT_LABEL_KEYS[correction.subject])}
         </span>
         <Badge variant="pill" color={state.color}>
-          {state.label}
+          {t(state.labelKey)}
         </Badge>
       </div>
       <p className="text-foreground-secondary text-xs">
@@ -74,7 +83,9 @@ function CorrectionItem({
       <p className="whitespace-pre-line">{correction.details}</p>
       {correction.resolutionNote ? (
         <p className="text-foreground-secondary text-xs">
-          Board's answer: {correction.resolutionNote}
+          {t('correctionsPanelBatch35.boardsAnswer', {
+            note: correction.resolutionNote,
+          })}
         </p>
       ) : null}
       {correction.state === 'OPEN' ? (
@@ -144,7 +155,7 @@ export function CorrectionsPanel() {
         onSubmit={(e) => {
           e.preventDefault();
           if (tooShort) {
-            setError('Say what is wrong and what it should be.');
+            setError(t('correctionsPanelBatch35.sayWhatIsWrong'));
             return;
           }
           setBusy(true);

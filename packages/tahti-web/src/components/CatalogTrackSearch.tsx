@@ -102,7 +102,11 @@ export function CatalogTrackSearch({
       searched === query.trim() &&
       !error &&
       visible.length === 0 ? (
-        <PageEmpty title={`No public tracks match “${query.trim()}”.`} />
+        <PageEmpty
+          title={t('catalogTrackSearchBatch35.noMatch', {
+            query: query.trim(),
+          })}
+        />
       ) : null}
       {visible.length > 0 ? (
         <ul

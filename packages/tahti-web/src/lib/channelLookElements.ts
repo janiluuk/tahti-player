@@ -133,17 +133,6 @@ export function isArtistLookBlockId(
   );
 }
 
-export function adjacentLookElementId(
-  currentId: string,
-  direction: -1 | 1,
-): ChannelLookElementId {
-  const ids = channelLookElements(webT()).map((element) => element.id);
-  const index = ids.indexOf(currentId as ChannelLookElementId);
-  const from = index < 0 ? 0 : index;
-  const next = (from + direction + ids.length) % ids.length;
-  return ids[next] ?? 'releases';
-}
-
 function artistLookStorageKey(slug: string) {
   return `tahti.artistLookBlocks.${slug}`;
 }
@@ -188,14 +177,4 @@ export function saveArtistLookVisibility(
   } catch {
     return;
   }
-}
-
-export function toggleArtistLookVisibility(
-  slug: string,
-  id: ArtistLookBlockId,
-): Record<ArtistLookBlockId, boolean> {
-  const current = loadArtistLookVisibility(slug);
-  const next = { ...current, [id]: !current[id] };
-  saveArtistLookVisibility(slug, next);
-  return next;
 }

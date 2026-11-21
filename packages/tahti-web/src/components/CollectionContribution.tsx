@@ -1,11 +1,18 @@
 import { Link } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import type { ContributionLine } from '../api/collection-contribution';
 
 export function CollectionContribution({ line }: { line: ContributionLine }) {
+  const { t } = useTranslation('web');
   const { addedByUsername, note } = line;
   const fullText = [
-    addedByUsername ? `Added by @${addedByUsername}` : null,
+    addedByUsername
+      ? t('collectionContributionBatch35.addedByUser', {
+          username: addedByUsername,
+        })
+      : null,
     note ? `“${note}”` : null,
   ]
     .filter(Boolean)
@@ -15,7 +22,7 @@ export function CollectionContribution({ line }: { line: ContributionLine }) {
     <span title={fullText} data-testid="collection-contribution">
       {addedByUsername ? (
         <>
-          Added by{' '}
+          {t('collectionContributionBatch35.addedBy')}{' '}
           <Link
             to="/u/$username"
             params={{ username: addedByUsername }}

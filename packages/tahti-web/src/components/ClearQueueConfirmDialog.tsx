@@ -22,8 +22,7 @@ export function ClearQueueConfirmDialog({
     <Dialog.Root isOpen={isOpen} onClose={onCancel}>
       <Dialog.Title>{t('clearQueueConfirmDialog.clearQueue')}</Dialog.Title>
       <Dialog.Description>
-        This removes all {count} {count === 1 ? 'track' : 'tracks'} from your
-        play queue. This can&apos;t be undone.
+        {t('clearQueueConfirmDialogBatch35.description', { count })}
       </Dialog.Description>
       <Dialog.Actions>
         <Dialog.Close>{t('clearQueueConfirmDialog.cancel')}</Dialog.Close>
