@@ -58,7 +58,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
 | partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time and cache slow calls server-side |
 | open    | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Community stats at the top (0.0.380) with their own snapshot, loading next to the dashboard (0.0.401); left: measure and cache the slow API calls (tahti-org), and Grafana from tahti.live cannot connect |
-| partial | [google-facebook-login.md](google-facebook-login.md) | Google/Facebook login: web + API built, web set-first-password done; left: org `POST /api/me/password/set` + `hasPassword`, OAuth apps (ops), beta deploy check |
+| partial | [google-facebook-login.md](google-facebook-login.md) | Google/Facebook sign-in built (web + tahti-org#1124, #1125); left: provider apps, server secrets, deploy, live check |
 | partial | [navigation-performance.md](navigation-performance.md) | Snapshots/GET cache/shell cuts done; remount assert in `useSnapshotFetch.test`; left: real-browser check vs live API |
 | open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | Many-file Chromium drop; CI ~50-file shards; 406 tahti-web stories; no single-file culprit yet |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Matrix + Library Playlists viewport e2e; left: collection player placement, open findings |
