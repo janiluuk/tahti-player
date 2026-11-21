@@ -37,4 +37,19 @@ Let listeners and artists sign up and log in with Google and Facebook, next to e
 - [ ] Deploy the API and check the web flow end to end on beta (real redirects, cookies, `returnTo` with a query).
 - [x] Mock-app e2e case in `e2e/roles-anonymous-listener.spec.ts` passes (2026-11-21).
 - [x] tahti-web: set a first password from Settings for accounts created with Google/Facebook, plus the `email_required` error (2026-11-21, branch `feat/web-oauth-set-password`).
-- [ ] tahti-org API: `hasPassword` on `/api/auth/me`, `POST /api/me/password/set`, `email_required`, forgot-password for accounts without a password (in progress).
+- [x] tahti-org API: `hasPassword` on `/api/auth/me`, `POST /api/me/password/set`, `email_required`, forgot-password for accounts without a password (tahti-org#1125). #1125 also passes the sign-in env vars to the api container in `infra/docker-compose.stack.yml`, which they were missing.
+
+## Production setup (needs a browser, provider accounts and the server)
+
+1. **Google** (Cloud Console, the project with the Drive import client if there is one):
+   - OAuth consent screen: External; app name Tahti; support email; authorised domain `tahti.live`; privacy `https://tahti.live/privacy`; terms `https://tahti.live/terms`.
+   - Scopes `openid`, `email`, `profile` (non-sensitive, no verification review). Publish the app to production.
+   - Credentials → OAuth client ID → Web application. Authorised redirect URI `https://api.tahti.live/api/auth/oauth/google/callback`.
+2. **Facebook** (developers.facebook.com, the Instagram integration's app if there is one):
+   - Add the Facebook Login product. Valid OAuth Redirect URI `https://api.tahti.live/api/auth/oauth/facebook/callback`.
+   - Permissions `email`, `public_profile` (standard access).
+   - Privacy policy URL and data deletion instructions URL (e.g. `https://tahti.live/privacy` if its deletion section is enough for Meta). Switch the app to Live.
+3. **Secrets** in `/srv/tahti/infra/stack.env` on vimage: `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `FACEBOOK_OAUTH_CLIENT_ID`, `FACEBOOK_OAUTH_CLIENT_SECRET` (or the `*_FILE` variants).
+4. **Deploy** the API with `scripts/deploy_prod.sh` from tahti-org `main` (applies the event gallery and OAuth migrations); deploy tahti-web from `master`.
+5. **Check:** `https://api.tahti.live/api/auth/oauth/providers` lists both; the sign-in dialog shows both buttons; sign in with a new account and with an existing verified email; link and disconnect from Settings → Security; set a password on a social-only account.
+
