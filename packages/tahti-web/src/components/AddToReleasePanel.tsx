@@ -87,13 +87,17 @@ export function AddToReleasePanel({
         toast.error(
           failed[0] && !failed[0].ok
             ? failed[0].error
-            : 'Could not add those tracks.',
+            : t('addToReleasePanelBatch35.couldNotAdd'),
         );
         return;
       }
       if (failed.length > 0) {
         toast.error(
-          `Added ${results.length - failed.length} of ${results.length} to ${release.title}.`,
+          t('addToReleasePanelBatch35.addedPartial', {
+            added: results.length - failed.length,
+            total: results.length,
+            name: release.title,
+          }),
         );
         return;
       }
@@ -103,7 +107,10 @@ export function AddToReleasePanel({
       toastWithUndo(
         added.length === 1
           ? webT()('templateText.addedToDot', { name: release.title })
-          : `Added ${added.length} tracks to ${release.title}.`,
+          : t('addToReleasePanelBatch35.addedMany', {
+              count: added.length,
+              name: release.title,
+            }),
         {
           undo: async () => {
             const undone = await Promise.all(
@@ -133,7 +140,9 @@ export function AddToReleasePanel({
       <Dialog.Description>
         {tracks.length === 1
           ? tracks[0]?.title
-          : `${tracks.length} selected tracks`}
+          : t('addToReleasePanelBatch35.selectedTracks', {
+              count: tracks.length,
+            })}
       </Dialog.Description>
       <div className="mt-3 flex max-h-72 flex-col gap-1 overflow-y-auto">
         {loadError ? (

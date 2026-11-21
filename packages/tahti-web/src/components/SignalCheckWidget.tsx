@@ -47,6 +47,7 @@ function SignalMeter({
   label: string;
   active: boolean;
 }) {
+  const { t } = useTranslation('web');
   const fillRef = useRef<HTMLDivElement>(null);
   const peakRef = useRef<HTMLDivElement>(null);
   const peakStateRef = useRef({ dbfs: METER_FLOOR_DBFS, heldAt: 0 });
@@ -76,15 +77,17 @@ function SignalMeter({
       if (peakRef.current) {
         peakRef.current.textContent =
           peak.dbfs <= METER_FLOOR_DBFS
-            ? 'peak — silent'
-            : `peak ${peak.dbfs.toFixed(1)} dBFS`;
+            ? t('signalCheckWidgetBatch35.peakSilent')
+            : t('signalCheckWidgetBatch35.peak', {
+                value: peak.dbfs.toFixed(1),
+              });
       }
       animationFrame = requestAnimationFrame(tick);
     };
 
     animationFrame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animationFrame);
-  }, [active, analyser]);
+  }, [active, analyser, t]);
 
   return (
     <div className="min-w-0 flex-1">
@@ -102,7 +105,7 @@ function SignalMeter({
         ref={peakRef}
         className="text-foreground-secondary font-mono text-[0.65rem]"
       >
-        peak — silent
+        {t('signalCheckWidgetBatch35.peakSilent')}
       </div>
     </div>
   );
@@ -144,7 +147,7 @@ export const SignalCheckWidget = ({
           </p>
           <p className="text-foreground-secondary mt-1 text-xs">
             {state === 'waiting'
-              ? 'Start streaming in OBS, Mixxx, or Traktor — we’ll pick it up automatically.'
+              ? t('signalCheckWidgetBatch35.startStreaming')
               : state === 'checking'
                 ? t('signalCheckWidgetStates.talkOrPlaySomethingWatch')
                 : t('signalCheckWidgetStates.checkYourOwnAudioAnd')}
@@ -188,7 +191,7 @@ export const SignalCheckWidget = ({
       {connected && !isChecking && (
         <div className="text-primary-strong mt-3 flex items-center gap-2 text-xs">
           <CheckCircle2Icon size={14} aria-hidden />
-          {signal?.codec ?? 'Audio'}
+          {signal?.codec ?? t('episodeEditor.audio')}
           {signal?.bitrateKbps != null ? ` · ${signal.bitrateKbps} kbps` : ''}
         </div>
       )}

@@ -29,17 +29,6 @@ export const TIMELINE_COLORS = [
   '#c4b5fd',
 ];
 
-export function clampTimelineDuration(
-  durationSec: number,
-  sourceDuration?: number | null,
-) {
-  const maximum =
-    sourceDuration && sourceDuration > 0
-      ? sourceDuration
-      : Number.POSITIVE_INFINITY;
-  return Math.max(0.001, Math.min(durationSec, maximum));
-}
-
 export function normalizeTimeline(
   value: unknown,
   source?: EditorSource,

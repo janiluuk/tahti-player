@@ -1,13 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import {
-  adjacentLookElementId,
   channelLookElements,
   isArtistLookBlockId,
   isChannelLookElementId,
   loadArtistLookVisibility,
   saveArtistLookVisibility,
-  toggleArtistLookVisibility,
 } from './channelLookElements';
 import { CHANNEL_PAGE_ITEM_TYPES } from './channelPageLayout';
 import { webT } from './webT';
@@ -41,25 +39,6 @@ describe('CHANNEL_LOOK_ELEMENTS', () => {
       expect(type).not.toBeNull();
       expect(CHANNEL_PAGE_ITEM_TYPES).toContain(type);
     }
-  });
-});
-
-describe('adjacentLookElementId', () => {
-  it('wraps from the last element to the first', () => {
-    expect(adjacentLookElementId('backdrop', 1)).toBe('releases');
-  });
-
-  it('wraps from the first element to the last', () => {
-    expect(adjacentLookElementId('releases', -1)).toBe('backdrop');
-  });
-
-  it('steps to the next listed element', () => {
-    expect(adjacentLookElementId('releases', 1)).toBe('tracks');
-    expect(adjacentLookElementId('player', -1)).toBe('news');
-  });
-
-  it('falls back to the start of the list for an unknown id', () => {
-    expect(adjacentLookElementId('not-a-section', 1)).toBe('tracks');
   });
 });
 
@@ -104,11 +83,11 @@ describe('artist look visibility', () => {
     expect(isArtistLookBlockId('backdrop')).toBe(false);
   });
 
-  it('toggles and persists a hideable block', () => {
-    const hidden = toggleArtistLookVisibility('demo', 'latest');
-    expect(hidden.latest).toBe(false);
+  it('persists a hidden block and showing it again', () => {
+    const visible = loadArtistLookVisibility('demo');
+    saveArtistLookVisibility('demo', { ...visible, latest: false });
     expect(loadArtistLookVisibility('demo').latest).toBe(false);
-    saveArtistLookVisibility('demo', { ...hidden, latest: true });
+    saveArtistLookVisibility('demo', { ...visible, latest: true });
     expect(loadArtistLookVisibility('demo').latest).toBe(true);
   });
 });

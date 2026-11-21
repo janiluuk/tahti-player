@@ -134,9 +134,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         setChatOff(access.data.chatEnabled === false);
         setArtistUsername(access.data.artistUsername || null);
         if (access.data.subscribersOnly && !access.data.canPostInChat) {
-          setAccessNote(
-            'Only fan subscribers can post here. You can still read along.',
-          );
+          setAccessNote(t('channelChatPanelBatch35.subscribersOnlyNote'));
         }
       },
     );
@@ -410,7 +408,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     const hcaptchaToken =
       captchaNeeded && captchaConfigured ? getToken() : undefined;
     if (captchaNeeded && captchaConfigured && !hcaptchaToken) {
-      showError('Complete hCaptcha before joining.', 'captcha');
+      showError(t('channelChatPanelBatch35.completeCaptcha'), 'captcha');
       return;
     }
     setJoining(true);
@@ -638,7 +636,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
             label={t('channelChatPanel.handle')}
             value={pendingHandle}
             onChange={(e) => setPendingHandle(e.target.value)}
-            placeholder="anonymous nick"
+            placeholder={t('channelChatPanelBatch35.handlePlaceholder')}
             size="sm"
           />
           {captchaNeeded && captchaConfigured && (
@@ -646,7 +644,9 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
           )}
           {user && (
             <p className="text-foreground-secondary text-[10px]">
-              Signed in as @{user.username} - captcha not required.
+              {t('channelChatPanelBatch35.signedInAs', {
+                username: user.username,
+              })}
             </p>
           )}
           <Button size="sm" disabled={joining} type="submit">
@@ -677,7 +677,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
               aria-label={t('channelChatPanel.chatMessage')}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Message as ${handle}`}
+              placeholder={t('channelChatPanelBatch35.messageAs', { handle })}
               size="sm"
             />
           )}

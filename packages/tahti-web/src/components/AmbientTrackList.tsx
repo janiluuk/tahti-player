@@ -65,7 +65,7 @@ export function AmbientTrackList({
   defaultDensity = 'comfortable',
   onDensityChange,
   persistDensity,
-  emptyMessage = 'No tracks yet.',
+  emptyMessage: emptyMessageProp,
   itemNoun = 'track',
   toolbarStart,
   toolbarEnd,
@@ -77,6 +77,7 @@ export function AmbientTrackList({
   className,
 }: AmbientTrackListProps) {
   const { t } = useTranslation('web');
+  const emptyMessage = emptyMessageProp ?? t('library.noTracksYet');
   const controlled = densityProp !== undefined;
   // A list with its own starting view keeps its own choice instead of the
   // view shared by every other list.

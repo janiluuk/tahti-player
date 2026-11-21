@@ -1,3 +1,5 @@
+import type { ParseKeys } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 
@@ -13,14 +15,14 @@ export type BoardSeat = {
   termEnd: string | null;
 };
 
-export const BOARD_ROLE_LABELS: Record<GovernanceBoardRole, string> = {
-  CHAIR: 'Chair',
-  VICE_CHAIR: 'Vice chair',
-  SECRETARY: 'Secretary',
-  TREASURER: 'Treasurer',
-  MEMBER: 'Board member',
-  DEPUTY: 'Deputy member',
-};
+export const BOARD_ROLE_LABEL_KEYS = {
+  CHAIR: 'governanceBoardBatch35.roleChair',
+  VICE_CHAIR: 'governanceBoardBatch35.roleViceChair',
+  SECRETARY: 'governanceBoardBatch35.roleSecretary',
+  TREASURER: 'governanceBoardBatch35.roleTreasurer',
+  MEMBER: 'governanceBoardBatch35.roleMember',
+  DEPUTY: 'governanceBoardBatch35.roleDeputy',
+} as const satisfies Record<GovernanceBoardRole, ParseKeys<'web'>>;
 
 export function mockCurrentBoard(): BoardSeat[] {
   return [

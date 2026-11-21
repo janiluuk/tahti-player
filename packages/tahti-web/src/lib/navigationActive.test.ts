@@ -5,8 +5,35 @@ import {
   activeMobileItem,
   activeSidebarItem,
   isMobileMoreRoute,
-  SIDEBAR_UNLIT_INTENTIONAL,
 } from './navigationActive';
+
+const SIDEBAR_UNLIT_INTENTIONAL: readonly string[] = [
+  '/login',
+  '/join',
+  '/apply',
+  '/signup',
+  '/verify',
+  '/email-change',
+  '/forgot-password',
+  '/reset-password',
+  '/setup-password',
+  '/onboarding',
+  '/about',
+  '/privacy',
+  '/terms',
+  '/agpl',
+  '/what-is-it',
+  '/how-it-works',
+  '/for-artists',
+  '/status',
+  '/news',
+  '/whats-new',
+  '/transparency',
+  '/venues',
+  '/schedule',
+  '/messages',
+  '/search',
+];
 
 const SIDEBAR_IDS = [
   'listen',

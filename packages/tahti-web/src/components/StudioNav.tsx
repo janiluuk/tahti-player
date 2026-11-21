@@ -14,10 +14,7 @@ type StudioSubmenuItem = {
 const PRIMARY = [
   {
     to: '/studio',
-    label: 'Studio',
     labelKey: 'nav.studio',
-    description:
-      'Your channel snapshot — status, quick links, and recent activity.',
     descriptionKey: 'studio.studioDescription',
     icon: <LayoutGridIcon size={16} aria-hidden />,
   },
@@ -116,7 +113,7 @@ export function getStudioSubmenuItems(
   return [...SUBMENUS[section]];
 }
 
-const isSubmenuActive = (current: string | undefined, to: string) => {
+export const isSubmenuActive = (current: string | undefined, to: string) => {
   const pathname = current?.split('?')[0];
   if (to === '/studio/broadcast') {
     return (
@@ -154,18 +151,6 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
       ? pathname === to
       : pathname === to || pathname?.startsWith(`${to}/`) === true;
 };
-
-export function litStudioSubmenuDestinations(
-  current: string | undefined,
-): string[] {
-  const section = getStudioPrimaryRoute(current);
-  if (!section || !(section in SUBMENUS)) {
-    return [];
-  }
-  return getStudioSubmenuItems(section as keyof typeof SUBMENUS)
-    .filter((item) => isSubmenuActive(current, item.to))
-    .map((item) => item.to);
-}
 
 export function isStudioBroadcastGroup(current: string | undefined): boolean {
   const pathname = current?.split('?')[0] ?? '';

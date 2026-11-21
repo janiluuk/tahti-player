@@ -62,10 +62,3 @@ export function encodeWavPcm16(
 
   return buffer;
 }
-
-export function encodeWavPcm16Blob(
-  stereo: StereoSignal,
-  sampleRate: number,
-): Blob {
-  return new Blob([encodeWavPcm16(stereo, sampleRate)], { type: 'audio/wav' });
-}

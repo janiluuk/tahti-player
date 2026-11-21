@@ -28,7 +28,7 @@ function embedPath(target: EmbedTarget): string {
  */
 export function EmbedButton({
   target,
-  label = 'Embed',
+  label,
   iconOnly = false,
   open: openProp,
   onOpenChange,
@@ -61,14 +61,16 @@ export function EmbedButton({
             size={iconOnly ? 'icon-sm' : 'sm'}
             variant="secondary"
             onClick={() => setOpen(true)}
-            aria-label={iconOnly ? 'Embed artist channel' : undefined}
+            aria-label={
+              iconOnly ? t('embedButton.embedArtistChannel') : undefined
+            }
           >
             <CodeIcon
               size={14}
               aria-hidden
               className={iconOnly ? undefined : 'mr-1.5'}
             />
-            {!iconOnly && label}
+            {!iconOnly && (label ?? t('embedButton.embed'))}
           </Button>
         </Tooltip>
       ) : null}
@@ -89,7 +91,7 @@ export function EmbedButton({
               <CopyButton
                 text={url}
                 aria-label={t('embedButton.copyEmbedLink')}
-                toastMessage="Link copied."
+                toastMessage={t('channelShare.linkCopied')}
               />
             </div>
           </div>

@@ -30,6 +30,7 @@ import {
   type StudioShowBooking,
   type StudioShowSeries,
 } from '../api/shows';
+import { dateLocaleTag } from '../lib/locale';
 import { useAuthStore } from '../stores/authStore';
 import {
   BroadcastDetailsFields,
@@ -42,7 +43,14 @@ import {
   PageLoading,
 } from './PageStates';
 
-const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+function weekdayLabels(): string[] {
+  const locale = dateLocaleTag();
+  return Array.from({ length: 7 }, (_, index) =>
+    new Date(2024, 0, 1 + index).toLocaleDateString(locale, {
+      weekday: 'short',
+    }),
+  );
+}
 
 function startOfMonth(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), 1);
@@ -245,7 +253,9 @@ export function RadioBookingCalendar({
       });
       if (!episode.ok) {
         setMsg(
-          `Slot booked, but the show episode could not be prepared: ${episode.error}`,
+          t('radioBookingCalendarBatch35.episodeNotPrepared', {
+            error: episode.error,
+          }),
         );
         reload();
         onBooked?.();
@@ -267,13 +277,16 @@ export function RadioBookingCalendar({
     }
     setNote('');
     setMsg(
-      `Booked ${durationHours}h — ${start.toLocaleString([], {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      })}.`,
+      t('radioBookingCalendarBatch35.booked', {
+        hours: durationHours,
+        when: start.toLocaleString([], {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      }),
     );
     reload();
     onBooked?.();
@@ -356,9 +369,9 @@ export function RadioBookingCalendar({
         </div>
 
         <div className="mt-3 grid grid-cols-7 gap-1">
-          {WEEKDAY_LABELS.map((label) => (
+          {weekdayLabels().map((label, index) => (
             <div
-              key={label}
+              key={index}
               className="text-foreground-secondary py-1 text-center text-[11px] font-semibold tracking-wide uppercase"
             >
               {label}
@@ -450,9 +463,11 @@ export function RadioBookingCalendar({
                   >
                     {b.showTitle ?? b.note ?? b.displayName}
                     {b.episodeNumber != null
-                      ? ` · Episode ${b.episodeNumber}`
+                      ? ` · ${t('goLivePage.showInfo.episode', { number: b.episodeNumber })}`
                       : ''}
-                    {b.isMine ? ' (you)' : ''}
+                    {b.isMine
+                      ? ` (${t('radioBookingCalendarBatch35.you')})`
+                      : ''}
                   </Button>
                 </li>
               ))}
@@ -468,7 +483,7 @@ export function RadioBookingCalendar({
               >
                 {t('bookingCalendar.signIn')}
               </Link>{' '}
-              to book a slot.
+              {t('radioBookingCalendarBatch35.toBookASlot')}
             </p>
           ) : isPastDay ? (
             <p className="text-foreground-secondary text-sm">
@@ -522,7 +537,7 @@ export function RadioBookingCalendar({
             <Dialog.Description>
               {selectedBooking.displayName}
               {selectedBooking.episodeNumber != null
-                ? ` · Episode ${selectedBooking.episodeNumber}`
+                ? ` · ${t('goLivePage.showInfo.episode', { number: selectedBooking.episodeNumber })}`
                 : ''}
             </Dialog.Description>
             <div className="mt-4 flex flex-col gap-3 text-sm">
@@ -584,13 +599,13 @@ export function RadioBookingCalendar({
       >
         <Dialog.Title>{t('bookingCalendar.bookATahtiRadioSlot')}</Dialog.Title>
         <Dialog.Description>
-          Add the show details for your{' '}
-          {selectedDate.toLocaleDateString([], {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-          })}{' '}
-          broadcast.
+          {t('radioBookingCalendarBatch35.addShowDetails', {
+            date: selectedDate.toLocaleDateString([], {
+              weekday: 'long',
+              month: 'long',
+              day: 'numeric',
+            }),
+          })}
         </Dialog.Description>
         <form
           className="mt-4 flex flex-col gap-3"
@@ -647,7 +662,11 @@ export function RadioBookingCalendar({
           <Dialog.Actions>
             <Dialog.Close>{t('bookingCalendar.cancel')}</Dialog.Close>
             <Button size="sm" type="submit" disabled={busy}>
-              {busy ? 'Booking…' : `Book ${durationHours}h slot`}
+              {busy
+                ? t('radioScheduleViewStates.booking')
+                : t('radioBookingCalendarBatch35.bookSlot', {
+                    hours: durationHours,
+                  })}
             </Button>
           </Dialog.Actions>
         </form>

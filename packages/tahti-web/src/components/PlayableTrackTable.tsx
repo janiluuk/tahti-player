@@ -36,9 +36,11 @@ function undoQueueAdd(
       return { ok: true };
     },
     undoneMessage:
-      count === 1
-        ? `Removed “${added[0]?.title ?? 'track'}” from the queue.`
-        : `Removed ${count} tracks from the queue.`,
+      count === 1 && added[0]
+        ? i18n.t('web:playableTrackTableBatch35.removedNamed', {
+            title: added[0].title,
+          })
+        : i18n.t('web:playableTrackTableBatch35.removedCount', { count }),
   });
 }
 
@@ -76,7 +78,7 @@ type Props = {
 
 export function PlayableTrackTable({
   items,
-  emptyMessage = 'No tracks yet.',
+  emptyMessage,
   playAll = true,
   filterable = true,
   addAllToQueue: showAddAllToQueue = true,
@@ -103,7 +105,7 @@ export function PlayableTrackTable({
   const rememberTrackDetail = useTrackDetailStore((s) => s.remember);
 
   if (items.length === 0) {
-    return <PageEmpty title={emptyMessage} />;
+    return <PageEmpty title={emptyMessage ?? t('library.noTracksYet')} />;
   }
 
   // The artist has its own column, so a title that repeats it drops it.
@@ -175,7 +177,9 @@ export function PlayableTrackTable({
       undoQueueAdd(
         newItems,
         removeFromQueue,
-        `Added ${newItems.length} track${newItems.length === 1 ? '' : 's'} to the queue.`,
+        t('playableTrackTableBatch35.addedCount', {
+          count: newItems.length,
+        }),
       );
     }
   };
@@ -242,14 +246,20 @@ export function PlayableTrackTable({
                 const item = resolve(track);
                 if (item) {
                   if (queue.some((queueItem) => queueItem.id === item.id)) {
-                    toast.info(`“${item.title}” is already in the queue.`);
+                    toast.info(
+                      t('playableTrackTableBatch35.alreadyQueued', {
+                        title: item.title,
+                      }),
+                    );
                     return;
                   }
                   enqueue(item);
                   undoQueueAdd(
                     [item],
                     removeFromQueue,
-                    `Added “${item.title}” to the queue.`,
+                    t('playableTrackTableBatch35.addedNamed', {
+                      title: item.title,
+                    }),
                   );
                 }
               },
@@ -297,7 +307,9 @@ export function PlayableTrackTable({
                   undoQueueAdd(
                     newItems,
                     removeFromQueue,
-                    `Added ${newItems.length} track${newItems.length === 1 ? '' : 's'} to the queue.`,
+                    t('playableTrackTableBatch35.addedCount', {
+                      count: newItems.length,
+                    }),
                   );
                 }
               },

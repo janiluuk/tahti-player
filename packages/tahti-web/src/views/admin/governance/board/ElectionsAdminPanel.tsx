@@ -10,7 +10,7 @@ import {
   type AdminElection,
 } from '../../../../api/admin/admin-governance-elections';
 import {
-  BOARD_ROLE_LABELS,
+  BOARD_ROLE_LABEL_KEYS,
   type GovernanceBoardRole,
 } from '../../../../api/governance-board';
 import {
@@ -21,7 +21,7 @@ import {
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { numericDay } from '../../../../lib/relativeDate';
 import { webT } from '../../../../lib/webT';
-import { BOARD_ROLE_OPTIONS } from './AddBoardTermForm';
+import { boardRoleOptions } from './AddBoardTermForm';
 import { ElectionActions } from './ElectionActions';
 import { ElectionCandidates } from './ElectionCandidates';
 
@@ -109,7 +109,7 @@ function NewElectionForm({
             setSeats('1');
           }
         }}
-        options={BOARD_ROLE_OPTIONS}
+        options={boardRoleOptions(t)}
       />
       <div className="flex flex-wrap gap-2">
         <Input
@@ -221,7 +221,7 @@ export function ElectionsAdminPanel() {
                   </Badge>
                 </div>
                 <p className="text-foreground-secondary text-xs">
-                  {BOARD_ROLE_LABELS[election.role]} ·{' '}
+                  {t(BOARD_ROLE_LABEL_KEYS[election.role])} ·{' '}
                   {election.seats === 1 ? '1 seat' : `${election.seats} seats`}
                   {election.nominationsCloseAt
                     ? ` · nominations close ${numericDay(election.nominationsCloseAt)}`

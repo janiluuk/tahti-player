@@ -2,16 +2,20 @@ import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Alert, Button, Meter } from '@tahti-player/ui';
 
 import type { BroadcastUsage } from '../../../api/broadcast';
+import { webT } from '../../../lib/webT';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 
 export function formatLiveTime(seconds: number): string {
   const total = Math.max(0, Math.floor(seconds / 60));
   const hours = Math.floor(total / 60);
   const minutes = total % 60;
+  const t = webT();
   if (hours === 0) {
-    return `${minutes}m`;
+    return t('liveTimeBatch35.minutes', { m: minutes });
   }
-  return minutes ? `${hours}h ${minutes}m` : `${hours}h`;
+  return minutes
+    ? t('liveTimeBatch35.hoursMinutes', { h: hours, m: minutes })
+    : t('liveTimeBatch35.hours', { h: hours });
 }
 
 export function usageWarning(

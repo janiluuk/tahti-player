@@ -20,7 +20,9 @@ import type {
 import { ConfirmDialog } from './ConfirmDialog';
 
 const n = (value: number) => value.toLocaleString('en-US');
-const files = (count: number) => (count === 1 ? 'file' : 'files');
+
+const TEMPLATE_TOKENS =
+  '{artist}, {albumArtist}, {album}, {title}, {track}, {disc}, {year}, {genre}';
 
 const DEFAULT_TEMPLATE = '{albumArtist}/{album}/{disc}{track} - {title}';
 
@@ -128,9 +130,16 @@ export function OrganizeFilesDialog({
       onChanged();
       onClose();
       const notes = [
-        result.skipped ? `${n(result.skipped)} left alone` : '',
+        result.skipped
+          ? t('organizeFilesDialogBatch35.leftAlone', {
+              value: n(result.skipped),
+            })
+          : '',
         result.errors.length
-          ? `${n(result.errors.length)} failed (${result.errors[0]})`
+          ? t('organizeFilesDialogBatch35.failed', {
+              value: n(result.errors.length),
+              error: result.errors[0],
+            })
           : '',
       ].filter(Boolean);
       if (result.errors.length && result.done === 0) {
@@ -153,7 +162,7 @@ export function OrganizeFilesDialog({
       toast.error(
         failure instanceof Error
           ? failure.message
-          : 'Could not organize files.',
+          : t('organizeFilesDialogBatch35.couldNotOrganize'),
       );
     } finally {
       setBusy(false);
@@ -209,9 +218,9 @@ export function OrganizeFilesDialog({
               placeholder={DEFAULT_TEMPLATE}
             />
             <p className="text-foreground-secondary text-xs">
-              Use {'{artist}'}, {'{albumArtist}'}, {'{album}'}, {'{title}'},{' '}
-              {'{track}'}, {'{disc}'}, {'{year}'}, {'{genre}'}; “/” starts a
-              folder. The file extension is kept.
+              {t('organizeFilesDialogBatch35.layoutHint', {
+                tokens: TEMPLATE_TOKENS,
+              })}
             </p>
             <Toggle
               label={t('organizeFiles.moveFilesInsteadOfCopying')}
@@ -235,21 +244,38 @@ export function OrganizeFilesDialog({
             ) : plan ? (
               <div className="flex flex-col gap-1">
                 <p role="status">
-                  {n(plan.ready)} {files(plan.ready)} will be{' '}
-                  {move ? 'moved' : 'copied'}
+                  {move
+                    ? t('organizeFilesDialogBatch35.planMove', {
+                        count: plan.ready,
+                        value: n(plan.ready),
+                      })
+                    : t('organizeFilesDialogBatch35.planCopy', {
+                        count: plan.ready,
+                        value: n(plan.ready),
+                      })}
                   {plan.unchanged
-                    ? `; ${n(plan.unchanged)} already in place`
+                    ? t('organizeFilesDialogBatch35.planUnchanged', {
+                        value: n(plan.unchanged),
+                      })
                     : ''}
                   {plan.collisions
-                    ? `; ${n(plan.collisions)} skipped (name taken)`
+                    ? t('organizeFilesDialogBatch35.planCollisions', {
+                        value: n(plan.collisions),
+                      })
                     : ''}
-                  {plan.missing ? `; ${n(plan.missing)} missing on disk` : ''}.
+                  {plan.missing
+                    ? t('organizeFilesDialogBatch35.planMissing', {
+                        value: n(plan.missing),
+                      })
+                    : ''}
+                  .
                 </p>
                 {!move && plan.originalsInWatchedFolders > 0 ? (
                   <p className="text-foreground-secondary text-xs">
-                    {n(plan.originalsInWatchedFolders)} originals sit in a
-                    watched folder and will be added again as new tracks by the
-                    next scan.
+                    {t('organizeFilesDialogBatch35.originalsWatched', {
+                      count: plan.originalsInWatchedFolders,
+                      value: n(plan.originalsInWatchedFolders),
+                    })}
                   </p>
                 ) : null}
                 {plan.items
@@ -283,7 +309,11 @@ export function OrganizeFilesDialog({
       <ConfirmDialog
         isOpen={confirmingMove}
         title={t('organizeFiles.moveTheseFiles')}
-        description={`This moves ${n(plan?.ready ?? 0)} ${files(plan?.ready ?? 0)} out of their current folders into ${destination}. Other programs that use the old locations will no longer find them.`}
+        description={t('organizeFilesDialogBatch35.moveConfirm', {
+          count: plan?.ready ?? 0,
+          value: n(plan?.ready ?? 0),
+          destination,
+        })}
         confirmLabel={t('organizeFiles.moveFiles')}
         destructive
         onCancel={() => setConfirmingMove(false)}

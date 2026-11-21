@@ -12,10 +12,10 @@ import { DirectoryArtistCardGrid } from './DirectoryArtistCardGrid';
 import { PageEmpty, PageLoading } from './PageStates';
 
 const ARTIST_TYPE_OPTIONS = [
-  { id: 'dj', label: 'DJ' },
-  { id: 'producer', label: 'Producer' },
-  { id: 'band', label: 'Band' },
-  { id: 'radio-host', label: 'Radio host' },
+  { id: 'dj', labelKey: 'settingsBody.artist.roleDj' },
+  { id: 'producer', labelKey: 'settingsBody.artist.roleProducer' },
+  { id: 'band', labelKey: 'settingsBody.artist.roleBand' },
+  { id: 'radio-host', labelKey: 'directoryArtistsBrowserBatch35.radioHost' },
 ] as const;
 
 const GENRE_CHIP_LIMIT = 8;
@@ -145,7 +145,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
       { id: 'all', label: t('directoryArtistsBrowserFields.allTypes') },
       ...ARTIST_TYPE_OPTIONS.map((option) => ({
         id: option.id,
-        label: `${option.label} (${
+        label: `${t(option.labelKey)} (${
           option.id === 'radio-host'
             ? artists.filter((channel) => channel.hasActiveShows).length
             : artists.filter((channel) =>
@@ -154,7 +154,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
         })`,
       })),
     ],
-    [artists],
+    [artists, t],
   );
 
   const activeFilterCount =
@@ -192,11 +192,18 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
             items={[
               {
                 id: 'active',
-                label: `Active now (${artists.filter(isDirectoryArtistActive).length})`,
+                label: t('directoryArtistsBrowserBatch35.activeNow', {
+                  n: artists.filter(isDirectoryArtistActive).length,
+                }),
               },
               {
                 id: 'filters',
-                label: `Filters${activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}`,
+                label:
+                  activeFilterCount > 0
+                    ? t('directoryArtistsBrowserBatch35.filtersWithCount', {
+                        n: activeFilterCount,
+                      })
+                    : t('directoryArtistsBrowserBatch35.filters'),
                 icon: <SlidersHorizontalIcon size={14} aria-hidden />,
               },
             ]}
@@ -240,14 +247,17 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
         ) : null}
 
         <p className="text-foreground-secondary text-xs">
-          Showing {filtered.length} of {artists.length} artists
+          {t('directoryArtistsBrowserBatch35.showing', {
+            shown: filtered.length,
+            total: artists.length,
+          })}
         </p>
       </div>
 
       {filtered.length === 0 ? (
         <PageEmpty
           title={t('empties.noArtistsMatch')}
-          description={`${query ? `“${query}”` : 'Try another filter'}${genre !== 'all' ? ` in ${genre}` : ''}.`}
+          description={`${query ? `“${query}”` : t('directoryArtistsBrowserBatch35.tryAnotherFilter')}${genre !== 'all' ? t('directoryArtistsBrowserBatch35.inGenre', { genre }) : ''}.`}
           action={
             <Button
               size="sm"

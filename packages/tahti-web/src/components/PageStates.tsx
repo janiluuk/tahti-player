@@ -252,7 +252,7 @@ export function PageEmpty({
 }
 
 export function PageError({
-  title = 'Something went wrong',
+  title,
   description,
   onRetry,
 }: {
@@ -267,7 +267,7 @@ export function PageError({
       icon={
         <AlertCircle size={40} className="text-accent-red-strong opacity-80" />
       }
-      title={title}
+      title={title ?? t('appErrorFallback.somethingWentWrong')}
       description={description}
       action={
         onRetry ? (

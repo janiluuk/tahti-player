@@ -72,10 +72,6 @@ async function removeAll(slug: string, itemIds: string[]) {
   return { ok: true as const };
 }
 
-function trackCount(count: number) {
-  return count === 1 ? '1 track' : `${count} tracks`;
-}
-
 export function AddToPlaylistPanel({
   isOpen,
   soundId,
@@ -84,6 +80,8 @@ export function AddToPlaylistPanel({
   onClose,
 }: Props) {
   const { t } = useTranslation('web');
+  const trackCount = (count: number) =>
+    t('addToPlaylistPanelBatch35.tracks', { count });
   const ids = soundIds ?? (soundId ? [soundId] : []);
   const bulk = ids.length > 1;
   const user = useAuthStore((s) => s.user);
@@ -151,8 +149,16 @@ export function AddToPlaylistPanel({
       const message = !bulk
         ? webT()('templateText.addedTo', { name: name })
         : error
-          ? `Added ${added} of ${trackCount(ids.length)} to ${name}: ${error}`
-          : `Added ${trackCount(added)} to ${name}`;
+          ? t('addToPlaylistPanelBatch35.addedPartial', {
+              added,
+              tracks: trackCount(ids.length),
+              name,
+              error,
+            })
+          : t('addToPlaylistPanelBatch35.addedTracks', {
+              tracks: trackCount(added),
+              name,
+            });
       setNote(message);
       if (itemIds.length > 0) {
         toastWithUndo(`${message}.`, {
@@ -202,24 +208,34 @@ export function AddToPlaylistPanel({
       setCreating(false);
       setNote(
         bulk
-          ? `Created “${name}” and added ${trackCount(add.added)}`
-          : `Created “${name}” and added the track`,
+          ? t('addToPlaylistPanelBatch35.createdAndAddedTracks', {
+              name,
+              tracks: trackCount(add.added),
+            })
+          : t('addToPlaylistPanelBatch35.createdAndAddedTrack', { name }),
       );
-      toastWithUndo(`Created ${created.data.name}.`, {
-        undo: () => deleteStudioCollection(created.data.slug),
-        undoneMessage: `Removed ${created.data.name}.`,
-        onUndone: () => {
-          setCollections((prev) =>
-            prev ? prev.filter((c) => c.slug !== created.data.slug) : prev,
-          );
-          setAddedSlugs((prev) => {
-            const next = new Set(prev);
-            next.delete(created.data.slug);
-            return next;
-          });
-          setNote(null);
+      toastWithUndo(
+        t('addToPlaylistPanelBatch35.createdToast', {
+          name: created.data.name,
+        }),
+        {
+          undo: () => deleteStudioCollection(created.data.slug),
+          undoneMessage: t('addToPlaylistPanelBatch35.removedToast', {
+            name: created.data.name,
+          }),
+          onUndone: () => {
+            setCollections((prev) =>
+              prev ? prev.filter((c) => c.slug !== created.data.slug) : prev,
+            );
+            setAddedSlugs((prev) => {
+              const next = new Set(prev);
+              next.delete(created.data.slug);
+              return next;
+            });
+            setNote(null);
+          },
         },
-      });
+      );
     } finally {
       setCreatingBusy(false);
     }
@@ -239,11 +255,13 @@ export function AddToPlaylistPanel({
         </span>
       </Dialog.Title>
       <Dialog.Description>
-        {bulk ? (
-          <>Choose a playlist for {trackCount(ids.length)}, or create one.</>
-        ) : (
-          <>Choose a playlist for &ldquo;{trackTitle}&rdquo;, or create one.</>
-        )}
+        {bulk
+          ? t('addToPlaylistPanelBatch35.chooseForTracks', {
+              tracks: trackCount(ids.length),
+            })
+          : t('addToPlaylistPanelBatch35.chooseForTrack', {
+              title: trackTitle,
+            })}
       </Dialog.Description>
 
       <div className="mt-4">
@@ -252,7 +270,7 @@ export function AddToPlaylistPanel({
             <Link to="/login" className="underline" onClick={handleClose}>
               {t('addToPlaylistPanel.signIn')}
             </Link>{' '}
-            to save tracks to a playlist.
+            {t('addToPlaylistPanelBatch35.signInSuffix')}
           </p>
         ) : collections === null ? (
           <PageLoading label={t('loading.loadingPlaylists')} />
@@ -318,7 +336,7 @@ export function AddToPlaylistPanel({
                 description={t('empties.createOneToSaveThisTrack')}
                 action={
                   <Button variant="secondary" onClick={() => setCreating(true)}>
-                    New
+                    {t('addToPlaylistPanelBatch35.new')}
                   </Button>
                 }
               />

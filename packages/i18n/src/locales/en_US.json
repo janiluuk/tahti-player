@@ -12987,7 +12987,6 @@
       "couldNotUpdateAnnouncement": "Could not update announcement",
       "couldNotUpdatePageMusic": "Could not update page music",
       "couldNotLoadPreview": "Could not load preview",
-      "couldNotTrimClip": "Could not trim the clip",
       "couldNotAddStation": "Could not add the station",
       "couldNotRemoveStation": "Could not remove the station",
       "couldNotUpdateTopic": "Could not update the topic",
@@ -15154,6 +15153,255 @@
       "artistProfile": "{{name}} profile",
       "trackCount_one": "{{count}} track",
       "trackCount_other": "{{count}} tracks"
+    },
+    "restrictionNoticeBatch35": {
+      "blockedUpload": "Uploads are blocked",
+      "blockedLiveShowBooking": "Booking shows is blocked",
+      "blockedLogin": "Sign-in is blocked",
+      "titleUntil": "{{blocked}} until",
+      "reason": "Reason: {{reason}}",
+      "askBoard": "Ask the board through Help → Support if you think this is a mistake."
+    },
+    "clientCapabilityNoticeBatch35": {
+      "notInClient": "Not available in this client",
+      "comingSoon": "Not available yet",
+      "partial": "Partial",
+      "linkOut": "Opens tahti.live",
+      "mockOnly": "Preview only"
+    },
+    "motionMeetingNoteBatch35": {
+      "takenUpAt": "Taken up at",
+      "agendaItem": "agenda item {{position}}: {{title}}"
+    },
+    "channelVizPackLabelBatch35": {
+      "thisShowUses": "This show uses {{pack}}"
+    },
+    "collectionContributionBatch35": {
+      "addedByUser": "Added by @{{username}}",
+      "addedBy": "Added by"
+    },
+    "governanceBoardBatch35": {
+      "roleChair": "Chair",
+      "roleViceChair": "Vice chair",
+      "roleSecretary": "Secretary",
+      "roleTreasurer": "Treasurer",
+      "roleMember": "Board member",
+      "roleDeputy": "Deputy member"
+    },
+    "localLibraryBrowseBatch35": {
+      "artistGroups": "Artist groups",
+      "albumGroups": "Album groups",
+      "genreGroups": "Genre groups",
+      "composerGroups": "Composer groups",
+      "folderGroups": "Folder groups",
+      "unknownArtist": "Unknown artist",
+      "unknownAlbum": "Unknown album",
+      "noGenre": "No genre",
+      "noComposer": "No composer",
+      "looseFiles": "Loose files",
+      "totalsOnDevice": "{{tracks}} · {{duration}} · {{size}} on this device"
+    },
+    "liveTimeBatch35": {
+      "minutes": "{{m}}m",
+      "hours": "{{h}}h",
+      "hoursMinutes": "{{h}}h {{m}}m"
+    },
+    "organizeFilesDialogBatch35": {
+      "leftAlone": "{{value}} left alone",
+      "failed": "{{value}} failed ({{error}})",
+      "couldNotOrganize": "Could not organize files.",
+      "layoutHint": "Use {{tokens}}; “/” starts a folder. The file extension is kept.",
+      "planCopy_one": "{{value}} file will be copied",
+      "planCopy_other": "{{value}} files will be copied",
+      "planMove_one": "{{value}} file will be moved",
+      "planMove_other": "{{value}} files will be moved",
+      "planUnchanged": "; {{value}} already in place",
+      "planCollisions": "; {{value}} skipped (name taken)",
+      "planMissing": "; {{value}} missing on disk",
+      "originalsWatched_one": "{{value}} original sits in a watched folder and will be added again as a new track by the next scan.",
+      "originalsWatched_other": "{{value}} originals sit in a watched folder and will be added again as new tracks by the next scan.",
+      "moveConfirm_one": "This moves {{value}} file out of its current folder into {{destination}}. Other programs that use the old location will no longer find it.",
+      "moveConfirm_other": "This moves {{value}} files out of their current folders into {{destination}}. Other programs that use the old locations will no longer find them."
+    },
+    "membershipStatusPanelBatch35": {
+      "activatedWithNumber": "Membership activated — member #{{number}}",
+      "activated": "Membership activated",
+      "activeMember": "Active member #{{number}}",
+      "renewalDueTail": ". Pay again from this panel when reminded, or subscribe via Stripe on your next checkout.",
+      "stripeSubscription": "(Stripe subscription).",
+      "processing": "Processing…",
+      "subscribeAutoRenewal": "Subscribe for auto-renewal ({{price}}/year)",
+      "intro": "Tahti ry is a member-governed nonprofit. Annual membership is {{price}}/year (tax-deductible for eligible professionals in Finland). Adds lossless streaming for listeners and unlimited live broadcasting.",
+      "payPerYear": "Pay {{price}} / year"
+    },
+    "directoryArtistsBrowserBatch35": {
+      "radioHost": "Radio host",
+      "activeNow": "Active now ({{n}})",
+      "filters": "Filters",
+      "filtersWithCount": "Filters ({{n}})",
+      "showing": "Showing {{shown}} of {{total}} artists",
+      "tryAnotherFilter": "Try another filter",
+      "inGenre": " in {{genre}}"
+    },
+    "clearQueueConfirmDialogBatch35": {
+      "description_one": "This removes {{count}} track from your play queue. This can't be undone.",
+      "description_other": "This removes all {{count}} tracks from your play queue. This can't be undone."
+    },
+    "channelPlaylistBlockBatch35": {
+      "pickAnother": "{{error}} Pick another in widget settings, or try again.",
+      "openPlaylist": "Open playlist →"
+    },
+    "channelChatPanelBatch35": {
+      "subscribersOnlyNote": "Only fan subscribers can post here. You can still read along.",
+      "completeCaptcha": "Complete hCaptcha before joining.",
+      "handlePlaceholder": "anonymous nick",
+      "signedInAs": "Signed in as @{{username}} - captcha not required.",
+      "messageAs": "Message as {{handle}}"
+    },
+    "catalogTrackSearchBatch35": {
+      "noMatch": "No public tracks match “{{query}}”."
+    },
+    "audioRevisionListBatch35": {
+      "mono": "mono",
+      "stereo": "stereo",
+      "savedAs": "Saved as v{{n}} — not live yet. Preview it, then use this version when you want it public. If it can't be processed, we notify you.",
+      "previewVersion": "Preview v{{n}}"
+    },
+    "addToReleasePanelBatch35": {
+      "couldNotAdd": "Could not add those tracks.",
+      "addedPartial": "Added {{added}} of {{total}} to {{name}}.",
+      "addedMany_one": "Added {{count}} track to {{name}}.",
+      "addedMany_other": "Added {{count}} tracks to {{name}}.",
+      "selectedTracks_one": "{{count}} selected track",
+      "selectedTracks_other": "{{count}} selected tracks"
+    },
+    "addToPlaylistPanelBatch35": {
+      "tracks_one": "{{count}} track",
+      "tracks_other": "{{count}} tracks",
+      "addedPartial": "Added {{added}} of {{tracks}} to {{name}}: {{error}}",
+      "addedTracks": "Added {{tracks}} to {{name}}",
+      "createdAndAddedTracks": "Created “{{name}}” and added {{tracks}}",
+      "createdAndAddedTrack": "Created “{{name}}” and added the track",
+      "createdToast": "Created {{name}}.",
+      "removedToast": "Removed {{name}}.",
+      "chooseForTracks": "Choose a playlist for {{tracks}}, or create one.",
+      "chooseForTrack": "Choose a playlist for “{{title}}”, or create one.",
+      "signInSuffix": "to save tracks to a playlist.",
+      "new": "New"
+    },
+    "addToPlaylistDialogBatch35": {
+      "added_one": "Added {{value}} track to “{{name}}”.",
+      "added_other": "Added {{value}} tracks to “{{name}}”.",
+      "notAdded_one": "{{count}} could not be added because it is no longer in the library.",
+      "notAdded_other": "{{count}} could not be added because they are no longer in the library.",
+      "description": "{{summary}}. Tracks are added to the end; the same track can appear more than once."
+    },
+    "jamRemoteBatch35": {
+      "searchFailed": "Search failed",
+      "searchFailedHint": "Check the connection to Tahti Player and try again.",
+      "noResults": "No results",
+      "noResultsHint": "No Tahti tracks match that search.",
+      "unpairedTitle": "This device isn’t paired",
+      "unpairedHint": "In Tahti Player, open Settings → Integrations → Tahti Jam and scan the QR code.",
+      "failedTitle": "Could not connect to Tahti Player",
+      "failedHint": "Make sure Tahti Player is running, Tahti Jam is on, and this device is on the same network.",
+      "connectingTitle": "Connecting to Tahti Player…",
+      "connectingHint": "Make sure Tahti Player is running and Tahti Jam is on.",
+      "statusConnecting": "Connecting",
+      "statusConnected": "Connected",
+      "statusReconnecting": "Reconnecting",
+      "statusDisconnected": "Disconnected",
+      "searchTahti": "Search Tahti",
+      "queueEmpty": "The queue is empty",
+      "queueEmptyHint": "Search for a Tahti track to add one."
+    },
+    "correctionsPanelBatch35": {
+      "waitingForTheBoard": "Waiting for the board",
+      "boardsAnswer": "Board's answer: {{note}}",
+      "sayWhatIsWrong": "Say what is wrong and what it should be."
+    },
+    "themeEditorBatch35": {
+      "red": "Red",
+      "edited": "edit",
+      "cssColor": "{{label}} CSS color",
+      "nameRequired": "Theme name is required.",
+      "editingBefore": "Editing the",
+      "dark": "dark",
+      "light": "light",
+      "editingAfter": "variant. Use the sun/moon control above to switch. Click a color to tune it — blank keeps the base palette."
+    },
+    "studioRadioSubmissionPanelBatch35": {
+      "selectUpTo_one": "Select up to {{count}} single audio file from your library.",
+      "selectUpTo_other": "Select up to {{count}} single audio files from your library.",
+      "submitCount": "Submit {{count}}"
+    },
+    "soundShareLinksSectionBatch35": {
+      "noExpiry": "No expiry",
+      "anyoneWithTheLink": "Anyone with the link"
+    },
+    "smartPlaylistsBatch35": {
+      "emptyHint": "Rules like “house, 120–128 BPM, rating 4+, not played in 30 days” keep themselves up to date.",
+      "rulesNeedAttention": "Rules need attention",
+      "tracksNow_one": "{{countLabel}} track now",
+      "tracksNow_other": "{{countLabel}} tracks now",
+      "snapshotName": "{{name}} (snapshot)",
+      "deleteDescription": "“{{name}}” will be deleted. Only the rules go; your tracks and files are not touched."
+    },
+    "signalCheckWidgetBatch35": {
+      "peakSilent": "peak — silent",
+      "peak": "peak {{value}} dBFS",
+      "startStreaming": "Start streaming in OBS, Mixxx, or Traktor — we’ll pick it up automatically."
+    },
+    "saveQueueLocalDialogBatch35": {
+      "skippedNote_one": "{{count}} local file is not in your library and wasn’t saved.",
+      "skippedNote_other": "{{count}} local files are not in your library and weren’t saved.",
+      "saved_one": "Saved {{countLabel}} track to “{{name}}”.",
+      "saved_other": "Saved {{countLabel}} tracks to “{{name}}”.",
+      "description_one": "Saves the {{countLabel}} local track in your queue, in queue order, to a playlist on this device.",
+      "description_other": "Saves the {{countLabel}} local tracks in your queue, in queue order, to a playlist on this device.",
+      "streamedNote_one": "{{count}} streamed track (Tahti, radio or live) can’t be stored locally and isn’t included — use “Save queue to cloud playlist” for those.",
+      "streamedNote_other": "{{count}} streamed tracks (Tahti, radio or live) can’t be stored locally and aren’t included — use “Save queue to cloud playlist” for those."
+    },
+    "saveQueueAsPlaylistDialogBatch35": {
+      "description_one": "Creates a new playlist from the {{count}} track in your queue that are part of the Tahti catalog.",
+      "description_other": "Creates a new playlist from the {{count}} tracks in your queue that are part of the Tahti catalog.",
+      "otherSkipped_one": "{{count}} other track isn’t included.",
+      "otherSkipped_other": "{{count}} other tracks aren’t included.",
+      "localSkipped_one": "{{count}} local file lives on this device and can’t be added to a cloud playlist — use “Save queue as local playlist” to keep it.",
+      "localSkipped_other": "{{count}} local files live on this device and can’t be added to a cloud playlist — use “Save queue as local playlist” to keep them."
+    },
+    "radioStationCoverBatch35": {
+      "coverUpdated": "{{name}} cover updated.",
+      "editCoverImage": "Edit cover image"
+    },
+    "radioBookingCalendarBatch35": {
+      "episodeNotPrepared": "Slot booked, but the show episode could not be prepared: {{error}}",
+      "booked": "Booked {{hours}}h — {{when}}.",
+      "you": "you",
+      "toBookASlot": "to book a slot.",
+      "addShowDetails": "Add the show details for your {{date}} broadcast.",
+      "bookSlot": "Book {{hours}}h slot"
+    },
+    "queueConfirmDialogBatch35": {
+      "title_one": "Queue {{count}} track?",
+      "title_other": "Queue {{count}} tracks?",
+      "description_one": "This adds {{count}} track from {{source}} to your play queue.",
+      "description_other": "This adds all {{count}} tracks from {{source}} to your play queue.",
+      "confirm_one": "Queue {{count}} track",
+      "confirm_other": "Queue {{count}} tracks"
+    },
+    "purchaseOrdersListBatch35": {
+      "summary_one": "{{count}} sale, {{total}} before fees.",
+      "summary_other": "{{count}} sales, {{total}} before fees."
+    },
+    "playableTrackTableBatch35": {
+      "removedNamed": "Removed “{{title}}” from the queue.",
+      "removedCount_one": "Removed {{count}} track from the queue.",
+      "removedCount_other": "Removed {{count}} tracks from the queue.",
+      "addedCount_one": "Added {{count}} track to the queue.",
+      "addedCount_other": "Added {{count}} tracks to the queue.",
+      "alreadyQueued": "“{{title}}” is already in the queue.",
+      "addedNamed": "Added “{{title}}” to the queue."
     }
   },
   "studioEditor": {

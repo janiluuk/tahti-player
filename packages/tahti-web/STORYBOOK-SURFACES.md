@@ -189,6 +189,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Events/EventGallery` | `tahti-web/EventGallery.stories.tsx` |
 | `Tahti/Events/EventInvitesPanel` | `tahti-web/EventInvitesPanel.stories.tsx` |
 | `Tahti/Events/EventParticipantsEditor` | `tahti-web/EventParticipantsEditor.stories.tsx` |
+| `Tahti/Events/EventPostView` | `tahti-web/EventPostView.stories.tsx` |
 | `Tahti/Events/EventView` | `tahti-web/EventView.stories.tsx` |
 | `Tahti/Channel/FanChatRoom` | `tahti-web/FanChatRoom.stories.tsx` |
 | `Tahti/Studio/FanSubscriptionStats` | `tahti-web/FanSubscriptionStats.stories.tsx` |

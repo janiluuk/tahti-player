@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { pickArtwork, type RepeatMode, type Track } from '@tahti-player/model';
 import { CenteredLoader, TahtiJam } from '@tahti-player/ui';
 
@@ -61,12 +62,13 @@ function SearchResults({
   search: SearchState;
   onAdd: (track: Track) => void;
 }) {
+  const { t } = useTranslation('web');
   if (search.status === 'error') {
     return (
       <TahtiJam.SearchDrawer.Error
         labels={{
-          title: 'Search failed',
-          description: 'Check the connection to Tahti Player and try again.',
+          title: t('jamRemoteBatch35.searchFailed'),
+          description: t('jamRemoteBatch35.searchFailedHint'),
         }}
       />
     );
@@ -78,8 +80,8 @@ function SearchResults({
     return (
       <TahtiJam.SearchDrawer.Empty
         labels={{
-          title: 'No results',
-          description: 'No Tahti tracks match that search.',
+          title: t('jamRemoteBatch35.noResults'),
+          description: t('jamRemoteBatch35.noResultsHint'),
         }}
       />
     );
@@ -99,6 +101,7 @@ function SearchResults({
 
 /** The Tahti Jam phone remote: what's playing, the transport, the queue and Tahti search. */
 export function JamRemote({ client }: { client: JamClient | null }) {
+  const { t } = useTranslation('web');
   const state = useJamRemote(client);
   const [query, setQuery] = useState('');
 
@@ -107,9 +110,8 @@ export function JamRemote({ client }: { client: JamClient | null }) {
       <TahtiJam>
         <TahtiJam.Error
           labels={{
-            title: 'This device isn’t paired',
-            subtitle:
-              'In Tahti Player, open Settings → Integrations → Tahti Jam and scan the QR code.',
+            title: t('jamRemoteBatch35.unpairedTitle'),
+            subtitle: t('jamRemoteBatch35.unpairedHint'),
           }}
         />
       </TahtiJam>
@@ -120,9 +122,8 @@ export function JamRemote({ client }: { client: JamClient | null }) {
       <TahtiJam>
         <TahtiJam.Error
           labels={{
-            title: 'Could not connect to Tahti Player',
-            subtitle:
-              'Make sure Tahti Player is running, Tahti Jam is on, and this device is on the same network.',
+            title: t('jamRemoteBatch35.failedTitle'),
+            subtitle: t('jamRemoteBatch35.failedHint'),
           }}
         />
       </TahtiJam>
@@ -133,8 +134,8 @@ export function JamRemote({ client }: { client: JamClient | null }) {
       <TahtiJam>
         <TahtiJam.Connecting
           labels={{
-            title: 'Connecting to Tahti Player…',
-            subtitle: 'Make sure Tahti Player is running and Tahti Jam is on.',
+            title: t('jamRemoteBatch35.connectingTitle'),
+            subtitle: t('jamRemoteBatch35.connectingHint'),
           }}
         />
       </TahtiJam>
@@ -162,6 +163,7 @@ function RemoteView({
   query: string;
   setQuery: (query: string) => void;
 }) {
+  const { t } = useTranslation('web');
   const search = useSearch(client, query);
   const { queue, playback, settings } = state;
   const current = queue.items[queue.currentIndex];
@@ -174,19 +176,19 @@ function RemoteView({
       <TahtiJam.Header
         connectionStatus={connection}
         connectionStatusLabels={{
-          connecting: 'Connecting',
-          connected: 'Connected',
-          reconnecting: 'Reconnecting',
-          failed: 'Disconnected',
+          connecting: t('jamRemoteBatch35.statusConnecting'),
+          connected: t('jamRemoteBatch35.statusConnected'),
+          reconnecting: t('jamRemoteBatch35.statusReconnecting'),
+          failed: t('jamRemoteBatch35.statusDisconnected'),
         }}
       >
         <TahtiJam.SearchBar
           value={query}
           onChange={setQuery}
           labels={{
-            placeholder: 'Search Tahti',
-            search: 'Search Tahti',
-            clear: 'Clear search',
+            placeholder: t('jamRemoteBatch35.searchTahti'),
+            search: t('jamRemoteBatch35.searchTahti'),
+            clear: t('actions.clearSearch'),
           }}
         />
       </TahtiJam.Header>
@@ -227,9 +229,9 @@ function RemoteView({
           currentItemId={current?.id}
           onRemove={(id) => ignore(client.remove(id))}
           labels={{
-            upNext: 'Up next',
-            title: 'The queue is empty',
-            subtitle: 'Search for a Tahti track to add one.',
+            upNext: t('radio.tabUpNext'),
+            title: t('jamRemoteBatch35.queueEmpty'),
+            subtitle: t('jamRemoteBatch35.queueEmptyHint'),
           }}
         />
         <TahtiJam.SearchDrawer

@@ -5,7 +5,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { InlineLoader } from '@tahti-player/ui';
 
 import {
-  BOARD_ROLE_LABELS,
+  BOARD_ROLE_LABEL_KEYS,
   fetchCurrentBoard,
   type BoardSeat,
 } from '../../api/governance-board';
@@ -62,7 +62,7 @@ export function CurrentBoardPanel() {
                 </span>
               ) : null}
               <div className="text-foreground-secondary mt-0.5 text-xs">
-                {BOARD_ROLE_LABELS[seat.role]} · since{' '}
+                {t(BOARD_ROLE_LABEL_KEYS[seat.role])} · since{' '}
                 <ListingDate value={seat.termStart} />
                 {seat.termEnd ? (
                   <>

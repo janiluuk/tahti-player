@@ -1,6 +1,7 @@
 import { BanIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import { Alert } from '@tahti-player/ui';
 
 import {
@@ -10,33 +11,36 @@ import {
 } from '../api/me-restrictions';
 import { ListingDate } from './ListingDate';
 
-const BLOCKED: Record<RestrictionType, string> = {
-  UPLOAD: 'Uploads are blocked',
-  LIVE_SHOW_BOOKING: 'Booking shows is blocked',
-  LOGIN: 'Sign-in is blocked',
-};
+const BLOCKED = {
+  UPLOAD: 'restrictionNoticeBatch35.blockedUpload',
+  LIVE_SHOW_BOOKING: 'restrictionNoticeBatch35.blockedLiveShowBooking',
+  LOGIN: 'restrictionNoticeBatch35.blockedLogin',
+} as const satisfies Record<RestrictionType, ParseKeys<'web'>>;
 
 function RestrictionAlert({ restriction }: { restriction: MyRestriction }) {
+  const { t } = useTranslation('web');
+  const blocked = t(BLOCKED[restriction.type]);
   return (
     <Alert
       tone="warning"
       icon={<BanIcon aria-hidden className="size-4" />}
       title={
         <>
-          {BLOCKED[restriction.type]}
           {restriction.expiresAt ? (
             <>
-              {' until '}
+              {t('restrictionNoticeBatch35.titleUntil', { blocked })}{' '}
               <ListingDate value={restriction.expiresAt} />
             </>
-          ) : null}
+          ) : (
+            blocked
+          )}
         </>
       }
     >
-      <p>Reason: {restriction.reason}</p>
-      <p className="mt-1">
-        Ask the board through Help → Support if you think this is a mistake.
+      <p>
+        {t('restrictionNoticeBatch35.reason', { reason: restriction.reason })}
       </p>
+      <p className="mt-1">{t('restrictionNoticeBatch35.askBoard')}</p>
     </Alert>
   );
 }

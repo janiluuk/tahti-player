@@ -70,8 +70,10 @@ export function PurchaseOrdersList() {
   return (
     <div className="flex flex-col gap-2">
       <p className="text-foreground-secondary text-xs">
-        {orders.length} {orders.length === 1 ? 'sale' : 'sales'}, {euros(total)}{' '}
-        before fees.
+        {t('purchaseOrdersListBatch35.summary', {
+          count: orders.length,
+          total: euros(total),
+        })}
       </p>
       <ul
         className="divide-border divide-y text-sm"
@@ -108,7 +110,7 @@ export function PurchaseOrdersList() {
           className="self-start"
           onClick={() => setShowAll(true)}
         >
-          Show all {orders.length}
+          {t('messageContactsBatch32.showAll', { count: orders.length })}
         </Button>
       ) : null}
     </div>
