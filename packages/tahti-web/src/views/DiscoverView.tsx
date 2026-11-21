@@ -64,6 +64,10 @@ import {
   DiscoverWaveformPlayer,
   type DiscoverSelection,
 } from '../components/discover/DiscoverWaveformPlayer';
+import {
+  eventsFiltersFromSearch,
+  eventsFiltersToSearch,
+} from '../components/discover/eventFilters';
 import { RandomTrackGenres } from '../components/discover/RandomTrackGenres';
 import { WidgetCard } from '../components/discover/WidgetCard';
 import {
@@ -83,7 +87,11 @@ import { VenuesDirectory } from '../components/VenuesDirectory';
 import { contentTypes } from '../content/contentTypes';
 import { hasAccountRole } from '../lib/accountRoles';
 import { ALL_FILTER_ID, allOrSpecific } from '../lib/allOrSpecific';
-import { discoverTabFromSearch, type DiscoverTab } from '../lib/discoverTabs';
+import {
+  discoverTabFromSearch,
+  type DiscoverSearch,
+  type DiscoverTab,
+} from '../lib/discoverTabs';
 import { PRESET_GENRES } from '../lib/genres';
 import {
   apiResult,
@@ -196,16 +204,18 @@ export function DiscoverView() {
     null,
   );
   const [reloadKey, setReloadKey] = useState(0);
-  const search = useSearch({ strict: false }) as {
-    tab?: string;
-    view?: string;
-  };
+  const search = useSearch({ strict: false }) as DiscoverSearch;
   const activeTab = discoverTabFromSearch(search.tab);
   const activeTabIndex = DISCOVER_TABS.findIndex(
     (item) => item.id === activeTab,
   );
   const tabRowRef = useSelectedTabInView(activeTabIndex);
   const navigate = useNavigate();
+  const { range, past, city, venue, q, view } = search;
+  const eventsFilters = useMemo(
+    () => eventsFiltersFromSearch({ range, past, city, venue, q, view }),
+    [range, past, city, venue, q, view],
+  );
 
   const filters = useMemo(
     () => ({ genres: genreFilter, contentTypes: contentTypeFilter }),
@@ -510,7 +520,18 @@ export function DiscoverView() {
           />
         ) : null}
 
-        {activeTab === 'events' ? <DiscoverEventsPanel /> : null}
+        {activeTab === 'events' ? (
+          <DiscoverEventsPanel
+            filters={eventsFilters}
+            onFiltersChange={(next, options) =>
+              void navigate({
+                to: '/discover',
+                search: { tab: 'events', ...eventsFiltersToSearch(next) },
+                replace: options?.replace,
+              })
+            }
+          />
+        ) : null}
 
         {activeTab === 'parties' ? <DiscoverPartiesPanel /> : null}
 

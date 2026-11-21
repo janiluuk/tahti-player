@@ -105,13 +105,17 @@ export function ChannelStageTrackMeta({ nowPlaying, next }: Props) {
               { remaining },
             )}
           />
-          <span className="shrink-0 tabular-nums">{remaining} left</span>
+          <span className="shrink-0 tabular-nums">
+            {t('channelStageTrackMetaBatch36.remainingLeft', { remaining })}
+          </span>
         </div>
       )}
       {next && (
         <p className="truncate">
-          <span className="text-white/55">Up next:</span> {next.title} -{' '}
-          {next.artistName}
+          <span className="text-white/55">
+            {t('channelStageTrackMetaBatch36.upNext')}
+          </span>{' '}
+          {next.title} - {next.artistName}
         </p>
       )}
     </div>

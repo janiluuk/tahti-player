@@ -1,11 +1,16 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { afterAll, describe, expect, it } from 'vitest';
 
+import { i18n } from '@tahti-player/i18n';
+
+import { applyLocale } from '../lib/locale';
 import {
   ADMIN_SECTIONS,
   ADMIN_TAB_ONLY_ROUTES,
   adminHubItems,
+  adminPageDescriptionKey,
+  adminPageLabelKey,
   adminSectionForPath,
   isAdminNavItemActive,
   PRIMARY,
@@ -123,6 +128,30 @@ describe('AdminNav section coverage', () => {
     expect(checked.length).toBeGreaterThan(15);
     for (const { current, crumb, expected } of checked) {
       expect(crumb, current).toBe(expected);
+    }
+  });
+});
+
+describe('AdminNav hub cards in Finnish', () => {
+  afterAll(async () => {
+    await applyLocale('en_US');
+  });
+
+  it('gives every hub card a Finnish title and description', async () => {
+    await applyLocale('fi_FI');
+    const hubs = ADMIN_SECTIONS.flatMap((section) =>
+      section.hub ? [section.hub] : [],
+    );
+    for (const hub of hubs) {
+      for (const item of adminHubItems(hub)) {
+        const labelKey = adminPageLabelKey(item.to);
+        const descriptionKey = adminPageDescriptionKey(item.to);
+        expect(labelKey, item.to).not.toBeNull();
+        expect(descriptionKey, item.to).not.toBeNull();
+        const description = i18n.t(`web:${descriptionKey}`);
+        expect(description, item.to).not.toBe(item.description);
+        expect(description, item.to).not.toBe(`${descriptionKey}`);
+      }
     }
   });
 });

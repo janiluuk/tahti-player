@@ -22,7 +22,7 @@ function withAuthModal(
       error: null,
       totpChallengeId,
     });
-    useAuthModalStore.setState({ isOpen: true, mode });
+    useAuthModalStore.setState({ isOpen: true, mode, oauthError: null });
     return <Story />;
   };
 }
@@ -59,6 +59,44 @@ export const Login: Story = {
     const join = await findDialog(canvasElement, /Join/);
     await expect(
       join.getByRole('button', { name: 'Create account' }),
+    ).toBeVisible();
+  },
+};
+
+/** Configured providers show above the email form with an "or" divider. */
+export const ContinueWithProviders: Story = {
+  decorators: [withAuthModal('login')],
+  play: async ({ canvasElement }) => {
+    const dialog = await findDialog(canvasElement, /Log in/);
+    await expect(
+      await dialog.findByRole('button', { name: 'Continue with Google' }),
+    ).toBeVisible();
+    await expect(
+      dialog.getByRole('button', { name: 'Continue with Facebook' }),
+    ).toBeVisible();
+    await expect(dialog.getByRole('separator', { name: 'or' })).toBeVisible();
+  },
+};
+
+/** A Google/Facebook return with `oauth_error=email_in_use` explains what to do. */
+export const OAuthEmailInUse: Story = {
+  decorators: [
+    (Story) => {
+      useAuthStore.setState({
+        user: null,
+        hydrated: true,
+        loading: false,
+        error: null,
+        totpChallengeId: null,
+      });
+      useAuthModalStore.getState().openWithOAuthError('email_in_use');
+      return <Story />;
+    },
+  ],
+  play: async ({ canvasElement }) => {
+    const dialog = await findDialog(canvasElement, /Log in/);
+    await expect(
+      dialog.getByText(/An account with this email already exists/),
     ).toBeVisible();
   },
 };

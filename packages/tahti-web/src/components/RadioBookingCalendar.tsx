@@ -85,7 +85,7 @@ function combineDateAndTime(date: Date, timeHHMM: string): Date | null {
 
 function formatTimeRange(startAt: string, endAt: string): string {
   const fmt = (iso: string) =>
-    new Date(iso).toLocaleTimeString([], {
+    new Date(iso).toLocaleTimeString(dateLocaleTag(), {
       hour: '2-digit',
       minute: '2-digit',
     });
@@ -279,7 +279,7 @@ export function RadioBookingCalendar({
     setMsg(
       t('radioBookingCalendarBatch35.booked', {
         hours: durationHours,
-        when: start.toLocaleString([], {
+        when: start.toLocaleString(dateLocaleTag(), {
           weekday: 'short',
           month: 'short',
           day: 'numeric',
@@ -335,7 +335,7 @@ export function RadioBookingCalendar({
             </Button>
           </Tooltip>
           <div className="text-sm font-semibold">
-            {monthCursor.toLocaleDateString([], {
+            {monthCursor.toLocaleDateString(dateLocaleTag(), {
               month: 'long',
               year: 'numeric',
             })}
@@ -414,7 +414,7 @@ export function RadioBookingCalendar({
 
         <div className="border-border mt-4 flex flex-col gap-3 border-t pt-3">
           <div className="text-sm font-semibold">
-            {selectedDate.toLocaleDateString([], {
+            {selectedDate.toLocaleDateString(dateLocaleTag(), {
               weekday: 'long',
               month: 'long',
               day: 'numeric',
@@ -545,11 +545,14 @@ export function RadioBookingCalendar({
                 <span className="text-foreground-secondary block text-xs uppercase">
                   {t('bookingCalendar.when')}
                 </span>
-                {new Date(selectedBooking.startAt).toLocaleDateString([], {
-                  weekday: 'long',
-                  month: 'long',
-                  day: 'numeric',
-                })}{' '}
+                {new Date(selectedBooking.startAt).toLocaleDateString(
+                  dateLocaleTag(),
+                  {
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric',
+                  },
+                )}{' '}
                 {formatTimeRange(
                   selectedBooking.startAt,
                   selectedBooking.endAt,
@@ -600,7 +603,7 @@ export function RadioBookingCalendar({
         <Dialog.Title>{t('bookingCalendar.bookATahtiRadioSlot')}</Dialog.Title>
         <Dialog.Description>
           {t('radioBookingCalendarBatch35.addShowDetails', {
-            date: selectedDate.toLocaleDateString([], {
+            date: selectedDate.toLocaleDateString(dateLocaleTag(), {
               weekday: 'long',
               month: 'long',
               day: 'numeric',

@@ -15402,6 +15402,77 @@
       "addedCount_other": "{{count}} kappaletta lisättiin jonoon.",
       "alreadyQueued": "“{{title}}” on jo jonossa.",
       "addedNamed": "“{{title}}” lisättiin jonoon."
+    },
+    "discoverEventsFilters": {
+      "range": "Aikaväli",
+      "rangeUpcoming": "Tulevat",
+      "rangeWeek": "Tällä viikolla",
+      "rangeMonth": "Tässä kuussa",
+      "rangeNext3Months": "Seuraavat 3 kuukautta",
+      "past": "Menneet tapahtumat",
+      "pastBadge": "Mennyt",
+      "city": "Kaupunki",
+      "allCities": "Kaikki kaupungit",
+      "venue": "Tapahtumapaikka",
+      "allVenues": "Kaikki tapahtumapaikat",
+      "search": "Hae tapahtumia",
+      "searchPlaceholder": "Hae nimellä, paikalla, tapahtumapaikalla tai järjestäjällä",
+      "view": "Tapahtumanäkymä",
+      "viewList": "Lista",
+      "viewCalendar": "Kalenteri",
+      "noMatchTitle": "Yksikään tapahtuma ei vastaa suodattimia",
+      "noMatchDescription": "Kokeile toista kaupunkia, tapahtumapaikkaa tai hakua.",
+      "clear": "Tyhjennä suodattimet",
+      "pastEmptyTitle": "Ei menneitä tapahtumia",
+      "pastEmptyDescription": "Viimeisen 92 päivän aikana ei ollut tapahtumia."
+    },
+    "oauthLogin": {
+      "continueWithGoogle": "Jatka Google-tilillä",
+      "continueWithFacebook": "Jatka Facebook-tilillä",
+      "or": "tai",
+      "signedInWith": "Kirjauduit sisään {{provider}}-tilillä",
+      "signedIn": "Kirjauduit sisään",
+      "linkedToast": "{{provider}}-tili on nyt linkitetty tiliisi.",
+      "errorCancelled": "Kirjautuminen peruttiin.",
+      "errorEmailInUse": "Tällä sähköpostiosoitteella on jo tili. Kirjaudu salasanallasi ja linkitä Google tai Facebook kohdassa Asetukset → Turvallisuus.",
+      "errorAlreadyLinked": "Tämä Google- tai Facebook-tili on jo linkitetty toiseen Tahti-tiliin.",
+      "errorNotConfigured": "Tällä palvelulla kirjautuminen ei ole nyt käytettävissä.",
+      "errorFailed": "Kirjautuminen epäonnistui. Yritä uudelleen.",
+      "linkedLogins": "Linkitetyt kirjautumiset",
+      "linkedLoginsDescription": "Kirjaudu Google- tai Facebook-tilillä salasanan lisäksi.",
+      "statusLinked": "Linkitetty · {{email}}",
+      "statusLinkedNoEmail": "Linkitetty",
+      "statusNotLinked": "Ei linkitetty",
+      "link": "Linkitä",
+      "disconnect": "Irrota",
+      "disconnectTitle": "Irrotetaanko {{provider}}?",
+      "disconnectDescription": "Et voi kirjautua {{provider}}-tilillä ennen kuin linkität sen uudelleen.",
+      "disconnected": "{{provider}} irrotettu.",
+      "loadFailed": "Linkitettyjä kirjautumisia ei voitu ladata."
+    },
+    "channelStageTrackMetaBatch36": {
+      "upNext": "Seuraavaksi:",
+      "remainingLeft": "{{remaining}} jäljellä"
+    },
+    "radioBookedShowsPanelBatch36": {
+      "tomorrow": "Huomenna"
+    },
+    "radioShowEpisodeListBatch36": {
+      "fallbackTitle": "Tahti Radion ohjelma"
+    },
+    "visualizerModeLabelBatch36": {
+      "oscilloscope": "Oskilloskooppi",
+      "spectrum": "Spektri",
+      "radial": "Säteittäinen",
+      "quantum": "Kvanttihila",
+      "orb": "Pallo",
+      "cymatics": "Kymatiikka",
+      "landscapeChrome": "Kromimaisema",
+      "landscapeFerrofluid": "Ferrofluidimaisema"
+    },
+    "visualizerModeMenuBatch36": {
+      "analyzer": "Analysaattori",
+      "current": "Visualisointi: {{mode}}"
     }
   },
   "studioEditor": {

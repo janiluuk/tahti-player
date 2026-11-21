@@ -74,6 +74,7 @@ import { StationUnavailableNotice } from '../components/StationUnavailableNotice
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
 import { usePolling } from '../hooks/usePolling';
+import { dateLocaleTag } from '../lib/locale';
 import { RADIO_TABS, radioTabFromSearch } from '../lib/radioTabs';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
@@ -83,7 +84,7 @@ const UPCOMING_WINDOW_DAYS = 14;
 const UPCOMING_LIMIT = 8;
 
 function formatShowStart(iso: string): string {
-  return new Date(iso).toLocaleString([], {
+  return new Date(iso).toLocaleString(dateLocaleTag(), {
     weekday: 'short',
     hour: '2-digit',
     minute: '2-digit',

@@ -25,7 +25,7 @@ function EpisodeRow({ episode }: { episode: PublicRadioShowEpisode }) {
     episode.title ??
     episode.recording?.title ??
     episode.note ??
-    'Tahti Radio show';
+    t('radioShowEpisodeListBatch36.fallbackTitle');
   const tagline = episode.note && episode.note !== title ? episode.note : null;
 
   return (

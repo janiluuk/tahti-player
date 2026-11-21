@@ -1,9 +1,14 @@
+import {
+  parseEventsSearch,
+  type EventsSearch,
+} from '../components/discover/eventFilters';
+
 export type DiscoverTab =
   'discover' | 'feed' | 'events' | 'parties' | 'artists' | 'venues' | 'groups';
 
 export type FeedView = 'stories' | 'calendar';
 
-export type DiscoverSearch = {
+export type DiscoverSearch = EventsSearch & {
   tab?: Exclude<DiscoverTab, 'discover'>;
   view?: 'calendar';
 };
@@ -30,6 +35,7 @@ export function parseDiscoverSearch(
     ...(tab === 'feed' && search.view === 'calendar'
       ? { view: 'calendar' as const }
       : {}),
+    ...(tab === 'events' ? parseEventsSearch(search) : {}),
   };
 }
 

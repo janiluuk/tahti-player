@@ -1,14 +1,14 @@
 import { AudioWaveformIcon, CheckIcon } from 'lucide-react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import { Button, Popover } from '@tahti-player/ui';
 import {
   ADVANCED_MODES,
   CYMATICS_MODES,
-  VISUALIZER_MODE_LABELS,
   type VisualizerMode,
 } from '@tahti-player/visualizer';
 
+import { visualizerModeLabel } from '../lib/visualizerModeLabel';
 import { VisualizerModePreview } from './VisualizerModePreview';
 
 type Props = {
@@ -18,13 +18,22 @@ type Props = {
   panelClassName?: string;
 };
 
-const GROUPS: readonly {
-  label: string;
+const GROUPS = [
+  {
+    id: 'analyzer',
+    labelKey: 'visualizerModeMenuBatch36.analyzer',
+    modes: ADVANCED_MODES,
+  },
+  {
+    id: 'cymatics',
+    labelKey: 'visualizerModeLabelBatch36.cymatics',
+    modes: CYMATICS_MODES,
+  },
+] as const satisfies readonly {
+  id: string;
+  labelKey: ParseKeys<'web'>;
   modes: readonly VisualizerMode[];
-}[] = [
-  { label: 'Analyzer', modes: ADVANCED_MODES },
-  { label: 'Cymatics', modes: CYMATICS_MODES },
-];
+}[];
 
 export function VisualizerModeMenu({
   mode,
@@ -37,12 +46,17 @@ export function VisualizerModeMenu({
     <Popover
       anchor="bottom end"
       panelClassName={panelClassName}
-      tooltip={{ content: 'Visualizer', side: 'left' }}
+      tooltip={{
+        content: t('visualizerModeMenuText.visualizer'),
+        side: 'left',
+      }}
       trigger={
         <Button
           size="icon"
           variant="text"
-          aria-label={`Visualizer: ${VISUALIZER_MODE_LABELS[mode]}`}
+          aria-label={t('visualizerModeMenuBatch36.current', {
+            mode: visualizerModeLabel(t, mode),
+          })}
           aria-haspopup="menu"
           data-testid="visualizer-mode-trigger"
           className={triggerClassName}
@@ -59,10 +73,10 @@ export function VisualizerModeMenu({
       >
         {GROUPS.map((group) => (
           <Popover.Section
-            key={group.label}
-            label={group.label}
+            key={group.id}
+            label={t(group.labelKey)}
             role="group"
-            aria-label={group.label}
+            aria-label={t(group.labelKey)}
           >
             <div className="grid grid-cols-2 gap-2 p-1">
               {group.modes.map((id) => {
@@ -73,8 +87,8 @@ export function VisualizerModeMenu({
                     type="button"
                     variant="plain"
                     size="flexible"
-                    title={VISUALIZER_MODE_LABELS[id]}
-                    aria-label={VISUALIZER_MODE_LABELS[id]}
+                    title={visualizerModeLabel(t, id)}
+                    aria-label={visualizerModeLabel(t, id)}
                     role="menuitemradio"
                     aria-checked={selected}
                     onClick={() => onModeChange(id)}
@@ -82,7 +96,7 @@ export function VisualizerModeMenu({
                   >
                     <VisualizerModePreview mode={id} />
                     <span className="sr-only">
-                      {VISUALIZER_MODE_LABELS[id]}
+                      {visualizerModeLabel(t, id)}
                     </span>
                     {selected && (
                       <span className="bg-background text-foreground absolute top-2 right-2 rounded-full p-1">

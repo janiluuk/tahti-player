@@ -25,4 +25,29 @@ describe('discover search', () => {
     expect(discoverTabFromSearch('discover')).toBe('discover');
     expect(discoverTabFromSearch(undefined)).toBe('discover');
   });
+
+  it('keeps Events filters only on the Events tab', () => {
+    expect(
+      parseDiscoverSearch({
+        tab: 'events',
+        range: 'week',
+        past: true,
+        city: 'Helsinki',
+        venue: 'Kaiku',
+        q: 'jam',
+        view: 'calendar',
+      }),
+    ).toEqual({
+      tab: 'events',
+      range: 'week',
+      past: true,
+      city: 'Helsinki',
+      venue: 'Kaiku',
+      q: 'jam',
+      view: 'calendar',
+    });
+    expect(
+      parseDiscoverSearch({ tab: 'feed', city: 'Helsinki', view: 'calendar' }),
+    ).toEqual({ tab: 'feed', view: 'calendar' });
+  });
 });

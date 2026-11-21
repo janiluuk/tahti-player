@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SecurityPanel } from '@tahti-web/views/settings/panels/SecurityPanel';
 import { SettingsNotificationsPanel } from '@tahti-web/views/settings/panels/SettingsNotificationsPanel';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { resetSettingsModal } from './_fixtures/settings';
 import { withToaster } from './_fixtures/track-release';
@@ -46,6 +46,35 @@ export const SecurityDevices: Story = {
     await expectVisible(canvas.getByText(/Each sign-in keeps its own session/));
     await expectVisible(
       canvas.getByRole('button', { name: 'Sign out everywhere' }),
+    );
+  },
+};
+
+/** Password & email lists linked Google/Facebook logins; Disconnect asks
+ * first, and Facebook offers Link (mock: Google is linked). */
+export const LinkedLogins: Story = {
+  decorators: [withTahtiRouter('/settings/security')],
+  render: () => <SecurityPanel />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await selectTab(canvas, 'Password & email');
+    await expectVisible(
+      await canvas.findByRole('heading', { name: 'Linked logins' }),
+    );
+    await expectVisible(
+      await canvas.findByText('Linked · demo.listener@gmail.com'),
+    );
+    await expectVisible(
+      await canvas.findByRole('button', { name: 'Link Facebook' }),
+    );
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Disconnect Google' }),
+    );
+    const body = within(canvasElement.ownerDocument.body);
+    await expectVisible(await body.findByText('Disconnect Google?'));
+    await userEvent.click(body.getByRole('button', { name: 'Cancel' }));
+    await waitFor(() =>
+      expect(body.queryByText('Disconnect Google?')).toBeNull(),
     );
   },
 };

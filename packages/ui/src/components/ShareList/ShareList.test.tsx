@@ -36,7 +36,10 @@ describe('ShareList', () => {
 
   it('shows one decimal for shares under 10 %', () => {
     render(<ShareList items={[{ id: 'edge', label: 'Edge', share: 0.042 }]} />);
-    expect(screen.getByText('4.2 %')).toBeInTheDocument();
+    const share = (4.2).toLocaleString(undefined, {
+      maximumFractionDigits: 1,
+    });
+    expect(screen.getByText(`${share} %`)).toBeInTheDocument();
   });
 
   it('says so when there is nothing to list', () => {

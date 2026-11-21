@@ -16,6 +16,7 @@ import {
   SegmentedControl,
 } from '@tahti-player/ui';
 
+import { OAUTH_ERROR_KEYS } from '../lib/oauthReturn';
 import { passwordProblem, passwordRulesHint } from '../lib/passwordRules';
 import {
   persistListenerSignup,
@@ -24,6 +25,7 @@ import {
 } from '../lib/pendingArtistKind';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
+import { OAuthSignInButtons } from './OAuthSignInButtons';
 import { UsernameAvailabilityHint } from './UsernameAvailabilityHint';
 
 type AccountKind = ArtistKind | 'LISTENER';
@@ -48,6 +50,7 @@ export const AuthDialog: FC = () => {
   const mode = useAuthModalStore((s) => s.mode);
   const close = useAuthModalStore((s) => s.close);
   const setMode = useAuthModalStore((s) => s.setMode);
+  const oauthError = useAuthModalStore((s) => s.oauthError);
 
   const login = useAuthStore((s) => s.login);
   const register = useAuthStore((s) => s.register);
@@ -99,6 +102,8 @@ export const AuthDialog: FC = () => {
       close();
     }
   }, [user, isOpen, totpChallengeId, registrationSuccessEmail, close]);
+
+  const oauthErrorMessage = oauthError ? t(OAUTH_ERROR_KEYS[oauthError]) : null;
 
   const handleClose = () => {
     cancelTotp();
@@ -222,6 +227,12 @@ export const AuthDialog: FC = () => {
             ? t('auth.joinDescription')
             : t('auth.loginDescription')}
       </Dialog.Description>
+      {oauthErrorMessage && !totpChallengeId ? (
+        <div className="mt-4">
+          <AuthDialogError message={oauthErrorMessage} />
+        </div>
+      ) : null}
+      {totpChallengeId ? null : <OAuthSignInButtons enabled={isOpen} />}
 
       {totpChallengeId ? (
         <div className="mt-4 flex flex-col gap-3">

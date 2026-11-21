@@ -23,7 +23,7 @@ test('an artist drafts an event, previews it, tags someone and publishes it', as
   await page.getByRole('button', { name: 'Close' }).last().click();
 
   await page.getByRole('button', { name: 'Save as draft' }).click();
-  await expect(page).toHaveURL(/\/studio\/events$/);
+  await expect(page).toHaveURL(/\/studio\/schedule\?show=events$/);
   const row = page
     .getByRole('listitem')
     .filter({ hasText: 'Rooftop closing set' });
