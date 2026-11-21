@@ -15402,6 +15402,77 @@
       "addedCount_other": "Added {{count}} tracks to the queue.",
       "alreadyQueued": "“{{title}}” is already in the queue.",
       "addedNamed": "Added “{{title}}” to the queue."
+    },
+    "discoverEventsFilters": {
+      "range": "Date range",
+      "rangeUpcoming": "Upcoming",
+      "rangeWeek": "This week",
+      "rangeMonth": "This month",
+      "rangeNext3Months": "Next 3 months",
+      "past": "Past events",
+      "pastBadge": "Past",
+      "city": "City",
+      "allCities": "All cities",
+      "venue": "Venue",
+      "allVenues": "All venues",
+      "search": "Search events",
+      "searchPlaceholder": "Search title, place, venue or host",
+      "view": "Events view",
+      "viewList": "List",
+      "viewCalendar": "Calendar",
+      "noMatchTitle": "No events match these filters",
+      "noMatchDescription": "Try another city, venue or search.",
+      "clear": "Clear filters",
+      "pastEmptyTitle": "No past events",
+      "pastEmptyDescription": "Nothing happened in the last 92 days."
+    },
+    "oauthLogin": {
+      "continueWithGoogle": "Continue with Google",
+      "continueWithFacebook": "Continue with Facebook",
+      "or": "or",
+      "signedInWith": "Signed in with {{provider}}",
+      "signedIn": "Signed in",
+      "linkedToast": "{{provider}} is now linked to your account.",
+      "errorCancelled": "Sign-in was cancelled.",
+      "errorEmailInUse": "An account with this email already exists. Sign in with your password, then link Google/Facebook in Settings → Security.",
+      "errorAlreadyLinked": "That Google or Facebook account is already linked to another Tahti account.",
+      "errorNotConfigured": "Signing in with this service isn't available right now.",
+      "errorFailed": "Could not sign in. Try again.",
+      "linkedLogins": "Linked logins",
+      "linkedLoginsDescription": "Sign in with Google or Facebook as well as your password.",
+      "statusLinked": "Linked · {{email}}",
+      "statusLinkedNoEmail": "Linked",
+      "statusNotLinked": "Not linked",
+      "link": "Link",
+      "disconnect": "Disconnect",
+      "disconnectTitle": "Disconnect {{provider}}?",
+      "disconnectDescription": "You can't sign in with {{provider}} until you link it again.",
+      "disconnected": "{{provider}} disconnected.",
+      "loadFailed": "Could not load linked logins."
+    },
+    "channelStageTrackMetaBatch36": {
+      "upNext": "Up next:",
+      "remainingLeft": "{{remaining}} left"
+    },
+    "radioBookedShowsPanelBatch36": {
+      "tomorrow": "Tomorrow"
+    },
+    "radioShowEpisodeListBatch36": {
+      "fallbackTitle": "Tahti Radio show"
+    },
+    "visualizerModeLabelBatch36": {
+      "oscilloscope": "Oscilloscope",
+      "spectrum": "Spectrum",
+      "radial": "Radial",
+      "quantum": "Quantum Lattice",
+      "orb": "Orb",
+      "cymatics": "Cymatics",
+      "landscapeChrome": "Landscape Chrome",
+      "landscapeFerrofluid": "Landscape Ferrofluid"
+    },
+    "visualizerModeMenuBatch36": {
+      "analyzer": "Analyzer",
+      "current": "Visualizer: {{mode}}"
     }
   },
   "studioEditor": {

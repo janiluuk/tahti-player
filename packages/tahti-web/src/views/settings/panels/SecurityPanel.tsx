@@ -7,6 +7,7 @@ import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
 import { ChangeEmailForm } from '../../../components/ChangeEmailForm';
 import { ChangePasswordForm } from '../../../components/ChangePasswordForm';
 import { DevicesSessionsPanel } from '../../../components/DevicesSessionsPanel';
+import { LinkedLoginsSection } from '../../../components/LinkedLoginsSection';
 import { SecurityTotpPanel } from '../../../components/SecurityTotpPanel';
 import { useAuthStore } from '../../../stores/authStore';
 import {
@@ -48,6 +49,7 @@ export function SecurityPanel() {
             <div className="flex flex-col gap-8">
               <ChangePasswordForm />
               <ChangeEmailForm currentEmail={user?.email ?? null} />
+              <LinkedLoginsSection />
             </div>
           ),
         },

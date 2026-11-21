@@ -13,6 +13,7 @@ import type { ChannelLink } from '../../api/channel-design';
 import type { PublicRadioShow } from '../../api/shows';
 import type { PublicChannel, TahtiPlayable } from '../../api/types';
 import type { ChannelPageItem } from '../../lib/channelPageLayout';
+import { dateLocaleTag } from '../../lib/locale';
 import { isSafeChannelLinkUrl } from '../../lib/safeHref';
 import { splitEmbedPlayables } from '../../lib/splitEmbedPlayables';
 import type { ListenerWidgetInstance } from '../../stores/listenerWidgetsStore';
@@ -333,11 +334,11 @@ export function renderChannelBlock(
             <p className="text-foreground-secondary text-sm">
               {nextAt
                 ? i18n.t('web:channelBlocks.nextUp', {
-                    when: `${nextAt.toLocaleDateString([], {
+                    when: `${nextAt.toLocaleDateString(dateLocaleTag(), {
                       weekday: 'short',
                       month: 'short',
                       day: 'numeric',
-                    })} · ${nextAt.toLocaleTimeString([], {
+                    })} · ${nextAt.toLocaleTimeString(dateLocaleTag(), {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}`,

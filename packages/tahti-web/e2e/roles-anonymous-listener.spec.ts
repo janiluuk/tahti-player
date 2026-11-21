@@ -39,6 +39,27 @@ test('anonymous: forgot password renders its form', async ({ page }) => {
   ).toBeVisible();
 });
 
+test('anonymous: log in offers Google and Facebook; a failed return explains why', async ({
+  page,
+}) => {
+  await page.goto('/login');
+  const dialog = page.getByRole('dialog');
+  await expect(
+    dialog.getByRole('button', { name: 'Continue with Google' }),
+  ).toBeVisible();
+  await expect(
+    dialog.getByRole('button', { name: 'Continue with Facebook' }),
+  ).toBeVisible();
+
+  await page.goto('/?oauth_error=email_in_use');
+  await expect(
+    page
+      .getByRole('dialog')
+      .getByText(/An account with this email already exists/),
+  ).toBeVisible();
+  await expect(page).not.toHaveURL(/oauth_error/);
+});
+
 test('listener: no Studio in the sidebar; Studio and Admin explain the gate', async ({
   page,
 }) => {

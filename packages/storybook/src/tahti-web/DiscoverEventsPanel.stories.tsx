@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DiscoverEventsPanel } from '@tahti-web/components/discover/DiscoverEventsPanel';
+import {
+  DEFAULT_EVENTS_FILTERS,
+  type EventsFilters,
+} from '@tahti-web/components/discover/eventFilters';
+import { useState } from 'react';
 import { expect, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
@@ -12,7 +17,7 @@ const meta: Meta<typeof DiscoverEventsPanel> = {
     docs: {
       description: {
         component:
-          'Discover → Events (`/discover?tab=events`, `GET /api/v1/events/upcoming`): upcoming public events from every host as banner cards (default artwork when there is no banner) with time in the event time zone and the venue. Post event opens `/events/new` when signed in and the sign-in dialog when signed out.',
+          'Discover → Events (`/discover?tab=events`, `GET /api/v1/events?from&to`): public events from every host as banner cards (default artwork when there is no banner) with time in the event time zone and the venue. Date range presets (Upcoming, This week, This month, Next 3 months) and the Past toggle pick the fetch window (at most 92 days); city, venue and text search filter on the client; List / Calendar switches to the month grid with the same events. In the app the state lives in the URL (`range`, `past`, `city`, `venue`, `q`, `view`). Post event opens `/events/new` when signed in and the sign-in dialog when signed out.',
       },
     },
   },
@@ -51,5 +56,49 @@ export const SignedOut: Story = {
       canvas.getByRole('button', { name: 'Post event' }),
     ).toBeVisible();
     await expect(canvas.getByText('Sign in to post an event.')).toBeVisible();
+  },
+};
+
+function FilteredPanel({ initial }: { initial: EventsFilters }) {
+  const [filters, setFilters] = useState(initial);
+  return <DiscoverEventsPanel filters={filters} onFiltersChange={setFilters} />;
+}
+
+export const FilteredByCity: Story = {
+  decorators: [withMockAuth(null)],
+  render: () => (
+    <FilteredPanel initial={{ ...DEFAULT_EVENTS_FILTERS, city: 'Helsinki' }} />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('link', {
+        name: 'Aurora Drift b2b Northern Lights',
+      }),
+    ).toBeVisible();
+    await expect(
+      canvas.getByRole('button', { name: 'City' }),
+    ).toHaveTextContent('Helsinki');
+    await expect(
+      canvas.queryByText(/Saimaa Boathouse Studio/),
+    ).not.toBeInTheDocument();
+  },
+};
+
+export const NoMatches: Story = {
+  decorators: [withMockAuth(null)],
+  render: () => (
+    <FilteredPanel
+      initial={{ ...DEFAULT_EVENTS_FILTERS, q: 'nothing like this' }}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByText('No events match these filters'),
+    ).toBeVisible();
+    await expect(
+      canvas.getByRole('button', { name: 'Clear filters' }),
+    ).toBeVisible();
   },
 };

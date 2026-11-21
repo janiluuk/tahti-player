@@ -30,8 +30,15 @@ function dayKey(date: Date) {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
 
-/** Month grid of every public event (agenda list on phones). */
-export function EventCalendar({ initialMonth }: { initialMonth?: Date }) {
+/** Month grid of every public event (agenda list on phones). With `events`
+ * it shows those instead of fetching each month. */
+export function EventCalendar({
+  initialMonth,
+  events: providedEvents,
+}: {
+  initialMonth?: Date;
+  events?: CalendarEvent[];
+}) {
   const { t } = useTranslation('web');
   const locale = toBcp47(currentLocale());
   const [month, setMonth] = useState(() =>
@@ -42,9 +49,13 @@ export function EventCalendar({ initialMonth }: { initialMonth?: Date }) {
       ? 'agenda'
       : 'month',
   );
-  const [events, setEvents] = useState<CalendarEvent[] | null>(null);
+  const [fetchedEvents, setEvents] = useState<CalendarEvent[] | null>(null);
+  const controlled = providedEvents !== undefined;
 
   useEffect(() => {
+    if (controlled) {
+      return;
+    }
     let cancelled = false;
     setEvents(null);
     const to = new Date(month.getFullYear(), month.getMonth() + 1, 1);
@@ -56,7 +67,18 @@ export function EventCalendar({ initialMonth }: { initialMonth?: Date }) {
     return () => {
       cancelled = true;
     };
-  }, [month]);
+  }, [month, controlled]);
+
+  const events = useMemo(() => {
+    if (!providedEvents) {
+      return fetchedEvents;
+    }
+    const end = new Date(month.getFullYear(), month.getMonth() + 1, 1);
+    return providedEvents.filter((event) => {
+      const start = new Date(event.startAt);
+      return start >= month && start < end;
+    });
+  }, [providedEvents, fetchedEvents, month]);
 
   const byDay = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>();

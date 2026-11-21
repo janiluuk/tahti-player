@@ -35,7 +35,7 @@ export const TabsTab: FC<TabsTabProps> = ({
               'text-foreground-secondary hover:text-foreground h-10 rounded-md px-4 text-base font-medium active:scale-100 [&_svg]:size-[18px]',
             variant === 'segmented' &&
               selected &&
-              'bg-background text-foreground ring-border [&_svg]:text-primary font-semibold shadow-sm ring-1',
+              'bg-background text-foreground ring-border [&_svg]:text-primary max-md:bg-primary/20 max-md:ring-primary/60 font-semibold shadow-sm ring-1 max-md:ring-2',
             variant === 'underline' &&
               'text-foreground-secondary hover:text-foreground relative -mb-px h-11 rounded-none border-b-[3px] border-transparent px-1 text-base font-medium active:scale-100 [&_svg]:size-[18px]',
             variant === 'underline' &&

@@ -40,7 +40,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | ------- | ---- | -------- |
 | open    | [channel-play-icon-hover.md](channel-play-icon-hover.md) | Channel track rows: play icon only on playing + hovered row; Shift hover → queue icon, Shift+click queues |
 | open    | [radio-station-under-widget.md](radio-station-under-widget.md) | Added radio stations land under the radio widget, not on an empty row |
-| partial | [discover-events-tab.md](discover-events-tab.md) | Events tab, posting for any signed-in user, banner crop, event page backdrop built; left: e2e run, EventPostView story, filters (need org upcoming filters), event gallery API deploy (tahti-org#1122 merged) |
+| partial | [discover-events-tab.md](discover-events-tab.md) | Events tab with range / past / city / venue / search filters and calendar view, posting, banner crop, event page backdrop built; left: live post check, event gallery API deploy (tahti-org#1122 merged) |
 | partial | [mobile-bottom-nav-readability.md](mobile-bottom-nav-readability.md) | Taller bar that grows by the gesture-bar inset, bigger labels/icons; left: check on a real Android phone |
 | open    | [pattern-detection-grants-ui.md](pattern-detection-grants-ui.md) | Board grant preview anomaly chips + PATTERN_FRAUD_ALERT activity; left: pitch copy after org merge |
 | open    | [next-50.md](next-50.md) | Map of the 50 slice files in the Next 50 slices section |
@@ -50,7 +50,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Library Playlists + Go live takeover shipped (next-30); left: Go live stepper polish |
-| partial | [finnish-localization.md](finnish-localization.md) | UI Finnish largely shipped; API notification bodies done in org; left: leftover chrome / legal / brands |
+| partial | [finnish-localization.md](finnish-localization.md) | All items resolved; fold after merge |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; stage embed stays one widget (0.0.376); left: embed downloads (product call) |
 | partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Library Playlists + Go live takeover (next-30); left: phase 3 Go live stepper polish |
@@ -58,7 +58,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
 | partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time and cache slow calls server-side |
 | open    | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Community stats at the top (0.0.380) with their own snapshot, loading next to the dashboard (0.0.401); left: measure and cache the slow API calls (tahti-org), and Grafana from tahti.live cannot connect |
-| open    | [google-facebook-login.md](google-facebook-login.md) | Sign up and log in with Google and Facebook: API OAuth callbacks, OAuth apps (ops), buttons on log in / sign up, account linking |
+| partial | [google-facebook-login.md](google-facebook-login.md) | Google/Facebook login: web buttons, return handling and Settings linked logins done; API OAuth callbacks + deploy, OAuth apps (ops), e2e run open |
 | partial | [navigation-performance.md](navigation-performance.md) | Snapshots/GET cache/shell cuts done; remount assert in `useSnapshotFetch.test`; left: real-browser check vs live API |
 | open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | Many-file Chromium drop; CI ~50-file shards; 406 tahti-web stories; no single-file culprit yet |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Matrix + Library Playlists viewport e2e; left: collection player placement, open findings |

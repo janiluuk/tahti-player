@@ -80,8 +80,8 @@ export function RadioListItem({
             onPlay={onTogglePlay}
             isPlaying={isPlaying}
             playDisabled={disabled}
-            playLabel="Play Radio"
-            pauseLabel="Pause Radio"
+            playLabel={t('a11yNamed.play', { name: 'Radio' })}
+            pauseLabel={t('a11yNamed.pause', { name: 'Radio' })}
           />
         </div>
         <div className="flex min-w-0 flex-col justify-center py-3">

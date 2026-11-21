@@ -29,16 +29,20 @@ events with a venue selector and banners; a visualization on the event page.
 - Mock upcoming list now comes from the calendar mock, so mock ids open on
   the mock event page.
 - Unit tests, `Tahti/Discover/DiscoverEventsPanel` story, e2e cases in
-  `e2e/event-calendar.spec.ts` (not run yet).
+  `e2e/event-calendar.spec.ts` (all pass).
 
 ## Left
 
-- [ ] Run the new e2e cases in `e2e/event-calendar.spec.ts`.
-- [ ] Storybook story for `EventPostView` (VIEW-CATALOG says Missing story).
-- [ ] Filters (date range, city/venue), past toggle, calendar toggle on the
-      Events tab. Needs org: `GET /api/v1/events/upcoming` takes only
-      `limit` (1-50), no offset/cursor, no from/to, city or venue filter,
-      no past scope.
+- [x] e2e `e2e/event-calendar.spec.ts`: all 5 cases pass on the mock app (2026-11-21); the Studio draft case now expects `/studio/schedule?show=events`.
+- [x] Storybook story for `EventPostView` (shipped in #2110).
+- [x] Filters on the Events tab: range presets (Upcoming / This week / This
+      month / Next 3 months), Past (last 92 days, newest first), city, venue
+      (narrowed by city), debounced text search, List / Calendar
+      (`EventCalendar` with the filtered events). All on the calendar
+      endpoint `GET /api/v1/events?from&to` (max 92 days), so no API change
+      was needed. URL: `/discover?tab=events&range&past&city&venue&q&view`.
+      Code: `components/discover/eventFilters.ts`, `useDiscoverEvents.ts`,
+      `DiscoverEventsFilterBar.tsx`.
 - [ ] Live check after merge: a listener (no channel) posts an event with a
       banner and it shows on Discover → Events.
 
@@ -55,4 +59,3 @@ image has a caption. Go-ahead given to change tahti-org.
   caller now (artist gallery, admin user too).
 - [ ] Deploy the API (migration) to production; until then saving an event
       with gallery images fails, events without images save as before.
-

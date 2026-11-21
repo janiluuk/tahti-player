@@ -57,6 +57,7 @@ import {
   syncDocumentMetadata,
 } from '../lib/seo';
 import { spaceActivatesTarget } from '../lib/spaceActivatesTarget';
+import { useRouteContentKey } from '../lib/useRouteContentKey';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useChannelSetupModalStore } from '../stores/channelSetupModalStore';
@@ -77,6 +78,7 @@ import { ListenHeartbeat } from './ListenHeartbeat';
 import { MikseriSidebarWidget } from './MikseriSidebarWidget';
 import { MobileBottomNav, MobileDrawer } from './MobileChrome';
 import { NotificationToasts } from './NotificationToasts';
+import { OAuthReturnHandler } from './OAuthReturnHandler';
 import { RouteChunkSkeleton } from './PageStates';
 import { PageTourSpotlight } from './PageTourSpotlight';
 import { RightRailHeaderActions } from './RightRailHeaderActions';
@@ -334,6 +336,7 @@ export function AppShell() {
   );
   const refresh = useAuthStore((s) => s.refresh);
   const userId = useAuthStore((s) => s.user?.id);
+  const routeContentKey = useRouteContentKey(userId);
   const authHydrated = useAuthStore((s) => s.hydrated);
   const studioAccess = useAuthStore((s) => hasStudioAccess(s.user));
   const openAuth = useAuthModalStore((s) => s.open);
@@ -663,7 +666,7 @@ export function AppShell() {
               <RouteContent>
                 <Suspense fallback={<RouteChunkSkeleton />}>
                   <RouteTransition
-                    key={userId ?? 'anonymous'}
+                    key={routeContentKey}
                     fast={fastNavigationRoute}
                   />
                 </Suspense>
@@ -721,7 +724,7 @@ export function AppShell() {
                 <RouteContent>
                   <Suspense fallback={<RouteChunkSkeleton />}>
                     <RouteTransition
-                      key={userId ?? 'anonymous'}
+                      key={routeContentKey}
                       fast={fastNavigationRoute}
                     />
                   </Suspense>
@@ -749,6 +752,7 @@ export function AppShell() {
         {!isMobile && !hideSiteBottomBar && <ConnectedStatusBar />}
         <DeferredFullScreenPlayer open={fullScreenPlayerOpen} />
         <AuthDialog />
+        <OAuthReturnHandler />
         <DeferredDialogs />
         <PageTourSpotlight />
         <Toaster position="bottom-right" richColors closeButton />

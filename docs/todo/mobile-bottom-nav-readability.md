@@ -16,6 +16,7 @@ Reported 2026-11-20.
 - Labels `text-xs font-medium` (were 10px), icons 22px (were 18px).
 - Unit test in `MobileChrome.test.tsx`.
 - Active tab contrast (2026-11-20, "hard to see which section is open"): the open section gets a filled `bg-primary/25` pill behind the icon, a bold label in `text-foreground`, and a primary bar at the top edge; other tabs stay `text-foreground-secondary`.
+- In-page tab strips (2026-11-21): the selected `segmented` tab (`@tahti-player/ui` `Tabs`, the default variant used by Discover and other section tabs) gets a `bg-primary/20` fill and a 2px `ring-primary/60` below `md`; desktop unchanged.
 
 ## Left
 

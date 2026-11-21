@@ -9,4 +9,4 @@ const rootElement = document.getElementById('root');
 if (!rootElement) {
   throw new Error('#root missing');
 }
-mountJamRemote(rootElement);
+void mountJamRemote(rootElement);

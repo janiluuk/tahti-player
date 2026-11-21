@@ -7,6 +7,8 @@ import { Badge, Button } from '@tahti-player/ui';
 
 import { fetchPublicRadioSlots, type PublicRadioSlot } from '../../api/shows';
 import { useOpenedOnce } from '../../hooks/useOpenedOnce';
+import { dateLocaleTag } from '../../lib/locale';
+import { webT } from '../../lib/webT';
 import { useAuthStore } from '../../stores/authStore';
 import { PageEmpty, PageError } from '../PageStates';
 
@@ -25,7 +27,7 @@ function dayKey(date: Date): string {
 }
 
 function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString([], {
+  return new Date(iso).toLocaleTimeString(dateLocaleTag(), {
     hour: '2-digit',
     minute: '2-digit',
   });
@@ -48,8 +50,8 @@ export function groupSlotsByDay(
       key,
       label:
         key === today
-          ? 'Today'
-          : start.toLocaleDateString([], {
+          ? webT()('date.today')
+          : start.toLocaleDateString(dateLocaleTag(), {
               weekday: 'short',
               month: 'short',
               day: 'numeric',

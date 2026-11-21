@@ -10,6 +10,8 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink } from '@tahti-player/ui';
 
 import type { StudioShowBooking } from '../../api/shows';
+import { dateLocaleTag } from '../../lib/locale';
+import { webT } from '../../lib/webT';
 import { PageEmpty, PageError, PageErrorBanner } from '../PageStates';
 
 const LIST_CLASS =
@@ -35,12 +37,12 @@ function dayLabel(start: Date, now: Date): string {
     (startOfLocalDay(start) - startOfLocalDay(now)) / MS_PER_DAY,
   );
   if (dayDiff === 0) {
-    return 'Today';
+    return webT()('date.today');
   }
   if (dayDiff === 1) {
-    return 'Tomorrow';
+    return webT()('radioBookedShowsPanelBatch36.tomorrow');
   }
-  return start.toLocaleDateString([], {
+  return start.toLocaleDateString(dateLocaleTag(), {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
@@ -48,7 +50,7 @@ function dayLabel(start: Date, now: Date): string {
 }
 
 function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString([], {
+  return new Date(iso).toLocaleTimeString(dateLocaleTag(), {
     hour: '2-digit',
     minute: '2-digit',
   });

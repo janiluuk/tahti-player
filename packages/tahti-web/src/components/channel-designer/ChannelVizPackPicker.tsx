@@ -1,8 +1,8 @@
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { SelectableTiles, type SelectableTile } from '@tahti-player/ui';
-import { VISUALIZER_MODE_LABELS } from '@tahti-player/visualizer';
 
 import { channelVizPack, channelVizPacks } from '../../lib/channelVizPacks';
+import { visualizerModeLabel } from '../../lib/visualizerModeLabel';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 const NO_PACK = 'none';
@@ -18,7 +18,7 @@ function packTiles(t: TFunction<'web'>): SelectableTile[] {
       id: pack.id,
       label: pack.label,
       description: `${pack.description} ${pack.modes
-        .map((mode) => VISUALIZER_MODE_LABELS[mode])
+        .map((mode) => visualizerModeLabel(t, mode))
         .join(' · ')}`,
     })),
   ];
