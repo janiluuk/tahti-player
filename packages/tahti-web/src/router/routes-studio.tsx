@@ -278,9 +278,11 @@ export const studioStatsRoute = createRoute({
   path: '/studio/stats',
   validateSearch: (
     search: Record<string, unknown>,
-  ): { tab?: 'plays' | 'top-lists' } => ({
+  ): { tab?: 'plays' | 'audience' | 'top-lists' } => ({
     tab:
-      search.tab === 'plays' || search.tab === 'top-lists'
+      search.tab === 'plays' ||
+      search.tab === 'audience' ||
+      search.tab === 'top-lists'
         ? search.tab
         : undefined,
   }),

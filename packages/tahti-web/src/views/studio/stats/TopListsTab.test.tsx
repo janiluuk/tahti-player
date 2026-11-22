@@ -43,7 +43,7 @@ describe('Stats top lists', () => {
   });
 
   it('opens a ranked sound on its Insights tab', () => {
-    render(<TopListsTab state={state} active />);
+    render(<TopListsTab state={state} />);
     fireEvent.click(screen.getByText('Ranked Song'));
     expect(navigate).toHaveBeenCalledWith({
       to: '/studio/sounds/$id',
@@ -53,7 +53,7 @@ describe('Stats top lists', () => {
   });
 
   it('opens a top track on its Insights tab', () => {
-    render(<TopListsTab state={state} active />);
+    render(<TopListsTab state={state} />);
     fireEvent.click(screen.getByText('Top Song'));
     expect(navigate).toHaveBeenCalledWith({
       to: '/studio/sounds/$id',
