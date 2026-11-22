@@ -20,6 +20,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { FanSubArtistsPanel } from './financial/FanSubArtistsPanel';
 import { FanSubPayoutQueue } from './financial/FanSubPayoutQueue';
+import { FinanceYtdPanel } from './financial/FinanceYtdPanel';
 import { formatEur, LedgerPanel } from './financial/LedgerPanel';
 import { LegacyMembersPanel } from './financial/LegacyMembersPanel';
 
@@ -72,6 +73,7 @@ export function AdminFinancialView() {
                 />
               ) : (
                 <>
+                  <FinanceYtdPanel />
                   <StudioPanel title={t('adminFinancialView.fanSubscriptions')}>
                     <div className="flex flex-wrap gap-6">
                       <div>

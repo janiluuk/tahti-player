@@ -9,6 +9,7 @@ import {
   AdminAddonsView,
   AdminAnnouncementsView,
   AdminArtworkPresetsView,
+  AdminCommunityView,
   AdminContentView,
   AdminDashboardView,
   AdminDiagnosticsView,
@@ -36,7 +37,13 @@ import {
 export const adminRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin',
-  component: AdminDashboardView,
+  validateSearch: (search: Record<string, unknown>): { tab?: 'activity' } => ({
+    tab: search.tab === 'activity' ? 'activity' : undefined,
+  }),
+  component: function AdminDashboardRoute() {
+    const search = adminRoute.useSearch();
+    return <AdminDashboardView tab={search.tab ?? 'health'} />;
+  },
 });
 
 export const adminActivityRoute = createRoute({
@@ -65,6 +72,12 @@ export const adminMonitoringRoute = createRoute({
   beforeLoad: () => {
     throw redirect({ to: '/admin', hash: 'monitoring' });
   },
+});
+
+export const adminCommunityRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/admin/community',
+  component: AdminCommunityView,
 });
 
 // Beta applications, radio submissions, Selects, support, content reports,

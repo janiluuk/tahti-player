@@ -1,3 +1,9 @@
+## 2026-11-23 - Admin Overview tabs + Stats detail polish (0.0.439)
+
+Admin Dashboard: Health · Activity tabs; Finance YTD on Financial; Chat and
+mail on People → Community. Stats detail and track insights match the new
+Stats hero look.
+
 ## 2026-11-23 - Studio Stats real tabs + Overview hero (0.0.438)
 
 Stats uses underline tabs Overview · Plays · Audience · Top lists (`?tab=`).

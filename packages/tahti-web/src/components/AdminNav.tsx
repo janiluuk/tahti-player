@@ -17,6 +17,7 @@ import {
   MapIcon,
   MapPinIcon,
   MegaphoneIcon,
+  MessageSquareIcon,
   NewspaperIcon,
   PuzzleIcon,
   RadioIcon,
@@ -71,6 +72,7 @@ const ADMIN_PAGE_KEYS = {
   '/admin/monitoring': 'adminPages.monitoring',
   '/admin/moderation': 'adminPages.moderation',
   '/admin/users': 'adminPages.users',
+  '/admin/community': 'adminPages.community',
   '/admin/content': 'adminPages.content',
   '/admin/radio': 'adminPages.radio',
   '/admin/news': 'adminPages.news',
@@ -115,6 +117,7 @@ export const ADMIN_PAGE_DESCRIPTION_KEYS = {
   '/admin/logs': 'adminPages.logsDescription',
   '/admin/moderation': 'adminPages.moderationDescription',
   '/admin/users': 'adminPages.usersDescription',
+  '/admin/community': 'adminPages.communityDescription',
   '/admin/content': 'adminPages.contentDescription',
   '/admin/radio': 'adminPages.radioDescription',
   '/admin/news': 'adminPages.newsDescription',
@@ -160,7 +163,7 @@ export const PRIMARY = [
     label: 'Dashboard',
     Icon: GaugeIcon,
     icon: <GaugeIcon size={16} aria-hidden />,
-    description: 'Platform-wide overview — activity, health, and shortcuts.',
+    description: 'Platform health and the work that needs a board eye.',
   },
   {
     to: '/admin/logs',
@@ -184,6 +187,13 @@ export const PRIMARY = [
     Icon: UsersIcon,
     icon: <UsersIcon size={16} aria-hidden />,
     description: 'Search accounts and edit role, membership, and suspension.',
+  },
+  {
+    to: '/admin/community',
+    label: 'Community',
+    Icon: MessageSquareIcon,
+    icon: <MessageSquareIcon size={16} aria-hidden />,
+    description: 'Chat volume and mail delivery for the last day.',
   },
   {
     to: '/admin/content',
@@ -369,7 +379,7 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
   {
     id: 'people',
     label: 'People',
-    items: pages(['/admin/users']),
+    items: pages(['/admin/users', '/admin/community']),
   },
   {
     id: 'content',

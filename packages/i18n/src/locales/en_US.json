@@ -1200,6 +1200,7 @@
       "monitoring": "Monitoring",
       "moderation": "Inbox",
       "users": "Users",
+      "community": "Community",
       "content": "Catalog",
       "radio": "Radio",
       "news": "News",
@@ -1223,10 +1224,11 @@
       "venuesEmpty": "No venues found",
       "venuesLoadError": "Could not load venues",
       "venuesTitle": "Venues",
-      "dashboardDescription": "Platform-wide overview — activity, health, and shortcuts.",
+      "dashboardDescription": "Platform health and the work that needs a board eye.",
       "logsDescription": "Live container logs from every service in the production stack.",
       "moderationDescription": "Support, beta applications, radio submissions, Selects, content reports, and feature requests — one tabbed queue.",
       "usersDescription": "Search accounts and edit role, membership, and suspension.",
+      "communityDescription": "Chat volume and mail delivery for the last day.",
       "contentDescription": "System content overview — catalog totals, latest uploads, and recordings.",
       "radioDescription": "Tahti Radio and Tahti Selects rotation, live from the station.",
       "newsDescription": "Publish platform-wide news posts.",
@@ -5448,9 +5450,16 @@
       "yourTahtiDomain": "Your Tahti domain",
       "appearance": "Appearance"
     },
+    "adminCommunityView": {
+      "community": "Community",
+      "subtitle": "Chat volume and outbound mail for the platform."
+    },
     "adminDashboard": {
       "admin": "Admin",
       "dashboard": "Dashboard",
+      "subtitle": "Platform health and the work that needs a board eye.",
+      "tabHealth": "Health",
+      "tabActivity": "Activity",
       "statusChecks": "Status checks",
       "monitoring": "Monitoring",
       "viewLogs": "View logs",
@@ -6661,7 +6670,8 @@
       "sounds": "Sounds",
       "releaseStats": "Release stats",
       "releases": "Releases",
-      "trackInsights": "Track insights"
+      "trackInsights": "Track insights",
+      "subtitle": "Plays, audience, and downloads for this track."
     },
     "soundHeader": {
       "quickEdits": "Quick edits",
@@ -8068,6 +8078,7 @@
     "studioStatsDetailView": {
       "stats": "Stats",
       "insights": "Insights",
+      "subtitle": "Daily plays for the period you pick.",
       "playsTimeRange": "Plays time range",
       "dailyActivity": "Daily activity",
       "downloadCountries": "Download countries"

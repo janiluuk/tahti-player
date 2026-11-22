@@ -69,21 +69,29 @@ test('admin: publishes a news post', async ({ page }) => {
   await expect(page.getByRole('main').getByText(headline)).toBeVisible();
 });
 
-test('admin: the dashboard leads with community stats and links to status checks', async ({
+test('admin: the dashboard Health tab links to status checks and Community', async ({
   page,
 }) => {
   await open(page, '/admin');
-  const headings = page.getByRole('main').getByRole('heading', { level: 2 });
-  await expect(headings.first()).toHaveText('Chat and mail');
+  await expect(page.getByRole('tab', { name: 'Health' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
   await expect(
     page
       .getByRole('main')
       .getByRole('heading', { level: 2, name: 'System health' }),
   ).toBeVisible();
+  await expect(page.getByText('Chat and mail')).toHaveCount(0);
   await page.getByRole('link', { name: 'Status checks' }).click();
   await expect(page).toHaveURL(/\/admin(?:\/)?#status-checks$/);
   await expect(
     page.getByRole('heading', { level: 2, name: 'Status checks' }),
+  ).toBeVisible();
+  await page.getByRole('link', { name: 'Community' }).click();
+  await expect(page).toHaveURL(/\/admin\/community$/);
+  await expect(
+    page.getByRole('heading', { level: 2, name: 'Chat and mail' }),
   ).toBeVisible();
 });
 
