@@ -116,6 +116,19 @@ describe('PlayableAmbientTrackList row actions', () => {
     expect(await screen.findByText('Add to playlist')).toBeTruthy();
   });
 
+  it('queues a row on Shift+click of its artwork play control', async () => {
+    await renderWithRouter(
+      <PlayableAmbientTrackList items={items.slice(0, 2)} />,
+    );
+    const play = screen.getByRole('button', {
+      name: 'Play Track 1 · Shift+click to queue',
+    });
+    fireEvent.click(play, { shiftKey: true });
+    const player = usePlayerStore.getState();
+    expect(player.queue.map((queued) => queued.id)).toEqual(['sound:s1']);
+    expect(player.currentId).not.toBe('sound:s1');
+  });
+
   it('does not offer it signed out', async () => {
     await renderWithRouter(
       <PlayableAmbientTrackList items={items.slice(0, 2)} />,

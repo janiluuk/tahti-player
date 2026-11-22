@@ -67,6 +67,7 @@ const config: StorybookConfig = {
         __APP_VERSION__: JSON.stringify('storybook'),
         __COMMIT_HASH__: JSON.stringify('storybook'),
         __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+        __RELEASE_TAG_DATE__: JSON.stringify(new Date().toISOString()),
       },
     });
   },

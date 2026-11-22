@@ -11,6 +11,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
+  MEDIA_ROW_GROUP,
   MediaArtwork,
   TrackProcessing,
   Waveform,
@@ -226,6 +227,8 @@ export type AmbientTrackRowProps = {
    * play / pause control on its artwork. */
   isCurrent?: boolean;
   onPlay?: () => void;
+  /** Shift+click on the artwork's play control queues instead of playing. */
+  onQueue?: () => void;
   onSeek?: (fraction: number) => void;
   /** Listener-facing extras (like / add / download) — not Studio tooling. */
   actions?: ReactNode;
@@ -259,6 +262,7 @@ function AmbientTrackRowView({
   isPlaying = false,
   isCurrent,
   onPlay,
+  onQueue,
   onSeek,
   actions,
   media,
@@ -297,7 +301,8 @@ function AmbientTrackRowView({
       data-testid="ambient-track-row"
       data-density={density}
       className={cn(
-        'group border-border/40 bg-background-secondary text-foreground flex w-full min-w-0 flex-nowrap items-center rounded-lg border',
+        MEDIA_ROW_GROUP,
+        'border-border/40 bg-background-secondary text-foreground flex w-full min-w-0 flex-nowrap items-center rounded-lg border',
         layout.pad,
         className,
       )}
@@ -319,8 +324,11 @@ function AmbientTrackRowView({
           isCurrent={isCurrent}
           hideActivePlay={density === 'dense'}
           onPlay={playable ? onPlay : undefined}
+          onQueue={playable ? onQueue : undefined}
+          queueOverlay={false}
           playLabel={webT()('a11yNamed.play', { name: title })}
           pauseLabel={webT()('a11yNamed.pause', { name: title })}
+          queueLabel={webT()('a11yNamed.queue', { name: title })}
         />
         {durationLabel && density !== 'dense' ? (
           <span className="pointer-events-none absolute right-1.5 bottom-1.5 rounded bg-black/65 px-1.5 py-0.5 text-xs text-white tabular-nums">

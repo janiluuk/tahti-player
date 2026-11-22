@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import {
   fetchUsernameAvailability,
   type UsernameAvailability,
 } from '../api/username-available';
+import { SLOT, withSlot } from '../lib/slotText';
 
 const CHECK_DELAY_MS = 400;
 const VALID_USERNAME = /^[a-z0-9_-]{2,32}$/;
@@ -20,6 +22,7 @@ export function UsernameAvailabilityHint({
   onPick: (username: string) => void;
   onAvailability?: (available: boolean | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const [result, setResult] = useState<{
     username: string;
     availability: UsernameAvailability | null;
@@ -54,31 +57,44 @@ export function UsernameAvailabilityHint({
   if (!VALID_USERNAME.test(username)) {
     return (
       <p className="text-foreground-secondary text-xs">
-        Your handle needs 2–32 letters, numbers, - or _.
+        {t('usernameAvailabilityHint.invalid')}
       </p>
     );
   }
   const availability =
     result?.username === username ? result.availability : undefined;
 
+  const name = <span className="font-semibold">{username}</span>;
+
   return (
     <div className="text-xs" aria-live="polite" data-testid="username-hint">
       {availability === undefined || availability === null ? (
         <p className="text-foreground-secondary">
-          Your handle: <span className="font-semibold">{username}</span>
+          {withSlot(
+            t('usernameAvailabilityHint.yourHandle', { username: SLOT }),
+            name,
+          )}
         </p>
       ) : availability.available ? (
         <p className="text-accent-green-strong">
-          <span className="font-semibold">{username}</span> is free.
+          {withSlot(
+            t('usernameAvailabilityHint.free', { username: SLOT }),
+            name,
+          )}
         </p>
       ) : (
         <div className="flex flex-wrap items-center gap-1">
           <span className="text-accent-red-strong">
-            <span className="font-semibold">{username}</span> is taken.
+            {withSlot(
+              t('usernameAvailabilityHint.taken', { username: SLOT }),
+              name,
+            )}
           </span>
           {(availability.suggestions ?? []).length > 0 ? (
             <>
-              <span className="text-foreground-secondary">Try</span>
+              <span className="text-foreground-secondary">
+                {t('usernameAvailabilityHint.try')}
+              </span>
               {availability.suggestions!.map((suggestion) => (
                 <Button
                   key={suggestion}

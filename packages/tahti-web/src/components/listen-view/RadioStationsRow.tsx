@@ -42,6 +42,19 @@ function radioItemPlayable(
       ? radioStationPlayable({ ...item.station, streamUrl })
       : null;
   }
+  if (item.kind === 'saved') {
+    const { station } = item;
+    return {
+      id: item.id,
+      kind: 'radio',
+      title: station.name,
+      artist: station.country ?? station.name,
+      coverUrl: station.favicon,
+      streamUrl: station.streamUrl,
+      protocol: 'https',
+      sourceProvider: 'radio',
+    };
+  }
   const station =
     item.kind === 'preset'
       ? {
@@ -90,7 +103,12 @@ export function RadioStationsRow({
   const enabledStationIds = useListenerWidgetsStore((s) => s.enabledStationIds);
   const stationOverrides = useListenerWidgetsStore((s) => s.stationOverrides);
   const toggleStation = useListenerWidgetsStore((s) => s.toggleStation);
+  const savedStations = useListenerWidgetsStore((s) => s.savedBrowserStations);
+  const removeSavedStation = useListenerWidgetsStore(
+    (s) => s.removeSavedBrowserStation,
+  );
   const [pendingRemoval, setPendingRemoval] = useState<{
+    kind: 'catalog' | 'saved';
     id: string;
     label: string;
   } | null>(null);
@@ -172,6 +190,12 @@ export function RadioStationsRow({
         kind: 'mine' as const,
         station,
       })),
+      ...savedStations.map((station) => ({
+        id: `radio:${station.id}`,
+        title: station.name,
+        kind: 'saved' as const,
+        station,
+      })),
     ];
   }, [
     radioPresets,
@@ -179,6 +203,7 @@ export function RadioStationsRow({
     enabledStationIds,
     stationOverrides,
     ownStations,
+    savedStations,
   ]);
 
   const nowPlayingFor = (item: RadioRowItem) =>
@@ -254,8 +279,15 @@ export function RadioStationsRow({
                 isPlaying={isActive(item.id)}
                 nowPlaying={nowPlayingFor(item)}
                 onPlay={() => togglePlay(item.id)}
-                onRemove={(station) =>
-                  setPendingRemoval({ id: station.id, label: station.name })
+                onRemove={
+                  item.kind === 'catalog' || item.kind === 'saved'
+                    ? () =>
+                        setPendingRemoval({
+                          kind: item.kind,
+                          id: item.station.id,
+                          label: item.station.name,
+                        })
+                    : undefined
                 }
                 favorited={favoriteIds.has(item.id)}
                 onFavorite={
@@ -277,8 +309,10 @@ export function RadioStationsRow({
         label={pendingRemoval?.label ?? ''}
         onCancel={() => setPendingRemoval(null)}
         onConfirm={() => {
-          if (pendingRemoval) {
+          if (pendingRemoval?.kind === 'catalog') {
             toggleStation(pendingRemoval.id);
+          } else if (pendingRemoval) {
+            removeSavedStation(pendingRemoval.id);
           }
           setPendingRemoval(null);
         }}

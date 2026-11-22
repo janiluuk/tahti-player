@@ -204,29 +204,29 @@ export function ConnectedSettingsModal() {
           ) : null}
           <div className="border-border flex flex-col gap-2 border-t pt-2">
             <div className="flex items-center justify-center gap-1">
-              <Tooltip content="GitHub" side="top">
+              <Tooltip content={t('settings.github')} side="top">
                 <ExternalLink
                   href={GITHUB_REPO_URL}
                   className={footerIconLinkClass}
-                  aria-label="GitHub"
+                  aria-label={t('settings.github')}
                 >
                   <GithubIcon size={18} aria-hidden />
                 </ExternalLink>
               </Tooltip>
-              <Tooltip content="Discord" side="top">
+              <Tooltip content={t('settings.discord')} side="top">
                 <ExternalLink
                   href={DISCORD_URL}
                   className={footerIconLinkClass}
-                  aria-label="Discord"
+                  aria-label={t('settings.discord')}
                 >
                   <DiscordIcon size={18} />
                 </ExternalLink>
               </Tooltip>
-              <Tooltip content="API docs" side="top">
+              <Tooltip content={t('settings.apiDocs')} side="top">
                 <ExternalLink
                   href={API_DOCS_URL}
                   className={footerIconLinkClass}
-                  aria-label="API docs"
+                  aria-label={t('settings.apiDocs')}
                 >
                   <BookOpenIcon size={18} aria-hidden />
                 </ExternalLink>

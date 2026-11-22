@@ -1,6 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { MediaArtwork, MediaArtworkDefaultProvider } from './MediaArtwork';
+import {
+  MEDIA_ROW_GROUP,
+  MediaArtwork,
+  MediaArtworkDefaultProvider,
+} from './MediaArtwork';
 
 describe('MediaArtwork play / queue', () => {
   it('uses a neutral text overlay on thumb and sm play controls', () => {
@@ -34,14 +38,14 @@ describe('MediaArtwork play / queue', () => {
       <MediaArtwork size="md" onPlay={vi.fn()} isPlaying />,
     );
     expect(screen.getByTestId('media-artwork-play').className).not.toMatch(
-      /group-hover:opacity-100/,
+      /group-hover\/media:opacity-100/,
     );
 
     rerender(
       <MediaArtwork size="md" onPlay={vi.fn()} isPlaying hideActivePlay />,
     );
     expect(screen.getByTestId('media-artwork-play').className).toMatch(
-      /group-hover:opacity-100/,
+      /group-hover\/media:opacity-100/,
     );
   });
 
@@ -56,7 +60,7 @@ describe('MediaArtwork play / queue', () => {
     rerender(<MediaArtwork size="md" onPlay={vi.fn()} isCurrent />);
     const paused = screen.getByTestId('media-artwork-play');
     expect(paused.className).toMatch(touchVisible);
-    expect(paused.className).toMatch(/group-hover:opacity-100/);
+    expect(paused.className).toMatch(/group-hover\/media:opacity-100/);
     expect(paused).toHaveAttribute('data-current', 'true');
 
     rerender(<MediaArtwork size="md" onPlay={vi.fn()} isPlaying />);
@@ -120,6 +124,46 @@ describe('MediaArtwork play / queue', () => {
       shiftKey: true,
     });
     expect(onPlay).toHaveBeenCalledTimes(1);
+  });
+
+  it('reveals only from its own hover or a named media row, never a bare group', () => {
+    const { container } = render(
+      <MediaArtwork size="md" onPlay={vi.fn()} onFavorite={vi.fn()} />,
+    );
+    const root = screen.getByTestId('media-artwork');
+    expect(root.className).toMatch(/(^|\s)group\/media(\s|$)/);
+    expect(root.className).not.toMatch(/(^|\s)group(\s|$)/);
+
+    const play = screen.getByTestId('media-artwork-play');
+    const dim =
+      container.querySelector('div[aria-hidden="true"]')?.className ?? '';
+    for (const className of [play.className, dim]) {
+      expect(className).toMatch(/group-hover\/media:/);
+      expect(className).toMatch(/group-hover\/media-row:/);
+      expect(className).toMatch(/group-focus-within\/media-row:/);
+      expect(className).not.toMatch(/group-hover:/);
+      expect(className).not.toMatch(/group-focus-within:/);
+    }
+    expect(MEDIA_ROW_GROUP).toBe('group/media-row');
+  });
+
+  it('keeps Shift+click queueing without the corner queue button when queueOverlay is off', () => {
+    const onPlay = vi.fn();
+    const onQueue = vi.fn();
+    render(
+      <MediaArtwork
+        size="fill"
+        onPlay={onPlay}
+        onQueue={onQueue}
+        queueOverlay={false}
+      />,
+    );
+    expect(screen.queryByTestId('media-artwork-queue')).toBeNull();
+    fireEvent.click(screen.getByTestId('media-artwork-play'), {
+      shiftKey: true,
+    });
+    expect(onQueue).toHaveBeenCalledTimes(1);
+    expect(onPlay).not.toHaveBeenCalled();
   });
 
   it('swaps the play icon for the queue icon while Shift is held', () => {

@@ -86,8 +86,9 @@ export function ReleaseCsvImportButton({
           {t('releaseCsvImportButton.importReleasesFromCsv')}
         </Dialog.Title>
         <Dialog.Description>
-          One row per track. Rows with the same release title and date become
-          one draft release. Columns: {RELEASE_CSV_COLUMNS.join(', ')}.
+          {t('releaseCsvImportButton.description', {
+            columns: RELEASE_CSV_COLUMNS.join(', '),
+          })}
         </Dialog.Description>
         <form
           className="contents"

@@ -3,7 +3,7 @@
 exports[`HistoryRow > (Snapshot) renders a placeholder when artwork is missing 1`] = `
 <div>
   <div
-    class="border-border bg-background-secondary group grid grid-cols-[auto_auto_1fr_1fr_auto] items-center border-b-(length:--border-width) select-none last:border-b-0"
+    class="border-border bg-background-secondary group/history-row grid grid-cols-[auto_auto_1fr_1fr_auto] items-center border-b-(length:--border-width) select-none last:border-b-0 group/media-row"
     data-testid="history-row"
   >
     <div
@@ -14,7 +14,7 @@ exports[`HistoryRow > (Snapshot) renders a placeholder when artwork is missing 1
       data-testid="history-row-thumbnail"
     >
       <div
-        class="group relative overflow-hidden size-12 min-w-12"
+        class="group/media relative overflow-hidden size-12 min-w-12"
         data-testid="media-artwork"
       >
         <div
@@ -84,7 +84,7 @@ exports[`HistoryRow > (Snapshot) renders a placeholder when artwork is missing 1
 exports[`HistoryRow > (Snapshot) renders with artwork and all actions 1`] = `
 <div>
   <div
-    class="border-border bg-background-secondary group grid grid-cols-[auto_auto_1fr_1fr_auto] items-center border-b-(length:--border-width) select-none last:border-b-0"
+    class="border-border bg-background-secondary group/history-row grid grid-cols-[auto_auto_1fr_1fr_auto] items-center border-b-(length:--border-width) select-none last:border-b-0 group/media-row"
     data-testid="history-row"
   >
     <div
@@ -121,7 +121,7 @@ exports[`HistoryRow > (Snapshot) renders with artwork and all actions 1`] = `
       data-testid="history-row-thumbnail"
     >
       <div
-        class="group relative overflow-hidden size-12 min-w-12 cursor-pointer"
+        class="group/media relative overflow-hidden size-12 min-w-12 cursor-pointer"
         data-testid="media-artwork"
       >
         <img
@@ -131,7 +131,7 @@ exports[`HistoryRow > (Snapshot) renders with artwork and all actions 1`] = `
         />
         <div
           aria-hidden="true"
-          class="pointer-events-none absolute inset-0 bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover:bg-black/45"
+          class="pointer-events-none absolute inset-0 bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-hover/media:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within/media:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover/media-row:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within/media-row:bg-black/45"
         />
         <div
           class="pointer-events-none absolute inset-0 flex items-center justify-center"
@@ -139,7 +139,7 @@ exports[`HistoryRow > (Snapshot) renders with artwork and all actions 1`] = `
           <div>
             <button
               aria-label="Play"
-              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto rounded-full active:scale-[0.96] motion-reduce:active:scale-100 opacity-0 transition-opacity focus-visible:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100 text-white"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto rounded-full active:scale-[0.96] motion-reduce:active:scale-100 opacity-0 transition-opacity focus-visible:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/media:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within/media:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/media-row:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within/media-row:opacity-100 text-white"
               data-headlessui-state=""
               data-testid="media-artwork-play"
               type="button"
@@ -187,7 +187,7 @@ exports[`HistoryRow > (Snapshot) renders with artwork and all actions 1`] = `
         <div>
           <button
             aria-label="Add to queue"
-            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover/history-row:opacity-100"
             data-headlessui-state=""
             data-testid="history-row-add-to-queue"
             type="button"

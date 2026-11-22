@@ -3,7 +3,7 @@
 exports[`Card > (Snapshot) renders correctly 1`] = `
 <div>
   <div
-    class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+    class="group/media-row border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
     data-layout="card"
     data-surface="brand"
     data-testid="card"
@@ -12,7 +12,7 @@ exports[`Card > (Snapshot) renders correctly 1`] = `
       class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
     >
       <div
-        class="group overflow-hidden absolute inset-0 size-full"
+        class="group/media overflow-hidden absolute inset-0 size-full"
         data-testid="media-artwork"
       >
         <div
@@ -91,7 +91,7 @@ exports[`Card > (Snapshot) renders correctly 1`] = `
 exports[`Card > (Snapshot) renders the neutral surface 1`] = `
 <div>
   <div
-    class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 bg-background-secondary text-foreground"
+    class="group/media-row border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 bg-background-secondary text-foreground"
     data-layout="card"
     data-surface="neutral"
     data-testid="card"
@@ -100,7 +100,7 @@ exports[`Card > (Snapshot) renders the neutral surface 1`] = `
       class="border-border flex h-full rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
     >
       <div
-        class="group overflow-hidden absolute inset-0 size-full"
+        class="group/media overflow-hidden absolute inset-0 size-full"
         data-testid="media-artwork"
       >
         <div

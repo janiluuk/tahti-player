@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { cn } from '../../utils';
 import { Button } from '../Button';
 import { FavoriteButton } from '../FavoriteButton';
-import { MediaArtwork } from '../MediaArtwork';
+import { MEDIA_ROW_GROUP, MediaArtwork } from '../MediaArtwork';
 import { Tooltip } from '../Tooltip';
 import type { HistoryRowProps } from './types';
 
@@ -28,7 +28,8 @@ export const HistoryRow: FC<HistoryRowProps> = ({
     data-active={isActive || undefined}
     aria-current={isActive ? 'true' : undefined}
     className={cn(
-      'border-border bg-background-secondary group grid grid-cols-[auto_auto_1fr_1fr_auto] items-center border-b-(length:--border-width) select-none last:border-b-0',
+      'border-border bg-background-secondary group/history-row grid grid-cols-[auto_auto_1fr_1fr_auto] items-center border-b-(length:--border-width) select-none last:border-b-0',
+      MEDIA_ROW_GROUP,
       isActive && 'border-l-accent-yellow bg-accent-yellow/15 border-l-2',
       classes?.root,
       className,
@@ -101,7 +102,7 @@ export const HistoryRow: FC<HistoryRowProps> = ({
               data-testid="history-row-add-to-queue"
               size="icon-sm"
               variant="text"
-              className="opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+              className="opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover/history-row:opacity-100"
               aria-label={labels.addToQueue}
               onClick={(e) => {
                 e.stopPropagation();

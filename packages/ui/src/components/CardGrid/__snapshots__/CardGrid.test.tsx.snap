@@ -6,7 +6,7 @@ exports[`Card grid > (Snapshot) Renders correctly 1`] = `
     class="grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-4 pr-2 pb-4"
   >
     <div
-      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-full text-primary-foreground bg-primary"
+      class="group/media-row border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-full text-primary-foreground bg-primary"
       data-layout="full"
       data-surface="brand"
       data-testid="card"
@@ -15,7 +15,7 @@ exports[`Card grid > (Snapshot) Renders correctly 1`] = `
         class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
       >
         <div
-          class="group overflow-hidden absolute inset-0 size-full"
+          class="group/media overflow-hidden absolute inset-0 size-full"
           data-testid="media-artwork"
         >
           <div

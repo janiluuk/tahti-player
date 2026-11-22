@@ -15,6 +15,7 @@ import { Button } from '../Button';
 import { ImageReveal } from '../ImageReveal';
 import { Loader } from '../Loader';
 import { Tooltip } from '../Tooltip';
+import { useUiLabels } from '../UiLabels';
 
 export type MediaArtworkAction = {
   id: string;
@@ -83,6 +84,9 @@ export type MediaArtworkProps = {
   queueLabel?: string;
   queueDisabled?: boolean;
   queueActive?: boolean;
+  /** Set false where the row already has its own queue button: `onQueue`
+   * then only powers Shift+click on the play control. */
+  queueOverlay?: boolean;
   /** Convenience favorite action (top-right overlay). */
   onFavorite?: () => void;
   favorited?: boolean;
@@ -118,14 +122,22 @@ const overlayIconSize = {
   fill: 16,
 } as const;
 
+/** Opts a row or card into revealing its MediaArtwork controls while the
+ * pointer is anywhere on it, not only over the artwork. Named, so an outer
+ * unnamed `group` (a page section, a block frame) never reveals every row. */
+export const MEDIA_ROW_GROUP = 'group/media-row';
+
 /** Hover / focus show overlays; always visible on coarse pointers (touch). */
 const overlayReveal =
-  'opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100';
+  'opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover/media:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within/media:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/media-row:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within/media-row:opacity-100';
 
 /** Hover / focus show the control; hidden at rest on touch too, so a list
  * of idle items is not a column of play buttons. Keyboard focus shows it. */
 const idleReveal =
-  'opacity-0 transition-opacity focus-visible:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100';
+  'opacity-0 transition-opacity focus-visible:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/media:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within/media:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/media-row:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within/media-row:opacity-100';
+
+const hoverDim =
+  'bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-hover/media:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within/media:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover/media-row:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within/media-row:bg-black/45';
 
 export const MediaArtwork: FC<MediaArtworkProps> = ({
   src,
@@ -140,8 +152,8 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   placeholder,
   fallbackBackground,
   onPlay,
-  playLabel = 'Play',
-  pauseLabel = 'Pause',
+  playLabel: playLabelProp,
+  pauseLabel: pauseLabelProp,
   isPlaying = false,
   isCurrent: isCurrentProp,
   hideActivePlay = false,
@@ -151,6 +163,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   queueLabel = 'Add to queue',
   queueDisabled,
   queueActive = false,
+  queueOverlay = true,
   onFavorite,
   favorited = false,
   favoriteLabel = 'Favorite',
@@ -158,6 +171,9 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   actions = [],
   onArtworkClick,
 }) => {
+  const labels = useUiLabels();
+  const playLabel = playLabelProp ?? labels.play;
+  const pauseLabel = pauseLabelProp ?? labels.pause;
   const reducedMotion = usePrefersReducedMotion();
   const shiftHeld = useShiftHeld();
   const [animating, setAnimating] = useState(false);
@@ -196,7 +212,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   const secondary: MediaArtworkAction[] = !showSecondaryActions
     ? []
     : [
-        ...(onQueue
+        ...(onQueue && queueOverlay
           ? [
               {
                 id: 'queue',
@@ -258,13 +274,13 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   const queueOnShift = Boolean(onQueue) && !queueDisabled && !isPlaying;
   const showQueueIcon = queueOnShift && shiftHeld;
   const playTooltip = isLoading
-    ? 'Loading…'
+    ? labels.loading
     : isPlaying
       ? pauseLabel
       : showQueueIcon
         ? queueLabel
         : onQueue
-          ? `${playLabel} · Shift+click to queue`
+          ? labels.playOrShiftQueue(playLabel)
           : playLabel;
 
   const playIcon = isLoading ? (
@@ -282,7 +298,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
       data-testid="media-artwork"
       {...motionHandlers}
       className={cn(
-        'group relative overflow-hidden',
+        'group/media relative overflow-hidden',
         sizeClass[size],
         interactive && 'cursor-pointer',
         className,
@@ -366,7 +382,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                 // pause control reads clearly without needing hover.
                 'bg-black/35'
               : [
-                  'bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover:bg-black/45',
+                  hoverDim,
                   // On touch only the current item keeps a resting dim
                   // behind its visible control.
                   isCurrent && '[@media(hover:none)]:bg-black/35',

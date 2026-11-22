@@ -59,8 +59,7 @@ export function MotionAgendaItemControl({
   if (items !== null && items.length === 0) {
     return (
       <p className="text-foreground-secondary text-xs">
-        That meeting has no agenda items yet. Add them under Admin → Governance
-        → AGM.
+        {t('motionAgendaItemControl.noAgendaItems')}
       </p>
     );
   }

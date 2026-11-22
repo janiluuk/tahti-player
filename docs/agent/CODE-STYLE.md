@@ -173,5 +173,13 @@ const { t } = useTranslation();
 <span>{t('navigation.settings')}</span>
 ```
 
-Add new strings to `packages/i18n/src/locales/en_US.json` only. Other locales come from Crowdin.
+Player strings: add them to `packages/i18n/src/locales/en_US.json` only; the player's other locales come from Crowdin.
+
+tahti-web (`web` namespace) ships English and Finnish, and every English key needs a Finnish string in `fi_FI.json` (`packages/i18n/src/locales.test.ts` fails otherwise). English is the default and the source of truth; Finnish loads as a lazy chunk (`lazyLocales.ts`).
+
+- Components call `useTranslation('web')`; code outside React calls `i18n.t('web:...')`. Module-level lists store a `labelKey` (`ParseKeys<'web'>`), not a label.
+- `stores/languageStore.ts` persists the choice (`tahti-language`); `lib/locale.ts` `applyLocale` switches i18n and `<html lang>`. If the Finnish chunk fails to load the app stays in English. The menu (Settings → Appearance) lists only `WEB_LOCALES`.
+- `@tahti-player/ui` components take a `labels` prop or read `UiLabels` (`WebUiLabelsProvider` translates them) instead of importing i18n.
+- A sentence with a link, a bold name or `<em>` inside it: pass `SLOT` as the interpolation value and render with `withSlot(t(key, { name: SLOT }), node)` (`lib/slotText.tsx`). Backtick-quoted parts render as `<code>` with `withInlineCode` (`lib/inlineCode.tsx`).
+- Left in English by decision: legal pages (Terms, Privacy, AGPL), dev tools (ScreenAtlas, port inventory, flow and E2E galleries, More view), brand names and example placeholders.
 

@@ -70,11 +70,12 @@ export function MixableTracksSection({
         {t('mixableTracks.mixesWellWith')}
       </h3>
       <p className="text-foreground-secondary mb-2 text-xs">
-        Tracks in a neighbouring key on the Camelot wheel, within ±
-        {tolerancePercent}% of{' '}
-        {track.bpm ? `${roundBpm(track.bpm)} BPM` : 'this tempo'}
-        {halfDouble ? ', counting half and double tempo' : ''}. Change this
-        under DJ settings above the track list.
+        {t(halfDouble ? 'mixableTracks.hintHalfDouble' : 'mixableTracks.hint', {
+          tolerance: tolerancePercent,
+          tempo: track.bpm
+            ? `${roundBpm(track.bpm)} BPM`
+            : t('mixableTracks.thisTempo'),
+        })}
       </p>
       {!searchable ? (
         <p className="text-sm">{t('mixableTracks.analyzeThisTrackOrSet')}</p>

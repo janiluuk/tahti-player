@@ -47,37 +47,55 @@ export const WIDGET_LABEL_KEYS: Record<DiscoverWidgetId, ParseKeys<'web'>> = {
 /** What each widget shows, for the Add a widget menu. */
 export const WIDGET_MENU: Record<
   DiscoverWidgetId,
-  { icon: typeof CompassIcon; description: string }
+  { icon: typeof CompassIcon; descriptionKey: ParseKeys<'web'> }
 > = {
   'this-week-most-played': {
     icon: TrendingUpIcon,
-    description: 'The week’s most played tracks',
+    descriptionKey: 'discover.widgetDescriptions.thisWeekMostPlayed',
   },
   'this-week-least-played': {
     icon: TrendingDownIcon,
-    description: 'Overlooked tracks from this week',
+    descriptionKey: 'discover.widgetDescriptions.thisWeekLeastPlayed',
   },
   'new-to-you': {
     icon: SparklesIcon,
-    description: 'Tracks you have not played yet',
+    descriptionKey: 'discover.widgetDescriptions.newToYou',
   },
-  'latest-tracks': { icon: ClockIcon, description: 'Fresh uploads' },
-  'most-played': { icon: FlameIcon, description: 'All-time favourites' },
-  loved: { icon: HeartIcon, description: 'What listeners love most' },
+  'latest-tracks': {
+    icon: ClockIcon,
+    descriptionKey: 'discover.widgetDescriptions.latestTracks',
+  },
+  'most-played': {
+    icon: FlameIcon,
+    descriptionKey: 'discover.widgetDescriptions.mostPlayed',
+  },
+  loved: {
+    icon: HeartIcon,
+    descriptionKey: 'discover.widgetDescriptions.loved',
+  },
   'artist-of-the-week': {
     icon: StarIcon,
-    description: 'One artist in the spotlight',
+    descriptionKey: 'discover.widgetDescriptions.artistOfTheWeek',
   },
-  'random-artist': { icon: ShuffleIcon, description: 'Meet someone new' },
+  'random-artist': {
+    icon: ShuffleIcon,
+    descriptionKey: 'discover.widgetDescriptions.randomArtist',
+  },
   'public-playlists': {
     icon: ListMusicIcon,
-    description: 'Playlists shared by listeners',
+    descriptionKey: 'discover.widgetDescriptions.publicPlaylists',
   },
-  'tahti-selects': { icon: AwardIcon, description: 'Hand-picked by Tahti' },
-  'latest-releases': { icon: Disc3Icon, description: 'New albums and EPs' },
+  'tahti-selects': {
+    icon: AwardIcon,
+    descriptionKey: 'discover.widgetDescriptions.tahtiSelects',
+  },
+  'latest-releases': {
+    icon: Disc3Icon,
+    descriptionKey: 'discover.widgetDescriptions.latestReleases',
+  },
   'random-track': {
     icon: DicesIcon,
-    description: 'One track at random from the genres you pick',
+    descriptionKey: 'discover.widgetDescriptions.randomTrack',
   },
 };
 

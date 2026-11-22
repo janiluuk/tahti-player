@@ -15,6 +15,7 @@ import { useImageWithFallback } from '../../hooks/useImageWithFallback';
 import { prefetchListenCardIntent } from '../../lib/intentRoutePrefetch';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { streamFailureLabel } from '../../lib/streamFailure';
+import type { SavedBrowserStation } from '../../stores/listenerWidgetsStore';
 import { useStationFailure } from '../StationUnavailableNotice';
 import { StationCardSubtitle } from './StationCardSubtitle';
 
@@ -26,10 +27,41 @@ export type RadioRowItem =
       preset: EnabledInternetRadioPreset;
     }
   | { id: string; title: string; kind: 'catalog'; station: RadioStation }
-  | { id: string; title: string; kind: 'mine'; station: MyRadioStation };
+  | { id: string; title: string; kind: 'mine'; station: MyRadioStation }
+  | {
+      id: string;
+      title: string;
+      kind: 'saved';
+      station: SavedBrowserStation;
+    };
 
-/** One card in the Listen "Radio" row: a board-curated preset, or a catalog
- * station the listener enabled (removable). */
+function RemoveStationButton({
+  name,
+  onRemove,
+}: {
+  name: string;
+  onRemove: () => void;
+}) {
+  const { t } = useTranslation('web');
+  const label = t('radioRowCardLabels.removeName', { name });
+  return (
+    <Tooltip content={label} side="top">
+      <Button
+        size="icon-sm"
+        variant="text"
+        aria-label={label}
+        onClick={onRemove}
+        className="bg-background/80 hover:bg-background absolute top-1 right-1 z-10 rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+      >
+        <XIcon size={14} aria-hidden />
+      </Button>
+    </Tooltip>
+  );
+}
+
+/** One card in the Listen "Radio" row: a board-curated preset, a catalog
+ * station the listener enabled, a Radio Browser station they saved (both
+ * removable), or a station on their account. */
 export function RadioRowCard({
   item,
   isPlaying,
@@ -43,7 +75,7 @@ export function RadioRowCard({
   isPlaying: boolean;
   nowPlaying?: string;
   onPlay: () => void;
-  onRemove?: (station: RadioStation) => void;
+  onRemove?: () => void;
   favorited?: boolean;
   onFavorite?: () => void;
 }) {
@@ -103,6 +135,41 @@ export function RadioRowCard({
       />
     );
   }
+  if (item.kind === 'saved') {
+    const { station } = item;
+    return (
+      <div className="group relative w-fit">
+        {onRemove ? (
+          <RemoveStationButton name={station.name} onRemove={onRemove} />
+        ) : null}
+        <Card
+          surface="neutral"
+          title={station.name}
+          subtitle={
+            unavailable ?? (
+              <StationCardSubtitle
+                source={{
+                  programmingUrl: station.programmingUrl ?? null,
+                  streamUrl: station.streamUrl,
+                }}
+                fallback={
+                  station.country ??
+                  t('listenerWidgetsSectionText.internetRadio')
+                }
+              />
+            )
+          }
+          playLabel={failedPlayLabel}
+          itemName={station.name}
+          src={station.favicon ?? placeholderArtworkUrl(item.id)}
+          isPlaying={isPlaying}
+          onPlay={onPlay}
+          favorited={favorited}
+          onFavorite={onFavorite}
+        />
+      </div>
+    );
+  }
   if (item.kind === 'preset') {
     const { preset } = item;
     const catalogId = catalogStation?.id;
@@ -158,22 +225,7 @@ export function RadioRowCard({
       onFocus={warmRadioRoute}
     >
       {onRemove ? (
-        <Tooltip
-          content={t('radioRowCardLabels.removeName', { name: station.name })}
-          side="top"
-        >
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label={t('radioRowCardLabels.removeName', {
-              name: station.name,
-            })}
-            onClick={() => onRemove(station)}
-            className="bg-background/80 hover:bg-background absolute top-1 right-1 z-10 rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-          >
-            <XIcon size={14} aria-hidden />
-          </Button>
-        </Tooltip>
+        <RemoveStationButton name={station.name} onRemove={onRemove} />
       ) : null}
       <Card
         surface="neutral"

@@ -104,19 +104,19 @@ export function TransparencyView() {
           to="/transparency/methodology"
           className="text-foreground-secondary w-fit text-xs underline-offset-2 hover:underline"
         >
-          How this data is recorded and published →
+          {t('transparencyPage.methodologyLink')}
         </Link>
         <Link
           to="/governance/history"
           className="text-foreground-secondary w-fit text-xs underline-offset-2 hover:underline"
         >
-          Closed governance decisions →
+          {t('transparencyPage.historyLink')}
         </Link>
         <Link
           to="/transparency/resolutions"
           className="text-foreground-secondary w-fit text-xs underline-offset-2 hover:underline"
         >
-          Board resolutions →
+          {t('transparencyPage.resolutionsLink')}
         </Link>
       </div>
 

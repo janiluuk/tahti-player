@@ -1,16 +1,4 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
-import {
-  CompassIcon,
-  HelpCircleIcon,
-  LandmarkIcon,
-  LayoutDashboardIcon,
-  LibraryIcon,
-  ListMusicIcon,
-  RadioIcon,
-  SettingsIcon,
-  ShieldIcon,
-  SparklesIcon,
-} from 'lucide-react';
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -19,8 +7,6 @@ import {
   PlayerShell,
   PlayerWorkspace,
   RouteTransition,
-  SidebarNavigation,
-  SidebarNavigationItem,
   Toaster,
 } from '@tahti-player/ui';
 
@@ -38,12 +24,10 @@ import {
   MAIN_SCROLL_BOTTOM_INSET,
   MAIN_SCROLLPORT_SHADOW_ROOM,
 } from '../layout/contentPadding';
-import { hasAccountRole, hasStudioAccess } from '../lib/accountRoles';
+import { hasStudioAccess } from '../lib/accountRoles';
 import { isAudioEditorPath } from '../lib/audioEditorPath';
 import { cn } from '../lib/cn';
 import { isGoLiveTakeoverPath } from '../lib/goLivePath';
-import { activeSidebarItem } from '../lib/navigationActive';
-import { navigationPathname } from '../lib/navigationPathname';
 import {
   deferOnboardingPrompt,
   hasDeferredOnboardingPrompt,
@@ -67,6 +51,7 @@ import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { useTourStore } from '../stores/tourStore';
 import { AmbientBackground } from './AmbientBackground';
+import { AppSidebarNav } from './AppSidebarNav';
 import { AppTopNav } from './AppTopNav';
 import { ArtistSiteHeader } from './ArtistSiteHeader';
 import { AudioEngine } from './AudioEngine';
@@ -75,7 +60,6 @@ import { ConnectedPlayerBar } from './ConnectedPlayerBar';
 import { ConnectedStatusBar } from './ConnectedStatusBar';
 import { HearthisEmbedHostProvider } from './HearthisEmbedHost';
 import { ListenHeartbeat } from './ListenHeartbeat';
-import { MikseriSidebarWidget } from './MikseriSidebarWidget';
 import { MobileBottomNav, MobileDrawer } from './MobileChrome';
 import { NotificationToasts } from './NotificationToasts';
 import { OAuthReturnHandler } from './OAuthReturnHandler';
@@ -85,11 +69,7 @@ import { RightRailHeaderActions } from './RightRailHeaderActions';
 import { RightRailPanel } from './RightRailPanel';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
 import { MAIN_CONTENT_ID, SkipToContent } from './SkipToContent';
-import {
-  getStudioPrimaryRoute,
-  StudioMainNavItems,
-  StudioNav,
-} from './StudioNav';
+import { getStudioPrimaryRoute, StudioNav } from './StudioNav';
 import { useArtistSiteChrome } from './useArtistSiteChrome';
 
 /** Show the top progress strip sooner than a full second so slow lazy chunks
@@ -148,131 +128,6 @@ function DeferredFullScreenPlayer({ open }: { open: boolean }) {
     <Suspense fallback={null}>
       <FullScreenPlayer />
     </Suspense>
-  );
-}
-
-function SidebarNavItems({ compact }: { compact: boolean }) {
-  const { t } = useTranslation('web');
-  const isLoggedIn = useAuthStore((state) => Boolean(state.user));
-  const isBoard = useAuthStore((state) => hasAccountRole(state.user, 'BOARD'));
-  const isMember = useAuthStore((state) => Boolean(state.user?.isMember));
-  // Until the profile loads, the stored user may lack its channel: treat the
-  // account as an artist so an artist never sees the listener entry flash.
-  const isListener = useAuthStore(
-    (state) =>
-      Boolean(state.user) &&
-      state.profileLoaded &&
-      !hasStudioAccess(state.user),
-  );
-  const openSettings = useSettingsModalStore((state) => state.open);
-  const settingsModalOpen = useSettingsModalStore((state) => state.isOpen);
-  const sidebarPathname = useRouterState({ select: navigationPathname });
-  const sidebarActive = activeSidebarItem(sidebarPathname, {
-    settingsModalOpen,
-  });
-  return (
-    <SidebarNavigation isCompact={compact}>
-      <div className="flex h-full min-h-0 flex-col p-1">
-        <div className="tahti-hide-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto">
-          <div data-tour-id="nav-listen">
-            <SidebarNavigationItem
-              to="/"
-              icon={<ListMusicIcon size={16} />}
-              label={t('nav.listen')}
-              isSelected={sidebarActive === 'listen'}
-            />
-          </div>
-          <div data-tour-id="nav-radio">
-            <SidebarNavigationItem
-              to="/radio"
-              icon={<RadioIcon size={16} />}
-              label={t('nav.radio')}
-              isSelected={sidebarActive === 'radio'}
-            />
-          </div>
-          <div data-tour-id="nav-discover">
-            <SidebarNavigationItem
-              to="/discover"
-              icon={<CompassIcon size={16} />}
-              label={t('nav.discover')}
-              isSelected={sidebarActive === 'discover'}
-            />
-          </div>
-          <div data-tour-id="nav-library">
-            <SidebarNavigationItem
-              to="/library"
-              icon={<LibraryIcon size={16} />}
-              label={t('nav.library')}
-              isSelected={sidebarActive === 'library'}
-            />
-          </div>
-          <div data-tour-id="nav-studio" className="flex flex-col gap-2">
-            {isLoggedIn ? (
-              <>
-                <SidebarNavigationItem
-                  to="/studio"
-                  icon={
-                    isListener ? (
-                      <SparklesIcon size={16} />
-                    ) : (
-                      <LayoutDashboardIcon size={16} />
-                    )
-                  }
-                  label={isListener ? t('nav.becomeArtist') : t('nav.studio')}
-                  isSelected={sidebarActive === 'studio'}
-                />
-                {!isListener && <StudioMainNavItems />}
-              </>
-            ) : (
-              <SidebarNavigationItem
-                disabled
-                icon={<LayoutDashboardIcon size={16} />}
-                label={t('nav.studio')}
-              />
-            )}
-          </div>
-          {isMember || isBoard ? (
-            <div data-tour-id="nav-coop">
-              <SidebarNavigationItem
-                to="/governance"
-                icon={<LandmarkIcon size={16} />}
-                label={t('nav.coop')}
-                isSelected={sidebarActive === 'coop'}
-              />
-            </div>
-          ) : null}
-          {isBoard ? (
-            <div data-tour-id="nav-admin">
-              <SidebarNavigationItem
-                to="/admin"
-                icon={<ShieldIcon size={16} />}
-                label={t('nav.admin')}
-                isSelected={sidebarActive === 'admin'}
-              />
-            </div>
-          ) : null}
-          {!compact ? <MikseriSidebarWidget /> : null}
-        </div>
-        <div className="border-border mt-2 flex shrink-0 flex-col gap-2 border-t pt-2">
-          <div data-tour-id="nav-help">
-            <SidebarNavigationItem
-              to="/help"
-              icon={<HelpCircleIcon size={16} />}
-              label={t('nav.help')}
-              isSelected={sidebarActive === 'help'}
-            />
-          </div>
-          <div data-tour-id="nav-settings">
-            <SidebarNavigationItem
-              icon={<SettingsIcon size={16} />}
-              label={t('nav.settings')}
-              onClick={() => openSettings()}
-              isSelected={sidebarActive === 'settings'}
-            />
-          </div>
-        </div>
-      </div>
-    </SidebarNavigation>
   );
 }
 
@@ -691,7 +546,7 @@ export function AppShell() {
                 onWidthChange={setLeftWidth}
                 onToggle={toggleLeft}
               >
-                <SidebarNavItems compact={leftCollapsed} />
+                <AppSidebarNav compact={leftCollapsed} />
               </PlayerWorkspace.LeftSidebar>
             )}
 
@@ -773,7 +628,7 @@ export function AppShell() {
             }}
             role="presentation"
           >
-            <SidebarNavItems compact={false} />
+            <AppSidebarNav compact={false} />
           </div>
         </MobileDrawer>
 

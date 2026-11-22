@@ -3,7 +3,7 @@ import { FC, ReactNode } from 'react';
 
 import { cn } from '../../utils';
 import { Box } from '../Box';
-import { MediaArtwork } from '../MediaArtwork';
+import { MEDIA_ROW_GROUP, MediaArtwork } from '../MediaArtwork';
 import { labelTone, useDominantColor } from './useDominantColor';
 
 export type AmbientCardProps = {
@@ -69,6 +69,7 @@ export const AmbientCard: FC<AmbientCardProps> = ({
       role={onClick && !hasOverlays ? 'button' : undefined}
       tabIndex={onClick && !hasOverlays ? 0 : undefined}
       className={cn(
+        MEDIA_ROW_GROUP,
         'border-border shadow-shadow relative flex w-46 flex-col items-stretch gap-2 overflow-hidden rounded-md border-(length:--border-width) p-2 text-left transition-all',
         onClick &&
           !hasOverlays &&

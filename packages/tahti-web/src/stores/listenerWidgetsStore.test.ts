@@ -2,7 +2,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
-  BROWSER_STATIONS_BLOCK_ID,
   LATEST_NEWS_BLOCK_ID,
   mergeBlockOrder,
   useListenerWidgetsStore,
@@ -45,9 +44,10 @@ describe('listener widgets store', () => {
     ]);
   });
 
-  it('moves the saved stations block first when a station is saved', () => {
+  it('keeps the Listen order and unhides the radio row when a station is saved', () => {
     useListenerWidgetsStore.setState({
-      listenOrder: ['radio', BROWSER_STATIONS_BLOCK_ID],
+      listenOrder: ['news', 'radio'],
+      hiddenListenBlockIds: ['radio', 'trending'],
       savedBrowserStations: [
         { id: 'old', name: 'Old', streamUrl: 'https://old.example/s' },
       ],
@@ -58,11 +58,29 @@ describe('listener widgets store', () => {
       streamUrl: 'https://new.example/s',
     });
     const next = useListenerWidgetsStore.getState();
-    expect(next.listenOrder).toEqual([BROWSER_STATIONS_BLOCK_ID, 'radio']);
+    expect(next.listenOrder).toEqual(['news', 'radio']);
+    expect(next.hiddenListenBlockIds).toEqual(['trending']);
     expect(next.savedBrowserStations.map((station) => station.id)).toEqual([
       'new',
       'old',
     ]);
+  });
+
+  it('drops the retired saved-stations block from a persisted layout', async () => {
+    localStorage.setItem(
+      'tahti-web-listener-widgets',
+      JSON.stringify({
+        version: 3,
+        state: {
+          listenOrder: [widgetBlockId('browser-stations'), 'radio'],
+          hiddenListenBlockIds: [widgetBlockId('browser-stations')],
+        },
+      }),
+    );
+    await useListenerWidgetsStore.persist.rehydrate();
+    const next = useListenerWidgetsStore.getState();
+    expect(next.listenOrder).toEqual(['radio']);
+    expect(next.hiddenListenBlockIds).toEqual([]);
   });
 
   it('keeps hidden blocks in place when the visible order is saved', () => {

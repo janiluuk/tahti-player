@@ -6971,3 +6971,7 @@ Tracks, Collections, Upload and Smart links live in Studio → Music, and Record
 ## 2026-11-16 — Profile forms in Studio, account-only Settings (0.0.403)
 
 Each Studio → Profile card opens its own page with a back link: identity, story, people, links, branding, gallery, press kit, release visuals, channel design, how fans find you, and address and domain. Settings keeps account things only; old Artist, Channel & chat and Broadcast links land on the Studio page. Recording defaults sit on the Recordings page, and Go live links to them and to Channel's green room and multistream. Library is Favorites, History, Following and Files, with Media, Stash and Local files as chips. The Channel Designer links to Schedule's channel programme, Account → Governance links to Co-op, and Tahti Selects is in Admin only.
+
+## 2026-11-22 — Stories for every view, channel hover, radio row (0.0.431)
+
+Every view the catalog listed without a story now has one with play tests. On the channel page only the hovered row and the playing track show a play control, and Shift turns it into Add to queue. A radio station you add shows up in the radio row with the other stations instead of on a row of its own. The last English sentences in Transparency, Studio earnings, the join form, the DJ mix hints and the Discover widget menu have Finnish.
