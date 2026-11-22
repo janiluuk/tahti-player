@@ -40,7 +40,8 @@ export function StudioTrackInsightsView({
 
         <ViewShell
           title={t('studioTrackInsightsView.trackInsights')}
-          classes={{ root: 'px-0 pt-0' }}
+          subtitle={t('studioTrackInsightsView.subtitle')}
+          classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
           <TrackInsightsPanel kind={kind} id={id} />
         </ViewShell>

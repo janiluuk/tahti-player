@@ -1,3 +1,9 @@
+## 2026-11-23 — Admin Overview tabs + Stats detail polish
+
+Admin Dashboard Health · Activity (`?tab=`); Finance YTD on Financial; Chat
+and mail on People → Community. Stats detail and track insights hero polish.
+Folded audit slice 8. tahti-web 0.0.439.
+
 ## 2026-11-23 — Studio Stats real tabs + Overview hero
 
 Studio → Stats uses underline tabs Overview · Plays · Audience · Top lists

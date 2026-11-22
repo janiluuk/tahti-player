@@ -3,9 +3,11 @@ import { useMemo, useState } from 'react';
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   CalendarHeatmap,
+  cn,
   DayOfWeekChart,
-  FilterChips,
   HorizontalScroll,
+  SegmentedControl,
+  statToneClasses,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -25,6 +27,7 @@ import { monthLabelsShort, weekdayLabelsShort } from '../../lib/historyStats';
 import { dateLocaleTag } from '../../lib/locale';
 import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { useThemeStore } from '../../plugins/themes';
+import { STUDIO_METRIC_TONES } from './stats/metricTones';
 
 function statsRanges(
   t: TFunction<'web'>,
@@ -58,12 +61,12 @@ export function StudioStatsDetailView() {
 
   const label =
     range === '1'
-      ? 'today'
+      ? t('studioStatsText.rangeToday').toLowerCase()
       : range === '7'
-        ? '7 days'
+        ? t('library.days7').toLowerCase()
         : range === '30'
-          ? '30 days'
-          : 'all time';
+          ? t('library.days30').toLowerCase()
+          : t('rangeControls.allTime').toLowerCase();
 
   const useHeatmap = (data?.daily.length ?? 0) > HEATMAP_DAY_THRESHOLD;
   const chartLabels = useMemo(
@@ -80,6 +83,7 @@ export function StudioStatsDetailView() {
       ),
     [data],
   );
+  const playsTone = statToneClasses[STUDIO_METRIC_TONES.plays];
 
   return (
     <StudioGate requireChannel={false}>
@@ -90,12 +94,14 @@ export function StudioStatsDetailView() {
         />
         <ViewShell
           title={t('studioStatsDetailView.insights')}
+          subtitle={t('studioStatsDetailView.subtitle')}
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
-          <FilterChips
-            items={statsRanges(t)}
-            selected={range}
-            onChange={(id) => setRange(id as StatsPlaysRange)}
+          <SegmentedControl
+            className="self-start"
+            options={statsRanges(t)}
+            value={range}
+            onChange={(id) => setRange(id)}
             aria-label={t('studioStatsDetailView.playsTimeRange')}
           />
 
@@ -113,25 +119,34 @@ export function StudioStatsDetailView() {
             </StudioPanel>
           ) : (
             <>
-              <StudioPanel>
-                <Eyebrow>Plays — {label}</Eyebrow>
-                <StatNumber className="mt-1 block text-3xl">
+              <StudioPanel
+                className={cn(
+                  'border-l-4 !p-5 sm:!p-6',
+                  playsTone.edge,
+                  'from-background-secondary/80 via-background-secondary/40 bg-gradient-to-br to-transparent',
+                )}
+              >
+                <Eyebrow tone="muted">
+                  {t('studioStatsText.plays')} — {label}
+                </Eyebrow>
+                <StatNumber className="mt-1 block text-4xl sm:text-5xl">
                   {data.totalPlays.toLocaleString(dateLocaleTag())}
                 </StatNumber>
-                <p className="text-foreground-secondary mt-1 text-xs">
+                <p className="text-foreground-secondary mt-2 text-sm">
                   {data.totalDownloads.toLocaleString(dateLocaleTag())}{' '}
-                  downloads
+                  {t('studioStatsText.downloads').toLowerCase()}
                   {data.totalSmartLinkClicks != null
-                    ? `, ${data.totalSmartLinkClicks.toLocaleString(dateLocaleTag())} smart-link clicks`
+                    ? ` · ${data.totalSmartLinkClicks.toLocaleString(dateLocaleTag())} ${t('studioStatsText.smartLinkClicks').toLowerCase()}`
                     : ''}
                 </p>
+              </StudioPanel>
 
+              <StudioPanel title={t('studioStatsDetailView.dailyActivity')}>
                 {data.daily.length === 0 ? (
                   <PageEmpty title={t('empties.noDailyActivity')} />
                 ) : useHeatmap ? (
                   <HorizontalScroll
                     label={t('studioStatsDetailView.dailyActivity')}
-                    className="mt-4"
                   >
                     <CalendarHeatmap
                       days={data.daily.map((day) => ({
@@ -142,8 +157,8 @@ export function StudioStatsDetailView() {
                       labels={{
                         months: monthLabelsShort(),
                         weekdays: weekdayLabelsShort(),
-                        legendLess: 'Less',
-                        legendMore: 'More',
+                        legendLess: t('library.legendLess'),
+                        legendMore: t('library.legendMore'),
                       }}
                       formatValue={(value) =>
                         `${value.toLocaleString(dateLocaleTag())} plays`
@@ -152,7 +167,7 @@ export function StudioStatsDetailView() {
                     />
                   </HorizontalScroll>
                 ) : (
-                  <div className="mt-4 h-48 w-full">
+                  <div className="h-48 w-full">
                     <DayOfWeekChart
                       values={data.daily.map((day) => day.plays)}
                       labels={{ weekdays: chartLabels }}

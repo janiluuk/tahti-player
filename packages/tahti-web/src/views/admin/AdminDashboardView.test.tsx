@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../api/admin';
@@ -15,6 +15,42 @@ vi.mock('../../components/AdminNav', () => ({
     <div data-testid="admin-nav">{children}</div>
   ),
 }));
+
+function mockDashboard() {
+  vi.spyOn(admin, 'fetchAdminDashboard').mockResolvedValue({
+    data: {
+      kpis: { activeMembers: 3, liveNow: 0, betaQueue: 1, openTickets: 2 },
+      actionRows: [],
+      health: {
+        icecast: 'up',
+        minio: 'up',
+        postgresBackupAgeHours: 4,
+        failedFanSubPayouts: 0,
+      },
+      financeYtdCents: { surplus: 0, revenue: 0, costs: 0 },
+      liveStreams: [],
+      queues: [],
+      cronJobs: [],
+      audit: [
+        { id: 'a1', action: 'BOARD_LOGIN', createdAt: '2026-11-22T10:00:00Z' },
+      ],
+    },
+    meta: { source: 'api' },
+  } as never);
+  vi.spyOn(admin, 'fetchAdminStatus').mockResolvedValue({
+    data: {
+      status: 'operational',
+      uptimeSec: 3600,
+      ts: new Date().toISOString(),
+      checks: { api: { state: 'up', critical: true, latencyMs: 12 } },
+    },
+    meta: { source: 'api' },
+  } as never);
+  vi.spyOn(client, 'fetchPlatformStatus').mockResolvedValue({
+    data: null,
+    meta: { source: 'api' },
+  } as never);
+}
 
 describe('AdminDashboardView', () => {
   afterEach(() => {
@@ -42,45 +78,19 @@ describe('AdminDashboardView', () => {
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 
-  it('leads with community stats, then system health and in-page status links', async () => {
-    vi.spyOn(admin, 'fetchAdminDashboard').mockResolvedValue({
-      data: {
-        kpis: { activeMembers: 3, liveNow: 0, betaQueue: 1, openTickets: 2 },
-        actionRows: [],
-        health: {
-          icecast: 'up',
-          minio: 'up',
-          postgresBackupAgeHours: 4,
-          failedFanSubPayouts: 0,
-        },
-        financeYtdCents: { surplus: 0, revenue: 0, costs: 0 },
-        liveStreams: [],
-        queues: [],
-        cronJobs: [],
-        audit: [],
-      },
-      meta: { source: 'api' },
-    } as never);
-    vi.spyOn(admin, 'fetchAdminStatus').mockResolvedValue({
-      data: {
-        status: 'operational',
-        uptimeSec: 3600,
-        ts: new Date().toISOString(),
-        checks: { api: { state: 'up', critical: true, latencyMs: 12 } },
-      },
-      meta: { source: 'api' },
-    } as never);
-    vi.spyOn(client, 'fetchPlatformStatus').mockResolvedValue({
-      data: null,
-      meta: { source: 'api' },
-    } as never);
+  it('opens on Health with system health and in-page status links', async () => {
+    mockDashboard();
     await renderWithRouter(<AdminDashboardView />, {
-      paths: ['/admin', '/admin/logs'],
+      paths: ['/admin', '/admin/logs', '/admin/community', '/admin/financial'],
     });
+    expect(screen.getByRole('tab', { name: 'Health' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    expect(screen.queryByText('Chat and mail')).toBeNull();
     const headings = (await screen.findAllByRole('heading', { level: 2 })).map(
       (heading) => heading.textContent,
     );
-    expect(headings[0]).toBe('Chat and mail');
     expect(headings).toContain('System health');
     expect(headings).toContain('Status checks');
     expect(screen.getByRole('link', { name: 'Status checks' })).toHaveAttribute(
@@ -91,19 +101,36 @@ describe('AdminDashboardView', () => {
       'href',
       '/admin/logs',
     );
+    expect(screen.getByRole('link', { name: 'Community' })).toHaveAttribute(
+      'href',
+      '/admin/community',
+    );
   });
 
-  it('shows community stats while the dashboard calls are still loading', async () => {
-    vi.spyOn(admin, 'fetchAdminDashboard').mockReturnValue(
-      new Promise(() => undefined),
-    );
-    vi.spyOn(admin, 'fetchAdminCommunityStats').mockResolvedValue({
-      chatLast24h: 184,
-      chatSeries: [],
-      mail: null,
+  it('navigates to the Activity tab', async () => {
+    mockDashboard();
+    const { router } = await renderWithRouter(<AdminDashboardView />, {
+      paths: ['/admin'],
     });
-    await renderWithRouter(<AdminDashboardView />);
-    expect(await screen.findByText('184')).toBeTruthy();
-    expect(screen.getByText('Loading dashboard…')).toBeTruthy();
+    await screen.findByRole('heading', { name: 'System health' });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: 'Activity' }));
+    });
+    expect(router.state.location.pathname).toBe('/admin');
+    expect(router.state.location.search).toEqual({ tab: 'activity' });
+  });
+
+  it('shows Needs action on the Activity tab', async () => {
+    mockDashboard();
+    await renderWithRouter(<AdminDashboardView tab="activity" />, {
+      paths: ['/admin'],
+    });
+    expect(
+      await screen.findByRole('heading', { name: 'Needs action' }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole('heading', { name: 'Recent audit events' }),
+    ).toBeTruthy();
+    expect(screen.queryByText('System health')).toBeNull();
   });
 });

@@ -129,6 +129,10 @@ export const AdminAnnouncementsView = lazyRouteComponent(
   () => import('../views/admin/AdminAnnouncementsView'),
   'AdminAnnouncementsView',
 );
+export const AdminCommunityView = lazyRouteComponent(
+  () => import('../views/admin/AdminCommunityView'),
+  'AdminCommunityView',
+);
 export const AdminDashboardView = lazyRouteComponent(
   () => import('../views/admin/AdminDashboardView'),
   'AdminDashboardView',

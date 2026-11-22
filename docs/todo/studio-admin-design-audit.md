@@ -142,7 +142,7 @@ shows at once. Components imported from `src/components/` are not counted.
 | 5 | Earnings trimmed to payouts, sales ledger (with grant disbursements), Stripe; links to Memberships and Store | `StudioRevenueView.tsx` + test, story | S |
 | 6 | Studio Home: no Governance panel; one tile per Studio tab | `home/`, `StudioHomeView` story | S |
 | 7 | Stats tabs `Overview · Plays · Audience · Top lists` | Shipped in `studio-stats-tabs.md` → HISTORY (0.0.438) | done |
-| 8 | Admin Overview tabs `health / activity`; Finance YTD to Financial; Chat and mail to a People → Community card | `AdminDashboardView.tsx`, `dashboard/`, `AdminFinancialView.tsx`, stories | M |
+| 8 | Admin Overview tabs `health / activity`; Finance YTD to Financial; Chat and mail to a People → Community card | Shipped → HISTORY (0.0.439) | M |
 | 9 | Delete orphan `AdminStatusView` and `AdminMonitoringView` (keep their panels), lazy exports, mapScreens rows, stories | `views/admin/AdminStatusView.tsx`, `AdminMonitoringView.tsx`, `router-lazy-views.ts`, `content/mapScreens.ts`, stories | S |
 | 10 | Admin Streams tabs `Live now · Ingest settings`; Add-ons tabs `Review · Catalogue`; Storage one `FilterBar` per tab | `AdminStreamsView.tsx`, `AdminAddonsView.tsx`, `AdminStorageView.tsx` + folders | M |
 | 11 | Collection edit detail tabs (max 4) and Distribution tabs | `StudioCollectionEditView.tsx` + `collection-edit/`, `StudioDistributionView.tsx` + `distribution/` | M |
