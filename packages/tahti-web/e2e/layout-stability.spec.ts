@@ -160,6 +160,8 @@ test('Go live hides mobile bottom nav as a chrome takeover', async ({
 test('Admin shell stays full-width and keeps navigation geometry stable', async ({
   page,
 }) => {
+  // Walks many routes in one test; each is a cold dev-server compile in CI.
+  test.slow();
   await page.setViewportSize({ width: 1440, height: 900 });
   await signIn(page, true);
   await expectStableShell(

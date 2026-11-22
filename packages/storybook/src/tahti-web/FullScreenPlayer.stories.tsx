@@ -257,8 +257,10 @@ export const PhoneLove: Story = {
     await userEvent.click(
       player.getByRole('button', { name: /^More options for/ }),
     );
-    await expect(
-      await body.findByRole('button', { name: 'Add to playlist' }),
-    ).toBeVisible();
+    const addToPlaylist = await body.findByRole('button', {
+      name: 'Add to playlist',
+    });
+    // The action sheet slides in; visibility settles after its animation.
+    await waitFor(() => expect(addToPlaylist).toBeVisible());
   },
 };

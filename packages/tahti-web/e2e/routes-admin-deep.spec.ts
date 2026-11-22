@@ -139,6 +139,8 @@ test('old admin bookmarks land on the tab that replaced them', async ({
 test('admin deep pages and tabs render inside the admin shell', async ({
   page,
 }) => {
+  // Walks many routes in one test; each is a cold dev-server compile in CI.
+  test.slow();
   const errors = collectPageErrors(page);
   for (const route of tabRoutes) {
     await expectRouteHealthy(page, errors, route);

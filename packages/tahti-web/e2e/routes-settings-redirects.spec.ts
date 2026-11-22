@@ -197,6 +197,8 @@ test('Settings money and audience bookmarks land in Studio', async ({
 test('each Settings section opens the Settings dialog on itself', async ({
   page,
 }) => {
+  // Walks many routes in one test; each is a cold dev-server compile in CI.
+  test.slow();
   const errors = collectPageErrors(page);
   for (const route of settingsSections) {
     await expectSettingsDialog(page, errors, route);
