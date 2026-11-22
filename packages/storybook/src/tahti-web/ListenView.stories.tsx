@@ -1,9 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useLibraryStore } from '@tahti-web/stores/libraryStore';
-import {
-  BROWSER_STATIONS_BLOCK_ID,
-  useListenerWidgetsStore,
-} from '@tahti-web/stores/listenerWidgetsStore';
+import { useListenerWidgetsStore } from '@tahti-web/stores/listenerWidgetsStore';
 import { ListenView } from '@tahti-web/views/ListenView';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
@@ -202,8 +199,8 @@ export const NewListenerRadioFirst: Story = {
   },
 };
 
-export const NewWidgetOnTop: Story = {
-  name: 'New widget goes to the top',
+export const SavedStationInRadioRow: Story = {
+  name: 'A saved station joins the radio row',
   decorators: [withMockAuth(MOCK_USERS.listener), withTahtiRouter('/')],
   beforeEach: () => {
     const restore = resetListenOrder();
@@ -218,9 +215,15 @@ export const NewWidgetOnTop: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByTestId('listen-dashboard');
-    await expect(dashboardBlockIds(canvasElement)[0]).toBe(
-      BROWSER_STATIONS_BLOCK_ID,
+    await expect(dashboardBlockIds(canvasElement)).not.toContain(
+      'widget:browser-stations',
     );
-    await waitFor(() => expect(canvas.getByText('KEXP')).toBeVisible());
+    const radioBlock = canvasElement.querySelector<HTMLElement>(
+      '[data-sortable-block="radio"]',
+    );
+    await expect(radioBlock).not.toBeNull();
+    await waitFor(() =>
+      expect(within(radioBlock!).getByText('KEXP')).toBeVisible(),
+    );
   },
 };

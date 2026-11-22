@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { AmbientTrackRow } from './AmbientTrackRow';
@@ -29,6 +29,43 @@ describe('AmbientTrackRow', () => {
       ).toContain(thumbs[density]);
       unmount();
     }
+  });
+
+  it('opts the row into its artwork reveal by a named group, not a bare one', () => {
+    render(
+      <AmbientTrackRow
+        trackId="sound:s1"
+        title="Night Drive"
+        artist="Aurora Keys"
+        onPlay={vi.fn()}
+        ambientRgb={null}
+      />,
+    );
+    const row = screen.getByTestId('ambient-track-row');
+    expect(row.className).toMatch(/(^|\s)group\/media-row(\s|$)/);
+    expect(row.className).not.toMatch(/(^|\s)group(\s|$)/);
+  });
+
+  it('queues on Shift+click of the artwork play control, without a second queue button', () => {
+    const onPlay = vi.fn();
+    const onQueue = vi.fn();
+    render(
+      <AmbientTrackRow
+        trackId="sound:s1"
+        title="Night Drive"
+        artist="Aurora Keys"
+        onPlay={onPlay}
+        onQueue={onQueue}
+        ambientRgb={null}
+      />,
+    );
+    expect(screen.queryByTestId('media-artwork-queue')).toBeNull();
+    const play = screen.getByTestId('media-artwork-play');
+    fireEvent.click(play, { shiftKey: true });
+    expect(onQueue).toHaveBeenCalledTimes(1);
+    expect(onPlay).not.toHaveBeenCalled();
+    fireEvent.click(play);
+    expect(onPlay).toHaveBeenCalledTimes(1);
   });
 
   it('gives the seekbar the track length for time read-outs', () => {

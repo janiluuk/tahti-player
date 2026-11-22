@@ -3,7 +3,7 @@ import { FC, ReactNode, useContext } from 'react';
 
 import { cn } from '../../utils';
 import { Box } from '../Box';
-import { MediaArtwork } from '../MediaArtwork';
+import { MEDIA_ROW_GROUP, MediaArtwork } from '../MediaArtwork';
 import { trackRowMinHeightClass } from '../TrackTable/utils/rowClass';
 import { CardLayoutContext } from './CardLayoutContext';
 
@@ -151,6 +151,7 @@ export const Card: FC<CardProps> = ({
         role={onClick && !hasOverlays ? 'button' : undefined}
         tabIndex={onClick && !hasOverlays ? 0 : undefined}
         className={cn(
+          MEDIA_ROW_GROUP,
           'flex w-full items-center gap-2 pr-2 text-left',
           trackRowMinHeightClass,
           onClick && !hasOverlays && 'cursor-pointer',
@@ -189,6 +190,7 @@ export const Card: FC<CardProps> = ({
       role={onClick && !hasOverlays ? 'button' : undefined}
       tabIndex={onClick && !hasOverlays ? 0 : undefined}
       className={cn(
+        MEDIA_ROW_GROUP,
         'border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all',
         layout === 'full' ? 'w-full' : 'w-46',
         isNeutral

@@ -33,7 +33,6 @@ import { clearSnapshots } from '../lib/useSnapshotFetch';
 import { useAuthStore, type AuthUser } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import {
-  BROWSER_STATIONS_BLOCK_ID,
   LATEST_NEWS_BLOCK_ID,
   NEWS_WIDGET_TYPE_ID,
   useListenerWidgetsStore,
@@ -371,7 +370,7 @@ describe('ListenView block order', () => {
     expect(blockIds().slice(0, 2)).toEqual([LATEST_NEWS_BLOCK_ID, 'radio']);
   });
 
-  it('puts a widget added from the store above every section', async () => {
+  it('lists a newly saved station in the radio row, not a block of its own', async () => {
     returningListener();
     await renderListen();
     expect(blockIds()[0]).toBe('recently-played');
@@ -384,8 +383,14 @@ describe('ListenView block order', () => {
       });
     });
 
-    expect(blockIds()[0]).toBe(BROWSER_STATIONS_BLOCK_ID);
-    expect(blockIds()[1]).toBe('recently-played');
+    expect(blockIds()).not.toContain('widget:browser-stations');
+    expect(blockIds()[0]).toBe('recently-played');
+    const radioBlock = screen
+      .getByTestId('listen-dashboard')
+      .querySelector<HTMLElement>('[data-sortable-block="radio"]')!;
+    expect(
+      within(radioBlock).getByRole('button', { name: 'Play KEXP' }),
+    ).toBeInTheDocument();
   });
 
   it('shows drag handles only while the Order toggle is on', async () => {

@@ -93,15 +93,15 @@ is wrong and a suggested fix, then turn the agreed ones into slices.
 
 | Screen | Issue | Kind | Suggestion |
 | --- | --- | --- | --- |
-| Track page (`/t/:id`) | Six emoji buttons plus Comment for every timestamp; signed out they all read "Log in to add …" | messy | One "React" button that opens the emoji set; one sign-in prompt |
-| Studio release detail | Three rows of tabs (Studio, Music sub-row, release tabs) | messy | Per the navigation plan: a back link and title replace the section rows on detail pages |
+| Track page (`/t/:id`) | Six emoji buttons plus Comment for every timestamp; signed out they all read "Log in to add …" | messy, fixed | `TimelineReactionBar`: one React button opens the emoji set; signed out it is one "Log in to react" (checked 2026-11-22) |
+| Studio release detail | Three rows of tabs (Studio, Music sub-row, release tabs) | messy, fixed | `StudioNav` `isStudioDetailRoute` drops the section rows on detail pages (checked 2026-11-22) |
 | Admin → People | The user list is a radio group (search exists: it is a searchbox) | practicality, kept | `SelectableList` is a master-detail picker; the radio group gives one tab stop and arrow keys |
 
 ### Findings from fixing the legacy specs (2026-11-03)
 
 | Screen | Issue | Kind | Suggestion |
 | --- | --- | --- | --- |
-| Library (`/library/*`) | Twelve tabs in one row (Overview … Smart links) | messy | Per the navigation plan, move the catalog tabs to Studio → Music |
+| Library (`/library/*`) | Twelve tabs in one row (Overview … Smart links) | messy, fixed | Catalog moved to Studio → Music; Library is Favorites · Playlists · History · Following · Files |
 
 ### Findings from mock multi-viewport pass (2026-11-19)
 

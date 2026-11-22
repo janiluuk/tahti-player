@@ -75,7 +75,7 @@ export function TrackAnalysisSection({
               autoCorrect="off"
               spellCheck={false}
               label={t('trackAnalysisFields.key')}
-              placeholder="Am, F#m or 8A"
+              placeholder={t('trackAnalysisFields.keyPlaceholder')}
               maxLength={MUSICAL_KEY_MAX_LENGTH}
               value={value.musicalKey}
               disabled={value.useDetectedBpmKey}

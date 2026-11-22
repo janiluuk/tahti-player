@@ -15,7 +15,12 @@ export type ListenerWidgetSurface = 'listen' | 'feed';
  * their own ids (see ListenView). */
 export const widgetBlockId = (id: string) => `widget:${id}`;
 export const isWidgetBlockId = (id: string) => id.startsWith('widget:');
-export const BROWSER_STATIONS_BLOCK_ID = widgetBlockId('browser-stations');
+/** ListenView's built-in radio stations row, which also lists the Radio
+ * Browser stations the listener saved. */
+export const RADIO_BLOCK_ID = 'radio';
+/** Retired block id that persisted orders and hidden lists may still name;
+ * the v4 migration strips it. */
+const RETIRED_BROWSER_STATIONS_BLOCK_ID = widgetBlockId('browser-stations');
 export const FAVORITES_BLOCK_ID = widgetBlockId('favorites');
 export const LATEST_NEWS_BLOCK_ID = widgetBlockId('latest-news');
 
@@ -27,9 +32,8 @@ const LISTEN_BLOCK_LABEL_KEYS: Record<string, string> = {
   trending: 'listen.trending',
   'coming-up': 'listen.comingUp',
   'new-tracks': 'listen.newTracks',
-  radio: 'nav.radio',
+  [RADIO_BLOCK_ID]: 'nav.radio',
   'disco-widgets': 'listen.communityWidgets',
-  [BROWSER_STATIONS_BLOCK_ID]: 'listenerWidgetsSectionMore.savedStations',
   [FAVORITES_BLOCK_ID]: 'listenerWidgetsSectionMore.favorites',
   [LATEST_NEWS_BLOCK_ID]: 'listenerWidgetsSectionMore.latestNews',
 };
@@ -56,6 +60,14 @@ const toFront = (order: string[], id: string) => [
   id,
   ...order.filter((item) => item !== id),
 ];
+
+/** A newly saved station shows up in the radio row, so that row comes back
+ * if it was taken off Listen. */
+const showRadioRow = (s: { hiddenListenBlockIds: string[] }) => ({
+  hiddenListenBlockIds: s.hiddenListenBlockIds.filter(
+    (id) => id !== RADIO_BLOCK_ID,
+  ),
+});
 
 /** `order` first, then every id it lacks from `fallback`, each placed right
  * after the nearest id before it in `fallback` (or first when none is). */
@@ -125,7 +137,7 @@ type ListenerWidgetsState = {
   /** RADIO_STATIONS ids the user has enabled from the store. */
   enabledStationIds: string[];
   stationOverrides: Record<string, Partial<RadioStation>>;
-  /** Radio Browser directory stations pinned to Listen. */
+  /** Radio Browser directory stations, listed in the radio stations row. */
   savedBrowserStations: SavedBrowserStation[];
   /** Listen page block order set from the Order toggle; new widgets go first. */
   listenOrder: string[];
@@ -271,7 +283,7 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
           }
           return {
             savedBrowserStations: [station, ...s.savedBrowserStations],
-            listenOrder: toFront(s.listenOrder, BROWSER_STATIONS_BLOCK_ID),
+            ...showRadioRow(s),
           };
         }),
       addSavedBrowserStation: (station) =>
@@ -283,7 +295,7 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
           if (existingIndex === -1) {
             return {
               savedBrowserStations: [station, ...s.savedBrowserStations],
-              listenOrder: toFront(s.listenOrder, BROWSER_STATIONS_BLOCK_ID),
+              ...showRadioRow(s),
             };
           }
           const next = [...s.savedBrowserStations];
@@ -299,9 +311,19 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
     }),
     {
       name: 'tahti-web-listener-widgets',
-      version: 3,
+      version: 4,
       migrate: (persisted, version) => {
         const state = (persisted ?? {}) as Partial<ListenerWidgetsState>;
+        if (version < 4) {
+          const live = (id: string) => id !== RETIRED_BROWSER_STATIONS_BLOCK_ID;
+          if (Array.isArray(state.listenOrder)) {
+            state.listenOrder = state.listenOrder.filter(live);
+          }
+          if (Array.isArray(state.hiddenListenBlockIds)) {
+            state.hiddenListenBlockIds =
+              state.hiddenListenBlockIds.filter(live);
+          }
+        }
         if (version < 3 && Array.isArray(state.instances)) {
           state.instances = state.instances.map((instance) =>
             instance.surfaces

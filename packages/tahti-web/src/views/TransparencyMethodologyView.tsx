@@ -5,6 +5,12 @@ import { useTranslation } from '@tahti-player/i18n';
 import { ViewShell } from '@tahti-player/ui';
 
 import { PageBackLink } from '../components/PageBackLink';
+import { withInlineCode } from '../lib/inlineCode';
+import { SLOT, withSlot } from '../lib/slotText';
+
+function codeText(text: string): ReactNode {
+  return withInlineCode(text, 'font-mono text-xs');
+}
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -142,32 +148,29 @@ export function TransparencyMethodologyView() {
 
       <Section title={t('transparencyMethodology.howSurplusIsCalculated')}>
         <p className="text-foreground-secondary text-sm">
-          Surplus = total revenue − total costs (including salaries and
-          professional services). Disbursements and reserve transfers are not
-          costs — they are allocations of the surplus. The running surplus shown
-          on the dashboard is revenue minus costs only; it does not yet subtract
-          planned grant disbursements.
+          {t('transparencyMethodologyText.surplus')}
         </p>
       </Section>
 
       <Section title={t('transparencyMethodology.engagementUnitsGrantFormula')}>
         <p className="text-foreground-secondary text-sm">
-          Grants are allocated proportionally by <em>engagement units</em>, not
-          passive listener-hours. An engagement unit is a weighted measure that
-          rewards listener commitment:
+          {withSlot(
+            t('transparencyMethodologyText.engagementIntro', { units: SLOT }),
+            <em>{t('transparencyMethodologyText.engagementUnits')}</em>,
+          )}
         </p>
         <ul className="text-foreground-secondary list-disc space-y-1 pl-5 text-sm">
           <li>
             <strong className="text-foreground">
               {t('transparencyMethodology.download')}
             </strong>{' '}
-            of a free track = 1 unit (listener committed enough to download)
+            {t('transparencyMethodologyText.downloadUnit')}
           </li>
           <li>
             <strong className="text-foreground">
               {t('transparencyMethodology.fanSubscription')}
             </strong>{' '}
-            = engagement_euros × multiplier (fan paid real money)
+            {t('transparencyMethodologyText.fanSubscriptionUnit')}
           </li>
         </ul>
         <p className="text-foreground-secondary text-sm">
@@ -177,26 +180,14 @@ export function TransparencyMethodologyView() {
 
       <Section title={t('transparencyMethodology.dataPipeline')}>
         <ol className="text-foreground-secondary list-decimal space-y-1 pl-5 text-sm">
-          <li>
-            Stripe webhooks automatically create{' '}
-            <code className="font-mono text-xs">REVENUE_SUBSCRIPTION</code>{' '}
-            entries.
-          </li>
+          <li>{codeText(t('transparencyMethodologyText.pipelineStripe'))}</li>
           <li>
             {t(
               'transparencyMethodology.theTreasurerManuallyEntersInfrastructure',
             )}
           </li>
-          <li>
-            On the first of each month a background job aggregates the prior
-            month into a finalized{' '}
-            <code className="font-mono text-xs">MonthlyRollup</code> row. The
-            treasurer marks it finalized after board review.
-          </li>
-          <li>
-            All data is immediately available via the public read-only API at{' '}
-            <code className="font-mono text-xs">/api/v1/transparency/</code>.
-          </li>
+          <li>{codeText(t('transparencyMethodologyText.pipelineRollup'))}</li>
+          <li>{codeText(t('transparencyMethodologyText.pipelineApi'))}</li>
         </ol>
       </Section>
 
@@ -209,25 +200,25 @@ export function TransparencyMethodologyView() {
             <code className="font-mono text-xs">
               GET /api/v1/transparency/monthly_rollup?year=YYYY
             </code>{' '}
-            — all finalized month rollups for a given year
+            {t('transparencyMethodologyText.apiMonthly')}
           </li>
           <li>
             <code className="font-mono text-xs">
               GET /api/v1/transparency/ytd
             </code>{' '}
-            — current year running totals
+            {t('transparencyMethodologyText.apiYtd')}
           </li>
           <li>
             <code className="font-mono text-xs">
               GET /api/v1/transparency/categories
             </code>{' '}
-            — category descriptions
+            {t('transparencyMethodologyText.apiCategories')}
           </li>
         </ul>
       </Section>
 
       <footer className="text-foreground-secondary border-border border-t pt-4 text-xs">
-        Tahti ry — Y-tunnus 3368171-8 — Helsinki, Finland.{' '}
+        {t('transparencyMethodologyText.footer')}{' '}
         <Link to="/status" className="underline-offset-2 hover:underline">
           {t('transparencyMethodology.platformStatus')}
         </Link>

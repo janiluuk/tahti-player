@@ -10,7 +10,7 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 13. [ ] [HearThis collection live run](hearthis-collection-live-run.md) (`hearthis-collections-cli.md`).
 31. [ ] [Run artwork preset cover backfill](artwork-preset-backfill.md) (`artwork-preset-covers.md`).
 32. [ ] [Listings news opening post](listings-news-opening-post.md) (`listings-news-polish.md`).
-39. [ ] [Finnish API notification bodies](finnish-api-notifications.md) (`finnish-localization.md`).
+39. [ ] [Finnish API notification bodies](finnish-api-notifications.md).
 42. [ ] [Board track-edit product call](board-track-edit-product-call.md) (`ui-requests-2026-11-03.md`).
 45. [ ] [Embed downloads product call](embed-downloads-product-call.md) (`listen-artist-channel-cleanup.md`).
 48. [ ] [Artist groups org deploy and e2e](artist-groups-org-e2e.md) (`artist-groups.md`).

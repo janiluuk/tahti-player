@@ -38,6 +38,7 @@ import {
   movedSettingsSectionLabel,
 } from '../../lib/movedSettingsSections';
 import { mergeRevenueOrders } from '../../lib/revenueOrders';
+import { SLOT, withSlot } from '../../lib/slotText';
 import { useTourStore } from '../../stores/tourStore';
 
 function euros(cents: number | string): string {
@@ -262,15 +263,15 @@ export function StudioRevenueView() {
                   role="status"
                   data-testid="fan-subs-connect-warning"
                 >
-                  Stripe is not connected yet — fan-sub payouts cannot reach you
-                  until Connect shows payments ready. Finish onboarding on the{' '}
-                  <Link
-                    to="/studio/stripe"
-                    className="font-semibold underline-offset-2 hover:underline"
-                  >
-                    {t('studioRevenue2.stripeDashboard')}
-                  </Link>
-                  .
+                  {withSlot(
+                    t('studioRevenue2.connectWarning', { link: SLOT }),
+                    <Link
+                      to="/studio/stripe"
+                      className="font-semibold underline-offset-2 hover:underline"
+                    >
+                      {t('studioRevenue2.stripeDashboard')}
+                    </Link>,
+                  )}
                 </Alert>
               ) : null}
 

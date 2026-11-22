@@ -16,6 +16,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [first-100-users-infra.md](first-100-users-infra.md) | Verified on vimage 2026-11-02: rate limits fail closed, disk fine; backup restore test + vimage6 push fixed in tahti-org#1042; left: leaked restore containers, MinIO mirror + DR alias |
 | open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
 | blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
+| open    | [ci-red-master-and-stack-smoke.md](ci-red-master-and-stack-smoke.md) | master CI: `/api/me/password/set` not in latest tahti-org release (release or allowlist); tahti-org Stack smoke: drop duplicate pnpm `version` |
 
 ## Next 50 slices
 
@@ -38,8 +39,17 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [channel-play-icon-hover.md](channel-play-icon-hover.md) | Channel track rows: play icon only on playing + hovered row; Shift hover → queue icon, Shift+click queues |
-| open    | [radio-station-under-widget.md](radio-station-under-widget.md) | Added radio stations land under the radio widget, not on an empty row |
+| open    | [player-mobile-actions.md](player-mobile-actions.md) | Player view on phones: drop the duplicate Add to playlist (it is in the menu), add a Love icon |
+| open    | [discover-events-widget.md](discover-events-widget.md) | Seed production events with artwork, upcoming list first on Discover → Events, events card-row widget on Discover |
+| open    | [mobile-menu-tahti-live-link.md](mobile-menu-tahti-live-link.md) | Remove the tahti.live link from the phone menu (not found in tahti-web code yet; check APK/PWA chrome) |
+| open    | [mobile-player-bar-dismiss.md](mobile-player-bar-dismiss.md) | Phones: subtle close for the player bar when nothing is playing |
+| open    | [mobile-track-list-layout.md](mobile-track-list-layout.md) | Phone track list: bigger artwork, one date (clock), current thumbnail not taking the left column, all densities |
+| open    | [e2e-fix-and-audit.md](e2e-fix-and-audit.md) | Fix the failing e2e specs (use-cases-artist-5 known) and audit every spec against current navigation |
+| open    | [yaniho-hearthis-albums.md](yaniho-hearthis-albums.md) | Every Yaniho hearthis.at album as its own album, clean track titles, per-album track index, owner/admin reorder |
+| open    | [news-widget-admin-edit.md](news-widget-admin-edit.md) | News widget: edit icon on every item for admins, opens an edit modal |
+| open    | [studio-admin-design-audit.md](studio-admin-design-audit.md) | Design audit of Studio + Admin: crowded/mixed views, chat in one place, long views into tabs |
+| open    | [more-3d-visualizers.md](more-3d-visualizers.md) | A few more distinct 3D visualizer presets; colour every preset from the artwork's dominant colour |
+| open    | [playlist-dark-mode-background.md](playlist-dark-mode-background.md) | Playlist page is solid orange in dark mode; use a soft wash from the cover or first track artwork |
 | partial | [discover-events-tab.md](discover-events-tab.md) | Events tab with range / past / city / venue / search filters and calendar view, posting, banner crop, event page backdrop built; left: live post check, event gallery API deploy (tahti-org#1122 merged) |
 | partial | [mobile-bottom-nav-readability.md](mobile-bottom-nav-readability.md) | Taller bar that grows by the gesture-bar inset, bigger labels/icons; left: check on a real Android phone |
 | open    | [pattern-detection-grants-ui.md](pattern-detection-grants-ui.md) | Board grant preview anomaly chips + PATTERN_FRAUD_ALERT activity; left: pitch copy after org merge |
@@ -50,7 +60,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Library Playlists + Go live takeover shipped (next-30); left: Go live stepper polish |
-| partial | [finnish-localization.md](finnish-localization.md) | All items resolved; fold after merge |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; stage embed stays one widget (0.0.376); left: embed downloads (product call) |
 | partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Library Playlists + Go live takeover (next-30); left: phase 3 Go live stepper polish |

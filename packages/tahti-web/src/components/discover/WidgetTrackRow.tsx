@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { HeartIcon } from 'lucide-react';
 
-import { ImageReveal, MediaArtwork } from '@tahti-player/ui';
+import { ImageReveal, MEDIA_ROW_GROUP, MediaArtwork } from '@tahti-player/ui';
 
 import type { DiscoverTrackItem } from '../../api/types';
 import { useDiscoverTrackPlayback } from '../../hooks/useDiscoverTrackPlayback';
@@ -35,7 +35,8 @@ export function WidgetTrackRow({
           : undefined
       }
       className={cn(
-        'group flex items-center gap-3 px-2 py-1.5',
+        'flex items-center gap-3 px-2 py-1.5',
+        MEDIA_ROW_GROUP,
         STRIPED_ROW,
         isCurrent && 'bg-primary/10 even:bg-primary/10',
       )}

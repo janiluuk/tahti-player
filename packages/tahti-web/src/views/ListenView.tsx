@@ -59,6 +59,7 @@ import {
   isWidgetBlockId,
   LATEST_NEWS_BLOCK_ID,
   mergeBlockOrder,
+  RADIO_BLOCK_ID,
   useListenerWidgetsStore,
 } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -81,7 +82,6 @@ const LISTEN_SECTION_TABS = [
 ];
 
 const RECENTLY_PLAYED_LIMIT = 20;
-const RADIO_BLOCK_ID = 'radio';
 
 type OnAirRowItem = { id: string; title: string; channel: OnAirChannel };
 

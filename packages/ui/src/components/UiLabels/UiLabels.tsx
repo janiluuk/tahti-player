@@ -45,6 +45,8 @@ export type UiLabels = {
   deselectAllRows: string;
   editTrack: string;
   openTrack: string;
+  /** Play control hint when Shift+click queues instead. */
+  playOrShiftQueue: (playLabel: string) => string;
   /** Names the toast region. */
   notifications: string;
 };
@@ -96,6 +98,7 @@ export const defaultUiLabels: UiLabels = {
   deselectAllRows: 'Deselect all rows',
   editTrack: 'Edit track',
   openTrack: 'Open track',
+  playOrShiftQueue: (playLabel) => `${playLabel} · Shift+click to queue`,
   notifications: 'Notifications',
 };
 

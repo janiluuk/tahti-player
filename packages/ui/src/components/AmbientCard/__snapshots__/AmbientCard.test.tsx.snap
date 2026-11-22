@@ -3,7 +3,7 @@
 exports[`AmbientCard > (Snapshot) renders with a forced ambient tint 1`] = `
 <div>
   <div
-    class="border-border shadow-shadow relative flex w-46 flex-col items-stretch gap-2 overflow-hidden rounded-md border-(length:--border-width) p-2 text-left transition-all"
+    class="group/media-row border-border shadow-shadow relative flex w-46 flex-col items-stretch gap-2 overflow-hidden rounded-md border-(length:--border-width) p-2 text-left transition-all"
     data-testid="ambient-card"
     style="background-color: rgb(40, 90, 140);"
   >
@@ -28,7 +28,7 @@ exports[`AmbientCard > (Snapshot) renders with a forced ambient tint 1`] = `
       class="flex h-full rounded-md bg-primary text-primary-foreground border-border/40 relative z-10 aspect-square w-full items-center justify-center overflow-hidden border p-0 shadow-sm"
     >
       <div
-        class="group overflow-hidden absolute inset-0 size-full"
+        class="group/media overflow-hidden absolute inset-0 size-full"
         data-testid="media-artwork"
       >
         <div

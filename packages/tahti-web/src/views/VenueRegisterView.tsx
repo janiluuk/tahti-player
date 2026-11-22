@@ -42,7 +42,7 @@ export function VenueRegisterView() {
           to="/login"
           className="text-sm underline-offset-2 hover:underline"
         >
-          Log in →
+          {t('venueRegister.logInLink')}
         </Link>
       </ViewShell>
     );

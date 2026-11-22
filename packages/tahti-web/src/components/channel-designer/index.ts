@@ -6,6 +6,7 @@ export { BrandAccentSwatches } from './BrandAccentSwatches';
 export { ColorSchemeFields } from './ColorSchemeFields';
 export { DeletePresetDialog } from './DeletePresetDialog';
 export { DesignerToolbar } from './DesignerToolbar';
+export { OpenMyChannelLink } from './OpenMyChannelLink';
 export {
   HEADER_DESIGN_OPTIONS,
   HeaderStyleTabs,

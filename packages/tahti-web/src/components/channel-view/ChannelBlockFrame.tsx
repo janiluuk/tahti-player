@@ -102,7 +102,7 @@ export function ChannelBlockFrame({
       }}
       onPointerUp={() => setMoveDrag(null)}
       onPointerCancel={() => setMoveDrag(null)}
-      className={`group relative min-w-0 ${
+      className={`group/block relative min-w-0 ${
         COMPACT_BLOCK_TYPES.has(item.type) ? '' : 'lg:col-span-2'
       } ${
         editing
@@ -184,7 +184,7 @@ export function ChannelBlockFrame({
               type="button"
               size="icon-sm"
               variant="text"
-              className="text-foreground-secondary hover:text-foreground absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+              className="text-foreground-secondary hover:text-foreground absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover/block:opacity-100 focus-visible:opacity-100"
               aria-label={t('channelBlockFrameLabels.removeLabel', {
                 label: metaItem.label,
               })}

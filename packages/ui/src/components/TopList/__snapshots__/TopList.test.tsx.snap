@@ -21,7 +21,7 @@ exports[`TopList > (Snapshot) renders a list of albums with their artists 1`] = 
           1
         </span>
         <div
-          class="group relative overflow-hidden size-10 min-w-10"
+          class="group/media relative overflow-hidden size-10 min-w-10"
           data-testid="media-artwork"
         >
           <img
@@ -64,7 +64,7 @@ exports[`TopList > (Snapshot) renders a list of albums with their artists 1`] = 
           2
         </span>
         <div
-          class="group relative overflow-hidden size-10 min-w-10"
+          class="group/media relative overflow-hidden size-10 min-w-10"
           data-testid="media-artwork"
         >
           <div
@@ -160,7 +160,7 @@ exports[`TopList > (Snapshot) renders a list of artists 1`] = `
           1
         </span>
         <div
-          class="group relative overflow-hidden size-10 min-w-10"
+          class="group/media relative overflow-hidden size-10 min-w-10"
           data-testid="media-artwork"
         >
           <img
@@ -197,7 +197,7 @@ exports[`TopList > (Snapshot) renders a list of artists 1`] = `
           2
         </span>
         <div
-          class="group relative overflow-hidden size-10 min-w-10"
+          class="group/media relative overflow-hidden size-10 min-w-10"
           data-testid="media-artwork"
         >
           <div
@@ -271,7 +271,7 @@ exports[`TopList > (Snapshot) renders a list of artists 1`] = `
           3
         </span>
         <div
-          class="group relative overflow-hidden size-10 min-w-10"
+          class="group/media relative overflow-hidden size-10 min-w-10"
           data-testid="media-artwork"
         >
           <img

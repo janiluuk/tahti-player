@@ -41,7 +41,7 @@ export function DiscoverAddWidgetButton({
     >
       <Popover.Menu>
         {availableToAdd.map((id) => {
-          const { icon: Icon, description } = WIDGET_MENU[id];
+          const { icon: Icon, descriptionKey } = WIDGET_MENU[id];
           return (
             <Popover.Item
               key={id}
@@ -55,7 +55,7 @@ export function DiscoverAddWidgetButton({
                   {t(WIDGET_LABEL_KEYS[id])}
                 </span>
                 <span className="text-foreground-secondary text-[11px] leading-snug">
-                  {description}
+                  {t(descriptionKey)}
                 </span>
               </span>
             </Popover.Item>

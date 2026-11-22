@@ -180,6 +180,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Track/DownloadsSwitch` | `tahti-web/DownloadsSwitch.stories.tsx` |
 | `Tahti/Studio/E2eRunGallery` | `tahti-web/E2eRunGallery.stories.tsx` |
 | `Tahti/Reference/Element locations` | `tahti-web/ElementLocations.stories.tsx` |
+| `Tahti/Auth/EmailChangeView` | `tahti-web/EmailChangeView.stories.tsx` |
 | `Tahti/Media/EmbedButton` | `tahti-web/EmbedButton.stories.tsx` |
 | `Tahti/Media/EmbedTrackRow` | `tahti-web/EmbedTrackRow.stories.tsx` |
 | `Tahti/Page/EntitySocialHeader` | `tahti-web/EntitySocialHeader.stories.tsx` |
@@ -195,6 +196,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/FanSubscriptionStats` | `tahti-web/FanSubscriptionStats.stories.tsx` |
 | `Tahti/Studio/FanTiersEditor` | `tahti-web/FanTiersEditor.stories.tsx` |
 | `Tahti/Library/FavoritesView` | `tahti-web/FavoritesView.stories.tsx` |
+| `Tahti/Governance/FeatureRequestsView` | `tahti-web/FeatureRequestsView.stories.tsx` |
 | `Tahti/Feed/FeedStoryDialog` | `tahti-web/FeedStoryDialog.stories.tsx` |
 | `Tahti/Social/FeedView` | `tahti-web/FeedView.stories.tsx` |
 | `Tahti/Studio/FingerprintTrackPanel` | `tahti-web/FingerprintTrackPanel.stories.tsx` |
@@ -208,7 +210,12 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/GlobalSearch` | `tahti-web/GlobalSearch.stories.tsx` |
 | `Tahti/Media/GlowMediaTile` | `tahti-web/GlowMediaTile.stories.tsx` |
 | `Tahti/Governance/GovernanceGuideView` | `tahti-web/GovernanceGuideView.stories.tsx` |
+| `Tahti/Governance/GovernanceMeetingDetailView` | `tahti-web/GovernanceMeetingDetailView.stories.tsx` |
 | `Tahti/Governance/Member panels` | `tahti-web/GovernanceMemberPanels.stories.tsx` |
+| `Tahti/Governance/GovernanceMembersView` | `tahti-web/GovernanceMembersView.stories.tsx` |
+| `Tahti/Governance/GovernanceMotionDetailView` | `tahti-web/GovernanceMotionDetailView.stories.tsx` |
+| `Tahti/Governance/GovernanceView` | `tahti-web/GovernanceView.stories.tsx` |
+| `Tahti/Channel/GreenRoomView` | `tahti-web/GreenRoomView.stories.tsx` |
 | `Tahti/Groups/GroupDetailView` | `tahti-web/GroupDetailView.stories.tsx` |
 | `Tahti/Discover/GroupsDirectory` | `tahti-web/GroupsDirectory.stories.tsx` |
 | `Tahti/Groups/GroupsDirectoryView` | `tahti-web/GroupsDirectoryView.stories.tsx` |
@@ -216,6 +223,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Reference/Help center` | `tahti-web/HelpView.stories.tsx` |
 | `Tahti/History/HistoryListSection` | `tahti-web/HistoryListSection.stories.tsx` |
 | `Tahti/History/HistoryStatsSection` | `tahti-web/HistoryStatsSection.stories.tsx` |
+| `Tahti/History/HistoryView` | `tahti-web/HistoryView.stories.tsx` |
 | `Tahti/Listen/HomeComingUp` | `tahti-web/HomeComingUp.stories.tsx` |
 | `Tahti/Studio/Home/HomeTiles` | `tahti-web/HomeTiles.stories.tsx` |
 | `Tahti/Media/ImageLightbox` | `tahti-web/ImageLightbox.stories.tsx` |
@@ -233,6 +241,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Library/LibraryHistory` | `tahti-web/LibraryFollowing.stories.tsx` |
 | `Tahti/Library/LibraryFollowingFiles` | `tahti-web/LibraryFollowingFiles.stories.tsx` |
 | `Tahti/Library/LibraryItemRow` | `tahti-web/LibraryItemRow.stories.tsx` |
+| `Tahti/Library/LibraryMediaView` | `tahti-web/LibraryMediaView.stories.tsx` |
 | `Tahti/Widgets/ListenAddonsPanel` | `tahti-web/ListenAddonsPanel.stories.tsx` |
 | `Tahti/Listen/ListenSection` | `tahti-web/ListenSection.stories.tsx` |
 | `Tahti/Listen/ListenView` | `tahti-web/ListenView.stories.tsx` |
@@ -269,11 +278,13 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Updates/NewDraftDialog` | `tahti-web/NewDraftDialog.stories.tsx` |
 | `Tahti/Widgets/NewsFeedSuggestions` | `tahti-web/NewsFeedSuggestions.stories.tsx` |
 | `Tahti/Widgets/NewsFeedWidget` | `tahti-web/NewsFeedWidget.stories.tsx` |
+| `Tahti/Misc/NewsletterStatusView` | `tahti-web/NewsletterStatusView.stories.tsx` |
 | `Tahti/Misc/NewsletterSubscribeToggle` | `tahti-web/NewsletterSubscribeToggle.stories.tsx` |
 | `Tahti/Events/NotificationEventInvites` | `tahti-web/NotificationEventInvites.stories.tsx` |
 | `Tahti/Misc/NotificationToasts` | `tahti-web/NotificationToasts.stories.tsx` |
 | `Tahti/Social/NotificationsView` | `tahti-web/NotificationsView.stories.tsx` |
 | `Tahti/Studio/CollectionEdit/NowPlayingBar` | `tahti-web/NowPlayingBar.stories.tsx` |
+| `Tahti/Settings/OnboardingView` | `tahti-web/OnboardingView.stories.tsx` |
 | `Tahti/Page/PageHeader` | `tahti-web/PageHeader.stories.tsx` |
 | `Tahti/Page/PageStates` | `tahti-web/PageStates.stories.tsx` |
 | `Tahti/Widgets/PageTourSpotlight` | `tahti-web/PageTourSpotlight.stories.tsx` |
@@ -298,6 +309,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Profile/ProfileSection` | `tahti-web/ProfileSection.stories.tsx` |
 | `Tahti/Studio/PromptScoreBridgePanel` | `tahti-web/PromptScoreBridgePanel.stories.tsx` |
 | `Tahti/Misc/ProviderSetImportDialog` | `tahti-web/ProviderSetImportDialog.stories.tsx` |
+| `Tahti/Governance/PublicGovernanceHistoryView` | `tahti-web/PublicGovernanceHistoryView.stories.tsx` |
 | `Tahti/Studio/RadioBookingCalendar` | `tahti-web/RadioBookingCalendar.stories.tsx` |
 | `Tahti/Settings/RadioBrowserDirectory` | `tahti-web/RadioBrowserDirectory.stories.tsx` |
 | `Tahti/Widgets/PluginStorePanel/Radio category` | `tahti-web/RadioCategory.stories.tsx` |
@@ -352,12 +364,15 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Misc/SourceServiceIcon` | `tahti-web/SourceServiceIcon.stories.tsx` |
 | `Tahti/Studio/StashFilesPanel` | `tahti-web/StashFilesPanel.stories.tsx` |
 | `Tahti/Radio/StationUnavailableNotice` | `tahti-web/StationUnavailableNotice.stories.tsx` |
+| `Tahti/Misc/StatusView` | `tahti-web/StatusView.stories.tsx` |
 | `Tahti/Player/StemMixer` | `tahti-web/StemMixer.stories.tsx` |
 | `Tahti/Studio/StreamManagerPanel` | `tahti-web/StreamManagerPanel.stories.tsx` |
 | `Tahti/Studio/StudioCollectionEditView` | `tahti-web/StudioCollectionEditView.stories.tsx` |
 | `Tahti/Studio/StudioCollectionsView` | `tahti-web/StudioCollectionsView.stories.tsx` |
 | `Tahti/Studio/Distribution panels` | `tahti-web/StudioDistributionPanels.stories.tsx` |
 | `Tahti/Studio/StudioDistributionView` | `tahti-web/StudioDistributionView.stories.tsx` |
+| `Tahti/Studio/StudioEditorListView` | `tahti-web/StudioEditorListView.stories.tsx` |
+| `Tahti/Studio/StudioEditorProjectView` | `tahti-web/StudioEditorProjectView.stories.tsx` |
 | `Tahti/Studio/StudioEpisodeReviewView` | `tahti-web/StudioEpisodeReviewView.stories.tsx` |
 | `Tahti/Studio/StudioEventCreateView` | `tahti-web/StudioEventCreateView.stories.tsx` |
 | `Tahti/Studio/StudioEventView` | `tahti-web/StudioEventView.stories.tsx` |
@@ -370,10 +385,12 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Hubs` | `tahti-web/StudioHubViews.stories.tsx` |
 | `Tahti/Studio/StudioListeningPartiesView` | `tahti-web/StudioListeningPartiesView.stories.tsx` |
 | `Tahti/Studio/StudioListeningPartyFormView` | `tahti-web/StudioListeningPartyFormView.stories.tsx` |
+| `Tahti/Studio/StudioMasteringView` | `tahti-web/StudioMasteringView.stories.tsx` |
 | `Tahti/Studio/StudioNav` | `tahti-web/StudioNav.stories.tsx` |
 | `Tahti/Page/StudioPanel` | `tahti-web/StudioPanel.stories.tsx` |
 | `Tahti/Studio/StudioPlaylistEditorView` | `tahti-web/StudioPlaylistEditorView.stories.tsx` |
 | `Tahti/Studio/StudioProfileSectionView` | `tahti-web/StudioProfileSectionView.stories.tsx` |
+| `Tahti/Studio/StudioRecordingsView` | `tahti-web/StudioRecordingsView.stories.tsx` |
 | `Tahti/Studio/StudioReleaseDetailView` | `tahti-web/StudioReleaseDetailView.stories.tsx` |
 | `Tahti/Studio/StudioScheduleView` | `tahti-web/StudioScheduleView.stories.tsx` |
 | `Tahti/Studio/StudioShowDetailView` | `tahti-web/StudioShowDetailView.stories.tsx` |
@@ -381,10 +398,13 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StudioSmartLinksView` | `tahti-web/StudioSmartLinksView.stories.tsx` |
 | `Tahti/Studio/StudioSoundView` | `tahti-web/StudioSoundView.stories.tsx` |
 | `Tahti/Studio/StudioSoundsView` | `tahti-web/StudioSoundsView.stories.tsx` |
+| `Tahti/Library/StudioStashView` | `tahti-web/StudioStashView.stories.tsx` |
 | `Tahti/Studio/Stats/Audience panels` | `tahti-web/StudioStatsAudience.stories.tsx` |
+| `Tahti/Studio/StudioStatsDetailView` | `tahti-web/StudioStatsDetailView.stories.tsx` |
 | `Tahti/Studio/StudioStripeView` | `tahti-web/StudioStripeView.stories.tsx` |
 | `Tahti/Studio/StudioUpdatesView` | `tahti-web/StudioUpdatesView.stories.tsx` |
 | `Tahti/Track/SubgenreTagInput` | `tahti-web/SubgenreTagInput.stories.tsx` |
+| `Tahti/Artist/SubscribeView` | `tahti-web/SubscribeView.stories.tsx` |
 | `Tahti/Misc/SupportContactForm` | `tahti-web/SupportContactForm.stories.tsx` |
 | `Tahti/Track/TagChipInput` | `tahti-web/TagChipInput.stories.tsx` |
 | `Tahti/Discover/TagSearchView` | `tahti-web/TagSearchView.stories.tsx` |
@@ -403,8 +423,13 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/TrackInsightsPanel` | `tahti-web/TrackInsightsPanel.latest.stories.tsx` |
 | `Tahti/Track/TrackTagInput` | `tahti-web/TrackTagInput.stories.tsx` |
 | `Tahti/Studio/TracklistEditor` | `tahti-web/TracklistEditor.stories.tsx` |
+| `Tahti/Transparency/TransparencyGrantYearView` | `tahti-web/TransparencyGrantYearView.stories.tsx` |
+| `Tahti/Transparency/TransparencyMethodologyView` | `tahti-web/TransparencyMethodologyView.stories.tsx` |
+| `Tahti/Transparency/TransparencyResolutionsView` | `tahti-web/TransparencyResolutionsView.stories.tsx` |
+| `Tahti/Transparency/TransparencyView` | `tahti-web/TransparencyView.stories.tsx` |
 | `Tahti/Track/UploadTrackDialog` | `tahti-web/UploadTrackDialog.stories.tsx` |
 | `Tahti/Discover/VenueDetailView` | `tahti-web/VenueDetailView.stories.tsx` |
+| `Tahti/Discover/VenueRegisterView` | `tahti-web/VenueRegisterView.stories.tsx` |
 | `Tahti/Discover/VenuesDirectory` | `tahti-web/VenuesDirectory.stories.tsx` |
 | `Tahti/Auth/VerifyView` | `tahti-web/VerifyView.stories.tsx` |
 | `Tahti/Player/VisualizerModeMenu` | `tahti-web/VisualizerModeMenu.stories.tsx` |

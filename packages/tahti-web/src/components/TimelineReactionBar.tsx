@@ -38,7 +38,7 @@ export function TimelineReactionBar({
       aria-label={t('timelineReactionBarLabels.reactAtClock', { clock })}
     >
       <span className="text-xs font-semibold text-white/70 tabular-nums">
-        At {clock}
+        {t('timelineReactionBarText.atClock', { clock })}
       </span>
       {!signedIn ? (
         <Button

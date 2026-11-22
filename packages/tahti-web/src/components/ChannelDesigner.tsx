@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -21,7 +20,6 @@ import {
   type ChannelLookBundle,
   type ChannelPageItem,
 } from '../lib/channelPageLayout';
-import { useSettingsModalStore } from '../stores/settingsModalStore';
 import {
   AppliedPresetBanner,
   BackdropPanel,
@@ -29,6 +27,7 @@ import {
   DesignerToolbar,
   LAYOUT_ONLY_LOOK_IDS,
   LayoutOnlyLookHint,
+  OpenMyChannelLink,
   OverlayConfigDialog,
   PlayerOverlayControls,
   PlayerPanel,
@@ -589,24 +588,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       />
     );
 
-    const openChannelLink = channelSlug ? (
-      <Link
-        to="/channel/$slug"
-        params={{ slug: channelSlug }}
-        onClick={() => useSettingsModalStore.getState().close()}
-        className="text-primary-strong inline-flex min-h-6 items-center text-sm font-semibold underline-offset-2 hover:underline"
-      >
-        Open my channel →
-      </Link>
-    ) : (
-      <Link
-        to="/u/$username"
-        params={{ username }}
-        onClick={() => useSettingsModalStore.getState().close()}
-        className="text-primary-strong inline-flex min-h-6 items-center text-sm font-semibold underline-offset-2 hover:underline"
-      >
-        Open my channel →
-      </Link>
+    const openChannelLink = (
+      <OpenMyChannelLink channelSlug={channelSlug} username={username} />
     );
 
     const selectLookElement = (id: ChannelLookElementId) => {

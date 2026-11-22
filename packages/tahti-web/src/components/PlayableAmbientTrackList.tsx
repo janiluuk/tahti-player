@@ -212,6 +212,7 @@ export function PlayableAmbientTrackList({
             }
             play(item, { enqueueRest: rest });
           },
+          onQueue: () => enqueue(item),
           actions: (
             <MediaIconActions
               actions={playQueueFavoriteActions({

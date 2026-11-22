@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import {
   CirclePlayIcon,
   DownloadIcon,
@@ -19,8 +18,6 @@ import {
   BackButtonLink,
   ClampedText,
   Dialog,
-  TabLabel,
-  Tabs,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -51,12 +48,8 @@ import {
   type RelatedArtist,
 } from '../../components/artist-view';
 import { ArtistSoundCloudTracks } from '../../components/artist-view/ArtistSoundCloudTracks';
-import {
-  ArtistGalleryAddIcon,
-  ArtistGalleryPanel,
-} from '../../components/ArtistGalleryPanel';
+import { ArtistGalleryPanel } from '../../components/ArtistGalleryPanel';
 import { ArtistStoryFeed } from '../../components/ArtistStoryFeed';
-import { ChannelDesigner } from '../../components/ChannelDesigner';
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
 import { type EntitySocialStat } from '../../components/EntitySocialHeader';
 import { ImageLightbox } from '../../components/ImageLightbox';
@@ -94,9 +87,13 @@ import {
   usePlayerStore,
 } from '../../stores/playerStore';
 import { ArtistFollowListDialog } from './ArtistFollowListDialog';
+import {
+  ArtistDesignTab,
+  ArtistProfileTabRow,
+  type ArtistProfileTab,
+  type ArtistProfileTabItem,
+} from './ArtistProfileTabs';
 import { useArtistProfileLoad } from './useArtistProfileLoad';
-
-type Tab = 'stage' | 'gallery' | 'design';
 
 const RELATED_ARTIST_LIMIT = 5;
 
@@ -104,7 +101,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
   const { t } = useTranslation('web');
   const me = useAuthStore((s) => s.user);
   const profileLoaded = useAuthStore((s) => s.profileLoaded);
-  const [tab, setTab] = useState<Tab>('stage');
+  const [tab, setTab] = useState<ArtistProfileTab>('stage');
   const [tracklistRelease, setTracklistRelease] =
     useState<PublicProfileRelease | null>(null);
   const [managerOpen, setManagerOpen] = useState(false);
@@ -192,7 +189,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
     galleryImages.length > 0 && lookVisibility.gallery !== false;
 
   const tabs = useMemo(() => {
-    const list: Array<{ id: Tab; label: string; icon: typeof MusicIcon }> = [];
+    const list: ArtistProfileTabItem[] = [];
     if (!profile) {
       return list;
     }
@@ -589,51 +586,24 @@ export function ArtistProfilePage({ username }: { username: string }) {
         <ArtistNews news={channelNews} username={artist.username} />
       ) : null}
 
-      <div className="border-border flex flex-wrap items-center gap-2 border-b pb-3">
-        {tabs.length > 0 ? (
-          <Tabs.Root
-            selectedIndex={Math.max(
-              0,
-              tabs.findIndex((item) => item.id === tab),
-            )}
-            onChange={(index) => {
-              const next = tabs[index];
-              if (next) {
-                setTab(next.id);
-              }
-            }}
-          >
-            <Tabs.List className="w-fit flex-wrap">
-              {tabs.map((item) => (
-                <Tabs.Tab key={item.id}>
-                  <TabLabel icon={<item.icon size={14} />}>
-                    {item.label}
-                  </TabLabel>
-                </Tabs.Tab>
-              ))}
-            </Tabs.List>
-          </Tabs.Root>
-        ) : null}
-        {galleryError && galleryImages.length === 0 ? (
-          <p className="text-foreground-secondary text-xs" role="status">
-            {t('artistProfilePageBatch30.couldNotLoadGallery', {
-              error: galleryError,
-            })}
-          </p>
-        ) : null}
-        {isOwner &&
-        lookVisibility.gallery !== false &&
-        galleryLoaded &&
-        !galleryError &&
-        galleryImages.length === 0 ? (
-          <ArtistGalleryAddIcon
-            onCreated={(images) => {
-              setGalleryImages(images);
-              setTab('gallery');
-            }}
-          />
-        ) : null}
-      </div>
+      <ArtistProfileTabRow
+        tabs={tabs}
+        tab={tab}
+        onTabChange={setTab}
+        galleryError={galleryError}
+        showGalleryAdd={
+          isOwner &&
+          lookVisibility.gallery !== false &&
+          galleryLoaded &&
+          !galleryError &&
+          galleryImages.length === 0
+        }
+        hasGalleryImages={galleryImages.length > 0}
+        onGalleryCreated={(images) => {
+          setGalleryImages(images);
+          setTab('gallery');
+        }}
+      />
 
       {tab === 'stage' && (
         <ArtistMusicTab
@@ -677,32 +647,12 @@ export function ArtistProfilePage({ username }: { username: string }) {
       )}
 
       {tab === 'design' && isOwner && (
-        <div className="flex flex-col gap-3">
-          {channel?.slug ? (
-            <p className="text-foreground-secondary text-sm">
-              {t('artistProfilePageBatch30.fullLayoutEditingLivesOn')}{' '}
-              <Link
-                to="/channel/$slug"
-                params={{ slug: channel.slug }}
-                search={{ edit: true }}
-                className="underline-offset-2 hover:underline"
-              >
-                {t('artistProfilePageBatch30.channelPage')}
-              </Link>
-              {t('artistProfilePageBatch30.fullLayoutEditingEnd')}
-            </p>
-          ) : null}
-          <ChannelDesigner
-            displayName={artist.displayName}
-            username={artist.username}
-            channelSlug={channel?.slug}
-            avatarUrl={artist.avatarUrl}
-            bio={artist.bio}
-            compact
-            onLookVisibilityChange={setLookVisibility}
-            onSaved={reloadLook}
-          />
-        </div>
+        <ArtistDesignTab
+          artist={artist}
+          channelSlug={channel?.slug}
+          onLookVisibilityChange={setLookVisibility}
+          onSaved={reloadLook}
+        />
       )}
 
       {artist.socialLinks?.showConnections !== 'false' &&

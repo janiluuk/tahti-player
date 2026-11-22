@@ -35,7 +35,7 @@ const EditButton: FC<IconButtonProps> = ({ label, onClick }) => (
     data-testid="edit-track-button"
     label={label}
     variant="text"
-    className="opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+    className="opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover/track-row:opacity-100"
     onClick={(e) => {
       e.stopPropagation();
       onClick();
@@ -53,7 +53,7 @@ const OpenDetailButton: FC<IconButtonProps & { className?: string }> = ({
       data-testid="open-track-detail-button"
       size="icon-sm"
       variant="text"
-      className="opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+      className="opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover/track-row:opacity-100"
       onClick={(e) => {
         e.stopPropagation();
         onClick();
@@ -101,7 +101,7 @@ const AddToQueueButton: FC<AddToQueueButtonProps> = ({
         variant="text"
         disabled={queued || flashing}
         className={cn(
-          'size-7 opacity-100 transition-colors [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100',
+          'size-7 opacity-100 transition-colors [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover/track-row:opacity-100',
           (queued || flashing) &&
             'bg-primary/20 text-primary-strong opacity-100! motion-safe:animate-pulse',
         )}
@@ -133,7 +133,7 @@ const ContextMenuButton = forwardRef<HTMLElement, ContextMenuButtonProps>(
           data-testid="track-context-menu-button"
           size="icon-sm"
           variant="text"
-          className="opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+          className="opacity-100 transition-none [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover/track-row:opacity-100"
           onClick={(e) => e.stopPropagation()}
           aria-label={label}
         >

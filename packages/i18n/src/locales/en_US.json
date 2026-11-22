@@ -1452,7 +1452,21 @@
       },
       "moreGenres": "+{{count}} more",
       "fewerGenres": "Fewer genres",
-      "groupsSearchPlaceholder": "Group name, genre…"
+      "groupsSearchPlaceholder": "Group name, genre…",
+      "widgetDescriptions": {
+        "thisWeekMostPlayed": "The week’s most played tracks",
+        "thisWeekLeastPlayed": "Overlooked tracks from this week",
+        "newToYou": "Tracks you have not played yet",
+        "latestTracks": "Fresh uploads",
+        "mostPlayed": "All-time favourites",
+        "loved": "What listeners love most",
+        "artistOfTheWeek": "One artist in the spotlight",
+        "randomArtist": "Meet someone new",
+        "publicPlaylists": "Playlists shared by listeners",
+        "tahtiSelects": "Hand-picked by Tahti",
+        "latestReleases": "New albums and EPs",
+        "randomTrack": "One track at random from the genres you pick"
+      }
     },
     "discoverParties": {
       "startParty": "Start a party",
@@ -4452,7 +4466,10 @@
       "grants": "Grants",
       "total": "Total",
       "count": "Count",
-      "disbursed": "Disbursed"
+      "disbursed": "Disbursed",
+      "methodologyLink": "How this data is recorded and published →",
+      "historyLink": "Closed governance decisions →",
+      "resolutionsLink": "Board resolutions →"
     },
     "radioPresetsAdmin": {
       "testAll": "Test all",
@@ -5325,7 +5342,8 @@
       "whatHappensToATypical": "What happens to a typical €5 monthly order.",
       "stripe": "Stripe",
       "payoutAccountAndExpressDashboard": "Payout account and Express dashboard — only listed in Studio when Stripe is enabled.",
-      "pastGrants": "Past grants"
+      "pastGrants": "Past grants",
+      "connectWarning": "Stripe is not connected yet — fan-sub payouts cannot reach you until Connect shows payments ready. Finish onboarding on the {{link}}."
     },
     "smartLinks": {
       "addTracksFromLibrary": "Add tracks from library",
@@ -5405,7 +5423,8 @@
       "venueImage": "Venue image",
       "jpegPngWebpOrGif": "JPEG, PNG, WebP, or GIF",
       "coverArt": "Cover art",
-      "venueWebsiteOptional": "Venue website (optional)"
+      "venueWebsiteOptional": "Venue website (optional)",
+      "logInLink": "Log in →"
     },
     "onboarding": {
       "optionalJpegPngOrWebp": "Optional — JPEG, PNG, or WebP.",
@@ -5975,7 +5994,10 @@
       "queue": "Queue",
       "play": "Play",
       "addToQueue": "Add to queue",
-      "addToThePreparePlaylist": "Add to the Prepare playlist"
+      "addToThePreparePlaylist": "Add to the Prepare playlist",
+      "hint": "Tracks in a neighbouring key on the Camelot wheel, within ±{{tolerance}}% of {{tempo}}. Change this under DJ settings above the track list.",
+      "hintHalfDouble": "Tracks in a neighbouring key on the Camelot wheel, within ±{{tolerance}}% of {{tempo}}, counting half and double tempo. Change this under DJ settings above the track list.",
+      "thisTempo": "this tempo"
     },
     "suggestStation": {
       "suggestAStation": "Suggest a station",
@@ -6863,7 +6885,8 @@
     "releaseCsvImportButton": {
       "importReleasesFromCsv": "Import releases from CSV",
       "importFromCsv": "Import from CSV",
-      "csvRows": "CSV rows"
+      "csvRows": "CSV rows",
+      "description": "One row per track. Rows with the same release title and date become one draft release. Columns: {{columns}}."
     },
     "waveformEditor": {
       "showingTheBasicWaveformThe": "Showing the basic waveform: the detailed editor couldn’t start in this browser. Editing, zoom and shortcuts still work.",
@@ -6983,7 +7006,8 @@
     "motionAgendaItemControl": {
       "saveAgendaItem": "Save agenda item",
       "cancel": "Cancel",
-      "agendaItem": "Agenda item"
+      "agendaItem": "Agenda item",
+      "noAgendaItems": "That meeting has no agenda items yet. Add them under Admin → Governance → AGM."
     },
     "genrePicker": {
       "genres": "Genres",
@@ -10281,7 +10305,8 @@
       "openChat": "Open chat"
     },
     "channelDesignerText": {
-      "channelAppearanceControls": "Channel appearance controls"
+      "channelAppearanceControls": "Channel appearance controls",
+      "openMyChannel": "Open my channel →"
     },
     "releaseTrackVersionsPanelFields": {
       "wavFlacMp3AacOr": "WAV, FLAC, MP3, AAC or AIFF"
@@ -10846,7 +10871,8 @@
       "play": "Play"
     },
     "timelineReactionBarText": {
-      "logInToReact": "Log in to react"
+      "logInToReact": "Log in to react",
+      "atClock": "At {{clock}}"
     },
     "containerLogsPanelText": {
       "couldNotReachTheLogging": "Could not reach the logging backend. It may be down, or this environment can&apos;t reach it on the LAN."
@@ -12270,7 +12296,8 @@
       "deselectAllRows": "Deselect all rows",
       "editTrack": "Edit track",
       "openTrack": "Open track",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "playOrShiftQueue": "{{play}} · Shift+click to queue"
     },
     "broadcastPanel": {
       "defaultsHint": "Defaults for radio, green room, and multistream live here. Run the live session from Studio › Broadcast.",
@@ -12604,7 +12631,8 @@
       "replacePathsWithFolder": "Replace the start of the paths in the export with where the files are now (the export's music folder is {{folder}})."
     },
     "trackAnalysisFields": {
-      "key": "Key"
+      "key": "Key",
+      "keyPlaceholder": "Am, F#m or 8A"
     },
     "localLibraryToolsText": {
       "findMissingArtwork": "Find missing artwork",
@@ -15482,6 +15510,30 @@
       "saving": "Setting…",
       "setToast": "Password set. You can now also sign in with your email.",
       "disconnectHint": "Set a password first to disconnect your only way to sign in."
+    },
+    "governanceMotionDetail": {
+      "membersOnly": "Motions are gated to active Tahti ry members. Signed in as @{{username}}."
+    },
+    "usernameAvailabilityHint": {
+      "invalid": "Your handle needs 2–32 letters, numbers, - or _.",
+      "yourHandle": "Your handle: {{username}}",
+      "free": "{{username}} is free.",
+      "taken": "{{username}} is taken.",
+      "try": "Try"
+    },
+    "transparencyMethodologyText": {
+      "surplus": "Surplus = total revenue − total costs (including salaries and professional services). Disbursements and reserve transfers are not costs — they are allocations of the surplus. The running surplus shown on the dashboard is revenue minus costs only; it does not yet subtract planned grant disbursements.",
+      "engagementIntro": "Grants are allocated proportionally by {{units}}, not passive listener-hours. An engagement unit is a weighted measure that rewards listener commitment:",
+      "engagementUnits": "engagement units",
+      "downloadUnit": "of a free track = 1 unit (listener committed enough to download)",
+      "fanSubscriptionUnit": "= engagement_euros × multiplier (fan paid real money)",
+      "pipelineStripe": "Stripe webhooks automatically create `REVENUE_SUBSCRIPTION` entries.",
+      "pipelineRollup": "On the first of each month a background job aggregates the prior month into a finalized `MonthlyRollup` row. The treasurer marks it finalized after board review.",
+      "pipelineApi": "All data is immediately available via the public read-only API at `/api/v1/transparency/`.",
+      "apiMonthly": "— all finalized month rollups for a given year",
+      "apiYtd": "— current year running totals",
+      "apiCategories": "— category descriptions",
+      "footer": "Tahti ry — Y-tunnus 3368171-8 — Helsinki, Finland."
     }
   },
   "studioEditor": {

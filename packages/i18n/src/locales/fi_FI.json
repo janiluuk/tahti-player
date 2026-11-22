@@ -1452,7 +1452,21 @@
       },
       "moreGenres": "+{{count}} lisää",
       "fewerGenres": "Vähemmän tyylilajeja",
-      "groupsSearchPlaceholder": "Ryhmän nimi, tyylilaji…"
+      "groupsSearchPlaceholder": "Ryhmän nimi, tyylilaji…",
+      "widgetDescriptions": {
+        "thisWeekMostPlayed": "Viikon soitetuimmat kappaleet",
+        "thisWeekLeastPlayed": "Tämän viikon huomiotta jääneet kappaleet",
+        "newToYou": "Kappaleet, joita et ole vielä soittanut",
+        "latestTracks": "Tuoreet lataukset",
+        "mostPlayed": "Kaikkien aikojen suosikit",
+        "loved": "Mistä kuuntelijat pitävät eniten",
+        "artistOfTheWeek": "Yksi artisti valokeilassa",
+        "randomArtist": "Tutustu johonkuhun uuteen",
+        "publicPlaylists": "Kuuntelijoiden jakamat soittolistat",
+        "tahtiSelects": "Tahtin valitsemat",
+        "latestReleases": "Uudet albumit ja EP:t",
+        "randomTrack": "Yksi satunnainen kappale valitsemistasi genreistä"
+      }
     },
     "discoverParties": {
       "startParty": "Järjestä bileet",
@@ -4452,7 +4466,10 @@
       "grants": "Apurahat",
       "total": "Yhteensä",
       "count": "Määrä",
-      "disbursed": "Maksettu"
+      "disbursed": "Maksettu",
+      "methodologyLink": "Miten nämä tiedot kirjataan ja julkaistaan →",
+      "historyLink": "Tehdyt hallintopäätökset →",
+      "resolutionsLink": "Hallituksen päätökset →"
     },
     "radioPresetsAdmin": {
       "testAll": "Testaa kaikki",
@@ -5325,7 +5342,8 @@
       "whatHappensToATypical": "Mitä tyypilliselle 5 €:n kuukausitilaukselle tapahtuu.",
       "stripe": "Stripe",
       "payoutAccountAndExpressDashboard": "Tilitystili ja Express-hallintapaneeli — näkyy Studiossa vain, kun Stripe on käytössä.",
-      "pastGrants": "Aiemmat apurahat"
+      "pastGrants": "Aiemmat apurahat",
+      "connectWarning": "Stripeä ei ole vielä yhdistetty, joten fanitilausten tilitykset eivät tavoita sinua ennen kuin Connect näyttää maksut valmiiksi. Viimeistele käyttöönotto: {{link}}."
     },
     "smartLinks": {
       "addTracksFromLibrary": "Lisää kappaleita kirjastosta",
@@ -5405,7 +5423,8 @@
       "venueImage": "Tapahtumapaikan kuva",
       "jpegPngWebpOrGif": "JPEG, PNG, WebP tai GIF",
       "coverArt": "Kansikuva",
-      "venueWebsiteOptional": "Tapahtumapaikan verkkosivu (valinnainen)"
+      "venueWebsiteOptional": "Tapahtumapaikan verkkosivu (valinnainen)",
+      "logInLink": "Kirjaudu sisään →"
     },
     "onboarding": {
       "optionalJpegPngOrWebp": "Valinnainen — JPEG, PNG tai WebP.",
@@ -5975,7 +5994,10 @@
       "queue": "Jonoon",
       "play": "Soita",
       "addToQueue": "Lisää jonoon",
-      "addToThePreparePlaylist": "Lisää Valmistele-soittolistaan"
+      "addToThePreparePlaylist": "Lisää Valmistele-soittolistaan",
+      "hint": "Kappaleet Camelot-kehän viereisissä sävellajeissa, tempo enintään ±{{tolerance}} % ({{tempo}}). Muuta tätä kappalelistan yläpuolella olevista DJ-asetuksista.",
+      "hintHalfDouble": "Kappaleet Camelot-kehän viereisissä sävellajeissa, tempo enintään ±{{tolerance}} % ({{tempo}}), puolikas ja kaksinkertainen tempo mukaan lukien. Muuta tätä kappalelistan yläpuolella olevista DJ-asetuksista.",
+      "thisTempo": "tämä tempo"
     },
     "suggestStation": {
       "suggestAStation": "Ehdota asemaa",
@@ -6863,7 +6885,8 @@
     "releaseCsvImportButton": {
       "importReleasesFromCsv": "Tuo julkaisut CSV-tiedostosta",
       "importFromCsv": "Tuo CSV:stä",
-      "csvRows": "CSV-rivit"
+      "csvRows": "CSV-rivit",
+      "description": "Yksi rivi per kappale. Rivit, joilla on sama julkaisun nimi ja päivä, muodostavat yhden julkaisuluonnoksen. Sarakkeet: {{columns}}."
     },
     "waveformEditor": {
       "showingTheBasicWaveformThe": "Näytetään perusaaltomuoto: tarkempi editori ei käynnistynyt tässä selaimessa. Muokkaus, zoomaus ja pikanäppäimet toimivat silti.",
@@ -6983,7 +7006,8 @@
     "motionAgendaItemControl": {
       "saveAgendaItem": "Tallenna asiakohta",
       "cancel": "Peruuta",
-      "agendaItem": "Asiakohta"
+      "agendaItem": "Asiakohta",
+      "noAgendaItems": "Kokouksella ei ole vielä esityslistan kohtia. Lisää ne kohdassa Hallinta → Hallinto → Vuosikokous."
     },
     "genrePicker": {
       "genres": "Tyylilajit",
@@ -10281,7 +10305,8 @@
       "openChat": "Avaa chat"
     },
     "channelDesignerText": {
-      "channelAppearanceControls": "Kanavan ulkoasun säätimet"
+      "channelAppearanceControls": "Kanavan ulkoasun säätimet",
+      "openMyChannel": "Avaa kanavani →"
     },
     "releaseTrackVersionsPanelFields": {
       "wavFlacMp3AacOr": "WAV, FLAC, MP3, AAC tai AIFF"
@@ -10846,7 +10871,8 @@
       "play": "Toista"
     },
     "timelineReactionBarText": {
-      "logInToReact": "Kirjaudu sisään reagoidaksesi"
+      "logInToReact": "Kirjaudu sisään reagoidaksesi",
+      "atClock": "Kohdassa {{clock}}"
     },
     "containerLogsPanelText": {
       "couldNotReachTheLogging": "Lokipalvelimeen ei saatu yhteyttä. Se voi olla alhaalla, tai tämä ympäristö ei tavoita sitä lähiverkossa."
@@ -12270,7 +12296,8 @@
       "deselectAllRows": "Poista kaikkien rivien valinta",
       "editTrack": "Muokkaa kappaletta",
       "openTrack": "Avaa kappale",
-      "notifications": "Ilmoitukset"
+      "notifications": "Ilmoitukset",
+      "playOrShiftQueue": "{{play}} · Vaihto+napsautus lisää jonoon"
     },
     "broadcastPanel": {
       "defaultsHint": "Radion, vihreän huoneen ja monilähetyksen oletukset ovat täällä. Livelähetys hoidetaan kohdassa Studio › Lähetys.",
@@ -12604,7 +12631,8 @@
       "replacePathsWithFolder": "Korvaa viennin polkujen alku tiedostojen nykyisellä sijainnilla (viennin musiikkikansio on {{folder}})."
     },
     "trackAnalysisFields": {
-      "key": "Sävellaji"
+      "key": "Sävellaji",
+      "keyPlaceholder": "Am, F#m tai 8A"
     },
     "localLibraryToolsText": {
       "findMissingArtwork": "Etsi puuttuvat kansikuvat",
@@ -15482,6 +15510,30 @@
       "saving": "Asetetaan…",
       "setToast": "Salasana asetettu. Voit nyt kirjautua myös sähköpostiosoitteellasi.",
       "disconnectHint": "Aseta ensin salasana, jotta voit irrottaa ainoan kirjautumistapasi."
+    },
+    "governanceMotionDetail": {
+      "membersOnly": "Aloitteet ovat vain Tahti ry:n aktiivijäsenille. Kirjautuneena: @{{username}}."
+    },
+    "usernameAvailabilityHint": {
+      "invalid": "Käyttäjänimessä on oltava 2–32 kirjainta, numeroa, - tai _.",
+      "yourHandle": "Käyttäjänimesi: {{username}}",
+      "free": "{{username}} on vapaana.",
+      "taken": "{{username}} on varattu.",
+      "try": "Kokeile"
+    },
+    "transparencyMethodologyText": {
+      "surplus": "Ylijäämä = kokonaistulot − kokonaiskulut (palkat ja asiantuntijapalvelut mukaan lukien). Avustusten maksut ja rahastosiirrot eivät ole kuluja, vaan ylijäämän kohdentamista. Kojelaudan juokseva ylijäämä on vain tulot miinus kulut; siitä ei vielä vähennetä suunniteltuja avustusmaksuja.",
+      "engagementIntro": "Avustukset jaetaan suhteessa {{units}}, ei passiivisiin kuuntelutunteihin. Sitoutumisyksikkö on painotettu mittari, joka palkitsee kuuntelijan sitoutumisen:",
+      "engagementUnits": "sitoutumisyksiköihin",
+      "downloadUnit": "ilmaisesta kappaleesta = 1 yksikkö (kuuntelija sitoutui tarpeeksi ladatakseen)",
+      "fanSubscriptionUnit": "= engagement_euros × kerroin (fani maksoi oikeaa rahaa)",
+      "pipelineStripe": "Stripen webhookit luovat automaattisesti `REVENUE_SUBSCRIPTION`-merkinnät.",
+      "pipelineRollup": "Kunkin kuun ensimmäisenä päivänä taustatyö koostaa edellisen kuukauden valmiiksi `MonthlyRollup`-riviksi. Rahastonhoitaja merkitsee sen lopulliseksi hallituksen tarkastuksen jälkeen.",
+      "pipelineApi": "Kaikki tiedot ovat heti saatavilla julkisen, vain luku -rajapinnan kautta osoitteessa `/api/v1/transparency/`.",
+      "apiMonthly": "— kaikki valmiit kuukausikoosteet annetulta vuodelta",
+      "apiYtd": "— kuluvan vuoden juoksevat summat",
+      "apiCategories": "— luokkien kuvaukset",
+      "footer": "Tahti ry — Y-tunnus 3368171-8 — Helsinki, Suomi."
     }
   },
   "studioEditor": {

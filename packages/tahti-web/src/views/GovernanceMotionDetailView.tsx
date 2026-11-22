@@ -95,8 +95,9 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
       {user && !loading && forbidden && (
         <Box variant="secondary" className="flex flex-col gap-3">
           <p className="text-sm">
-            Motions are gated to active Tahti ry members. Signed in as @
-            {user.username}.
+            {t('governanceMotionDetail.membersOnly', {
+              username: user.username,
+            })}
           </p>
           <Button
             size="sm"

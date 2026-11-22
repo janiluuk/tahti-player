@@ -9,7 +9,7 @@ import {
   within,
 } from 'storybook/test';
 
-import { MediaArtwork } from '@tahti-player/ui';
+import { Button, MEDIA_ROW_GROUP, MediaArtwork } from '@tahti-player/ui';
 
 import { withMotionAllowed } from './_lib/motion';
 
@@ -28,7 +28,7 @@ const meta: Meta<typeof MediaArtwork> = {
     docs: {
       description: {
         component:
-          'Cover art with optional play / queue / favorite overlays. Size `thumb` is the standard track-row thumbnail. Queue, favorite, and extra `actions` only appear as corner overlays on `lg` and `fill` — smaller sizes show play only so overlays stay readable. When `onQueue` is set, the play control’s label notes “Shift+click to queue”; holding Shift swaps the play icon for a queue icon and Shift+click runs `onQueue` instead of `onPlay`. Hover (fine pointer) reveals the play control; on touch only the current (playing or paused) item shows it, and a tap on idle artwork still plays.',
+          'Cover art with optional play / queue / favorite overlays. Size `thumb` is the standard track-row thumbnail. Queue, favorite, and extra `actions` only appear as corner overlays on `lg` and `fill` — smaller sizes show play only so overlays stay readable. When `onQueue` is set, the play control’s label notes “Shift+click to queue”; holding Shift swaps the play icon for a queue icon and Shift+click runs `onQueue` instead of `onPlay`. Hover (fine pointer) reveals the play control; on touch only the current (playing or paused) item shows it, and a tap on idle artwork still plays. A row or card that should reveal its artwork controls from anywhere on it adds `MEDIA_ROW_GROUP` (`group/media-row`); an unnamed `group` on an outer wrapper never reveals them.',
       },
     },
   },
@@ -144,6 +144,100 @@ export const TouchCurrentOnly: Story = {
     await expect(
       canvas.getByRole('button', { name: 'Play Aurora Drift' }),
     ).not.toHaveAttribute('data-current');
+  },
+};
+
+const ROW_TITLES = ['Kaamos Bloom', 'Aurora Drift', 'Polar Static'];
+
+function TrackRows() {
+  const [playing, setPlaying] = useState('Polar Static');
+  const [queued, setQueued] = useState<string[]>([]);
+  return (
+    // The unnamed `group` stands in for a page wrapper such as a channel
+    // block frame: hovering anywhere in it must not reveal every row.
+    <section className="group flex w-80 flex-col gap-1">
+      {ROW_TITLES.map((title) => (
+        <div
+          key={title}
+          data-testid={`row-${title}`}
+          className={`${MEDIA_ROW_GROUP} hover:bg-background-secondary flex items-center gap-3 rounded-md p-2`}
+        >
+          <MediaArtwork
+            src={SAMPLE_IMAGE}
+            alt=""
+            size="thumb"
+            className="rounded"
+            imageReveal={false}
+            isPlaying={title === playing}
+            playLabel={`Play ${title}`}
+            pauseLabel={`Pause ${title}`}
+            queueLabel={`Queue ${title}`}
+            onPlay={() => setPlaying(title)}
+            onQueue={() => setQueued((list) => [...list, title])}
+          />
+          <span className="flex-1 text-sm">{title}</span>
+          <Button size="sm" variant="text" aria-label={`More ${title}`}>
+            …
+          </Button>
+        </div>
+      ))}
+      <p data-testid="queued" className="text-foreground-secondary m-0 text-xs">
+        Queued: {queued.join(', ') || 'none'}
+      </p>
+    </section>
+  );
+}
+
+/** Track rows inside an outer `group`: idle rows hide their play control,
+ * the playing row keeps its pause control, and only the row under the
+ * pointer (or holding focus) reveals play. Holding Shift turns that control
+ * into queue; Shift+click queues without changing what plays. */
+export const RowReveal: Story = {
+  render: () => <TrackRows />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const control = (title: string) =>
+      within(canvas.getByTestId(`row-${title}`)).getByTestId(
+        'media-artwork-play',
+      );
+    const opacity = (title: string) => getComputedStyle(control(title)).opacity;
+
+    await expect(opacity('Kaamos Bloom')).toBe('0');
+    await expect(opacity('Aurora Drift')).toBe('0');
+    await expect(control('Polar Static')).toHaveAttribute(
+      'aria-label',
+      'Pause Polar Static',
+    );
+    await expect(opacity('Polar Static')).toBe('1');
+
+    // Focus inside one row also puts the outer wrapper in :focus-within,
+    // the same leak an outer :hover used to cause.
+    canvas.getByRole('button', { name: 'More Aurora Drift' }).focus();
+    await waitFor(() => expect(opacity('Aurora Drift')).toBe('1'));
+    await expect(opacity('Kaamos Bloom')).toBe('0');
+
+    fireEvent.keyDown(window, { key: 'Shift', shiftKey: true });
+    await waitFor(() =>
+      expect(control('Aurora Drift')).toHaveAttribute(
+        'aria-label',
+        'Queue Aurora Drift',
+      ),
+    );
+    fireEvent.click(control('Aurora Drift'), { shiftKey: true });
+    await expect(canvas.getByTestId('queued')).toHaveTextContent(
+      'Queued: Aurora Drift',
+    );
+    await expect(control('Polar Static')).toHaveAttribute(
+      'aria-label',
+      'Pause Polar Static',
+    );
+    fireEvent.keyUp(window, { key: 'Shift', shiftKey: false });
+
+    await userEvent.click(control('Kaamos Bloom'));
+    await expect(control('Kaamos Bloom')).toHaveAttribute(
+      'aria-label',
+      'Pause Kaamos Bloom',
+    );
   },
 };
 

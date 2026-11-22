@@ -17,4 +17,4 @@ Requests from the 2026-11-03 session not shipped yet. Shipped items moved to HIS
 ## Track page
 - [ ] Like button placement and icon actions: done in #1800; verify.
 
-Finnish locale and the Settings language menu shipped; the rest is in `finnish-localization.md`.
+Finnish locale and the Settings language menu shipped; the rest shipped (HISTORY 2026-11-22, `docs/agent/CODE-STYLE.md` → Internationalization).
