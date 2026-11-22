@@ -55,6 +55,13 @@ export function studioProfileArtistItems(t: TFunction<'web'>): HubCardItem[] {
       description: t('studioProfileView.yourWebsiteSocialsAndStreaming'),
     },
     {
+      id: 'link-page',
+      href: '/studio/profile/link-page',
+      icon: LinkIcon,
+      title: t('linkPage.tab'),
+      description: t('linkPage.yourLinkPage'),
+    },
+    {
       id: 'branding',
       href: '/studio/profile/branding',
       icon: PaletteIcon,

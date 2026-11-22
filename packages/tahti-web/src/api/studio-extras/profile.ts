@@ -44,6 +44,8 @@ export type ProfileFields = {
   showDownloads?: boolean;
   /** Handles for cross-posting/import sources — e.g. { hearthisAt: 'myhandle' }. */
   socialLinks?: Record<string, string> | null;
+  /** Short Link page config (own links, curated sounds/sets, playMode). */
+  linkPage?: import('../link-page').LinkPageConfig;
   /** Wide banner behind the artist page header. */
   backdropUrl?: string | null;
   logoUrl?: string | null;
@@ -163,6 +165,7 @@ export type ProfilePatch = Partial<
     | 'showPlaysYesterday'
     | 'showDownloads'
     | 'socialLinks'
+    | 'linkPage'
     | 'nameplateText'
     | 'nameplateColor'
     | 'showPageHero'

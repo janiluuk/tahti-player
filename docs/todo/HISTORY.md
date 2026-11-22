@@ -1,3 +1,10 @@
+## 2026-11-22 — Artist Link page + subdomain full site
+
+Apex `/u/:username` is the short Link page; `username.tahti.live/` opens the
+full artist profile. Studio → Profile → Link page editor (own links, sounds,
+sets, playMode, live preview). Nginx OG for bare subdomain. tahti-web 0.0.433.
+Folded `artist-link-page.md` (API counterpart in tahti-org).
+
 ## 2026-11-21 — Next 50 slices (Finnish batch 35, label constants, tests-only code)
 
 Finnish batch 35: ~180 keys in 30 component files, the Jam phone remote,

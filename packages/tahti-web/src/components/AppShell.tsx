@@ -26,6 +26,7 @@ import {
 } from '../layout/contentPadding';
 import { hasStudioAccess } from '../lib/accountRoles';
 import { isAudioEditorPath } from '../lib/audioEditorPath';
+import { artistSubdomainLabel } from '../lib/channelSubdomain';
 import { cn } from '../lib/cn';
 import { isGoLiveTakeoverPath } from '../lib/goLivePath';
 import {
@@ -197,6 +198,19 @@ export function AppShell() {
   const openAuth = useAuthModalStore((s) => s.open);
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  useEffect(() => {
+    const label = artistSubdomainLabel(window.location.hostname);
+    if (!label) {
+      return;
+    }
+    if (pathname === '/' || pathname === '') {
+      void navigate({
+        to: '/u/$username',
+        params: { username: label },
+        replace: true,
+      });
+    }
+  }, [navigate, pathname]);
   const {
     artistSite,
     channel: artistChannel,

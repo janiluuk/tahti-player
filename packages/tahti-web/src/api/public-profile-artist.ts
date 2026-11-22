@@ -16,6 +16,8 @@ export type PublicProfileArtist = ArtistLogoFields & {
   tipJarUrl?: string | null;
   tier?: string;
   pronouns?: string | null;
+  /** Freeform city/country for the short Link page. */
+  defaultLocation?: string | null;
   /** ISO 3166-1 alpha-2; GET /api/v1/u/:username/profile */
   countryCode?: string | null;
   /** ISO datetime of account creation; null when the artist hides it. */

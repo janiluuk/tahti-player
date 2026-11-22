@@ -53,11 +53,28 @@ const NOT_CHANNELS = new Set([
 export type SubdomainEntry =
   { kind: 'path'; path: string } | { kind: 'url'; url: string };
 
-/** Where `<label>.tahti.live` lands, as the old app did: the bare root of a
- * channel subdomain opens that channel, `radio.` opens the station and the
- * legacy `tahti-radio.` moves to `radio.`. Only the entry URL: once the app is
- * running, "/" on the subdomain is Listen like everywhere else. `?home=1` is
- * the old app's explicit "take me home" marker and is honoured. */
+/** Artist slug from `slug.tahti.live`, or null for apex / reserved hosts. */
+export function artistSubdomainLabel(hostname: string): string | null {
+  const host = hostname.toLowerCase();
+  if (!host.endsWith(`.${ROOT_DOMAIN}`)) {
+    return null;
+  }
+  const label = host.slice(0, -(ROOT_DOMAIN.length + 1));
+  if (
+    !/^[a-z0-9-]+$/.test(label) ||
+    NOT_CHANNELS.has(label) ||
+    label === 'radio' ||
+    label === 'tahti-radio'
+  ) {
+    return null;
+  }
+  return label;
+}
+
+/** Where `<label>.tahti.live` lands: bare root opens the full artist page
+ * (`/u/<label>`). Channel stream stays at `/channel/<label>`. `radio.` opens
+ * the station; legacy `tahti-radio.` moves to `radio.`. `?home=1` skips the
+ * rewrite (Listen). */
 export function subdomainEntry(location: {
   hostname: string;
   pathname: string;
@@ -82,7 +99,7 @@ export function subdomainEntry(location: {
   if (location.pathname !== '/' || params.get('home') === '1') {
     return null;
   }
-  const path = label === 'radio' ? '/radio' : `/channel/${label}`;
+  const path = label === 'radio' ? '/radio' : `/u/${label}`;
   return { kind: 'path', path: `${path}${location.search}${location.hash}` };
 }
 
@@ -96,21 +113,33 @@ export function applySubdomainEntry(win: Window) {
   }
 }
 
+/** True on the artist's own subdomain for their full site home or channel. */
 export function isArtistSubdomainPage(
   hostname: string,
   pathname: string,
 ): boolean {
-  const host = hostname.toLowerCase();
-  const suffix = `.${ROOT_DOMAIN}`;
-  if (!host.endsWith(suffix)) {
+  const slug = artistSubdomainLabel(hostname);
+  if (!slug) {
     return false;
   }
-  const slug = host.slice(0, -suffix.length);
-  return (
-    /^[a-z0-9-]+$/.test(slug) &&
-    !NOT_CHANNELS.has(slug) &&
-    slug !== 'radio' &&
-    slug !== 'tahti-radio' &&
-    pathname.replace(/\/$/, '') === `/channel/${slug}`
-  );
+  const path = pathname.replace(/\/$/, '') || '/';
+  return path === `/u/${slug}` || path === `/channel/${slug}`;
+}
+
+/** Apex / shared hosts show the short Link page at `/u/:username`. */
+export function isApexHost(hostname: string): boolean {
+  const host = hostname.toLowerCase();
+  if (host === ROOT_DOMAIN || host === `www.${ROOT_DOMAIN}`) {
+    return true;
+  }
+  if (host === `app.${ROOT_DOMAIN}` || host === `beta.${ROOT_DOMAIN}`) {
+    return true;
+  }
+  if (host === 'localhost' || host.startsWith('localhost:')) {
+    return true;
+  }
+  if (/^\d+\.\d+\.\d+\.\d+/.test(host)) {
+    return true;
+  }
+  return false;
 }

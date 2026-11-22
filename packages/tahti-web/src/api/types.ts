@@ -283,6 +283,8 @@ export type PublicProfile = import('./purchase-tiers').ProfileStore & {
     downloads?: number;
   };
   metrics?: PublicChannelMetrics;
+  /** Resolved short Link page (apex `/u/:username`). */
+  linkPage?: import('./link-page').PublicLinkPage;
 };
 
 export type CollectionSound = {
