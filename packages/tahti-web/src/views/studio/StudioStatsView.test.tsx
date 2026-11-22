@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { renderWithRouter } from '../../test/renderWithRouter';
 import { StudioStatsView } from './StudioStatsView';
@@ -14,47 +14,62 @@ vi.mock('./stats/useStatsData', () => ({
 }));
 vi.mock('./stats/RangeControls', () => ({ RangeControls: () => null }));
 vi.mock('./stats/OverviewTab', () => ({
-  KeyMetrics: () => null,
-  EngagementSection: () => null,
+  OverviewTab: () => <div>Overview panel</div>,
 }));
-vi.mock('./stats/ReferrerSources', () => ({ ReferrerSources: () => null }));
-vi.mock('./stats/DownloadGatesPanel', () => ({
-  DownloadGatesPanel: () => null,
+vi.mock('./stats/AudienceTab', () => ({
+  AudienceTab: () => <div>Audience panel</div>,
 }));
-vi.mock('./stats/PlaysTab', () => ({ PlaysTab: () => null }));
-vi.mock('./stats/TopListsTab', () => ({ TopListsTab: () => null }));
+vi.mock('./stats/PlaysTab', () => ({
+  PlaysTab: () => <div>Plays panel</div>,
+}));
+vi.mock('./stats/TopListsTab', () => ({
+  TopListsTab: () => <div>Top lists panel</div>,
+}));
 vi.mock('./stats/HourlyDialog', () => ({ HourlyDialog: () => null }));
 
-describe('StudioStatsView scrolling', () => {
-  const scrolled: string[] = [];
-
-  beforeEach(() => {
-    scrolled.length = 0;
-    Element.prototype.scrollIntoView = function scrollIntoView(this: Element) {
-      scrolled.push(this.id);
-    };
-  });
-
+describe('StudioStatsView tabs', () => {
   afterEach(cleanup);
 
-  it('keeps the title and tabs in view when opened on Overview', async () => {
+  it('shows the Overview panel by default', async () => {
     await renderWithRouter(<StudioStatsView />, { paths: ['/studio/stats'] });
-    expect(screen.getByRole('radio', { name: 'Overview' })).toBeTruthy();
-    expect(scrolled).toEqual([]);
+    expect(screen.getByRole('tab', { name: 'Overview' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    expect(screen.getByText('Overview panel')).toBeTruthy();
+    expect(screen.queryByText('Plays panel')).toBeNull();
   });
 
-  it('scrolls to a deep-linked section', async () => {
+  it('opens the deep-linked Plays panel', async () => {
     await renderWithRouter(<StudioStatsView tab="plays" />, {
       paths: ['/studio/stats'],
     });
-    expect(scrolled).toEqual(['stats-plays']);
+    expect(screen.getByRole('tab', { name: 'Plays' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    expect(screen.getByText('Plays panel')).toBeTruthy();
+    expect(screen.queryByText('Overview panel')).toBeNull();
   });
 
-  it('scrolls to the section the user picks', async () => {
-    await renderWithRouter(<StudioStatsView />, { paths: ['/studio/stats'] });
-    await act(async () => {
-      fireEvent.click(screen.getByRole('radio', { name: 'Top lists' }));
+  it('navigates when the user picks a tab', async () => {
+    const { router } = await renderWithRouter(<StudioStatsView />, {
+      paths: ['/studio/stats'],
     });
-    expect(scrolled).toEqual(['stats-top-lists']);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: 'Top lists' }));
+    });
+    expect(router.state.location.pathname).toBe('/studio/stats');
+    expect(router.state.location.search).toEqual({ tab: 'top-lists' });
+  });
+
+  it('links Insights to the insights page', async () => {
+    await renderWithRouter(<StudioStatsView />, {
+      paths: ['/studio/stats', '/studio/insights'],
+    });
+    expect(screen.getByRole('link', { name: 'Insights' })).toHaveAttribute(
+      'href',
+      '/studio/insights',
+    );
   });
 });

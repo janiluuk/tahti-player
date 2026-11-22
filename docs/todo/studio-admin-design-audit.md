@@ -25,7 +25,7 @@ Do a design audit of the Studio and Admin parts. Find crowded views and views wi
 
 ## Findings (2026-11-22)
 
-The walk is done from code; the per-view table, the chat inventory and the proposed slices follow. Next: confirm the proposals (Stats as tabs reverses an earlier "one page" decision and needs the user's OK), then build them as slices.
+The walk is done from code; the per-view table, the chat inventory and the proposed slices follow. Stats tabs (slice 7) are in progress under [studio-stats-tabs.md](studio-stats-tabs.md) after user OK. Confirm the remaining proposals, then build them as slices.
 
 Read from code on branch `feat/next-50-slices-3` (no app walk-through). Builds on
 [`navigation-simplification.md`](navigation-simplification.md),
@@ -141,7 +141,7 @@ shows at once. Components imported from `src/components/` are not counted.
 | 4 | Schedule tabs `?tab=slots|programme` | `StudioScheduleView.tsx`, `schedule/`, route search, story | S |
 | 5 | Earnings trimmed to payouts, sales ledger (with grant disbursements), Stripe; links to Memberships and Store | `StudioRevenueView.tsx` + test, story | S |
 | 6 | Studio Home: no Governance panel; one tile per Studio tab | `home/`, `StudioHomeView` story | S |
-| 7 | Stats tabs `Overview · Plays · Audience · Top lists` (needs the user's OK: reverses slice 4's one-page decision) | `StudioStatsView.tsx`, `stats/`, story, `routes-studio-stats.spec.ts` | M |
+| 7 | Stats tabs `Overview · Plays · Audience · Top lists` | Shipped in `studio-stats-tabs.md` → HISTORY (0.0.438) | done |
 | 8 | Admin Overview tabs `health / activity`; Finance YTD to Financial; Chat and mail to a People → Community card | `AdminDashboardView.tsx`, `dashboard/`, `AdminFinancialView.tsx`, stories | M |
 | 9 | Delete orphan `AdminStatusView` and `AdminMonitoringView` (keep their panels), lazy exports, mapScreens rows, stories | `views/admin/AdminStatusView.tsx`, `AdminMonitoringView.tsx`, `router-lazy-views.ts`, `content/mapScreens.ts`, stories | S |
 | 10 | Admin Streams tabs `Live now · Ingest settings`; Add-ons tabs `Review · Catalogue`; Storage one `FilterBar` per tab | `AdminStreamsView.tsx`, `AdminAddonsView.tsx`, `AdminStorageView.tsx` + folders | M |

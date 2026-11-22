@@ -11,7 +11,8 @@ const STUDIO_NAV = '[data-studio-navigation]';
 
 const statsRoutes: RouteVisit[] = [
   { path: '/studio/stats', heading: /^Stats$/ },
-  { path: '/studio/stats?tab=plays', heading: 'Listener loyalty' },
+  { path: '/studio/stats?tab=plays', heading: 'Plays over time' },
+  { path: '/studio/stats?tab=audience', heading: 'Listener map' },
   { path: '/studio/stats?tab=top-lists', heading: 'Content rankings' },
   { path: '/studio/insights', heading: /^Insights$/ },
   {
@@ -58,18 +59,23 @@ test('Studio stats, updates and audience pages render with Studio chrome', async
   }
 });
 
-test('Stats section chips switch sections and the Fans hub opens its pages', async ({
+test('Stats tabs switch panels and the Fans hub opens its pages', async ({
   page,
 }) => {
   const errors = collectPageErrors(page);
   await expectRouteHealthy(page, errors, statsRoutes[0]!);
-  const chips = page.getByRole('radiogroup', { name: 'Stats sections' });
-  await expect(chips.getByRole('radio', { name: 'Overview' })).toBeChecked();
-  await chips.getByRole('radio', { name: 'Plays and listeners' }).click();
+  const tabs = page.getByRole('tablist');
+  await expect(tabs.getByRole('tab', { name: 'Overview' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await tabs.getByRole('tab', { name: 'Plays' }).click();
   await expect(page).toHaveURL(/\/studio\/stats\?tab=plays$/);
-  await chips.getByRole('radio', { name: 'Top lists' }).click();
+  await tabs.getByRole('tab', { name: 'Audience' }).click();
+  await expect(page).toHaveURL(/\/studio\/stats\?tab=audience$/);
+  await tabs.getByRole('tab', { name: 'Top lists' }).click();
   await expect(page).toHaveURL(/\/studio\/stats\?tab=top-lists$/);
-  await chips.getByRole('radio', { name: 'Insights' }).click();
+  await page.getByRole('link', { name: 'Insights' }).click();
   await expect(page).toHaveURL(/\/studio\/insights$/);
 
   await expectRouteHealthy(page, errors, {

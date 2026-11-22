@@ -18,13 +18,7 @@ import {
 } from '../../../lib/topListEntries';
 import type { StatsData } from './useStatsData';
 
-export function TopListsTab({
-  state,
-  active,
-}: {
-  state: StatsData;
-  active: boolean;
-}) {
+export function TopListsTab({ state }: { state: StatsData }) {
   const { t } = useTranslation('web');
   const navigate = useNavigate();
   const {
@@ -39,7 +33,7 @@ export function TopListsTab({
   } = state;
 
   return (
-    <div className={`${active ? '' : 'hidden'} grid gap-6 lg:grid-cols-2`}>
+    <div className="grid gap-6 lg:grid-cols-2">
       <StudioPanel
         title={t('topListsTab.contentRankings')}
         className="lg:col-span-2"

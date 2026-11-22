@@ -38,7 +38,7 @@ describe('Stats overview, engagement units', () => {
   afterEach(cleanup);
 
   it('names each source in full with its sum and units', () => {
-    render(<EngagementSection state={state} active />);
+    render(<EngagementSection state={state} />);
     const rows = within(screen.getByTestId('engagement-units')).getAllByRole(
       'listitem',
     );
@@ -58,7 +58,7 @@ describe('Stats overview, engagement units', () => {
         value: 0,
       })),
     } as StatsData;
-    const { container } = render(<EngagementSection state={empty} active />);
+    const { container } = render(<EngagementSection state={empty} />);
     const bars = [...container.querySelectorAll('[aria-hidden] > div')].map(
       (bar) => (bar as HTMLElement).style.width,
     );
@@ -91,17 +91,17 @@ describe('Stats overview, metric colours', () => {
   } as unknown as StatsData;
 
   it('gives each key metric its own tone instead of one colour', () => {
-    render(<KeyMetrics state={metricsState} active />);
+    render(<KeyMetrics state={metricsState} />);
     const tones = screen
       .getAllByTestId('key-metric')
       .map((metric) => metric.dataset.tone);
     expect(tones).toEqual(['blue', 'primary', 'purple']);
-    expect(screen.getByText('10')).toHaveClass('text-foreground');
+    expect(screen.getByText('10')).toHaveClass('text-primary-strong');
     expect(screen.getByText('2')).toHaveClass('text-foreground');
   });
 
   it('colours each engagement bar by its source', () => {
-    render(<EngagementSection state={state} active />);
+    render(<EngagementSection state={state} />);
     const meters = screen.getAllByRole('meter', { hidden: true });
     expect(meters.map((meter) => meter.dataset.tone)).toEqual([
       'primary',

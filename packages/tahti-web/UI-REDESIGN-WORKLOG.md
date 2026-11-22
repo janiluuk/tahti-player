@@ -1,3 +1,8 @@
+## 2026-11-23 - Studio Stats real tabs + Overview hero (0.0.438)
+
+Stats uses underline tabs Overview · Plays · Audience · Top lists (`?tab=`).
+Insights is a header link. Overview leads with a plays hero metric strip.
+
 ## 2026-11-22 - Artist Link page + subdomain full site (0.0.433)
 
 Apex `/u/:username` is the short Link page; `username.tahti.live/` is the full

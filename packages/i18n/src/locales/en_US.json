@@ -6880,6 +6880,7 @@
       "revenue": "Revenue",
       "keyMetrics": "Key metrics",
       "engagementUnits": "Engagement units",
+      "engagementDescription": "How free downloads, paid downloads, and fan subscriptions add up toward your grant share.",
       "estimatedGrantShare": "Estimated {{year}} grant share",
       "grantProgress": "Progress toward {{year}} grant eligibility",
       "units_one": "1 unit",
@@ -8058,6 +8059,7 @@
     },
     "studioStatsView": {
       "stats": "Stats",
+      "subtitle": "Plays, audience, and rankings for the period you pick.",
       "statsSections": "Stats sections",
       "overview": "Overview",
       "playsAndListeners": "Plays and listeners",
@@ -9477,7 +9479,9 @@
     },
     "studioStatsViewMore": {
       "overview": "Overview",
+      "plays": "Plays",
       "playsAndListeners": "Plays and listeners",
+      "audience": "Audience",
       "topLists": "Top lists",
       "insights": "Insights"
     },

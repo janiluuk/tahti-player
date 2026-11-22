@@ -8,7 +8,6 @@ import {
   HorizontalScroll,
 } from '@tahti-player/ui';
 
-import { ListenerWorldMap } from '../../../components/ListenerWorldMap';
 import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { StatNumber } from '../../../components/tahti/StatNumber';
@@ -18,25 +17,13 @@ import {
 } from '../../../lib/historyStats';
 import { dateLocaleTag } from '../../../lib/locale';
 import { useThemeStore } from '../../../plugins/themes';
-import { AudienceBreakdown } from './AudienceBreakdown';
 import { downloadPlaysCsv, formatDate } from './helpers';
-import { ListenerLocations } from './ListenerLocations';
-import { ListenerLoyalty } from './ListenerLoyalty';
 import type { StatsData } from './useStatsData';
 
-export function PlaysTab({
-  state,
-  active,
-}: {
-  state: StatsData;
-  active: boolean;
-}) {
+export function PlaysTab({ state }: { state: StatsData }) {
   const { t } = useTranslation('web');
   const isDark = useThemeStore((s) => s.dark);
   const {
-    listenerGeo,
-    loading,
-    live,
     plays,
     busiestDay,
     useHeatmap,
@@ -44,8 +31,6 @@ export function PlaysTab({
     chartLabels,
     chartValues,
     openDay,
-    range,
-    appliedCustom,
   } = state;
   const splitDaily =
     plays.daily.length > 0 &&
@@ -54,155 +39,105 @@ export function PlaysTab({
     );
 
   return (
-    <div className={active ? 'grid gap-6' : 'hidden'}>
-      <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
-        <StudioPanel title={t('playsTab.listenerMap')}>
-          <div className="mb-3 flex flex-wrap justify-between gap-2">
-            <p className="text-foreground-secondary text-sm">
-              {t('playsTab.anonymizedCountriesFromChannelListening')}
-            </p>
-            <span className="text-foreground-secondary text-xs tabular-nums">
-              {t('playsTabBatch32.peakDay', {
-                count: live.peakDailyListeners,
-                formatted:
-                  live.peakDailyListeners.toLocaleString(dateLocaleTag()),
-              })}
-            </span>
-          </div>
-          <ListenerWorldMap data={listenerGeo} loading={loading} compact />
-          {active ? (
-            <ListenerLocations
-              window={{
-                range,
-                from: appliedCustom?.from,
-                to: appliedCustom?.to,
-              }}
-            />
-          ) : null}
-        </StudioPanel>
-
-        <StudioPanel title={t('playsTab.playsOverTime')}>
-          <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
-            <div>
-              <StatNumber className="block text-3xl">
-                {plays.totalPlays.toLocaleString(dateLocaleTag())}
-              </StatNumber>
-              <p className="text-foreground-secondary text-xs">
-                {busiestDay
-                  ? t('playsTabBatch32.busiestDay', {
-                      count: busiestDay.plays,
-                      date: formatDate(busiestDay.date),
-                      formatted:
-                        busiestDay.plays.toLocaleString(dateLocaleTag()),
-                    })
-                  : t('playsTabBatch32.dailyActivityEmpty')}
-              </p>
-            </div>
-            <Button
-              size="sm"
-              variant="secondary"
-              disabled={plays.daily.length === 0}
-              onClick={() => downloadPlaysCsv(plays.daily)}
-            >
-              <DownloadIcon size={14} aria-hidden />
-              <span className="ml-1.5">{t('playsTab.downloadCsv')}</span>
-            </Button>
-          </div>
-          {plays.daily.length === 0 ? (
-            <PageEmpty title={t('empties.noPlaysPeriod')} />
-          ) : useHeatmap ? (
-            <HorizontalScroll label={t('playsTab.dailyPlays')}>
-              <CalendarHeatmap
-                days={heatmapDays}
-                colorScheme={isDark ? 'dark' : 'light'}
-                labels={{
-                  months: monthLabelsShort(),
-                  weekdays: weekdayLabelsShort(),
-                  legendLess: t('library.legendLess'),
-                  legendMore: t('library.legendMore'),
-                }}
-                formatValue={(value) =>
-                  t('playsTabBatch32.playsValue', {
-                    count: value,
-                    formatted: value.toLocaleString(dateLocaleTag()),
-                  })
-                }
-                formatDate={formatDate}
-                onDayClick={openDay}
-              />
-            </HorizontalScroll>
-          ) : (
-            <div className="h-52 w-full">
-              {active ? (
-                <DayOfWeekChart
-                  values={
-                    splitDaily
-                      ? plays.daily.map((day) => day.downloads ?? 0)
-                      : chartValues
-                  }
-                  stackValues={
-                    splitDaily
-                      ? plays.daily.map((day) => day.smartLinkClicks ?? 0)
-                      : undefined
-                  }
-                  labels={{ weekdays: chartLabels }}
-                  formatValue={(value) =>
-                    t('playsTabBatch32.playsValue', {
-                      count: value,
-                      formatted: value.toLocaleString(dateLocaleTag()),
-                    })
-                  }
-                  onBarClick={(index) => {
-                    const day = plays.daily[index];
-                    if (day) {
-                      openDay(day.date);
-                    }
-                  }}
-                />
-              ) : null}
-            </div>
-          )}
-          {splitDaily && !useHeatmap && plays.daily.length > 0 ? (
-            <ul
-              className="text-foreground-secondary mt-2 flex flex-wrap gap-4 text-xs"
-              aria-label={t('playsTab.chartLegend')}
-            >
-              <li className="flex items-center gap-1.5">
-                <span aria-hidden className="bg-primary size-2.5 rounded-sm" />
-                {t('playsTab.downloads')}
-              </li>
-              <li className="flex items-center gap-1.5">
-                <span
-                  aria-hidden
-                  className="bg-accent-yellow size-2.5 rounded-sm"
-                />
-                {t('playsTab.smartLinkClicks')}
-              </li>
-            </ul>
-          ) : null}
-          <p className="text-foreground-secondary mt-2 text-xs">
-            {t('playsTab.clickADayForHourly')}
+    <StudioPanel title={t('playsTab.playsOverTime')}>
+      <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <StatNumber className="block text-3xl">
+            {plays.totalPlays.toLocaleString(dateLocaleTag())}
+          </StatNumber>
+          <p className="text-foreground-secondary text-xs">
+            {busiestDay
+              ? t('playsTabBatch32.busiestDay', {
+                  count: busiestDay.plays,
+                  date: formatDate(busiestDay.date),
+                  formatted: busiestDay.plays.toLocaleString(dateLocaleTag()),
+                })
+              : t('playsTabBatch32.dailyActivityEmpty')}
           </p>
-        </StudioPanel>
+        </div>
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={plays.daily.length === 0}
+          onClick={() => downloadPlaysCsv(plays.daily)}
+        >
+          <DownloadIcon size={14} aria-hidden />
+          <span className="ml-1.5">{t('playsTab.downloadCsv')}</span>
+        </Button>
       </div>
-      {active ? (
-        <>
-          <ListenerLoyalty
-            window={{
-              range,
-              from: appliedCustom?.from,
-              to: appliedCustom?.to,
+      {plays.daily.length === 0 ? (
+        <PageEmpty title={t('empties.noPlaysPeriod')} />
+      ) : useHeatmap ? (
+        <HorizontalScroll label={t('playsTab.dailyPlays')}>
+          <CalendarHeatmap
+            days={heatmapDays}
+            colorScheme={isDark ? 'dark' : 'light'}
+            labels={{
+              months: monthLabelsShort(),
+              weekdays: weekdayLabelsShort(),
+              legendLess: t('library.legendLess'),
+              legendMore: t('library.legendMore'),
+            }}
+            formatValue={(value) =>
+              t('playsTabBatch32.playsValue', {
+                count: value,
+                formatted: value.toLocaleString(dateLocaleTag()),
+              })
+            }
+            formatDate={formatDate}
+            onDayClick={openDay}
+          />
+        </HorizontalScroll>
+      ) : (
+        <div className="h-52 w-full">
+          <DayOfWeekChart
+            values={
+              splitDaily
+                ? plays.daily.map((day) => day.downloads ?? 0)
+                : chartValues
+            }
+            stackValues={
+              splitDaily
+                ? plays.daily.map((day) => day.smartLinkClicks ?? 0)
+                : undefined
+            }
+            labels={{ weekdays: chartLabels }}
+            formatValue={(value) =>
+              t('playsTabBatch32.playsValue', {
+                count: value,
+                formatted: value.toLocaleString(dateLocaleTag()),
+              })
+            }
+            onBarClick={(index) => {
+              const day = plays.daily[index];
+              if (day) {
+                openDay(day.date);
+              }
             }}
           />
-          <AudienceBreakdown
-            window={{
-              range,
-              from: appliedCustom?.from,
-              to: appliedCustom?.to,
-            }}
-          />
-        </>
+        </div>
+      )}
+      {splitDaily && !useHeatmap && plays.daily.length > 0 ? (
+        <ul
+          className="text-foreground-secondary mt-2 flex flex-wrap gap-4 text-xs"
+          aria-label={t('playsTab.chartLegend')}
+        >
+          <li className="flex items-center gap-1.5">
+            <span aria-hidden className="bg-primary size-2.5 rounded-sm" />
+            {t('playsTab.downloads')}
+          </li>
+          <li className="flex items-center gap-1.5">
+            <span
+              aria-hidden
+              className="bg-accent-yellow size-2.5 rounded-sm"
+            />
+            {t('playsTab.smartLinkClicks')}
+          </li>
+        </ul>
       ) : null}
-    </div>
+      <p className="text-foreground-secondary mt-2 text-xs">
+        {t('playsTab.clickADayForHourly')}
+      </p>
+    </StudioPanel>
   );
 }
