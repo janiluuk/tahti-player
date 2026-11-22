@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { PublicProfile } from '@tahti-web/api/types';
 import { LinkPageView } from '@tahti-web/views/link-page/LinkPageView';
 
+import { withTahtiRouter } from './_lib/decorators';
+
 const profile: PublicProfile = {
   artist: {
     username: 'yaniho',
@@ -74,6 +76,7 @@ const profile: PublicProfile = {
 const meta = {
   title: 'Tahti/Artist/LinkPageView',
   component: LinkPageView,
+  decorators: [withTahtiRouter('/u/yaniho')],
   parameters: { layout: 'padded' },
   args: {
     profile,

@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, LinkIcon, Share2Icon } from 'lucide-react';
 import { useMemo } from 'react';
 import { toast } from 'sonner';
@@ -276,11 +275,11 @@ export function LinkPageView({
             {t('linkPage.sets')}
           </h2>
           {linkPage.sets.map((set) => (
-            <Link
+            <ButtonAnchor
               key={set.id}
-              to="/u/$username/c/$slug"
-              params={{ username: artist.username, slug: set.slug }}
-              className="border-border bg-background-secondary hover:border-foreground/30 flex items-center gap-3 rounded-lg border p-2"
+              href={set.url}
+              variant="text"
+              className="border-border bg-background-secondary hover:border-foreground/30 flex h-auto w-full items-center justify-start gap-3 rounded-lg border p-2"
               data-testid="link-page-set"
             >
               <div className="size-14 shrink-0 overflow-hidden rounded-md">
@@ -291,7 +290,7 @@ export function LinkPageView({
                   size="fill"
                 />
               </div>
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0 flex-1 text-left">
                 <div className="text-foreground truncate font-semibold">
                   {set.name}
                 </div>
@@ -299,7 +298,7 @@ export function LinkPageView({
                   {t('linkPage.setItemCount', { count: set.itemCount })}
                 </div>
               </div>
-            </Link>
+            </ButtonAnchor>
           ))}
         </section>
       ) : null}
