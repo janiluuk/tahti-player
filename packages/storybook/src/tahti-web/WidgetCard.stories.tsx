@@ -72,8 +72,10 @@ export const RowHoverAndShiftQueue: Story = {
   play: async ({ canvasElement }) => {
     const [play] = within(canvasElement).getAllByTestId('media-artwork-play');
     const row = play.closest('a');
-    await expect(row).toHaveClass('group');
-    await expect(row?.parentElement?.closest('.group')).toBeNull();
+    await expect(row).toHaveClass('group/media-row');
+    await expect(
+      row?.parentElement?.closest('[class~="group/media-row"]'),
+    ).toBeNull();
     await expect(play).toHaveAttribute(
       'aria-label',
       'Play Tundra Static · Shift+click to queue',
