@@ -79,6 +79,9 @@ export type ChannelBackdropCardProps = {
   colorScheme?: VisualColorScheme | null;
   colorSchemeJson?: string | null;
   artworkUrl?: string | null;
+  /** `artworkUrl` is the playing track's cover, so the visualizer takes its
+   * colour (see ChannelVisualizer). */
+  followArtworkColor?: boolean;
   galleryMode?: string | null;
   slideshowImages?: string[];
   /** How the slideshow (2+ `slideshowImages`) cycles — one of
@@ -167,6 +170,7 @@ export function ChannelBackdropCard({
   colorScheme,
   colorSchemeJson,
   artworkUrl,
+  followArtworkColor = false,
   galleryMode,
   slideshowImages,
   slideshowPreset,
@@ -288,6 +292,7 @@ export function ChannelBackdropCard({
               visualSettingsJson={visualSettingsJson}
               settings={visualizerSettings}
               artworkUrl={artworkUrl}
+              followArtworkColor={followArtworkColor}
             />
           )}
         </>

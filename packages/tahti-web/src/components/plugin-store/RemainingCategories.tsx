@@ -302,6 +302,7 @@ const DISCOVER_WIDGET_DETAIL_KEYS = {
   'tahti-selects': 'remainingCategoriesBatch31.widgetTahtiSelects',
   'latest-releases': 'remainingCategoriesBatch31.widgetLatestReleases',
   'random-track': 'remainingCategoriesBatch31.widgetRandomTrack',
+  'upcoming-events': 'remainingCategoriesBatch31.widgetUpcomingEvents',
 } as const satisfies Record<DiscoverWidgetId, ParseKeys<'web'>>;
 
 function DiscoverWidgetPlugins() {

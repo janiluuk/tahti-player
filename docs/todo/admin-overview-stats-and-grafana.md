@@ -8,7 +8,7 @@ User report 2026-11-11.
 
 The admin panel is still slow to load. `/admin` (`AdminDashboardView`) already
 renders the last result at once and refreshes in the background
-(`admin-dashboard-snappy.md`, `useSnapshotFetch`). That did not make the
+(`useSnapshotFetch`, folded 2026-11-22). That did not make the
 first open, or a refresh with no snapshot, feel fast. Measure what
 `fetchAdminDashboard` and the panels wait on, and cache or precompute the
 slow calls in tahti-org if the API is the wait.
@@ -16,8 +16,13 @@ slow calls in tahti-org if the API is the wait.
 Web side done 2026-11-16: `CommunityStatsPanel` keeps its own snapshot
 (`admin-community-stats`; a refresh where all three calls fail keeps the
 saved numbers) and renders above the dashboard's loading state, so its
-three calls run next to the dashboard's ten instead of after them. Left is
-the API side only (tahti-org).
+three calls run next to the dashboard's ten instead of after them.
+
+API side done 2026-11-22 (tahti-org#1128): `/api/admin/stats/cron-runs` read
+every cron run ever written (~450 ms on 300k rows) and now does one indexed
+lookup per job (~2 ms); cron-runs, queues and system-health share one result
+per process for `ADMIN_STATS_CACHE_SEC` (default 20 s). Left: a retention
+sweep for the cron-run table (tahti-org `docs/remaining-work.md`).
 
 ## Stats belong at the top
 

@@ -4,11 +4,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { AmbientTrackRow } from './AmbientTrackRow';
 
 describe('AmbientTrackRow', () => {
-  it('stays one row with a larger phone thumb at every density', () => {
+  it('keeps the artwork beside the title and waveform at every density', () => {
     const thumbs = {
       comfortable: 'size-32',
       compact: 'size-28',
-      dense: 'size-20',
+      dense: 'size-24',
     } as const;
     for (const density of ['comfortable', 'compact', 'dense'] as const) {
       const { unmount } = render(
@@ -18,15 +18,20 @@ describe('AmbientTrackRow', () => {
           artist="Aurora Keys"
           density={density}
           ambientRgb={null}
+          stats={{ releaseDate: '2026-11-01T00:00:00Z', plays: 3 }}
         />,
       );
       const row = screen.getByTestId('ambient-track-row');
       expect(row.className).toContain('flex-nowrap');
-      expect(row.className).toContain('items-center');
-      expect(row.className).not.toContain('flex-wrap');
+      expect(row.className).toContain('max-md:grid-cols-[auto_minmax(0,1fr)]');
+      expect(row.className).not.toContain(' flex-wrap');
+      const artwork = screen.getByTestId('ambient-track-row-artwork');
+      expect(artwork.className).toContain(thumbs[density]);
+      expect(artwork.className).toContain('max-md:row-span-2');
       expect(
-        screen.getByTestId('ambient-track-row-artwork').className,
-      ).toContain(thumbs[density]);
+        screen.getByTestId('ambient-track-row-actions').className,
+      ).toContain('max-md:col-span-2');
+      expect(row.querySelectorAll('time')).toHaveLength(1);
       unmount();
     }
   });
@@ -194,4 +199,20 @@ it('replaces the waveform with an animated processing state until the upload is 
   );
   expect(screen.queryByRole('status')).toBeNull();
   expect(screen.getByRole('button', { name: 'Play New upload' })).toBeVisible();
+});
+
+it('shows the album track number before the title', () => {
+  render(
+    <AmbientTrackRow
+      trackId="t2"
+      title="Particular particle"
+      artist="Yaniho"
+      trackNumber={2}
+      ambientRgb={null}
+    />,
+  );
+  expect(screen.getByTestId('ambient-track-number')).toHaveTextContent('2.');
+  expect(screen.getByRole('heading')).toHaveTextContent(
+    '2.Particular particle',
+  );
 });

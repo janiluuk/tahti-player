@@ -210,10 +210,12 @@ export function AmbientTrackList({
               subtitle={item.artist}
               surface="neutral"
               onPlay={item.onPlay}
+              onQueue={item.onQueue}
               isPlaying={item.isPlaying}
               isCurrent={item.isCurrent}
               playLabel={webT()('a11yNamed.play', { name: item.title })}
               pauseLabel={webT()('a11yNamed.pause', { name: item.title })}
+              queueLabel={webT()('a11yNamed.queue', { name: item.title })}
             />
           ))}
         </CardGrid>

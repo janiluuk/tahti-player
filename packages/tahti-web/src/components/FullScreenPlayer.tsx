@@ -1,6 +1,7 @@
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
+  HeartIcon,
   MaximizeIcon,
   MinimizeIcon,
   MoreHorizontalIcon,
@@ -23,6 +24,7 @@ import { useHorizontalSwipe } from '../hooks/useHorizontalSwipe';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useScreenWakeLock } from '../hooks/useScreenWakeLock';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
+import { useTrackLikes } from '../hooks/useTrackLikes';
 import {
   loadChannelVizMode,
   saveChannelVizMode,
@@ -78,6 +80,42 @@ export function splitShowAndTrack(raw: string): {
   return { show: null, track: trimmed };
 }
 
+/** Phones keep Add to playlist in the overflow sheet only, so the slot
+ * under the title holds the like toggle instead. */
+function LoveButton({
+  title,
+  liked,
+  onToggle,
+}: {
+  title: string;
+  liked: boolean;
+  onToggle: () => void;
+}) {
+  const { t } = useTranslation('web');
+  const label = liked
+    ? t('actions.unlikeItem', { title })
+    : t('actions.likeItem', { title });
+  return (
+    <Tooltip content={label} side="top">
+      <Button
+        size="icon"
+        variant="secondary"
+        className="size-11 rounded-full"
+        aria-label={label}
+        aria-pressed={liked}
+        onClick={onToggle}
+        data-testid="full-screen-player-love"
+      >
+        <HeartIcon
+          size={20}
+          aria-hidden
+          className={liked ? 'fill-accent-red text-accent-red' : undefined}
+        />
+      </Button>
+    </Tooltip>
+  );
+}
+
 /** Full-viewport now-playing overlay — expand button in the player bar
  * opens it, X or Escape closes it back to the compact bar. Backdrop tint
  * follows the current track's cover art (sampled via useDominantColor)
@@ -110,6 +148,7 @@ export function FullScreenPlayer() {
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const cycleRepeat = usePlayerStore((s) => s.cycleRepeat);
   const keepScreenOn = usePlaybackPrefsStore((s) => s.keepScreenOn);
+  const { canLike, isLiked, toggleLike } = useTrackLikes();
 
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -273,6 +312,7 @@ export function FullScreenPlayer() {
           <ChannelVisualizer
             className="h-full w-full"
             artworkUrl={coverUrl}
+            followArtworkColor
             engineMode={engineMode}
             showModeButtons={false}
           />
@@ -459,7 +499,16 @@ export function FullScreenPlayer() {
                   {artistLine}
                 </p>
               ) : null}
-              {soundId && playable && !driving ? (
+              {isMobile && playable && !driving && canLike(playable) ? (
+                <div className="mt-3 flex justify-center">
+                  <LoveButton
+                    title={playable.title}
+                    liked={isLiked(playable)}
+                    onToggle={() => toggleLike(playable)}
+                  />
+                </div>
+              ) : null}
+              {!isMobile && soundId && playable && !driving ? (
                 <div className="mt-3 flex justify-center">
                   <AddToPlaylistButton
                     soundId={soundId}

@@ -89,8 +89,13 @@ export const Profile: Story = {
     const artist = within(
       canvas.getByRole('list', { name: 'Artist profile settings' }),
     ).getAllByRole('link');
-    await expect(artist).toHaveLength(8);
+    await expect(artist).toHaveLength(9);
     await expect(artist[0]).toHaveAttribute('href', '/studio/profile/identity');
+    await expect(
+      artist.some(
+        (link) => link.getAttribute('href') === '/studio/profile/link-page',
+      ),
+    ).toBe(true);
     const channel = within(
       canvas.getByRole('list', { name: 'Channel page settings' }),
     ).getAllByRole('link');

@@ -42,11 +42,25 @@ function errorText(err: unknown, fallback: string) {
   return err instanceof Error ? err.message : fallback;
 }
 
+/** Banners for the public mock listing by event id; the rest keep none so
+ * the default artwork shows too. */
+const MOCK_BANNERS: Record<string, string> = {
+  'evt-mock-1': '/artwork-presets/artwork-05.webp',
+  'evt-mock-2': '/artwork-presets/artwork-11.webp',
+  'evt-mock-4': '/artwork-presets/artwork-16.webp',
+};
+
 function mockCalendarRows(): CalendarEvent[] {
   const base = Date.now();
   const shifted = mockEvents.map((event, index) => {
     const startAt = new Date(base + (index * 4 + 2) * DAY).toISOString();
-    return { ...event, ...MOCK_HOST, startAt, endAt: null };
+    return {
+      ...event,
+      ...MOCK_HOST,
+      imageUrl: MOCK_BANNERS[event.id] ?? event.imageUrl,
+      startAt,
+      endAt: null,
+    };
   });
   return [
     ...shifted,
@@ -59,6 +73,7 @@ function mockCalendarRows(): CalendarEvent[] {
         location: 'Helsinki, Finland',
         startAt: new Date(base + 3 * DAY).toISOString(),
         status: 'PUBLISHED',
+        imageUrl: '/artwork-presets/artwork-09.webp',
         gallery: mockEventGallery,
       }),
       artistDisplayName: 'Northern Lights',

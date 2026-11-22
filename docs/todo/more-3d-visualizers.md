@@ -1,6 +1,8 @@
 # More 3D visualizer variations, coloured by the artwork
 
-**Status:** open
+**Status:** partial
+
+Shipped 2026-11-22: `lib/artworkVisualizerScheme.ts` derives accent and highlight from the current track's cover; `ChannelVisualizer` `followArtworkColor` is on for the full-screen player, Jam, the track page and the artist/channel stage while playing. Left: the new presets (the user picks the list first).
 
 ## Request
 

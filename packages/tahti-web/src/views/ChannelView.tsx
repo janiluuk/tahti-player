@@ -1,23 +1,18 @@
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
-  ClampedText,
   Tooltip,
 } from '@tahti-player/ui';
 
 import {
   BRAND_ACCENTS,
   channelLookExtrasFromVisual,
-  isHeaderImageUrl,
   parseColorScheme,
-  patchChannelVisual,
   resolveChannelLookExtras,
-  saveChannelLookExtras,
 } from '../api/channel-design';
 import { AutoplayUnmuteNotice } from '../components/AutoplayUnmuteNotice';
 import {
@@ -31,7 +26,6 @@ import {
   ChannelPageBackdrop,
   ChannelRefreshBanner,
   ChannelStagePlayer,
-  ChannelTopBar,
   ChannelUnavailable,
   heroVisualizerSettingsFor,
   renderChannelBlock,
@@ -40,6 +34,7 @@ import {
   useEditRail,
   usePresetLookDraft,
 } from '../components/channel-view';
+import { ChannelFallbackHeader } from '../components/channel-view/ChannelFallbackHeader';
 import { ChannelFeatureSettings } from '../components/channel-view/ChannelFeatureSettings';
 import { channelHeaderStats } from '../components/channel-view/channelHeaderStats';
 import { ChannelPageActions } from '../components/channel-view/ChannelPageActions';
@@ -53,18 +48,16 @@ import { channelTrackMeta } from '../components/channel-view/channelTrackMeta';
 import { ChannelEmbedsSection } from '../components/channel-view/ChannelViewBlocks';
 import { channelVisibleItems } from '../components/channel-view/channelVisibleItems';
 import { StreamManagerDialog } from '../components/channel-view/StreamManagerDialog';
+import { unplacedEmbedItems } from '../components/channel-view/unplacedEmbedItems';
+import { useChannelLookSave } from '../components/channel-view/useChannelLookSave';
 import { useChannelPlayables } from '../components/channel-view/useChannelPlayables';
-import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
-import { EntitySocialHeader } from '../components/EntitySocialHeader';
 import { RadioStationDial } from '../components/radio/RadioStationDial';
-import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
 import { useChannelLayoutEditing } from '../hooks/useChannelLayoutEditing';
 import { useHasFanTiers } from '../hooks/useHasFanTiers';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useServerChannelLayout } from '../hooks/useServerChannelLayout';
 import { hasAccountRole } from '../lib/accountRoles';
-import { avatarPoster } from '../lib/avatarPoster';
 import {
   getLayoutPreset,
   type ChannelLayoutPresetId,
@@ -72,8 +65,6 @@ import {
 } from '../lib/channelPageLayout';
 import { cn } from '../lib/cn';
 import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
-import { placeholderArtworkUrl } from '../lib/placeholderArt';
-import { isSafeChannelLinkUrl } from '../lib/safeHref';
 import { splitEmbedPlayables } from '../lib/splitEmbedPlayables';
 import { useArtistFollow } from '../lib/useArtistFollow';
 import { useAuthStore } from '../stores/authStore';
@@ -108,10 +99,6 @@ export function ChannelView({ slug }: { slug: string }) {
   const [activeNavTabId, setActiveNavTabId] = useState<string | null>(null);
   const [pageTab, setPageTab] = useState<ChannelPageTab>('music');
   const [navTabContentVisible, setNavTabContentVisible] = useState(true);
-  const [lookDirty, setLookDirty] = useState(false);
-  const [savingLook, setSavingLook] = useState(false);
-  const [lookBusy, setLookBusy] = useState(false);
-  const channelDesignerRef = useRef<ChannelDesignerHandle>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
   const [lookTick, setLookTick] = useState(0);
   const [lookExtrasTick, setLookExtrasTick] = useState(0);
@@ -133,9 +120,21 @@ export function ChannelView({ slug }: { slug: string }) {
   useChannelAutoplay(channel, !editing);
   const linksDraft = useChannelLinksDraft(channel, artistSocialLinks);
   const channelLinksDraft = linksDraft.links;
-  const linksDirty = linksDraft.dirty;
   const presetDraft = usePresetLookDraft();
-  const presetNote = presetDraft.note;
+  const bumpLookExtras = () => {
+    setLookTick((n) => n + 1);
+    setLookExtrasTick((n) => n + 1);
+  };
+  const lookSave = useChannelLookSave({
+    slug,
+    layoutDirty,
+    saveLayout,
+    revertLayout,
+    linksDraft,
+    presetDraft,
+    onLookSaved: () => setLookTick((n) => n + 1),
+    onLinksSaved: bumpLookExtras,
+  });
   const [streamManagerOpen, setStreamManagerOpen] = useState(false);
   const listenerWidgetInstances = useListenerWidgetsStore((s) => s.instances);
 
@@ -171,23 +170,11 @@ export function ChannelView({ slug }: { slug: string }) {
   const subtle = activePresetId === 'subtle';
   const configuredEmbedItems = useMemo(
     () =>
-      listenerWidgetInstances
-        .filter((instance) => Boolean(listenerWidgetType(instance.typeId)))
-        .filter(
-          (instance) =>
-            !layout.some(
-              (item) =>
-                item.type === 'embed' && item.embedInstanceId === instance.id,
-            ),
-        )
-        .map((instance) => ({
-          id: instance.id,
-          label: instance.label,
-          hint:
-            listenerWidgetType(instance.typeId)?.name ??
-            t('channelViewLeftovers.externalPlayer'),
-          embedInstanceId: instance.id,
-        })),
+      unplacedEmbedItems(
+        listenerWidgetInstances,
+        layout,
+        t('channelViewLeftovers.externalPlayer'),
+      ),
     [listenerWidgetInstances, layout],
   );
   useEffect(() => {
@@ -262,15 +249,12 @@ export function ChannelView({ slug }: { slug: string }) {
         embedItems={configuredEmbedItems}
         links={channelLinksDraft}
         onLinksChange={linksDraft.edit}
-        designerRef={channelDesignerRef}
+        designerRef={lookSave.designerRef}
         presetLook={presetDraft.pending}
         lookTick={lookTick}
-        onLookDirtyChange={setLookDirty}
-        onLookBusyChange={setLookBusy}
-        onLookSaved={() => {
-          setLookTick((n) => n + 1);
-          setLookExtrasTick((n) => n + 1);
-        }}
+        onLookDirtyChange={lookSave.setLookDirty}
+        onLookBusyChange={lookSave.setLookBusy}
+        onLookSaved={bumpLookExtras}
       />
     ) : null;
 
@@ -317,55 +301,10 @@ export function ChannelView({ slug }: { slug: string }) {
     }
   };
 
-  // Combined save for the single toolbar button: the layers menu embeds
-  // ChannelDesigner in `lookOnly` mode for its look controls, which used to
-  // render its own separate "Save look" button right next to this one —
-  // confusing to have two saves in the same panel. This one now covers both.
-  const saveAll = async () => {
-    if (layoutDirty) {
-      saveLayout();
-    }
-    setSavingLook(true);
-    try {
-      if (lookDirty && channelDesignerRef.current) {
-        await channelDesignerRef.current.save();
-        presetDraft.clearPending();
-      } else if (await presetDraft.saveDirectly()) {
-        setLookDirty(false);
-        setLookTick((n) => n + 1);
-      }
-      if (linksDirty) {
-        const invalid = channelLinksDraft.find(
-          (link) => link.url.trim() && !isSafeChannelLinkUrl(link.url),
-        );
-        if (invalid) {
-          toast.error(t('toasts.channelLinksInvalid'));
-          return;
-        }
-        const result = await patchChannelVisual({
-          channelLinks: channelLinksDraft,
-        });
-        if (result.ok) {
-          saveChannelLookExtras(slug, { channelLinks: channelLinksDraft });
-          linksDraft.markSaved();
-          setLookTick((n) => n + 1);
-          setLookExtrasTick((n) => n + 1);
-        } else {
-          toast.error(result.error);
-        }
-      }
-      presetDraft.setNote(null);
-    } catch {
-      toast.error(t('toasts.channelLookSaveFailed'));
-    } finally {
-      setSavingLook(false);
-    }
-  };
-
   // Done saves everything, not just the layout: the look and links used to be
   // silently discarded here while the layout was kept.
   const exitEdit = async () => {
-    await saveAll();
+    await lookSave.saveAll();
     setEditing(false);
     setSelectedId(null);
     presetDraft.setNote(null);
@@ -396,7 +335,7 @@ export function ChannelView({ slug }: { slug: string }) {
     setLayoutDirty(true);
     setSelectedId(null);
     presetDraft.stage(preset.name, preset.look);
-    setLookDirty(true);
+    lookSave.setLookDirty(true);
   };
 
   const isRadioChannel = channel.channelKind === 'RADIO';
@@ -607,74 +546,19 @@ export function ChannelView({ slug }: { slug: string }) {
           <div className={backButtonCornerClassName}>{backButton}</div>
         ) : null}
         <ChannelRefreshBanner error={refreshError} onRetry={retryChannel} />
-        {!heroVisible && <ChannelTopBar text={channel.topBarText} />}
-        {!heroVisible && (pageActions ?? featureSettings) ? (
-          <div className="flex flex-wrap items-center justify-end gap-2 pl-14">
-            {pageActions ?? featureSettings}
-          </div>
+        {!heroVisible ? (
+          <ChannelFallbackHeader
+            channel={channel}
+            editing={editing}
+            subtle={subtle}
+            actions={pageActions ?? featureSettings}
+            backButton={backButton}
+            stats={headerStats}
+            statsDimmed={editing && !showHeaderStats}
+            onSelectHeader={() => setSelectedId('header')}
+            stagePlayer={stagePlayer}
+          />
         ) : null}
-
-        {!heroVisible && (editing || channel.user.showPageHero !== false) && (
-          <div
-            onClick={() => {
-              if (editing) {
-                setSelectedId('header');
-              }
-            }}
-            className={editing ? 'cursor-pointer rounded-lg' : undefined}
-          >
-            <EntitySocialHeader
-              leading={editing ? undefined : backButton}
-              title={channel.user.displayName}
-              isMember={channel.user.isMember}
-              imageUrl={
-                channel.user.avatarUrl ??
-                placeholderArtworkUrl(channel.user.username)
-              }
-              imagePosterUrl={avatarPoster(channel.user)}
-              roundImage
-              colorScheme={channel.colorScheme}
-              subtitle={
-                <Link
-                  to="/u/$username"
-                  params={{ username: channel.user.username }}
-                  className="hover:text-foreground underline-offset-2 hover:underline"
-                >
-                  @{channel.user.username}
-                </Link>
-              }
-              description={
-                channel.user.bio ? (
-                  <ClampedText className="whitespace-pre-wrap">
-                    {channel.user.bio}
-                  </ClampedText>
-                ) : null
-              }
-              backdropUrl={
-                channel.videoBackgroundUrl &&
-                isHeaderImageUrl(channel.videoBackgroundUrl)
-                  ? channel.videoBackgroundUrl
-                  : null
-              }
-              stats={headerStats}
-              statsDimmed={editing && !showHeaderStats}
-              data-testid="channel-social-header"
-            />
-          </div>
-        )}
-
-        {!heroVisible && (
-          <div
-            className={
-              subtle
-                ? 'border-border/60 overflow-hidden rounded-lg border'
-                : 'border-border overflow-hidden rounded-xl border'
-            }
-            data-testid="channel-stage-player-fixed"
-          >
-            {stagePlayer}
-          </div>
-        )}
 
         {/* The hero carries the stage player, so it stays above the tabs. */}
         {visibleItems.filter((i) => i.type === 'hero').map(renderFrame)}
@@ -757,23 +641,13 @@ export function ChannelView({ slug }: { slug: string }) {
   return (
     <div className="flex h-full min-h-0 flex-col gap-3">
       <ChannelEditToolbar
-        dirty={layoutDirty || lookDirty || linksDirty}
-        note={presetNote}
-        saving={savingLook || lookBusy}
+        dirty={lookSave.dirty}
+        note={presetDraft.note}
+        saving={lookSave.saving}
         mobileMenuOpen={mobileMenuOpen}
         onToggleMobileMenu={() => setMobileMenuOpen((v) => !v)}
-        onRevert={() => {
-          if (savingLook || channelDesignerRef.current?.busy) {
-            return;
-          }
-          channelDesignerRef.current?.revert();
-          revertLayout();
-          linksDraft.revert();
-          presetDraft.clearPending();
-          presetDraft.setNote(null);
-          setLookDirty(false);
-        }}
-        onSave={() => void saveAll()}
+        onRevert={lookSave.revertAll}
+        onSave={() => void lookSave.saveAll()}
         onDone={() => void exitEdit()}
       />
 

@@ -127,7 +127,10 @@ export function ReleaseCsvImportButton({
             {result ? (
               <div className="text-sm" role="status">
                 <p>
-                  Created {result.created}, skipped {result.skipped}.
+                  {t('releaseCsvImportButton.result', {
+                    created: result.created,
+                    skipped: result.skipped,
+                  })}
                 </p>
                 {result.errors.length > 0 ? (
                   <ul className="text-accent-red-strong mt-1 list-disc pl-5 text-xs">

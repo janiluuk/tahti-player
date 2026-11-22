@@ -258,6 +258,7 @@ export function JamView({ code }: { code: string }) {
       <div className="pointer-events-none absolute inset-0 opacity-50">
         <ChannelVisualizer
           artworkUrl={track?.coverUrl}
+          followArtworkColor
           audioReactive={false}
           className="size-full"
         />

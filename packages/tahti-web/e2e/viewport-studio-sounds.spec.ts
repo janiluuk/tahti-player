@@ -16,7 +16,7 @@ test('library + studio sounds stay reachable across desktop, tablet, and phone',
     await page.setViewportSize(viewport);
     await page.goto('/library');
     await expect(
-      page.locator('[data-testid="sidebar-navigation"]').first(),
+      page.getByRole('tablist', { name: 'Library sections' }),
     ).toBeVisible();
     const libraryOverflow = await page.evaluate(
       () => document.documentElement.scrollWidth - window.innerWidth,

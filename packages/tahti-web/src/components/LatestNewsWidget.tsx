@@ -5,6 +5,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
+  EditIconButton,
   Loader,
   MediaArtwork,
   StoryCard,
@@ -29,6 +30,12 @@ import {
 import { NewsArticleDialog } from './NewsArticleDialog';
 import { NewsSourcesDialog } from './NewsSourcesDialog';
 import { PlatformNewsDialog } from './PlatformNewsDialog';
+import {
+  PlatformNewsEditDialog,
+  PlatformNewsRemoveButton,
+  PlatformNewsRemoveDialog,
+  useCanEditPlatformNews,
+} from './PlatformNewsEditDialog';
 import { StoryTitleButton } from './StoryTitleButton';
 
 const CAROUSEL_LIMIT = 12;
@@ -71,6 +78,9 @@ export function LatestNewsWidget({
   const [open, setOpen] = useState<AggregatedArticle | null>(null);
   const [showAll, setShowAll] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [editPost, setEditPost] = useState<Announcement | null>(null);
+  const [removePost, setRemovePost] = useState<Announcement | null>(null);
+  const canEditPlatform = useCanEditPlatformNews();
 
   useEffect(() => {
     let cancelled = false;
@@ -122,10 +132,72 @@ export function LatestNewsWidget({
     };
   }, [sourceKey, tahtiLabel]);
 
-  const openPlatform =
-    open && isTahtiPlatformNewsSource(open.source.id)
-      ? (state.platformPosts.find((post) => post.id === open.id) ?? null)
+  const platformPostOf = (article: AggregatedArticle | null) =>
+    article && isTahtiPlatformNewsSource(article.source.id)
+      ? (state.platformPosts.find((post) => post.id === article.id) ?? null)
       : null;
+  const openPlatform = platformPostOf(open);
+
+  const applyUpdate = (updated: Announcement) => {
+    setState((previous) => ({
+      ...previous,
+      platformPosts: previous.platformPosts.map((post) =>
+        post.id === updated.id ? updated : post,
+      ),
+      articles: previous.articles.map((article) =>
+        article.id === updated.id &&
+        isTahtiPlatformNewsSource(article.source.id)
+          ? {
+              ...article,
+              title: updated.headline,
+              teaser: updated.summary,
+              imageUrl: updated.imageUrl || '/news-opening.svg',
+              paragraphs: updated.summary.split(/\n\s*\n/).filter(Boolean),
+            }
+          : article,
+      ),
+    }));
+  };
+
+  const applyRemoval = (id: string) => {
+    setState((previous) => ({
+      ...previous,
+      platformPosts: previous.platformPosts.filter((post) => post.id !== id),
+      articles: previous.articles.filter(
+        (article) =>
+          article.id !== id || !isTahtiPlatformNewsSource(article.source.id),
+      ),
+    }));
+  };
+
+  const adminActions = (
+    article: AggregatedArticle,
+    beforeOpen?: () => void,
+  ) => {
+    const post = canEditPlatform ? platformPostOf(article) : null;
+    if (!post) {
+      return null;
+    }
+    return (
+      <div className="flex shrink-0 items-center gap-1">
+        <EditIconButton
+          data-testid="news-edit"
+          label={t('platformNews.editTitle', { title: article.title })}
+          onClick={() => {
+            beforeOpen?.();
+            setEditPost(post);
+          }}
+        />
+        <PlatformNewsRemoveButton
+          title={article.title}
+          onClick={() => {
+            beforeOpen?.();
+            setRemovePost(post);
+          }}
+        />
+      </div>
+    );
+  };
 
   return (
     <div className="flex min-w-0 flex-col gap-2" data-testid="latest-news">
@@ -169,9 +241,9 @@ export function LatestNewsWidget({
               {t('feedStory.noArticles')}
             </p>
           ) : (
-            state.articles
-              .slice(0, CAROUSEL_LIMIT)
-              .map((article, index) => (
+            state.articles.slice(0, CAROUSEL_LIMIT).map((article, index) => {
+              const edit = adminActions(article);
+              const card = (
                 <StoryCard
                   key={article.key}
                   index={index}
@@ -194,7 +266,16 @@ export function LatestNewsWidget({
                   onOpen={() => setOpen(article)}
                   openLabel={t('feedStory.readTitle', { title: article.title })}
                 />
-              ))
+              );
+              return edit ? (
+                <div key={article.key} className="relative">
+                  {card}
+                  <div className="absolute top-2 right-2 z-20">{edit}</div>
+                </div>
+              ) : (
+                card
+              );
+            })
           )}
         </StoryRow>
       )}
@@ -217,17 +298,22 @@ export function LatestNewsWidget({
         >
           {state.articles.map((article) => {
             return (
-              <li key={article.key}>
+              <li key={article.key} className="flex items-center gap-2">
                 <Button
                   variant="plain"
                   size="flexible"
-                  className="hover:bg-background-secondary flex w-full items-center gap-3 py-2 text-left whitespace-normal"
+                  className="hover:bg-background-secondary flex min-w-0 flex-1 items-center gap-3 py-2 text-left whitespace-normal"
                   onClick={() => {
                     setShowAll(false);
                     setOpen(article);
                   }}
                 >
-                  <MediaArtwork size="sm" src={article.imageUrl} alt="" />
+                  <MediaArtwork
+                    size="sm"
+                    src={article.imageUrl}
+                    alt=""
+                    seed={article.key}
+                  />
                   <span className="flex min-w-0 flex-col">
                     <span className="line-clamp-2 text-sm font-semibold">
                       {article.title}
@@ -245,6 +331,7 @@ export function LatestNewsWidget({
                     </span>
                   </span>
                 </Button>
+                {adminActions(article, () => setShowAll(false))}
               </li>
             );
           })}
@@ -256,26 +343,11 @@ export function LatestNewsWidget({
           post={openPlatform}
           onClose={() => setOpen(null)}
           onUpdated={(updated) => {
-            setState((previous) => ({
-              ...previous,
-              platformPosts: previous.platformPosts.map((post) =>
-                post.id === updated.id ? updated : post,
-              ),
-              articles: previous.articles.map((article) =>
-                article.id === updated.id &&
-                isTahtiPlatformNewsSource(article.source.id)
-                  ? {
-                      ...article,
-                      title: updated.headline,
-                      teaser: updated.summary,
-                      imageUrl: updated.imageUrl || '/news-opening.svg',
-                      paragraphs: updated.summary
-                        .split(/\n\s*\n/)
-                        .filter(Boolean),
-                    }
-                  : article,
-              ),
-            }));
+            applyUpdate(updated);
+            setOpen(null);
+          }}
+          onRemoved={(id) => {
+            applyRemoval(id);
             setOpen(null);
           }}
         />
@@ -287,6 +359,19 @@ export function LatestNewsWidget({
           onClose={() => setOpen(null)}
         />
       )}
+      <PlatformNewsEditDialog
+        post={editPost}
+        onClose={() => setEditPost(null)}
+        onUpdated={(updated) => {
+          applyUpdate(updated);
+          setEditPost(null);
+        }}
+      />
+      <PlatformNewsRemoveDialog
+        post={removePost}
+        onClose={() => setRemovePost(null)}
+        onRemoved={applyRemoval}
+      />
       <NewsSourcesDialog isOpen={editing} onClose={() => setEditing(false)} />
     </div>
   );

@@ -243,15 +243,17 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
             <SettingsIcon size={14} />
             {t('nav.settings')}
           </Button>
-          <ExternalLink
-            href="https://tahti.live"
-            className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2.5 py-2 text-xs no-underline"
-            role="menuitem"
-            onClick={() => setOpen(false)}
-          >
-            <ExternalLinkIcon size={14} />
-            tahti.live
-          </ExternalLink>
+          {isMobile ? null : (
+            <ExternalLink
+              href="https://tahti.live"
+              className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2.5 py-2 text-xs no-underline"
+              role="menuitem"
+              onClick={() => setOpen(false)}
+            >
+              <ExternalLinkIcon size={14} />
+              tahti.live
+            </ExternalLink>
+          )}
 
           <div className="bg-border mx-1 my-0.5 h-px" role="separator" />
           <Button

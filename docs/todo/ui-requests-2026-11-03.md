@@ -9,7 +9,7 @@ Requests from the 2026-11-03 session not shipped yet. Shipped items moved to HIS
 - [x] Embed tracks can't play from their track page: API ships `embedProvider`/`embedUri` (tahti-org#1052). Left: live verify on Mixcloud/hearthis after deploy.
 - [ ] NRJ radio doesn't play (see `radio-nova-nrj-playback.md`; tahti-org #1044 moved presets to Bauer's host).
 - [~] Real waveforms for every track: list surfaces carry stored peaks (search, Selects, radio, feed, studio collections). Left: production backfill for READY sounds with `peaks IS NULL`.
-- [ ] "tahti.live" in the top menu: not found in web code or live DOM; ask where it shows (desktop app menu?).
+- [x] "tahti.live" in the menu: it was the account menu's external link (`UserMenu.tsx`); hidden on phones (2026-11-22).
 
 ## Listen / Discover
 - [x] Recently played: text search. `filterable` is the CardsRow default (on), so the filter box shows once the row has enough items.

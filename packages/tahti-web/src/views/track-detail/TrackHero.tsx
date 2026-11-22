@@ -152,6 +152,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
               colorScheme={visualScheme}
               colorSchemeJson={channel?.colorSchemeJson}
               artworkUrl={cover}
+              followArtworkColor
               className="size-full"
             />
           </div>

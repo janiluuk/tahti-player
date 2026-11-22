@@ -18,6 +18,7 @@ type CollectionTrackListProps = {
         genre?: string | null;
         stats?: AmbientTrackStats;
         downloadable?: boolean;
+        trackNumber?: number;
       }
     | undefined;
   /** Starting view for this list only, e.g. `list` on collection pages. */

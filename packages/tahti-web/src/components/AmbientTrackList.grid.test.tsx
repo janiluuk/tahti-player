@@ -62,4 +62,17 @@ describe('AmbientTrackList grid view', () => {
 
     expect(screen.getByText('Nothing saved.')).toBeVisible();
   });
+
+  it('queues a card on Shift+click instead of playing it', () => {
+    const onQueue = vi.fn();
+    useTrackListViewStore.setState({ view: 'grid' });
+    render(<AmbientTrackList items={[{ ...items[0]!, onQueue }]} allowGrid />);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: /^Play Night Drive · Shift/ }),
+      { shiftKey: true },
+    );
+    expect(onQueue).toHaveBeenCalledTimes(1);
+    expect(onPlay).not.toHaveBeenCalled();
+  });
 });

@@ -1,6 +1,6 @@
 # Yaniho: every hearthis.at album as its own album, ordered tracks
 
-**Status:** open
+**Status:** partial
 
 Requested 2026-11-22. Account: the Yaniho channel (`/channel/yaniho`).
 
@@ -10,6 +10,12 @@ Requested 2026-11-22. Account: the Yaniho channel (`/channel/yaniho`).
 2. Track titles are only the track title: no artist prefix, album name, track number or file-name leftovers.
 3. Each album has its own track index (1, 2, 3 ...) that says which track is first, second and so on, and the album page plays and lists in that order.
 4. The order is manually sortable by the owner and by an admin (board).
+
+## Progress (2026-11-22)
+
+- tahti-org#1128 (deployed): every collection item has a dense 1..n `position` and a `trackNumber` in the owner, public and admin DTOs; removing or inserting renumbers; owner `PUT /api/me/collections/:slug/reorder`; board `GET /api/admin/collections/:slug` + `PUT /api/admin/collections/:slug/reorder` (audit `COLLECTION_ADMIN_REORDER`). New uploads get clean titles from file names (`@tahti/shared` track-title cleanup).
+- Web: album rows show the track number before the title (`collectionTrackMeta` → `AmbientTrackRow` `trackNumber`); a board member gets "Sort tracks (board)" on any album page (`BoardCollectionSortSounds`, the same `SortSoundsDialog` the owner uses).
+- Left: existing production titles like `yaniho - euphorizer LP - 02 - Particular particle` → `Particular particle` at position 2 of "euphorizer LP". tahti-org#1130 adds the cleanup script (`apps/api/scripts/clean-album-track-titles.ts`: dry run by default, JSON backup, `--apply`, `--restore`; commands in the PR body); running it on production needs the user's OK. Then the 1:1 check against hearthis.at.
 
 ## Where to look
 

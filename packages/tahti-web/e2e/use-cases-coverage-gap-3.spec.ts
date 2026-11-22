@@ -81,30 +81,20 @@ test('artist: moves a Discover widget later and the order sticks', async ({
 }) => {
   await signIn(page);
   await open(page, '/discover');
-  const main = page.getByRole('main');
-  const order = () =>
-    main
-      .getByRole('heading', { level: 2 })
-      .filter({
-        hasText: /^(This week: most played|Rotating artist pick)$/,
-      })
-      .allTextContents();
-  await expect
-    .poll(order)
-    .toEqual(['This week: most played', 'Rotating artist pick']);
-
-  const mostPlayed = main
+  // The widgets sit in a masonry, so DOM order is not list order; the first
+  // widget is the one whose Move earlier is disabled.
+  const columns = page.getByTestId('discover-widget-columns');
+  const mostPlayed = columns
     .getByRole('heading', { name: 'This week: most played' })
     .locator('xpath=ancestor::*[.//button[@aria-label="Move later"]][1]');
-  await mostPlayed.getByRole('button', { name: 'Move later' }).first().click();
-  await expect
-    .poll(order)
-    .toEqual(['Rotating artist pick', 'This week: most played']);
+  const moveEarlier = mostPlayed.getByRole('button', { name: 'Move earlier' });
+  await expect(moveEarlier).toBeDisabled();
+
+  await mostPlayed.getByRole('button', { name: 'Move later' }).click();
+  await expect(moveEarlier).toBeEnabled();
 
   await page.reload();
-  await expect
-    .poll(order)
-    .toEqual(['Rotating artist pick', 'This week: most played']);
+  await expect(moveEarlier).toBeEnabled();
 });
 
 test('anonymous: favorites a radio station and it stays after a reload', async ({

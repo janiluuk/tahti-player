@@ -57,6 +57,8 @@ type PlayerState = {
   lastRadioPlayable: TahtiPlayable | null;
   /** Whether the bottom player bar is shown; set true on play, false via hide. */
   playerBarVisible: boolean;
+  /** Hides the bar until something plays again; the queue stays. */
+  hidePlayerBar: () => void;
   /** Set by UI; AudioEngine applies to the media element then clears. */
   seekTarget: number | null;
   /** Bumped by `retry`; AudioEngine reloads the current source when it changes. */
@@ -232,6 +234,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setAnalyser: (analyser) => set({ analyser }),
 
   setAudioElement: (audioElement) => set({ audioElement }),
+
+  hidePlayerBar: () => set({ playerBarVisible: false }),
 
   play: (item, opts) => {
     const head = toQueueItem(item);
@@ -590,6 +594,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         failure: null,
         restoredPending: status === 'playing' ? null : s.restoredPending,
         reloadNonce: status === 'playing' ? s.reloadNonce + 1 : s.reloadNonce,
+        playerBarVisible: status === 'playing' || s.playerBarVisible,
       }));
       return;
     }
@@ -599,6 +604,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       failure: status === 'error' ? failure : null,
       restoredPending:
         status === 'playing' || status === 'loading' ? null : s.restoredPending,
+      playerBarVisible:
+        status === 'playing' || status === 'loading' || s.playerBarVisible,
     }));
   },
 
@@ -611,6 +618,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
             failure: null,
             restoredPending: null,
             reloadNonce: s.reloadNonce + 1,
+            playerBarVisible: true,
           }
         : {},
     ),

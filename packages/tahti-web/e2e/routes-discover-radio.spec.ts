@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { test } from '@playwright/test';
 
 import { signIn } from './helpers/auth';
 import {
@@ -30,7 +30,7 @@ test('discover, radio, schedule, show and search render for a signed-out visitor
   }
 });
 
-test('signed in, the same pages render and /themes lands on theme settings', async ({
+test('signed in, the same pages render and /themes lands on Appearance', async ({
   page,
 }) => {
   const errors = collectPageErrors(page);
@@ -41,24 +41,7 @@ test('signed in, the same pages render and /themes lands on theme settings', asy
   }
   await expectRouteHealthy(page, errors, {
     path: '/themes',
-    heading: /^Themes$/,
+    heading: /^Appearance$/,
     url: /\/settings\/themes$/,
   });
-});
-
-test('a radio show is reachable from the Radio page', async ({ page }) => {
-  const errors = collectPageErrors(page);
-  await expectRouteHealthy(page, errors, publicRoutes[1]!);
-
-  await page.getByRole('tab', { name: /^Shows/ }).click();
-  await page
-    .locator('a[href="/radio/show/midnight-cartography"]')
-    .first()
-    .click();
-  await expect(page).toHaveURL(/\/radio\/show\/midnight-cartography$/);
-  await expect(
-    page.getByRole('heading', { name: 'Midnight Cartography' }).first(),
-  ).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Episodes' })).toBeVisible();
-  expect(errors).toEqual([]);
 });

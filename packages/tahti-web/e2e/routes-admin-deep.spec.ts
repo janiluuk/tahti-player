@@ -38,7 +38,6 @@ const legacyRoutes: AdminVisit[] = [
     path: '/admin/support',
     heading: /^Inbox$/,
     url: /\/admin\/moderation\/support$/,
-    tab: 'Support',
   },
   {
     path: '/admin/content-reports',
@@ -60,9 +59,8 @@ const legacyRoutes: AdminVisit[] = [
   },
   {
     path: '/admin/reports',
-    heading: /^Governance$/,
+    heading: /^Annual reports$/,
     url: /\/admin\/governance\/reports$/,
-    tab: 'Annual reports',
   },
   {
     path: '/admin/files',

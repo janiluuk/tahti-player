@@ -10,16 +10,12 @@ import { formatScheduleWindow } from '../../lib/scheduleTime';
 import { useAuthModalStore } from '../../stores/authModalStore';
 import { useAuthStore } from '../../stores/authStore';
 import { EventCalendar } from '../events/EventCalendar';
+import { upcomingEventPlace } from '../events/UpcomingEventCard';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import { DiscoverEventsFilterBar } from './DiscoverEventsFilterBar';
 import type { EventsFilters } from './eventFilters';
+import { DiscoverNextEvents } from './UpcomingEventsRow';
 import { useDiscoverEvents } from './useDiscoverEvents';
-
-function eventPlace(event: UpcomingEvent): string {
-  const name = event.venue?.name ?? event.place;
-  const city = event.venue?.city || event.location;
-  return [name, city].filter(Boolean).join(', ');
-}
 
 export function DiscoverEventCard({
   event,
@@ -29,7 +25,7 @@ export function DiscoverEventCard({
   past?: boolean;
 }) {
   const { t } = useTranslation('web');
-  const place = eventPlace(event);
+  const place = upcomingEventPlace(event);
   return (
     <article
       data-testid="discover-event-card"
@@ -135,6 +131,7 @@ export function DiscoverEventsPanel({
           </p>
         )}
       </header>
+      {current.past || filtered ? null : <DiscoverNextEvents />}
       <DiscoverEventsFilterBar state={state} />
       {loaded === null ? (
         <PageLoading label={t('discoverEvents.loading')} />
@@ -169,7 +166,10 @@ export function DiscoverEventsPanel({
           />
         )
       ) : (
-        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul
+          data-testid="discover-events-list"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {visible.map((event) => (
             <li key={event.id} className="min-w-0">
               <DiscoverEventCard event={event} past={current.past} />

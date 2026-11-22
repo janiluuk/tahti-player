@@ -7,11 +7,16 @@ describe('discoverStore', () => {
     useDiscoverStore.setState({ enabledWidgets: [...DEFAULT_WIDGETS] });
   });
 
-  it('starts with seven widgets; Community stories live in the Feed tab', () => {
-    expect(DEFAULT_WIDGETS).toHaveLength(7);
+  it('starts with eight widgets; Community stories live in the Feed tab', () => {
+    expect(DEFAULT_WIDGETS).toHaveLength(8);
     expect(DEFAULT_WIDGETS).not.toContain('community-stories');
     expect(DEFAULT_WIDGETS).toEqual(
-      expect.arrayContaining(['tahti-selects', 'latest-releases', 'loved']),
+      expect.arrayContaining([
+        'tahti-selects',
+        'latest-releases',
+        'loved',
+        'upcoming-events',
+      ]),
     );
   });
 
@@ -39,8 +44,26 @@ describe('discoverStore', () => {
       'loved',
       'tahti-selects',
       'latest-releases',
+      'upcoming-events',
     ]);
     expect(migrated.unheardOnly).toBeUndefined();
+  });
+
+  it('adds the Upcoming events widget to a stored layout once', async () => {
+    const options = useDiscoverStore.persist.getOptions();
+    const migrated = (await options.migrate!(
+      { enabledWidgets: ['latest-tracks'] },
+      3,
+    )) as { enabledWidgets: string[] };
+    expect(migrated.enabledWidgets).toEqual([
+      'latest-tracks',
+      'upcoming-events',
+    ]);
+    const again = (await options.migrate!(
+      { enabledWidgets: ['upcoming-events', 'latest-tracks'] },
+      3,
+    )) as { enabledWidgets: string[] };
+    expect(again.enabledWidgets).toEqual(['upcoming-events', 'latest-tracks']);
   });
 
   it('drops Community stories from a stored layout (now in the Feed tab)', async () => {
@@ -49,6 +72,9 @@ describe('discoverStore', () => {
       { enabledWidgets: ['community-stories', 'latest-tracks'] },
       2,
     )) as { enabledWidgets: string[] };
-    expect(migrated.enabledWidgets).toEqual(['latest-tracks']);
+    expect(migrated.enabledWidgets).toEqual([
+      'latest-tracks',
+      'upcoming-events',
+    ]);
   });
 });

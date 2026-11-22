@@ -151,6 +151,10 @@ export function NewsView() {
               current.map((post) => (post.id === updated.id ? updated : post)),
             );
           }}
+          onRemoved={(id) => {
+            setSelected(null);
+            setEntries((current) => current.filter((post) => post.id !== id));
+          }}
         />
       ) : null}
       <div

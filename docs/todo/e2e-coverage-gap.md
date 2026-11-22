@@ -126,3 +126,90 @@ before each seek.
 | Screen | Issue | Kind | Suggestion |
 | --- | --- | --- | --- |
 | Player bar seek | A seek right after Play, before the stream starts, is lost: playback restarts at 0:00 when the audio loads | bug, fixed 2026-11-11 | `AudioEngine` keeps the `seekTarget` until `loadedmetadata`, then applies it (`AudioEngine.seek.test.tsx`) |
+
+## Audit 2026-11-22 (folded from `e2e-fix-and-audit.md`)
+
+The CI `e2e-mock` glob (`.github/workflows/ci.yml`) now also runs the routes, library, nav/layout, release-detail chrome, a11y play controls, event calendar, cutover-vital, real-user journeys, plugin store, radio cover, channel designer, clips, full-screen minimize, mastering and stash specs: 285 tests, passing twice in a row with `--retries=0` locally. New: `use-cases-channel-row-hover.spec.ts`, `use-cases-radio-add-by-url.spec.ts`. Deleted: `routes-listen.spec.ts` (redirects live in `routes-library`).
+
+Still outside CI:
+- [ ] `listings-news`: phone row waveform width assertion predates the phone track-list grid (0.0.435); update to the new layout.
+- [ ] `channel-designer-parity`: the mock disagrees with itself (`api/studio-extras/profile.ts:66` "Demo Artist" vs `mock-session.ts:264` "artist").
+- [ ] `listener-purchase-flow` (buy) and `fan-sub-and-track-purchase`: setting purchase access by importing `api/purchase-tiers.ts` in the page leaves `tahti-mock-uploaded-sounds` on FREE; drive it through the Studio UI (`PurchaseAccessSection`) instead.
+- [ ] `artist-site-chrome`: skips unless the base URL contains 127.0.0.1 (CI uses localhost).
+
+App findings (product calls, not fixed):
+- Radio show pages (`/radio/show/$channelSlug`) are only linked from `RadioBookingCalendar.tsx`; the Radio Shows tab is gone. Link them from Radio or Schedule?
+- The mock artist has no Studio events (`/studio/schedule?show=events` is empty) although `evt-mock-1` opens for editing.
+
+Run against `VITE_FORCE_MOCK=1` vite on `127.0.0.1:5197`, `--workers=2 --retries=0`.
+
+"In CI?" is the current `e2e-mock` glob in `.github/workflows/ci.yml`; "Proposed" is the glob after this audit.
+
+### Specs that were already in CI
+
+All 176 tests passed on the first full run except `use-cases-coverage-gap-3` "moves a Discover widget later" (fixed, see below). Two new specs were added under the `use-cases-*` glob.
+
+| Spec | In CI? | Status | Action |
+| --- | --- | --- | --- |
+| `roles-*.spec.ts` (2) | yes | current | none |
+| `use-cases-*.spec.ts` (31) | yes | current | `coverage-gap-3` Discover order: assert through the Move earlier state (the widgets sit in a masonry, and a new Upcoming events widget now follows Most played) |
+| `use-cases-artist-5.spec.ts` | yes | current | "publishes a draft release" already opens "More release actions" first and passes |
+| `use-cases-channel-row-hover.spec.ts` | new | current | new: hover reveals only that row's play control; Shift+click queues without playing (`/channel/yaniho`) |
+| `use-cases-radio-add-by-url.spec.ts` | new | current | new: Radio → Browse stations → Add URL; the station shows in the radio stations row on `/radio` and on Listen |
+| `routes-uncovered.spec.ts` | yes | current | now covered by the `routes-*` glob |
+| `view-before-edit.spec.ts` | yes | current | none |
+| `batch-fixes*.spec.ts` (3) | yes | current | none |
+
+### Specs outside CI
+
+| Spec | In CI? | Status | Action |
+| --- | --- | --- | --- |
+| `a11y-play-controls.spec.ts` | no | current | add to CI |
+| `artist-site-chrome.spec.ts` | no | current | keep out of CI: it skips unless the base URL contains `127.0.0.1`, and CI uses `localhost` |
+| `channel-clips.spec.ts` | no | current | add to CI |
+| `channel-designer-artist-look.spec.ts` | no | current | add to CI |
+| `channel-designer-elements.spec.ts` | no | stale | fixed: shared `signIn`, `acknowledgeGuidelines` instead of a hard Acknowledge click; add to CI |
+| `channel-designer-parity.spec.ts` | no | current, red on mock | keep out of CI: mock data mismatch (designer shows the Studio profile mock "Demo Artist", `/channel/artist` shows "artist") |
+| `cutover-vital.spec.ts` | no | stale | fixed: track Playlists tab is an inline Sets picker (no "Choose playlists" dialog); hearthis opens the import wizard (choose, review, finish); `/listen/feed` redirects to Discover → Feed. Add to CI |
+| `event-calendar.spec.ts` | no | current | add to CI |
+| `fan-sub-and-track-purchase.spec.ts` | no | stale | fixed the post-signup login and added the bundled WAV fixture as a fallback for `riff.wav`; still red (see purchase setup below). Manual only |
+| `fullscreen-player-minimize.spec.ts` | no | current | add to CI |
+| `layout-stability.spec.ts` | no | current | add to CI |
+| `library-playlists.spec.ts` | no | current | add to CI |
+| `library-sounds-bulk.spec.ts` | no | stale | fixed: List view is Track size → List; dialogs asserted by heading. Add to CI |
+| `library-sounds-embeds.spec.ts` | no | current | add to CI |
+| `listener-purchase-flow.spec.ts` | no | stale | fixed the post-signup login (subscribe test passes); the buy test is red (see purchase setup below). Manual only |
+| `listings-news.spec.ts` | no | stale | deleted the homepage article test (the `article-card` testid is gone and `use-cases-anonymous` covers the news dialog). The phone row waveform test is red while the mobile track list layout is being reworked (`mobile-track-list-layout`); revisit after that ships |
+| `mastering.spec.ts` | no | current | add to CI |
+| `nav-chrome.spec.ts` | no | current | add to CI |
+| `plugin-store.spec.ts` | no | stale | fixed: Channel → Multicast now only links to Go live destinations; the Radio Browser card's button is "Configure Radio Browser directory". Add to CI |
+| `radio-cover.spec.ts` | no | stale | fixed: Configure button name. Add to CI |
+| `real-user-journeys.spec.ts` | no | stale | fixed: registration ends on "Check your email"; Library highlight via `aria-current`; History tab name is exact; Stats sections are radios ("Plays and listeners"). Add to CI |
+| `routes-admin-deep.spec.ts` | no | stale | fixed: Support is the idle default Inbox chip (by design, `inboxChipSelected`); `/admin/reports` lands on "Annual reports". Add to CI |
+| `routes-discover-radio.spec.ts` | no | stale | fixed: `/themes` lands on Appearance; deleted "a radio show is reachable from the Radio page" (no Shows tab, see findings). Add to CI |
+| `routes-governance.spec.ts` | no | current | add to CI |
+| `routes-library.spec.ts` | no | current | folded in the old `/listen/*` links from `routes-listen`. Add to CI |
+| `routes-listen.spec.ts` | no | dead | deleted: `/listen/feed` is Discover → Feed; its routes moved into `routes-library`, feed content is covered by `use-cases-listener-2` |
+| `routes-public-reader.spec.ts` | no | current | add to CI |
+| `routes-settings-redirects.spec.ts` | no | current | add to CI |
+| `routes-studio-content.spec.ts` | no | stale | fixed: the mock artist's Schedule → Events has no rows, so the edit form opens `evt-mock-1` directly; the episode review page has no "Public show details" section. Add to CI |
+| `routes-studio-stats.spec.ts` | no | current | add to CI |
+| `stash-and-subscriber-access.spec.ts` | no | current | add to CI |
+| `studio-release-detail-chrome.spec.ts` | no | current | add to CI |
+| `viewport-studio-sounds.spec.ts` | no | stale | fixed: at 768 px there is no sidebar or bottom nav; check the Library tabs instead. Add to CI |
+
+### Findings
+
+- **Radio show pages have no entry point from Radio.** The Shows tab is gone; `/radio/show/$channelSlug` is only linked from `RadioBookingCalendar.tsx:581`. Product call: link shows from the Radio page or the Schedule.
+- **Purchase setup in the commerce specs does not stick on the mock.** `listener-purchase-flow` and `fan-sub-and-track-purchase` set PURCHASE access via `page.evaluate(() => import('/src/api/purchase-tiers.ts'))`. `setSoundAccess` returns `{ ok: true }`, yet `tahti-mock-uploaded-sounds` in localStorage still says `FREE` straight after, so the track page shows Download and no Buy button. Cause not pinned down. Suggested: drive access through the Studio UI (`PurchaseAccessSection`) instead of importing app modules.
+- **Mock data mismatch for the designer parity spec.** `api/studio-extras/profile.ts:66` hard-codes `displayName: 'Demo Artist'`, while `mock-session.ts:264` and `mockChannel('artist')` give "artist". The real API returns one name, so this is mock-only.
+- **Mock artist has no Studio events.** `/studio/schedule?show=events` shows "No events listed yet" for `artist@tahti.live`, while `/studio/events/evt-mock-1/edit` opens. Check whether that's intended.
+
+### Proposed CI glob
+
+```
+e2e/roles-*.spec.ts e2e/use-cases-*.spec.ts e2e/routes-*.spec.ts e2e/view-before-edit.spec.ts e2e/batch-fixes*.spec.ts e2e/nav-chrome.spec.ts e2e/layout-stability.spec.ts e2e/studio-release-detail-chrome.spec.ts e2e/library-*.spec.ts e2e/viewport-studio-sounds.spec.ts e2e/a11y-play-controls.spec.ts e2e/event-calendar.spec.ts e2e/cutover-vital.spec.ts e2e/real-user-journeys.spec.ts e2e/plugin-store.spec.ts e2e/radio-cover.spec.ts e2e/channel-designer-elements.spec.ts e2e/channel-designer-artist-look.spec.ts e2e/channel-clips.spec.ts e2e/fullscreen-player-minimize.spec.ts e2e/mastering.spec.ts e2e/stash-and-subscriber-access.spec.ts
+```
+
+Kept out: `artist-site-chrome`, `channel-designer-parity`, `fan-sub-and-track-purchase`, `listener-purchase-flow`, `listings-news`.
+

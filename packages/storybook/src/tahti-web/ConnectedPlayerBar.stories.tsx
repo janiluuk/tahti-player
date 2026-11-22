@@ -8,6 +8,7 @@ import { expect, fireEvent, userEvent, waitFor, within } from 'storybook/test';
 import type { QueueItem } from '@tahti-player/model';
 
 import { withTahtiRouter } from './_lib/decorators';
+import { stubPhoneViewport } from './_lib/phone';
 
 function mockQueueItem(
   id: string,
@@ -280,5 +281,38 @@ export const EmbedTrack: Story = {
     await expect(canvas.queryByTestId('player-embed-note')).toBeNull();
     await expect(canvas.getByTestId('player-next-button')).toBeVisible();
     await expect(canvas.queryByRole('slider', { name: /^Seek/ })).toBeNull();
+  },
+};
+
+/** Phone bar while paused: a quiet × hides it until something plays again,
+ * and the queue stays. While playing there is no close. */
+export const PhoneCloseWhenPaused: Story = {
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  decorators: [withSeededPlayerBar({ status: 'paused' })],
+  beforeEach: stubPhoneViewport,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByTestId('mobile-player-bar')).toBeVisible();
+    const close = canvas.getByRole('button', { name: 'Close player' });
+    const box = close.getBoundingClientRect();
+    await expect(box.width).toBeGreaterThanOrEqual(44);
+    await expect(box.height).toBeGreaterThanOrEqual(44);
+
+    await userEvent.click(canvas.getByTestId('player-play-button'));
+    await expect(
+      canvas.queryByRole('button', { name: 'Close player' }),
+    ).toBeNull();
+    await userEvent.click(await canvas.findByTestId('player-pause-button'));
+
+    await userEvent.click(
+      await canvas.findByRole('button', { name: 'Close player' }),
+    );
+    await waitFor(() =>
+      expect(canvas.queryByTestId('mobile-player-bar')).toBeNull(),
+    );
+    await expect(usePlayerStore.getState().queue).toHaveLength(3);
+
+    usePlayerStore.getState().setStatus('playing');
+    await expect(await canvas.findByTestId('mobile-player-bar')).toBeVisible();
   },
 };

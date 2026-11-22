@@ -41,6 +41,13 @@ export function formatUploadDate(value: string | undefined): string | null {
   }).format(date);
 }
 
+/** The extras are written as ", 3 min" tails; with nothing before them the
+ * first one leads the line. */
+function leadingCapital(line: string): string {
+  const trimmed = line.replace(/^,\s*/, '');
+  return trimmed.charAt(0).toLocaleUpperCase() + trimmed.slice(1);
+}
+
 /** Public totals for one of your tracks, when the API sent them. */
 export function soundRowStats(item: StudioSound) {
   if (
@@ -78,27 +85,37 @@ function isProcessingSound(item: StudioSound): boolean {
   );
 }
 
-export function SoundStatusLine({ item }: { item: StudioSound }) {
+export function SoundStatusLine({
+  item,
+  showUploaded = true,
+}: {
+  item: StudioSound;
+  /** Off when the row's stats already show the date with a clock icon. */
+  showUploaded?: boolean;
+}) {
   const { t } = useTranslation('web');
   const failed = item.status === 'ERROR';
-  const uploaded = formatUploadDate(item.createdAt);
+  const uploaded = showUploaded ? formatUploadDate(item.createdAt) : null;
   // A ready track needs no status word; only the exceptions are spelled out.
   const status = isProcessingSound(item)
     ? t('library.processing')
     : failed
       ? t('library.processingFailed')
       : '';
+  const line = leadingCapital(
+    [
+      status,
+      uploaded
+        ? status
+          ? t('library.uploadedOn', { date: uploaded })
+          : t('library.uploadedOnLead', { date: uploaded })
+        : '',
+      soundStatusExtras(item, t),
+    ].join(''),
+  );
   return (
     <>
-      <p className="text-foreground-secondary text-xs">
-        {status}
-        {uploaded
-          ? status
-            ? t('library.uploadedOn', { date: uploaded })
-            : t('library.uploadedOnLead', { date: uploaded })
-          : ''}
-        {soundStatusExtras(item, t)}
-      </p>
+      <p className="text-foreground-secondary text-xs">{line}</p>
       {failed && item.processingError ? (
         <InlineError textSize="xs" announce={false}>
           {item.processingError}
@@ -111,8 +128,10 @@ export function SoundStatusLine({ item }: { item: StudioSound }) {
 function SoundStatusWithRetry({
   item,
   retry,
+  showUploaded,
 }: {
   item: StudioSound;
+  showUploaded: boolean;
   retry: {
     retry: (item: Pick<StudioSound, 'id' | 'title'>) => Promise<void>;
     retryingId: string | null;
@@ -121,7 +140,7 @@ function SoundStatusWithRetry({
   const { t } = useTranslation('web');
   return (
     <>
-      <SoundStatusLine item={item} />
+      <SoundStatusLine item={item} showUploaded={showUploaded} />
       {canRetrySoundProcessing(item) ? (
         <Button
           size="xs"
@@ -230,8 +249,13 @@ function toHostedListItem(
   const peaks = item.peaks ?? null;
 
   const titleNode: ReactNode = <SoundTitle item={item} />;
+  const stats = soundRowStats(item);
   const belowTitle: ReactNode = (
-    <SoundStatusWithRetry item={item} retry={retry} />
+    <SoundStatusWithRetry
+      item={item}
+      retry={retry}
+      showUploaded={!stats?.releaseDate}
+    />
   );
 
   return {
@@ -247,7 +271,7 @@ function toHostedListItem(
     durationLabel:
       item.durationSec != null ? formatDuration(item.durationSec) : undefined,
     durationSec: item.durationSec ?? null,
-    stats: soundRowStats(item),
+    stats,
     processing: isProcessingSound(item),
     peaks,
     progress: 0,

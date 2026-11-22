@@ -16,7 +16,6 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [first-100-users-infra.md](first-100-users-infra.md) | Verified on vimage 2026-11-02: rate limits fail closed, disk fine; backup restore test + vimage6 push fixed in tahti-org#1042; left: leaked restore containers, MinIO mirror + DR alias |
 | open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
 | blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
-| open    | [ci-red-master-and-stack-smoke.md](ci-red-master-and-stack-smoke.md) | master CI: `/api/me/password/set` not in latest tahti-org release (release or allowlist); tahti-org Stack smoke: drop duplicate pnpm `version` |
 
 ## Next 50 slices
 
@@ -39,17 +38,10 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [player-mobile-actions.md](player-mobile-actions.md) | Player view on phones: drop the duplicate Add to playlist (it is in the menu), add a Love icon |
-| open    | [discover-events-widget.md](discover-events-widget.md) | Seed production events with artwork, upcoming list first on Discover → Events, events card-row widget on Discover |
-| open    | [mobile-menu-tahti-live-link.md](mobile-menu-tahti-live-link.md) | Remove the tahti.live link from the phone menu (not found in tahti-web code yet; check APK/PWA chrome) |
-| open    | [mobile-player-bar-dismiss.md](mobile-player-bar-dismiss.md) | Phones: subtle close for the player bar when nothing is playing |
-| open    | [mobile-track-list-layout.md](mobile-track-list-layout.md) | Phone track list: bigger artwork, one date (clock), current thumbnail not taking the left column, all densities |
-| open    | [e2e-fix-and-audit.md](e2e-fix-and-audit.md) | Fix the failing e2e specs (use-cases-artist-5 known) and audit every spec against current navigation |
-| open    | [yaniho-hearthis-albums.md](yaniho-hearthis-albums.md) | Every Yaniho hearthis.at album as its own album, clean track titles, per-album track index, owner/admin reorder |
-| open    | [news-widget-admin-edit.md](news-widget-admin-edit.md) | News widget: edit icon on every item for admins, opens an edit modal |
-| open    | [studio-admin-design-audit.md](studio-admin-design-audit.md) | Design audit of Studio + Admin: crowded/mixed views, chat in one place, long views into tabs |
-| open    | [more-3d-visualizers.md](more-3d-visualizers.md) | A few more distinct 3D visualizer presets; colour every preset from the artwork's dominant colour |
-| open    | [playlist-dark-mode-background.md](playlist-dark-mode-background.md) | Playlist page is solid orange in dark mode; use a soft wash from the cover or first track artwork |
+| partial | [discover-events-widget.md](discover-events-widget.md) | Upcoming events first on Discover → Events, events widget, mock events with artwork shipped; left: production seed events (admin session) and an e2e step |
+| partial | [yaniho-hearthis-albums.md](yaniho-hearthis-albums.md) | Album track numbers, dense order, owner + board reorder shipped (tahti-org#1128, web); left: clean existing "artist - album - NN - title" names on production, 1:1 check against hearthis.at |
+| partial | [studio-admin-design-audit.md](studio-admin-design-audit.md) | Findings written (per-view table, 15 chat surfaces, proposed slices); next: user OK on the proposals, then build |
+| partial | [more-3d-visualizers.md](more-3d-visualizers.md) | Visualizers follow the artwork colour; left: 3-4 new 3D presets (user picks the list) |
 | partial | [discover-events-tab.md](discover-events-tab.md) | Events tab with range / past / city / venue / search filters and calendar view, posting, banner crop, event page backdrop built; left: live post check, event gallery API deploy (tahti-org#1122 merged) |
 | partial | [mobile-bottom-nav-readability.md](mobile-bottom-nav-readability.md) | Taller bar that grows by the gesture-bar inset, bigger labels/icons; left: check on a real Android phone |
 | open    | [pattern-detection-grants-ui.md](pattern-detection-grants-ui.md) | Board grant preview anomaly chips + PATTERN_FRAUD_ALERT activity; left: pitch copy after org merge |
@@ -65,12 +57,11 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Library Playlists + Go live takeover (next-30); left: phase 3 Go live stepper polish |
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
-| partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time and cache slow calls server-side |
-| open    | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Community stats at the top (0.0.380) with their own snapshot, loading next to the dashboard (0.0.401); left: measure and cache the slow API calls (tahti-org), and Grafana from tahti.live cannot connect |
+| open | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Community stats at the top with their own snapshot; slow calls cached server-side (tahti-org#1128); left: Grafana from tahti.live cannot connect |
 | partial | [google-facebook-login.md](google-facebook-login.md) | Google/Facebook sign-in built (web + tahti-org#1124, #1125); left: provider apps, server secrets, deploy, live check |
 | partial | [navigation-performance.md](navigation-performance.md) | Snapshots/GET cache/shell cuts done; remount assert in `useSnapshotFetch.test`; left: real-browser check vs live API |
 | open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | Many-file Chromium drop; CI ~50-file shards; 406 tahti-web stories; no single-file culprit yet |
-| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Matrix + Library Playlists viewport e2e; left: collection player placement, open findings |
+| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | 285-test mock CI set (audit 2026-11-22); left: 4 specs outside CI (listings-news, designer parity, purchase flows, artist-site-chrome), collection player placement, 2 product findings |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: cross-section trail on phones (design call) |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/; storybook surfaces + close-external-issue wrapped; desktop shims deprecated toward `tahti-ops desktop` |

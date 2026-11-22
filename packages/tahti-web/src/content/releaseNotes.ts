@@ -37,6 +37,58 @@ export function countHighlights(note: ReleaseNote): number {
  * what an artist or listener would notice — not every internal bump. */
 export const RELEASE_NOTES: ReleaseNote[] = [
   {
+    id: '2026-11-22',
+    period: '9–22 Nov 2026',
+    date: '2026-11-22',
+    version: '0.0.435',
+    sections: [
+      {
+        id: 'listen',
+        label: 'Listen',
+        highlights: [
+          'Albums list their tracks in order with track numbers, so a record plays the way the artist meant it.',
+          'On a channel, only the track you point at shows a play button, so a long list stays calm to read. Hold Shift to add a track to the queue instead of playing it.',
+          'A radio station you add lands in the radio row with your other stations, right where you look for it.',
+          'Discover has an Upcoming events widget, and the Events tab opens with what is happening next.',
+          'Playlist pages pick up a soft glow from their cover instead of a solid colour wall, so dark mode stays easy on the eyes.',
+          'Visualizers take their colours from the artwork of the track that is playing.',
+        ],
+      },
+      {
+        id: 'listen',
+        label: 'On phones',
+        highlights: [
+          'Track lists on phones have bigger artwork, one date per row and room for long titles, so they are easier to scan with a thumb.',
+          'The full-screen player on phones has a Love button where Add to playlist used to be (it is still in the ⋯ menu).',
+          'When nothing is playing, a small × hides the player bar so it is out of your way; it comes back as soon as you press play.',
+        ],
+      },
+      {
+        id: 'studio',
+        label: 'Studio',
+        highlights: [
+          'Artists can drag their album tracks into order, and the board can fix the order of any album.',
+          'Uploads named after files get clean titles: no track numbers, file endings or your own name in front.',
+        ],
+      },
+      {
+        id: 'admin',
+        label: 'Admin',
+        highlights: [
+          'Board members can edit or remove Tahti news right from the news widget, and removing always asks first.',
+          'The admin overview loads faster: the slowest checks are now cached for a few seconds instead of being recounted on every open.',
+        ],
+      },
+      {
+        id: 'settings',
+        label: 'Language',
+        highlights: [
+          'The last English sentences on transparency, earnings, sign-up, DJ hints and the Discover widget menu now read in Finnish too.',
+        ],
+      },
+    ],
+  },
+  {
     id: '2026-10-20',
     period: '7–20 Oct 2026',
     date: '2026-10-20',

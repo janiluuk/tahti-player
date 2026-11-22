@@ -156,6 +156,7 @@ export function ChannelHeroBlock({
             : channel.colorSchemeJson
         }
         artworkUrl={channel.nowPlaying?.artworkUrl ?? channel.user.avatarUrl}
+        followArtworkColor={Boolean(channel.nowPlaying?.artworkUrl)}
         galleryMode={channel.galleryMode}
         slideshowImages={channel.slideshowImages}
         slideshowPreset={channel.slideshowPreset}

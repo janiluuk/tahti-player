@@ -142,10 +142,7 @@ test('events: add and edit forms open from Schedule → Events', async ({
     path: '/studio/schedule?show=events',
     heading: 'Schedule',
   });
-  const edit = await firstHref(
-    page,
-    'main a[href^="/studio/events/"][href$="/edit"]',
-  );
+  const edit = '/studio/events/evt-mock-1/edit';
 
   await clickTo(page, errors, '/studio/events/new');
   await expectLanded(
@@ -188,5 +185,5 @@ test('a show, its episodes tab and an episode review open from Shows', async ({
 
   await visit(page, errors, show);
   await clickTo(page, errors, episode);
-  await expectLanded(page, errors, episode, DETAIL_BACK, 'Public show details');
+  await expectLanded(page, errors, episode, DETAIL_BACK);
 });

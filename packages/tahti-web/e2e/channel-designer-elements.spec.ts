@@ -1,23 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { E2E_EMAIL, E2E_PASSWORD } from './helpers/auth';
-
-async function signIn(page: import('@playwright/test').Page) {
-  await page.goto('/login');
-  await page.getByLabel('Email').fill(E2E_EMAIL);
-  await page.getByLabel('Password').fill(E2E_PASSWORD);
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await expect(
-    page.getByRole('button', { name: /^Signed in as/ }),
-  ).toBeVisible();
-  await page.evaluate(() => {
-    const raw = localStorage.getItem('tahti-web-auth');
-    const userId = raw ? JSON.parse(raw)?.state?.user?.id : null;
-    if (typeof userId === 'string') {
-      localStorage.setItem(`tahti-web-onboarded:${userId}`, '1');
-    }
-  });
-}
+import { acknowledgeGuidelines, signIn } from './helpers/auth';
 
 async function openChannelDesigner(page: import('@playwright/test').Page) {
   await page.goto('/studio/profile/appearance');
@@ -90,7 +73,7 @@ test('channel editor keeps appearance drafts across panels and reverts unsaved c
     menu.getByText('Editing Live stage', { exact: true }),
   ).toBeVisible();
   await expect(page.getByText('Editing', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Acknowledge', exact: true }).click();
+  await acknowledgeGuidelines(page);
   await expect(
     page.getByRole('button', { name: 'Acknowledge', exact: true }),
   ).toHaveCount(0);

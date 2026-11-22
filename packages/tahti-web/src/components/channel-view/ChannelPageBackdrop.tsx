@@ -134,6 +134,7 @@ export function ChannelPageBackdrop({
             artworkUrl={
               channel.nowPlaying?.artworkUrl ?? channel.user.avatarUrl
             }
+            followArtworkColor={Boolean(channel.nowPlaying?.artworkUrl)}
           />
         ))}
     </>

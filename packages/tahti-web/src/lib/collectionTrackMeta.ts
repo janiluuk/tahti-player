@@ -12,6 +12,13 @@ export function collectionTrackMeta(col: PublicCollection) {
       [string, NonNullable<PublicCollection['items'][number]['sound']>]
     >,
   );
+  const numbers = new Map(
+    col.items.flatMap((item) =>
+      item.sound && item.trackNumber != null
+        ? [[item.sound.id, item.trackNumber] as const]
+        : [],
+    ),
+  );
   return (
     playable: TahtiPlayable,
   ):
@@ -19,15 +26,18 @@ export function collectionTrackMeta(col: PublicCollection) {
         genre?: string | null;
         stats?: AmbientTrackStats;
         downloadable?: boolean;
+        trackNumber?: number;
       }
     | undefined => {
     const soundId = soundIdFromPlayableId(playable.id);
     const sound = soundId ? byId.get(soundId) : undefined;
+    const trackNumber = soundId ? numbers.get(soundId) : undefined;
     if (!sound) {
       return undefined;
     }
     return {
       genre: sound.genre ?? null,
+      trackNumber,
       downloadable: sound.downloadsEnabled === true && Boolean(sound.audioUrl),
       stats: {
         releaseDate: sound.createdAt ?? null,

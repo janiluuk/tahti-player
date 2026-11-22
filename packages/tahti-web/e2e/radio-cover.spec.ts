@@ -75,7 +75,7 @@ async function openRadioBrowserStations(page: Page): Promise<{
     await activate.click();
   }
   await settings
-    .getByRole('button', { name: 'Configure', exact: true })
+    .getByRole('button', { name: 'Configure Radio Browser directory' })
     .click();
 
   const configure = page.getByRole('dialog', {
