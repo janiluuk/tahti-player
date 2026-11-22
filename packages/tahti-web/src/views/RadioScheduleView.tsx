@@ -136,7 +136,15 @@ export function RadioScheduleView() {
               (booking) =>
                 booking.channelSlug === ownChannelSlug || booking.isMine,
             )
-            .filter((booking) => new Date(booking.endAt).getTime() > Date.now())
+            .filter((booking) => {
+              const endMs = new Date(booking.endAt).getTime();
+              const startMs = new Date(booking.startAt).getTime();
+              if (Number.isNaN(endMs) || Number.isNaN(startMs)) {
+                return false;
+              }
+              // Still upcoming or on air — drop long-overdue slots.
+              return endMs > Date.now();
+            })
             .sort((left, right) => left.startAt.localeCompare(right.startAt)),
         );
       },

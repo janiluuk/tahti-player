@@ -19,6 +19,7 @@ import {
 import {
   endAtFor,
   fromLocalParts,
+  isUpcomingOrLiveScheduleCard,
   type ScheduleCard,
 } from './schedule-helpers';
 import {
@@ -266,10 +267,12 @@ export function useScheduleForm() {
         title: schedule.nextBroadcastNote ?? 'Next live session',
       });
     }
-    return rows.sort(
-      (left, right) =>
-        new Date(left.startAt).getTime() - new Date(right.startAt).getTime(),
-    );
+    return rows
+      .filter((item) => isUpcomingOrLiveScheduleCard(item))
+      .sort(
+        (left, right) =>
+          new Date(left.startAt).getTime() - new Date(right.startAt).getTime(),
+      );
   }, [schedule, upcoming, scheduledShows, shows]);
 
   const setQuickDate = (value: Date) =>
