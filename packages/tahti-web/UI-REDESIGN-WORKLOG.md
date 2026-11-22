@@ -1,3 +1,9 @@
+## 2026-11-23 - Release header ambience + description list (0.0.440)
+
+Studio release detail: artwork-driven header visualizer/wash (unless a
+non-MINIMAL visualPreset is set); description only in Details, split into a
+readable list when it is a pasted numbered tracklist.
+
 ## 2026-11-23 - Admin Overview tabs + Stats detail polish (0.0.439)
 
 Admin Dashboard: Health · Activity tabs; Finance YTD on Financial; Chat and

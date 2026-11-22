@@ -50,8 +50,11 @@ import {
 } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { resolveArtworkVisualizerPreset } from '../../lib/artworkVisualizer';
+import { releaseDescriptionLines } from '../../lib/releaseDescription';
 import { releaseStateLabel, releaseTypeLabel } from '../../lib/releaseLabels';
 import { trackTableLabels } from '../../lib/trackTableLabels';
+import { useDominantColor } from '../../lib/useDominantColor';
 import {
   RELEASE_DETAIL_TABS,
   releaseDetailTabFromSearch,
@@ -112,6 +115,12 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   const navigate = useNavigate();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const coverRgb = useDominantColor(artworkPreview);
+  const headerVisualizer =
+    release?.visualPreset && release.visualPreset !== 'MINIMAL'
+      ? release.visualPreset
+      : resolveArtworkVisualizerPreset(id);
+  const descriptionLines = releaseDescriptionLines(description);
 
   const removeRelease = async () => {
     setDeleting(true);
@@ -239,7 +248,9 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                   : undefined
               }
               subtitle={`${releaseTypeLabel(release.type, t)} · ${releaseStateLabel(release.state, t)}`}
-              description={description.trim() || undefined}
+              ambient={{ rgb: coverRgb }}
+              visualizerPreset={headerVisualizer}
+              artworkUrlForVisualizer={artworkPreview}
               stats={headerStats}
               actions={
                 <>
@@ -397,13 +408,25 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                                 tone="secondary"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                rows={3}
+                                rows={Math.min(
+                                  12,
+                                  Math.max(3, descriptionLines.length + 1),
+                                )}
                               />
-                            ) : (
+                            ) : descriptionLines.length === 0 ? (
                               <p className="text-foreground-secondary text-sm">
-                                {description.trim() ||
-                                  t('studioReleaseDetail.noDescription')}
+                                {t('studioReleaseDetail.noDescription')}
                               </p>
+                            ) : descriptionLines.length === 1 ? (
+                              <p className="text-foreground-secondary text-sm whitespace-pre-wrap">
+                                {descriptionLines[0]}
+                              </p>
+                            ) : (
+                              <ul className="text-foreground-secondary flex list-none flex-col gap-1.5 text-sm">
+                                {descriptionLines.map((line) => (
+                                  <li key={line}>{line}</li>
+                                ))}
+                              </ul>
                             )}
                           </StudioPanel>
 
