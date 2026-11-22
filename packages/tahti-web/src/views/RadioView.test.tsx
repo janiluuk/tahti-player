@@ -217,6 +217,20 @@ describe('RadioView visualizer hero', () => {
       within(within(hero).getByTestId('radio-station-logo')).getByText('TR'),
     ).toBeTruthy();
   });
+
+  it('keeps the header to one row: title, status and a help icon with the station blurb', async () => {
+    const router = createRouter({
+      routeTree: createRootRoute({ component: RadioView }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    const about = screen.getByTestId('radio-about');
+    expect(about.getAttribute('aria-label')).toMatch(/^About /);
+    expect(screen.queryByText('@tahti-radio')).toBeNull();
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+  });
 });
 
 describe('RadioView failed sections', () => {

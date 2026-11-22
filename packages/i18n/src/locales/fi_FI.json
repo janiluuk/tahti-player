@@ -2171,7 +2171,8 @@
       "scheduleLoadError": "Aikataulua ei voitu ladata",
       "bookASlot": "Varaa aika",
       "fullSchedule": "Koko aikataulu",
-      "openLiveChannel": "Avaa {{name}}"
+      "openLiveChannel": "Avaa {{name}}",
+      "about": "Tietoa: {{name}}"
     },
     "messagesPopover": {
       "title": "Viestit",

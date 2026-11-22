@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-11-22',
     period: '9–22 Nov 2026',
     date: '2026-11-22',
-    version: '0.0.435',
+    version: '0.0.436',
     sections: [
       {
         id: 'listen',
@@ -49,6 +49,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
           'Albums list their tracks in order with track numbers, so a record plays the way the artist meant it.',
           'On a channel, only the track you point at shows a play button, so a long list stays calm to read. Hold Shift to add a track to the queue instead of playing it.',
           'A radio station you add lands in the radio row with your other stations, right where you look for it.',
+          'The Radio page fits on one screen: the player and your stations show without scrolling, and the station blurb waits behind a ? icon.',
           'Discover has an Upcoming events widget, and the Events tab opens with what is happening next.',
           'Playlist pages pick up a soft glow from their cover instead of a solid colour wall, so dark mode stays easy on the eyes.',
           'Visualizers take their colours from the artwork of the track that is playing.',

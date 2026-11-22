@@ -1,6 +1,7 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import {
   CalendarDaysIcon,
+  CircleHelpIcon,
   HistoryIcon,
   ListOrderedIcon,
   MicIcon,
@@ -398,6 +399,56 @@ export function RadioView() {
       title={t('radio.title')}
       data-testid="radio-view"
       classes={{ root: 'px-0 pt-0' }}
+      actions={
+        station ? (
+          <div className="flex shrink-0 items-center gap-2">
+            {online ? (
+              <OnAirBadge />
+            ) : (
+              <span className="text-accent-red-strong font-mono text-xs font-semibold tracking-wide uppercase">
+                {t('radio.offline')}
+              </span>
+            )}
+            <Tooltip
+              side="bottom"
+              content={
+                <span className="flex max-w-xs flex-col gap-1">
+                  <span className="font-semibold">
+                    {station.user.displayName} · @{TAHTI_RADIO_SLUG}
+                  </span>
+                  {description ? (
+                    <span className="whitespace-pre-wrap">{description}</span>
+                  ) : null}
+                </span>
+              }
+            >
+              <Button
+                type="button"
+                size="icon-sm"
+                variant="text"
+                aria-label={t('radio.about', {
+                  name: station.user.displayName,
+                })}
+                data-testid="radio-about"
+              >
+                <CircleHelpIcon size={16} aria-hidden />
+              </Button>
+            </Tooltip>
+            <Tooltip content={t('radio.openChannel')} side="top">
+              <ButtonLink
+                to="/channel/$slug"
+                params={{ slug: TAHTI_RADIO_SLUG }}
+                search={{ view: 'channel' }}
+                size="icon-sm"
+                variant="secondary"
+                aria-label={t('radio.openChannel')}
+              >
+                <RadioTowerIcon size={16} aria-hidden />
+              </ButtonLink>
+            </Tooltip>
+          </div>
+        ) : undefined
+      }
     >
       {loading ? (
         <div
@@ -427,47 +478,6 @@ export function RadioView() {
         />
       ) : (
         <ContentReveal className="flex flex-col gap-6">
-          <header className="flex items-start justify-between gap-4">
-            <div className="flex min-w-0 items-start gap-4">
-              <div className="min-w-0 flex-1">
-                <div className="text-foreground text-2xl font-bold tracking-tight">
-                  {station.user.displayName}
-                </div>
-                <div className="flex flex-wrap items-center gap-2 text-sm">
-                  <span className="text-foreground-secondary">
-                    @{TAHTI_RADIO_SLUG}
-                  </span>
-                  {online ? (
-                    <OnAirBadge />
-                  ) : (
-                    <span className="text-accent-red-strong font-mono text-xs font-semibold tracking-wide uppercase">
-                      {t('radio.offline')}
-                    </span>
-                  )}
-                </div>
-                {description ? (
-                  <p className="text-foreground-secondary mt-2 max-w-md text-sm whitespace-pre-wrap">
-                    {description}
-                  </p>
-                ) : null}
-              </div>
-            </div>
-            <div className="flex shrink-0 items-center gap-2">
-              <Tooltip content={t('radio.openChannel')} side="top">
-                <ButtonLink
-                  to="/channel/$slug"
-                  params={{ slug: TAHTI_RADIO_SLUG }}
-                  search={{ view: 'channel' }}
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-label={t('radio.openChannel')}
-                >
-                  <RadioTowerIcon size={16} aria-hidden />
-                </ButtonLink>
-              </Tooltip>
-            </div>
-          </header>
-
           {!memberLive && sectionErrors.relay ? (
             <PageErrorBanner
               title={t('radio.memberRelayError')}
@@ -562,7 +572,7 @@ export function RadioView() {
       )}
 
       <section
-        className="mt-8 flex flex-col gap-6"
+        className="mt-6 flex flex-col gap-6"
         data-testid="radio-stations"
       >
         <FavoriteStationsRow />
