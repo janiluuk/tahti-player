@@ -48,6 +48,8 @@ test.beforeEach(async ({ page }) => {
 test('Studio stats, updates and audience pages render with Studio chrome', async ({
   page,
 }) => {
+  // Walks many routes in one test; each is a cold dev-server compile in CI.
+  test.slow();
   const errors = collectPageErrors(page);
   for (const route of statsRoutes) {
     await expectRouteHealthy(page, errors, route);

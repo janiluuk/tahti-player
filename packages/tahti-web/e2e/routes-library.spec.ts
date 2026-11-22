@@ -76,6 +76,8 @@ const libraryRoutes: RouteVisit[] = [
 test('library tabs and their aliases (including old /listen links) render for a signed-in artist', async ({
   page,
 }) => {
+  // Walks many routes in one test; each is a cold dev-server compile in CI.
+  test.slow();
   const errors = collectPageErrors(page);
   await signIn(page);
 
