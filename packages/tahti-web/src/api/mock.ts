@@ -1132,6 +1132,49 @@ function buildMockProfile(username: string): PublicProfile {
       presskit: `/api/v1/u/${username}/press-kit.zip`,
     },
     backgroundMusicUrl: null,
+    linkPage: {
+      playMode: 'inline',
+      links: [
+        {
+          key: 'website',
+          label: 'Website',
+          url: 'https://tahti.live',
+          source: 'profile',
+        },
+        {
+          key: 'soundcloud',
+          label: 'SoundCloud',
+          url: 'https://soundcloud.com/demo-artist',
+          source: 'profile',
+        },
+        {
+          key: 'spotify',
+          label: 'Spotify',
+          url: 'https://open.spotify.com/artist/demo',
+          source: 'profile',
+        },
+      ],
+      sounds: archive.slice(0, 5).map((a) => ({
+        id: a.id,
+        title: a.title,
+        coverUrl: a.bannerUrl ?? null,
+        durationSec: a.durationSec ?? null,
+        playUrl: a.audioUrl ?? null,
+        badge: null,
+      })),
+      sets: [
+        {
+          id: favoritesSlug,
+          slug: favoritesSlug,
+          name: 'Favorites vault',
+          coverUrl: null,
+          itemCount: 2,
+          url: `/u/${username}/c/${favoritesSlug}`,
+        },
+      ],
+      siteUrl: `https://${username}.tahti.live`,
+      linkPageUrl: `https://tahti.live/u/${username}`,
+    },
   };
 }
 

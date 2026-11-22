@@ -8,6 +8,7 @@ export type ArtistSettingsSection =
   | 'story'
   | 'people'
   | 'connections'
+  | 'link-page'
   | 'branding'
   | 'gallery'
   | 'press-kit'

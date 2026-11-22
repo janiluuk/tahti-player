@@ -29,6 +29,7 @@ const ARTIST_SECTIONS: readonly ArtistSettingsSection[] = [
   'story',
   'people',
   'connections',
+  'link-page',
   'branding',
   'gallery',
   'press-kit',

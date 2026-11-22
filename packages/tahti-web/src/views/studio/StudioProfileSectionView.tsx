@@ -9,6 +9,7 @@ import {
 } from '../../lib/studioProfileSections';
 import { ArtistPanel } from '../settings/panels/ArtistPanel';
 import { ChannelPanel } from '../settings/panels/ChannelPanel';
+import { LinkPageEditor } from './LinkPageEditor';
 import {
   studioProfileArtistItems,
   studioProfileChannelItems,
@@ -38,7 +39,9 @@ export function StudioProfileSectionView({
           classes={{ root: 'px-0 pt-0', content: 'gap-5' }}
         >
           <div data-testid={`studio-profile-section-${section}`}>
-            {channelForm ? (
+            {section === 'link-page' ? (
+              <LinkPageEditor />
+            ) : channelForm ? (
               <ChannelPanel section={section} />
             ) : (
               <ArtistPanel section={section} />

@@ -6,6 +6,7 @@ export const STUDIO_PROFILE_ARTIST_SECTIONS = [
   'story',
   'people',
   'connections',
+  'link-page',
   'branding',
   'gallery',
   'press-kit',

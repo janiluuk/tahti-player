@@ -1,3 +1,9 @@
+## 2026-11-22 - Artist Link page + subdomain full site (0.0.433)
+
+Apex `/u/:username` is the short Link page; `username.tahti.live/` is the full
+artist profile. Studio Link page editor with live preview. Nginx OG for bare
+subdomain.
+
 ## 2026-11-20 - Smooth initial load (0.0.430)
 
 Listen / Radio / artist / route chunks: reserved-height skeletons + ContentReveal
