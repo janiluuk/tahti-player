@@ -2171,7 +2171,8 @@
       "scheduleLoadError": "Could not load the schedule",
       "bookASlot": "Book a slot",
       "fullSchedule": "Full schedule",
-      "openLiveChannel": "Open {{name}}"
+      "openLiveChannel": "Open {{name}}",
+      "about": "About {{name}}"
     },
     "messagesPopover": {
       "title": "Messages",
