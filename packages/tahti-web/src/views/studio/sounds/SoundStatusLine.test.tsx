@@ -30,4 +30,12 @@ describe('SoundStatusLine', () => {
     render(<SoundStatusLine item={sound({ status: 'PROCESSING' })} />);
     expect(screen.getByText(/^Processing, uploaded/)).toBeTruthy();
   });
+
+  it('leaves the date to the clock in the stats when asked', () => {
+    const { container } = render(
+      <SoundStatusLine item={sound()} showUploaded={false} />,
+    );
+    expect(container.textContent).toBe('1 h 2 min');
+    expect(container.textContent).not.toMatch(/Uploaded|2026/);
+  });
 });

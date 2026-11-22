@@ -40,13 +40,16 @@ test('a new account can complete registration and immediately log in with it', a
   await page.getByLabel('Confirm password').fill('Secure-Passw0rd');
   await page.getByRole('button', { name: 'Create account' }).click();
 
-  // Mock registration always succeeds and switches the dialog to login
-  // mode -- there's no email-verification step to wait through offline.
-  await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
-
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill('Secure-Passw0rd');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  // Mock registration ends on "Check your email"; its Sign in action opens
+  // the Log in form.
+  await page
+    .getByRole('dialog', { name: 'Check your email' })
+    .getByRole('button', { name: 'Sign in' })
+    .click();
+  const logIn = page.getByRole('dialog', { name: /Log in|Sign in/i });
+  await logIn.getByLabel('Email').fill(email);
+  await logIn.getByLabel('Password', { exact: true }).fill('Secure-Passw0rd');
+  await logIn.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(
     page.getByRole('button', { name: /^Signed in as/ }),
@@ -159,9 +162,9 @@ test('library is its own sidebar section with Library tabs, not a Studio tab', a
   ).toHaveCount(0);
   await expect(
     page
-      .getByTestId('sidebar-navigation-item')
-      .filter({ hasText: /^Library$/ }),
-  ).toHaveClass(/bg-primary/);
+      .getByTestId('sidebar-navigation')
+      .getByRole('link', { name: 'Library' }),
+  ).toHaveAttribute('aria-current', 'page');
   await expect(page).toHaveURL(/\/library\/favorites$/);
   await expect(page.getByRole('tab', { name: 'Favorites' })).toHaveAttribute(
     'aria-selected',
@@ -171,17 +174,16 @@ test('library is its own sidebar section with Library tabs, not a Studio tab', a
   await expect(page.getByRole('tab', { name: 'Collections' })).toHaveCount(0);
 
   await acknowledgeGuidelines(page);
-  await page.getByRole('tab', { name: 'History' }).click();
+  await page.getByRole('tab', { name: 'History', exact: true }).click();
   await expect(page).toHaveURL(/\/library\/history$/);
-  await expect(page.getByRole('tab', { name: 'History' })).toHaveAttribute(
-    'aria-selected',
-    'true',
-  );
+  await expect(
+    page.getByRole('tab', { name: 'History', exact: true }),
+  ).toHaveAttribute('aria-selected', 'true');
   await expect(
     page
-      .getByTestId('sidebar-navigation-item')
-      .filter({ hasText: /^Library$/ }),
-  ).toHaveClass(/bg-primary/);
+      .getByTestId('sidebar-navigation')
+      .getByRole('link', { name: 'Library' }),
+  ).toHaveAttribute('aria-current', 'page');
 
   await page.setViewportSize({ width: 390, height: 844 });
   const mobilePrimary = page.getByRole('navigation', { name: 'Primary' });
@@ -330,7 +332,7 @@ test('artist stats show real listen minutes and the listener geography map', asy
     page.getByRole('heading', { level: 1, name: 'Stats' }),
   ).toBeVisible();
   await expect(page.getByText('Minutes listened')).toBeVisible();
-  await page.getByRole('tab', { name: 'Plays & listeners' }).click();
+  await page.getByRole('radio', { name: 'Plays and listeners' }).click();
   await expect(page.getByLabel('Listener world map')).toBeVisible();
   // Edge case worth documenting in the test itself: there is no "likes"
   // metric anywhere on this page -- favoriting a track never leaves the

@@ -1365,7 +1365,8 @@
       "nowPlayingDriving": "Now playing, driving mode",
       "swipeTracks": "Swipe left or right to change track",
       "moreOptionsFor": "More options for {{title}}",
-      "buffering": "Buffering…"
+      "buffering": "Buffering…",
+      "closePlayer": "Close player"
     },
     "listen": {
       "sections": "Listen sections",
@@ -1450,7 +1451,8 @@
         "publicPlaylists": "Public playlists",
         "tahtiSelects": "Tahti Selects",
         "latestReleases": "Latest releases",
-        "randomTrack": "Random track"
+        "randomTrack": "Random track",
+        "upcomingEvents": "Upcoming events"
       },
       "moreGenres": "+{{count}} more",
       "fewerGenres": "Fewer genres",
@@ -1467,8 +1469,10 @@
         "publicPlaylists": "Playlists shared by listeners",
         "tahtiSelects": "Hand-picked by Tahti",
         "latestReleases": "New albums and EPs",
-        "randomTrack": "One track at random from the genres you pick"
-      }
+        "randomTrack": "One track at random from the genres you pick",
+        "upcomingEvents": "Gigs, release shows and streams coming up"
+      },
+      "emptyEvents": "No upcoming events yet."
     },
     "discoverParties": {
       "startParty": "Start a party",
@@ -5761,7 +5765,8 @@
         "OLDEST": "Oldest first",
         "TITLE_ASC": "Title A–Z",
         "TITLE_DESC": "Title Z–A"
-      }
+      },
+      "boardOpen": "Sort tracks (board)"
     },
     "adminStorageShared": {
       "fullFileRecordEverythingCurrently": "Full file record — everything currently tracked for this upload.",
@@ -6567,7 +6572,14 @@
       "headline": "Headline",
       "article": "Article",
       "imageUrl": "Image URL",
-      "editArticle": "Edit article"
+      "editArticle": "Edit article",
+      "editTitle": "Edit “{{title}}”",
+      "removeTitle": "Remove “{{title}}”",
+      "remove": "Remove",
+      "removeConfirmTitle": "Remove “{{title}}”?",
+      "removeConfirmDescription": "The post is removed from Tahti news for everyone. This cannot be undone.",
+      "removed": "Removed “{{title}}”.",
+      "removeFailed": "Could not remove the post."
     },
     "reportButton": {
       "reportsGoToTheTahti": "Reports go to the Tahti board's moderation queue. You don't need an account, and the artist doesn't see who reported.",
@@ -6888,7 +6900,8 @@
       "importReleasesFromCsv": "Import releases from CSV",
       "importFromCsv": "Import from CSV",
       "csvRows": "CSV rows",
-      "description": "One row per track. Rows with the same release title and date become one draft release. Columns: {{columns}}."
+      "description": "One row per track. Rows with the same release title and date become one draft release. Columns: {{columns}}.",
+      "result": "Created {{created}}, skipped {{skipped}}."
     },
     "waveformEditor": {
       "showingTheBasicWaveformThe": "Showing the basic waveform: the detailed editor couldn’t start in this browser. Editing, zoom and shortcuts still work.",
@@ -14270,7 +14283,8 @@
       "widgetPublicPlaylists": "Find public playlists to follow, play, and embed from the Discover page.",
       "widgetTahtiSelects": "Play the tracks currently in the curated Tahti Selects rotation.",
       "widgetLatestReleases": "See the newest albums, EPs and singles and open their smart links.",
-      "widgetRandomTrack": "Play one track at random from the genres you pick, and roll again."
+      "widgetRandomTrack": "Play one track at random from the genres you pick, and roll again.",
+      "widgetUpcomingEvents": "The next events from artists and venues as cards, soonest first."
     },
     "clipEditorDialogBatch31": {
       "removeRumble": "Remove rumble",
@@ -14889,7 +14903,9 @@
       "loading": "Loading events…",
       "loadFailed": "Could not load events",
       "emptyTitle": "No upcoming events",
-      "emptyDescription": "Nothing is on the calendar yet. Post the first one."
+      "emptyDescription": "Nothing is on the calendar yet. Post the first one.",
+      "nextTitle": "Next events",
+      "seeAll": "See all events"
     },
     "eventForm": {
       "postTitle": "Post an event",

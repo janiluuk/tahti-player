@@ -31,6 +31,7 @@ import {
 import type { CollectionTextLayer } from '../api/collection-text-layer';
 import { createJam } from '../api/jam';
 import type { PublicCollection } from '../api/types';
+import { BoardCollectionSortSounds } from '../components/BoardCollectionSortSounds';
 import { ChannelTextOverlayView } from '../components/ChannelTextOverlayView';
 import { CollaborativePlaylistAdd } from '../components/CollaborativePlaylistAdd';
 import { CollectionContribution } from '../components/CollectionContribution';
@@ -51,10 +52,11 @@ import {
 import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
+import { hasAccountRole } from '../lib/accountRoles';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import { collectionToPlayables } from '../lib/collectionPlayables';
+import { collectionTintUrl } from '../lib/collectionTint';
 import { collectionTrackMeta } from '../lib/collectionTrackMeta';
-import { contrastingText } from '../lib/colorScheme';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
 import { useDominantColor } from '../lib/useDominantColor';
@@ -62,48 +64,6 @@ import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
-
-function rgbToHex(r: number, g: number, b: number): string {
-  return `#${[r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('')}`;
-}
-
-function schemeFromCoverRgb(rgb: [number, number, number] | null):
-  | {
-      bg: string;
-      text: string;
-      accent: string;
-      highlight: string;
-      muted: string;
-    }
-  | undefined {
-  if (!rgb) {
-    return undefined;
-  }
-  const [r, g, b] = rgb;
-  const bg = rgbToHex(r, g, b);
-  const accent = rgbToHex(
-    Math.min(255, Math.round(r * 0.85 + 40)),
-    Math.min(255, Math.round(g * 0.85 + 40)),
-    Math.min(255, Math.round(b * 0.85 + 40)),
-  );
-  const highlight = rgbToHex(
-    Math.min(255, Math.round(r * 0.7 + 80)),
-    Math.min(255, Math.round(g * 0.7 + 80)),
-    Math.min(255, Math.round(b * 0.7 + 80)),
-  );
-  const muted = rgbToHex(
-    Math.round(r * 0.55 + 60),
-    Math.round(g * 0.55 + 60),
-    Math.round(b * 0.55 + 60),
-  );
-  return {
-    bg,
-    text: contrastingText(bg),
-    accent,
-    highlight,
-    muted,
-  };
-}
 
 function contributionsByPlayableId(
   col: PublicCollection,
@@ -198,11 +158,9 @@ export function CollectionView({ slug }: { slug: string }) {
     [collection],
   );
 
-  const coverTintUrl = collection
-    ? (collection.coverUrl ?? placeholderArtworkUrl(collection.slug))
-    : null;
-  const coverRgb = useDominantColor(coverTintUrl);
-  const coverScheme = useMemo(() => schemeFromCoverRgb(coverRgb), [coverRgb]);
+  const coverRgb = useDominantColor(
+    collection ? collectionTintUrl(collection) : null,
+  );
 
   if (loading) {
     return <PageLoading label={t('collectionPage.loading')} />;
@@ -229,6 +187,7 @@ export function CollectionView({ slug }: { slug: string }) {
   }
 
   const isOwner = Boolean(me && me.username === collection.user.username);
+  const isBoard = hasAccountRole(me, 'BOARD');
   const coverUrl =
     collection.coverUrl ?? placeholderArtworkUrl(collection.slug);
   const backdropUrl =
@@ -347,7 +306,7 @@ export function CollectionView({ slug }: { slug: string }) {
           }
           description={collection.description}
           backdropUrl={backdropUrl}
-          colorScheme={coverScheme}
+          ambient={{ rgb: coverRgb }}
           visualizerPreset={resolveArtworkVisualizerPreset(collection.slug)}
           artworkUrlForVisualizer={coverUrl}
           stats={headerStats}
@@ -399,6 +358,8 @@ export function CollectionView({ slug }: { slug: string }) {
             </Button>
             {isOwner ? (
               <OwnerCollectionSortSounds slug={slug} onSaved={retry} />
+            ) : isBoard ? (
+              <BoardCollectionSortSounds slug={slug} onSaved={retry} />
             ) : null}
             {!isOwner ? (
               <Button

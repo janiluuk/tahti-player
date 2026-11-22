@@ -6981,3 +6981,7 @@ Each Studio → Profile card opens its own page with a back link: identity, stor
 ## 2026-11-22 — Stories for every view, channel hover, radio row (0.0.431)
 
 Every view the catalog listed without a story now has one with play tests. On the channel page only the hovered row and the playing track show a play control, and Shift turns it into Add to queue. A radio station you add shows up in the radio row with the other stations instead of on a row of its own. The last English sentences in Transparency, Studio earnings, the join form, the DJ mix hints and the Discover widget menu have Finnish.
+
+## 2026-11-22 — Phones, Discover events, album order (0.0.435)
+
+On a phone the full-screen player has a Love button, the player bar can be closed while nothing plays, and track lists use the width properly with one date per row. Discover opens Events with what is next and has an Upcoming events widget. Albums show their track numbers, and the board can put any album in order. Playlist pages glow softly from their cover instead of turning one solid colour, and board members can edit or remove news straight from the widget.

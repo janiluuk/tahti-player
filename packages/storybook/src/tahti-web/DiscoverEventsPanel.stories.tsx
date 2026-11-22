@@ -31,12 +31,13 @@ export const SignedIn: Story = {
   decorators: [withMockAuth(MOCK_USERS.listener)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const list = within(await canvas.findByTestId('discover-events-list'));
     await expect(
-      await canvas.findByRole('link', {
+      list.getByRole('link', {
         name: 'Aurora Drift b2b Northern Lights',
       }),
     ).toHaveAttribute('href', '/events/evt-mock-guest');
-    await expect(canvas.getByText('Kaiku, Helsinki, Finland')).toBeVisible();
+    await expect(list.getByText('Kaiku, Helsinki, Finland')).toBeVisible();
     await expect(
       canvas.getByRole('link', { name: 'Post event' }),
     ).toHaveAttribute('href', '/events/new');
@@ -56,6 +57,25 @@ export const SignedOut: Story = {
       canvas.getByRole('button', { name: 'Post event' }),
     ).toBeVisible();
     await expect(canvas.getByText('Sign in to post an event.')).toBeVisible();
+  },
+};
+
+/** The tab opens with the next events (soonest first) above the filters;
+ * a city, venue or text filter hides that row. */
+export const NextEventsFirst: Story = {
+  decorators: [withMockAuth(null)],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const next = await canvas.findByTestId('discover-next-events');
+    const filters = canvas.getByTestId('discover-events-filters');
+    await expect(
+      next.compareDocumentPosition(filters) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    const titles = within(next)
+      .getAllByTestId('event-card-title')
+      .map((node) => node.textContent);
+    await expect(titles[0]).toBe('Album release show');
+    await expect(titles[1]).toBe('Aurora Drift b2b Northern Lights');
   },
 };
 
@@ -82,6 +102,7 @@ export const FilteredByCity: Story = {
     await expect(
       canvas.queryByText(/Saimaa Boathouse Studio/),
     ).not.toBeInTheDocument();
+    await expect(canvas.queryByTestId('discover-next-events')).toBeNull();
   },
 };
 

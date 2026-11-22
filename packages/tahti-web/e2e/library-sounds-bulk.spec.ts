@@ -19,16 +19,8 @@ test('artist: select-all matching → bulk edit + Mix order', async ({
   await openSounds(page);
   const main = page.getByRole('main');
 
-  await main
-    .getByRole('button', { name: /Show as list|list/i })
-    .click({
-      trial: true,
-    })
-    .catch(() => undefined);
-  const listToggle = main.getByRole('button', { name: /list/i }).first();
-  if (await listToggle.isVisible().catch(() => false)) {
-    await listToggle.click();
-  }
+  await main.getByRole('button', { name: /^Track size/ }).click();
+  await page.getByRole('menuitemradio', { name: 'List' }).click();
 
   const firstCheckbox = main.getByRole('checkbox').first();
   await expect(firstCheckbox).toBeVisible({ timeout: 15_000 });
@@ -45,8 +37,8 @@ test('artist: select-all matching → bulk edit + Mix order', async ({
   }
 
   await toolbar.getByRole('button', { name: /^Edit$/i }).click();
-  const dialog = page.getByRole('dialog');
-  await expect(dialog).toBeVisible();
+  const dialog = page.getByRole('dialog', { name: /^Edit \d+ sounds?$/ });
+  await expect(dialog.getByRole('heading')).toBeVisible();
   await dialog.getByRole('button', { name: /Cancel/i }).click();
 
   if (
@@ -57,7 +49,10 @@ test('artist: select-all matching → bulk edit + Mix order', async ({
   ) {
     await toolbar.getByRole('button', { name: /Mix order/i }).click();
     await expect(
-      page.getByRole('dialog', { name: /Mix order/i }),
+      page
+        .getByRole('dialog', { name: /Mix order/i })
+        .getByRole('heading')
+        .first(),
     ).toBeVisible();
     await page.keyboard.press('Escape');
   }

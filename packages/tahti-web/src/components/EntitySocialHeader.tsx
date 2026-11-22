@@ -15,6 +15,7 @@ import {
   youtubeEmbedUrl,
 } from '../api/channel-design';
 import { cn } from '../lib/cn';
+import { coverWash, type Rgb } from '../lib/collectionTint';
 import {
   colorSchemeCssVars,
   normalizeColorScheme,
@@ -105,6 +106,10 @@ export type EntitySocialHeaderProps = {
    * purple on Aurora and made designer colors look stuck).
    */
   colorScheme?: LooseColorScheme;
+  /** Keeps the card on the theme surface with theme text (ignores
+   * `colorScheme`); `rgb`, e.g. the cover's dominant colour, only adds a
+   * soft low-alpha wash, never a solid fill. */
+  ambient?: { rgb: Rgb | null };
   onImageClick?: () => void;
   /** When set alongside `imageUrl`, a hover-reveal X badge clears the image. */
   onImageDelete?: () => void;
@@ -146,6 +151,7 @@ export function EntitySocialHeader({
   visualSettingsJson,
   artworkUrlForVisualizer,
   colorScheme,
+  ambient,
   onImageClick,
   onImageDelete,
   leading,
@@ -155,7 +161,9 @@ export function EntitySocialHeader({
 }: EntitySocialHeaderProps) {
   const { t } = useTranslation('web');
   const [imageFocused, setImageFocused] = useState(false);
-  const scheme = colorScheme ? normalizeColorScheme(colorScheme) : null;
+  const themed = Boolean(ambient);
+  const scheme =
+    colorScheme && !themed ? normalizeColorScheme(colorScheme) : null;
   const mediaUrl = videoBackgroundUrl ?? backdropUrl;
   const showVideo =
     headerStyle === 'VIDEO_LOOP' && isValidHeaderBackdropUrl(mediaUrl);
@@ -207,7 +215,11 @@ export function EntitySocialHeader({
       className={cn(
         'border-border shadow-shadow relative isolate flex flex-col gap-5 overflow-hidden rounded-md border-(length:--border-width) p-6',
         leading ? 'sm:pl-[4.5rem]' : undefined,
-        !scheme && !hasDesignedBackdrop && 'bg-primary text-primary-foreground',
+        !scheme &&
+          !hasDesignedBackdrop &&
+          (themed
+            ? 'bg-background-secondary text-foreground'
+            : 'bg-primary text-primary-foreground'),
         className,
       )}
       style={schemeStyle}
@@ -278,10 +290,18 @@ export function EntitySocialHeader({
       <div
         className={cn(
           'pointer-events-none absolute inset-0 -z-10 backdrop-blur-sm',
-          !scheme && 'bg-primary/75',
+          !scheme && (themed ? 'bg-background-secondary/80' : 'bg-primary/75'),
         )}
         style={scrimStyle}
       />
+      {ambient?.rgb ? (
+        <div
+          data-testid="entity-social-header-wash"
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{ backgroundImage: coverWash(ambient.rgb) }}
+          aria-hidden
+        />
+      ) : null}
 
       {leading ? (
         <div className="absolute top-3 left-3 z-10">{leading}</div>
@@ -460,7 +480,7 @@ export function EntitySocialHeader({
               className={cn(
                 'text-sm',
                 !scheme &&
-                  (hasDesignedBackdrop
+                  (hasDesignedBackdrop || themed
                     ? 'text-foreground-secondary'
                     : 'text-primary-foreground'),
               )}

@@ -79,6 +79,7 @@ export function PlayableAmbientTrackList({
     | {
         genre?: string | null;
         stats?: AmbientTrackStats;
+        trackNumber?: number;
         /** The artist allows downloads: the row offers a download action. */
         downloadable?: boolean;
       }
@@ -200,6 +201,7 @@ export function PlayableAmbientTrackList({
           durationSec: item.durationSec ?? null,
           genreLabel: meta?.genre ?? undefined,
           stats: meta?.stats,
+          trackNumber: meta?.trackNumber,
           like,
           peaks: item.peaks ?? null,
           progress: 0,

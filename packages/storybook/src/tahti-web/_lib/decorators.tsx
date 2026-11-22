@@ -152,11 +152,17 @@ export const MOCK_USERS = {
  * Sets both the auth store and the mock API session. Seeding only the store
  * isn't enough: `useAuthStore.refresh()` (run by AppShell and friends) asks
  * the mock `/auth/me`, which would otherwise hand back whichever user an
- * earlier story left in the mock session.
+ * earlier story left in the mock session. A seeded user counts as a loaded
+ * profile, as after a successful `/auth/me`.
  */
 export function seedMockAuth(user: AuthUser | null) {
   setMockSessionUser(user);
-  useAuthStore.setState({ user, hydrated: true, loading: false });
+  useAuthStore.setState({
+    user,
+    profileLoaded: Boolean(user),
+    hydrated: true,
+    loading: false,
+  });
 }
 
 /**

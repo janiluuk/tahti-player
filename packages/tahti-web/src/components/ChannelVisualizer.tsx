@@ -7,12 +7,14 @@ import {
   type VisualizerMode,
 } from '@tahti-player/visualizer';
 
+import { artworkVisualizerScheme } from '../lib/artworkVisualizerScheme';
 import {
   channelVizPackFromJson,
   vizPackModeAt,
   type ChannelVizPack,
 } from '../lib/channelVizPacks';
 import { radioVisualizerPreset } from '../lib/radioVisualizer';
+import { useDominantColor } from '../lib/useDominantColor';
 import { supportsWebGL } from '../lib/webgl';
 import type { ThreeVisualizerProps } from './visuals/ThreeVisualizer';
 
@@ -33,6 +35,9 @@ type Props = {
   settings?: ThreeVisualizerProps['settings'];
   className?: string;
   artworkUrl?: string | null;
+  /** `artworkUrl` is the current track's cover: take accent and highlight
+   * from its colour, with the channel scheme as the fallback. */
+  followArtworkColor?: boolean;
   audioReactive?: boolean;
   /** Prefer theDAW-ported Advanced/Cymatics modes when the preset matches.
    * Without one, a viz pack saved in `visualSettingsJson` picks the mode. */
@@ -187,6 +192,7 @@ export const ChannelVisualizer = ({
   settings: settingsOverride,
   className,
   artworkUrl,
+  followArtworkColor = false,
   audioReactive,
   engineMode,
   showModeButtons = true,
@@ -211,9 +217,15 @@ export const ChannelVisualizer = ({
   // on every render (the track page re-renders each playback tick) would
   // otherwise hand the WebGL scene a "new" scheme many times a second.
   const colorSchemeKey = colorScheme ? JSON.stringify(colorScheme) : '';
+  const artworkRgb = useDominantColor(followArtworkColor ? artworkUrl : null);
+  const artworkRgbKey = artworkRgb?.join(',') ?? '';
   const scheme = useMemo(
-    () => parseScheme(colorScheme, colorSchemeJson),
-    [colorSchemeKey, colorSchemeJson],
+    () =>
+      artworkVisualizerScheme(
+        parseScheme(colorScheme, colorSchemeJson),
+        artworkRgb,
+      ),
+    [colorSchemeKey, colorSchemeJson, artworkRgbKey],
   );
   const settings = useMemo(
     () => parseSettings(visualSettingsJson, mode),

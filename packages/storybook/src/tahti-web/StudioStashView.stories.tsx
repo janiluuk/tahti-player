@@ -1,5 +1,4 @@
-import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
-import { useAuthStore } from '@tahti-web/stores/authStore';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { StudioStashView } from '@tahti-web/views/studio/StudioStashView';
 import { expect, within } from 'storybook/test';
 
@@ -10,13 +9,6 @@ import {
   withTahtiRouter,
 } from './_lib/decorators';
 import { expectVisible } from './_lib/play';
-
-/** `withMockAuth` leaves `profileLoaded` unset, and the stash waits on it
- * before deciding between the artist and listener layouts. */
-const withProfileLoaded: Decorator = (Story) => {
-  useAuthStore.setState({ profileLoaded: true });
-  return <Story />;
-};
 
 const meta: Meta<typeof StudioStashView> = {
   title: 'Tahti/Library/StudioStashView',
@@ -38,7 +30,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const ArtistStash: Story = {
-  decorators: [withProfileLoaded, withMockAuth(MOCK_USERS.artist)],
+  decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const sections = await canvas.findByRole('tablist', {
@@ -62,7 +54,7 @@ export const ArtistStash: Story = {
 };
 
 export const ListenerFiles: Story = {
-  decorators: [withProfileLoaded, withMockAuth(MOCK_USERS.listener)],
+  decorators: [withMockAuth(MOCK_USERS.listener)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expectVisible(await canvas.findByText('Your files'));

@@ -47,6 +47,20 @@ missing, fall back to the username, never to an email. The API rejects email
 display names (`../tahti-org` `safeDisplayName` / `containsEmailAddress` in
 `@tahti/shared`); don't add a client-side fallback that reintroduces one.
 
+## What's new on every push
+
+Every push that changes something a listener, artist or admin can notice
+(here or in `../tahti-org`) adds a short plain-language summary of how it makes their life better to
+What's new (Settings → About, `packages/tahti-web/src/content/releaseNotes.ts`,
+rendered by `WhatsNewView`). Write it as the benefit, not the change
+("Albums list their tracks in order, so a record plays the way the artist
+meant it", not "added trackNumber to the DTO"). Add to the current cycle's
+entry (newest first, roughly two-week periods, `version` set to the
+tahti-web version being shipped) under the matching section (Listen, Studio,
+Library, Settings, Admin, Desktop, Platform); start a new entry when the
+current period has ended. Purely internal pushes (tests, docs, refactors,
+CI) add nothing.
+
 ## Token log for expensive lookups
 
 Keep a running log in `.agent-token-log.md` at the repo root (gitignored,

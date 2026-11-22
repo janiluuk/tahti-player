@@ -60,9 +60,20 @@ const libraryRoutes: RouteVisit[] = [
     heading: /^Favorites$/,
     url: /\/library\/favorites$/,
   },
+  {
+    path: '/listen/feed',
+    heading: 'Your feed',
+    url: /\/discover\?tab=feed$/,
+  },
+  {
+    path: '/listen/favorites',
+    heading: /^Favorites$/,
+    url: /\/library\/favorites$/,
+  },
+  { path: '/listen/history', heading: /^History$/ },
 ];
 
-test('library tabs and their aliases render for a signed-in artist', async ({
+test('library tabs and their aliases (including old /listen links) render for a signed-in artist', async ({
   page,
 }) => {
   const errors = collectPageErrors(page);

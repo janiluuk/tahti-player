@@ -1,5 +1,6 @@
 import {
   AwardIcon,
+  CalendarDaysIcon,
   ClockIcon,
   DicesIcon,
   Disc3Icon,
@@ -42,6 +43,7 @@ export const WIDGET_LABEL_KEYS: Record<DiscoverWidgetId, ParseKeys<'web'>> = {
   'tahti-selects': 'discover.widgets.tahtiSelects',
   'latest-releases': 'discover.widgets.latestReleases',
   'random-track': 'discover.widgets.randomTrack',
+  'upcoming-events': 'discover.widgets.upcomingEvents',
 };
 
 /** What each widget shows, for the Add a widget menu. */
@@ -96,6 +98,10 @@ export const WIDGET_MENU: Record<
   'random-track': {
     icon: DicesIcon,
     descriptionKey: 'discover.widgetDescriptions.randomTrack',
+  },
+  'upcoming-events': {
+    icon: CalendarDaysIcon,
+    descriptionKey: 'discover.widgetDescriptions.upcomingEvents',
   },
 };
 

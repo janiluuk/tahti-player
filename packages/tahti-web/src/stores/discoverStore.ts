@@ -13,7 +13,8 @@ export type DiscoverWidgetId =
   | 'public-playlists'
   | 'tahti-selects'
   | 'latest-releases'
-  | 'random-track';
+  | 'random-track'
+  | 'upcoming-events';
 
 export const ALL_WIDGET_IDS: DiscoverWidgetId[] = [
   'this-week-most-played',
@@ -28,6 +29,7 @@ export const ALL_WIDGET_IDS: DiscoverWidgetId[] = [
   'tahti-selects',
   'latest-releases',
   'random-track',
+  'upcoming-events',
 ];
 
 /** Widgets added to the defaults in version 1 of the stored state. */
@@ -37,8 +39,12 @@ const ADDED_IN_V1: DiscoverWidgetId[] = [
   'loved',
 ];
 
+/** Widgets added to the defaults in version 4 of the stored state. */
+const ADDED_IN_V4: DiscoverWidgetId[] = ['upcoming-events'];
+
 export const DEFAULT_WIDGETS: DiscoverWidgetId[] = [
   'this-week-most-played',
+  ...ADDED_IN_V4,
   'new-to-you',
   'latest-tracks',
   'random-artist',
@@ -107,7 +113,7 @@ export const useDiscoverStore = create<DiscoverState>()(
     }),
     {
       name: 'tahti-web:discover',
-      version: 3,
+      version: 4,
       migrate: (persisted, version) => {
         const state = (persisted ?? {}) as Partial<DiscoverState> & {
           unheardOnly?: boolean;
@@ -117,6 +123,12 @@ export const useDiscoverStore = create<DiscoverState>()(
           state.enabledWidgets = [
             ...state.enabledWidgets,
             ...ADDED_IN_V1.filter((id) => !state.enabledWidgets!.includes(id)),
+          ];
+        }
+        if (version < 4 && Array.isArray(state.enabledWidgets)) {
+          state.enabledWidgets = [
+            ...state.enabledWidgets,
+            ...ADDED_IN_V4.filter((id) => !state.enabledWidgets!.includes(id)),
           ];
         }
         // Version 3: Community stories left the widget list for the

@@ -5,13 +5,19 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
   within,
 } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as client from '../api/client';
+import * as likes from '../api/likes';
+import * as engagement from '../api/sound-engagement';
 import type { TahtiPlayable } from '../api/types';
+import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
 import { usePlayerStore } from '../stores/playerStore';
+import { useSoundLikesStore } from '../stores/soundLikesStore';
 import { FullScreenPlayer } from './FullScreenPlayer';
 
 const stationNowPlaying = vi.hoisted(() => ({
@@ -20,7 +26,9 @@ const stationNowPlaying = vi.hoisted(() => ({
 vi.mock('../hooks/useStationNowPlaying', () => ({
   usePlayerStationNowPlaying: () => stationNowPlaying.value,
 }));
-vi.mock('./AddToPlaylistButton', () => ({ AddToPlaylistButton: () => null }));
+vi.mock('./AddToPlaylistButton', () => ({
+  AddToPlaylistButton: () => <button type="button">Add to playlist</button>,
+}));
 vi.mock('./ChannelVisualizer', () => ({
   ChannelVisualizer: ({
     engineMode,
@@ -347,5 +355,93 @@ describe('FullScreenPlayer full screen button', () => {
       swipe('pointerup', 80);
     });
     expect(usePlayerStore.getState().currentId).toBe('sound:def');
+  });
+});
+
+describe('FullScreenPlayer on a phone', () => {
+  const realMatchMedia = window.matchMedia;
+
+  const stubWidth = (phone: boolean) => {
+    window.matchMedia = ((query: string) => ({
+      matches: phone && query === '(max-width: 767px)',
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    })) as typeof window.matchMedia;
+  };
+
+  beforeEach(() => {
+    usePlayerStore.getState().clearQueue();
+    vi.spyOn(likes, 'fetchMyLikes').mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
+    useAuthStore.setState({
+      user: {
+        id: 'user-1',
+        email: '',
+        username: 'demo',
+        displayName: 'Demo',
+        role: 'LISTENER',
+        isBoard: false,
+        isMember: true,
+      },
+      hydrated: true,
+      loading: false,
+    });
+  });
+
+  afterEach(() => {
+    cleanup();
+    window.matchMedia = realMatchMedia;
+    useLayoutStore.setState({ fullScreenPlayerOpen: false });
+    usePlayerStore.getState().clearQueue();
+    useAuthStore.setState({ user: null, hydrated: true, loading: false });
+    useSoundLikesStore.getState().reset();
+    vi.restoreAllMocks();
+  });
+
+  it('shows Love instead of Add to playlist and toggles the like', async () => {
+    stubWidth(true);
+    const like = vi
+      .spyOn(engagement, 'setSoundEngagement')
+      .mockResolvedValue({ ok: true, data: { active: true, count: 1 } });
+    vi.spyOn(client, 'fetchTrackDetail').mockResolvedValue({
+      data: { channelSlug: 'aino' },
+    } as Awaited<ReturnType<typeof client.fetchTrackDetail>>);
+    usePlayerStore.getState().play(TRACK);
+    usePlayerStore.setState({ status: 'playing' });
+    useLayoutStore.setState({ fullScreenPlayerOpen: true });
+    await act(async () => {
+      render(<FullScreenPlayer />);
+    });
+
+    expect(
+      screen.queryByRole('button', { name: 'Add to playlist' }),
+    ).toBeNull();
+    const love = screen.getByRole('button', { name: 'Like Night Drive' });
+    expect(love).toHaveAttribute('aria-pressed', 'false');
+    await act(async () => {
+      fireEvent.click(love);
+    });
+    await waitFor(() =>
+      expect(like).toHaveBeenCalledWith('like', 'aino', 'abc', true),
+    );
+    expect(
+      await screen.findByRole('button', { name: 'Unlike Night Drive' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('keeps Add to playlist under the title on wider screens', async () => {
+    stubWidth(false);
+    await open('playing');
+    expect(
+      screen.getByRole('button', { name: 'Add to playlist' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId('full-screen-player-love')).toBeNull();
   });
 });

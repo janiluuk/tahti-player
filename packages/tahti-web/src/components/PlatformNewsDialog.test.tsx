@@ -96,4 +96,38 @@ describe('platform article editing', () => {
     );
     expect(screen.queryByRole('button', { name: 'Edit article' })).toBeNull();
   });
+  it('removes the post after confirming from the article dialog', async () => {
+    boardSession();
+    const remove = vi
+      .spyOn(api, 'deleteNewsPost')
+      .mockResolvedValue({ ok: true });
+    const onRemoved = vi.fn();
+    await renderWithRouter(
+      <PlatformNewsDialog
+        post={post}
+        onClose={vi.fn()}
+        onUpdated={vi.fn()}
+        onRemoved={onRemoved}
+      />,
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Remove “Opening day”' }),
+    );
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Remove' }),
+    );
+    await waitFor(() => expect(onRemoved).toHaveBeenCalledWith('post-1'));
+    expect(remove).toHaveBeenCalledWith('post-1');
+  });
+  it('offers no remove action to anonymous readers', async () => {
+    await renderWithRouter(
+      <PlatformNewsDialog
+        post={post}
+        onClose={vi.fn()}
+        onUpdated={vi.fn()}
+        onRemoved={vi.fn()}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: /^Remove/ })).toBeNull();
+  });
 });

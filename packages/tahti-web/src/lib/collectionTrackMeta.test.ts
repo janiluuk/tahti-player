@@ -50,4 +50,12 @@ describe('collectionTrackMeta', () => {
       collectionTrackMeta(COLLECTION)({ id: 'sound:other' } as TahtiPlayable),
     ).toBeUndefined();
   });
+
+  it('passes the album track number through', () => {
+    const numbered = {
+      ...COLLECTION,
+      items: [{ ...COLLECTION.items[0], trackNumber: 2 }],
+    } as PublicCollection;
+    expect(collectionTrackMeta(numbered)(PLAYABLE)?.trackNumber).toBe(2);
+  });
 });

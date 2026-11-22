@@ -8,6 +8,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button, Input, Select } from '@tahti-player/ui';
 
+import { stubPhoneViewport } from './_lib/phone';
 import { pickTrackView, withinBody } from './_lib/play';
 import { mockAmbientPeaks } from './mockAmbientPeaks';
 
@@ -322,26 +323,6 @@ export const PhoneWidth: Story = {
   ],
 };
 
-const stubPhoneViewport = () => {
-  const real = window.matchMedia;
-  window.matchMedia = (query: string) =>
-    query === '(max-width: 767px)'
-      ? ({
-          matches: true,
-          media: query,
-          onchange: null,
-          addEventListener: () => undefined,
-          removeEventListener: () => undefined,
-          addListener: () => undefined,
-          removeListener: () => undefined,
-          dispatchEvent: () => false,
-        } as MediaQueryList)
-      : real.call(window, query);
-  return () => {
-    window.matchMedia = real;
-  };
-};
-
 /** On a phone with nothing picked yet, a listing opens as its plain list. */
 export const PhoneDefaultsToList: Story = {
   args: {
@@ -447,3 +428,81 @@ export const ArtworkFirst: Story = {
     ).toHaveAttribute('aria-label', 'Play Moody Electronica vol. 40');
   },
 };
+
+const PHONE_ITEMS: AmbientTrackListItem[] = ITEMS.map((item, index) => ({
+  ...item,
+  title:
+    index === 0
+      ? 'Moody Electronica vol. 40 (extended night drive edition)'
+      : item.title,
+  stats: {
+    releaseDate: `2026-0${index + 6}-12T10:00:00.000Z`,
+    likes: 12 + index,
+    plays: 1204 - index * 300,
+    downloads: 3,
+  },
+  isCurrent: index === 1,
+  isPlaying: index === 1,
+  onPlay: () => undefined,
+}));
+
+/** One date per row (the clock in the stats), the same artwork width on
+ * every row including the playing one, and nothing spilling out of a row.
+ * At phone width the actions and stats run under the artwork. */
+async function verifyPhoneRows(canvasElement: HTMLElement) {
+  const rows = within(canvasElement).getAllByTestId('ambient-track-row');
+  await expect(rows).toHaveLength(3);
+  const artworkWidths = rows.map((row) =>
+    Math.round(
+      within(row)
+        .getByTestId('ambient-track-row-artwork')
+        .getBoundingClientRect().width,
+    ),
+  );
+  await expect(new Set(artworkWidths).size).toBe(1);
+  await expect(artworkWidths[0]).toBeGreaterThanOrEqual(96);
+  for (const row of rows) {
+    await expect(row.querySelectorAll('time')).toHaveLength(1);
+    const box = row.getBoundingClientRect();
+    for (const text of row.querySelectorAll('p, h3')) {
+      const r = text.getBoundingClientRect();
+      await expect(r.right).toBeLessThanOrEqual(box.right + 0.5);
+      await expect(text.scrollWidth).toBeLessThanOrEqual(text.clientWidth + 1);
+    }
+    if (window.innerWidth < 768) {
+      const artwork = within(row).getByTestId('ambient-track-row-artwork');
+      const actions = within(row).getByTestId('ambient-track-row-actions');
+      await expect(Math.round(actions.getBoundingClientRect().left)).toBe(
+        Math.round(artwork.getBoundingClientRect().left),
+      );
+      await expect(actions.getBoundingClientRect().top).toBeGreaterThanOrEqual(
+        artwork.getBoundingClientRect().bottom,
+      );
+    }
+  }
+  const current = rows[1]!;
+  await expect(
+    within(current).getByTestId('media-artwork-play'),
+  ).toHaveAttribute('data-current', 'true');
+}
+
+function phoneStory(density: 'comfortable' | 'compact' | 'dense'): Story {
+  return {
+    args: { items: PHONE_ITEMS, density },
+    parameters: { viewport: { defaultViewport: 'mobile1' } },
+    globals: { viewport: { value: 'mobile1', isRotated: false } },
+    beforeEach: stubPhoneViewport,
+    decorators: [
+      (Story) => (
+        <div className="w-full max-w-[358px]">
+          <Story />
+        </div>
+      ),
+    ],
+    play: async ({ canvasElement }) => verifyPhoneRows(canvasElement),
+  };
+}
+
+export const PhoneComfortable = phoneStory('comfortable');
+export const PhoneCompact = phoneStory('compact');
+export const PhoneDense = phoneStory('dense');

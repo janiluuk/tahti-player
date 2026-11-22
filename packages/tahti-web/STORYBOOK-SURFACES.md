@@ -153,6 +153,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Collections/CollectionPlayerWidget` | `tahti-web/CollectionPlayerWidget.stories.tsx` |
 | `Tahti/Collection/CollectionTrackList` | `tahti-web/CollectionTrackList.stories.tsx` |
 | `Tahti/Collection/CollectionView` | `tahti-web/CollectionView.stories.tsx` |
+| `Tahti/Collection/CollectionViewAmbient` | `tahti-web/CollectionViewAmbient.stories.tsx` |
 | `Tahti/Track/CommentItem` | `tahti-web/CommentItem.stories.tsx` |
 | `Tahti/Discover/CommunityStoriesWidget` | `tahti-web/CommunityStoriesWidget.stories.tsx` |
 | `Tahti/Components/Confirm dialogs` | `tahti-web/ConfirmDialogs.stories.tsx` |
@@ -429,6 +430,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Transparency/TransparencyMethodologyView` | `tahti-web/TransparencyMethodologyView.stories.tsx` |
 | `Tahti/Transparency/TransparencyResolutionsView` | `tahti-web/TransparencyResolutionsView.stories.tsx` |
 | `Tahti/Transparency/TransparencyView` | `tahti-web/TransparencyView.stories.tsx` |
+| `Tahti/Discover/UpcomingEventsRow` | `tahti-web/UpcomingEventsRow.stories.tsx` |
 | `Tahti/Track/UploadTrackDialog` | `tahti-web/UploadTrackDialog.stories.tsx` |
 | `Tahti/Discover/VenueDetailView` | `tahti-web/VenueDetailView.stories.tsx` |
 | `Tahti/Discover/VenueRegisterView` | `tahti-web/VenueRegisterView.stories.tsx` |

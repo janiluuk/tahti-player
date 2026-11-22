@@ -189,11 +189,9 @@ test('artist library starts with a searchable archive and track tools', async ({
   await expect(
     page.getByRole('button', { name: /^(Add to|Remove from) rotation$/ }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Choose playlists' }).click();
-  await expect(page.getByRole('dialog')).toContainText('Add to playlist');
   await expect(
-    page.getByRole('button', { name: /Favorites mix/ }),
-  ).toBeVisible();
+    page.getByRole('button', { name: /^Favorites mix/ }),
+  ).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('collections combine albums, EPs, DJ sets, and playlists', async ({
@@ -323,24 +321,26 @@ test('Sources leaves broadcast captures to the recordings flow', async ({
   await expect(page.getByText('From broadcast')).toHaveCount(0);
 });
 
-test('hearthis imports report completion and prevent duplicates', async ({
-  page,
-}) => {
+test('hearthis import walks choose, review and finish', async ({ page }) => {
   await signIn(page);
   await page.goto('/studio/upload');
   await page.getByRole('button', { name: /^hearthis\.at/ }).click();
-  const dialog = page.getByRole('dialog', { name: 'Configure hearthis.at' });
-  await dialog.getByLabel('hearthis.at username').fill('northernlights');
-  await dialog.getByRole('button', { name: 'Connect' }).click();
+  const wizard = page.getByRole('dialog');
   await expect(
-    dialog.getByRole('button', { name: 'Destination playlist' }),
+    wizard.getByRole('heading', { name: 'Choose tracks or playlists' }),
   ).toBeVisible();
-  await dialog.getByRole('button', { name: 'Import', exact: true }).click();
-  await expect(dialog.getByRole('status')).toContainText('Import completed');
-  await expect(dialog.getByRole('button', { name: 'Imported' })).toBeDisabled();
+  await wizard
+    .getByRole('checkbox', { name: 'Deep Space Transmission' })
+    .check();
+  await wizard.getByRole('button', { name: 'Continue' }).click();
   await expect(
-    dialog.getByRole('switch', { name: 'Select Deep Space Transmission' }),
-  ).toBeDisabled();
+    wizard.getByRole('heading', { name: 'This is what will be imported' }),
+  ).toBeVisible();
+  await wizard.getByRole('button', { name: 'Import selected' }).click();
+  await expect(
+    wizard.getByRole('heading', { name: 'Import finished' }),
+  ).toBeVisible();
+  await expect(wizard.getByRole('status')).toHaveText('1 of 1');
 });
 
 test("board news with an image and a link shows the link on What's new", async ({
@@ -564,7 +564,8 @@ test('listen chrome lights Listen on child tabs and Library on favorites', async
   );
 
   await page.goto('/listen/feed');
-  await expect(sidebar.getByRole('link', { name: 'Listen' })).toHaveAttribute(
+  await expect(page).toHaveURL(/\/discover\?tab=feed$/);
+  await expect(sidebar.getByRole('link', { name: 'Discover' })).toHaveAttribute(
     'aria-current',
     'page',
   );

@@ -313,6 +313,8 @@ export type CollectionSound = {
 export type CollectionItem = {
   id?: string;
   position: number;
+  /** 1-based place on the album, counting only items the viewer can see. */
+  trackNumber?: number;
   sound: CollectionSound | null;
   release: {
     id: string;

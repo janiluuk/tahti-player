@@ -64,6 +64,10 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
               current.map((post) => (post.id === updated.id ? updated : post)),
             );
           }}
+          onRemoved={(id) => {
+            setSelected(null);
+            setPosts((current) => current.filter((post) => post.id !== id));
+          }}
         />
       ) : null}
       <StoryRow

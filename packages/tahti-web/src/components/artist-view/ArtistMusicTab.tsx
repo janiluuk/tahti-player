@@ -120,6 +120,7 @@ export function ArtistMusicTab({
               artworkUrl={
                 nowPlayingHere?.coverUrl ?? artist.avatarUrl ?? undefined
               }
+              followArtworkColor={Boolean(nowPlayingHere?.coverUrl)}
               colorScheme={scheme}
               visualSettingsJson={visualSettingsJson}
               preset={visualizerPreset}

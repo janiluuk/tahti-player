@@ -93,33 +93,18 @@ test('Studio Go Live multistream: every API-supported provider is selectable, an
   ).toBeVisible();
 });
 
-test('Channel > Multicast: provider picker and existing-target labels use the registry too', async ({
+test('Channel > Multicast points to the Go live destinations step', async ({
   page,
 }) => {
   await signIn(page);
   await page.goto('/settings/broadcast?tab=multistream');
   await expect(page).toHaveURL(/\/studio\/channel\?radio=multicast#radio$/);
-
-  // The seeded YouTube target's label/author must resolve through the
-  // registry, not display the raw wire id -- this panel had its own copy
-  // of the same "raw provider" bug StudioGoLiveView/StreamManagerPanel
-  // already had fixed.
+  const panel = page.getByRole('tabpanel', { name: 'Multicast' });
   await expect(
-    page.getByText('YouTube', { exact: true }).first(),
+    panel.getByRole('heading', { name: 'Live destinations' }),
   ).toBeVisible();
-
-  await page.getByRole('button', { name: 'TikTok', exact: true }).click();
-  const dialog = page.getByRole('dialog', { name: 'Add TikTok' });
-  await dialog.getByLabel('Stream key').fill('tiktok-settings-key-1234');
-  await dialog.getByRole('button', { name: 'Add destination' }).click();
-  const saved = page.getByRole('dialog', { name: 'Configure TikTok' });
-  await expect(
-    saved.getByRole('button', { name: 'Test connection' }),
-  ).toBeVisible();
-  await expect(saved.getByLabel('New stream key')).toHaveAttribute(
-    'placeholder',
-    /1234/,
-  );
+  await panel.getByRole('link', { name: 'Manage live destinations' }).click();
+  await expect(page).toHaveURL(/\/studio\/go-live\?step=destinations$/);
 });
 
 test('Studio Profile links: profile link fields render for export destinations', async ({
@@ -478,7 +463,7 @@ test('Radio Browser directory: save a station from Browser and it shows on Liste
   const settings = page.getByRole('dialog', { name: 'Settings' });
   await settings.getByRole('button', { name: 'Activate', exact: true }).click();
   await settings
-    .getByRole('button', { name: 'Configure', exact: true })
+    .getByRole('button', { name: 'Configure Radio Browser directory' })
     .click();
 
   const configure = page.getByRole('dialog', {

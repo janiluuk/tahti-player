@@ -52,6 +52,10 @@ import type {
   DiscoverTrackItem,
   TahtiPlayable,
 } from '../api/types';
+import {
+  fetchUpcomingEvents,
+  type UpcomingEvent,
+} from '../api/upcoming-events';
 import { DirectoryArtistsBrowser } from '../components/DirectoryArtistsBrowser';
 import { DiscoverAddWidgetButton } from '../components/discover/DiscoverAddWidgetButton';
 import { DiscoverEventsPanel } from '../components/discover/DiscoverEventsPanel';
@@ -120,6 +124,7 @@ type WidgetData = {
   items: DiscoverTrackItem[];
   collections?: DiscoverCollection[];
   releases?: LatestRelease[];
+  events?: UpcomingEvent[];
   subtitle?: string;
   artist?: DiscoverArtistOfWeek;
 };
@@ -330,6 +335,15 @@ export function DiscoverView() {
               error: apiReason(meta),
               items: [],
               releases,
+            };
+          }
+          case 'upcoming-events': {
+            const { data: events, meta } = await fetchUpcomingEvents();
+            return {
+              loading: false,
+              error: apiReason(meta),
+              items: [],
+              events,
             };
           }
           case 'random-track': {
@@ -658,6 +672,7 @@ export function DiscoverView() {
                     items={widgetData?.items ?? []}
                     collections={widgetData?.collections}
                     releases={widgetData?.releases}
+                    events={widgetData?.events}
                     artist={widgetData?.artist}
                     showRank={TOP_LIST_WIDGET_IDS.has(id)}
                     emptyMessage={
@@ -671,7 +686,9 @@ export function DiscoverView() {
                               ? t('discover.emptyReleases')
                               : id === 'random-track'
                                 ? t('discover.emptyGenres')
-                                : t('discover.emptyDefault')
+                                : id === 'upcoming-events'
+                                  ? t('discover.emptyEvents')
+                                  : t('discover.emptyDefault')
                     }
                     canMoveUp={index > 0}
                     canMoveDown={index < columnWidgets.length - 1}

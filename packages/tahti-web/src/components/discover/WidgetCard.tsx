@@ -20,12 +20,14 @@ import {
 import type { DiscoverArtistOfWeek } from '../../api/discover';
 import type { LatestRelease } from '../../api/latest-releases';
 import type { DiscoverCollection, DiscoverTrackItem } from '../../api/types';
+import type { UpcomingEvent } from '../../api/upcoming-events';
 import { cn } from '../../lib/cn';
 import { releaseTypeLabel } from '../../lib/releaseLabels';
 import type { DiscoverWidgetId } from '../../stores/discoverStore';
 import { ListingDate } from '../ListingDate';
 import { PageEmpty, PageError } from '../PageStates';
 import { STRIPED_LIST, STRIPED_ROW } from './listStripes';
+import { UpcomingEventsStrip } from './UpcomingEventsRow';
 import { WidgetTrackRow } from './WidgetTrackRow';
 
 const MAX_ROWS = 8;
@@ -40,6 +42,7 @@ export function WidgetCard({
   items,
   collections = [],
   releases = [],
+  events = [],
   artist,
   showRank,
   emptyMessage,
@@ -61,6 +64,7 @@ export function WidgetCard({
   items: DiscoverTrackItem[];
   collections?: DiscoverCollection[];
   releases?: LatestRelease[];
+  events?: UpcomingEvent[];
   artist?: DiscoverArtistOfWeek;
   showRank?: boolean;
   emptyMessage: string;
@@ -188,6 +192,8 @@ export function WidgetCard({
             {t('discoverWidgetCard.listenToTheirMusic')}
           </ButtonLink>
         </div>
+      ) : events.length > 0 ? (
+        <UpcomingEventsStrip events={events.slice(0, MAX_ROWS)} />
       ) : releases.length > 0 ? (
         <div className={STRIPED_LIST} data-testid="latest-releases">
           {releases.slice(0, MAX_ROWS).map((release) => (

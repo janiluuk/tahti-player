@@ -1365,7 +1365,8 @@
       "nowPlayingDriving": "Nyt soi, ajotila",
       "swipeTracks": "Vaihda kappaletta pyyhkäisemällä vasemmalle tai oikealle",
       "moreOptionsFor": "Lisää valintoja: {{title}}",
-      "buffering": "Puskuroidaan…"
+      "buffering": "Puskuroidaan…",
+      "closePlayer": "Sulje soitin"
     },
     "listen": {
       "sections": "Kuuntele-osiot",
@@ -1450,7 +1451,8 @@
         "publicPlaylists": "Julkiset soittolistat",
         "tahtiSelects": "Tahti Selects",
         "latestReleases": "Uusimmat julkaisut",
-        "randomTrack": "Satunnainen kappale"
+        "randomTrack": "Satunnainen kappale",
+        "upcomingEvents": "Tulevat tapahtumat"
       },
       "moreGenres": "+{{count}} lisää",
       "fewerGenres": "Vähemmän tyylilajeja",
@@ -1467,8 +1469,10 @@
         "publicPlaylists": "Kuuntelijoiden jakamat soittolistat",
         "tahtiSelects": "Tahtin valitsemat",
         "latestReleases": "Uudet albumit ja EP:t",
-        "randomTrack": "Yksi satunnainen kappale valitsemistasi genreistä"
-      }
+        "randomTrack": "Yksi satunnainen kappale valitsemistasi genreistä",
+        "upcomingEvents": "Tulevat keikat, julkaisukeikat ja striimit"
+      },
+      "emptyEvents": "Tulevia tapahtumia ei vielä ole."
     },
     "discoverParties": {
       "startParty": "Järjestä bileet",
@@ -5761,7 +5765,8 @@
         "OLDEST": "Vanhin ensin",
         "TITLE_ASC": "Nimi A–Ö",
         "TITLE_DESC": "Nimi Ö–A"
-      }
+      },
+      "boardOpen": "Järjestä kappaleet (hallitus)"
     },
     "adminStorageShared": {
       "fullFileRecordEverythingCurrently": "Koko tiedostotietue: kaikki, mitä tästä latauksesta nyt seurataan.",
@@ -6567,7 +6572,14 @@
       "headline": "Otsikko",
       "article": "Artikkeli",
       "imageUrl": "Kuvan osoite",
-      "editArticle": "Muokkaa artikkelia"
+      "editArticle": "Muokkaa artikkelia",
+      "editTitle": "Muokkaa uutista ”{{title}}”",
+      "removeTitle": "Poista ”{{title}}”",
+      "remove": "Poista",
+      "removeConfirmTitle": "Poistetaanko ”{{title}}”?",
+      "removeConfirmDescription": "Uutinen poistuu Tahtin uutisista kaikilta. Poistoa ei voi perua.",
+      "removed": "”{{title}}” poistettu.",
+      "removeFailed": "Uutisen poistaminen epäonnistui."
     },
     "reportButton": {
       "reportsGoToTheTahti": "Ilmoitukset menevät Tahdin hallituksen moderointijonoon. Et tarvitse tiliä, eikä artisti näe, kuka ilmoitti.",
@@ -6888,7 +6900,8 @@
       "importReleasesFromCsv": "Tuo julkaisut CSV-tiedostosta",
       "importFromCsv": "Tuo CSV:stä",
       "csvRows": "CSV-rivit",
-      "description": "Yksi rivi per kappale. Rivit, joilla on sama julkaisun nimi ja päivä, muodostavat yhden julkaisuluonnoksen. Sarakkeet: {{columns}}."
+      "description": "Yksi rivi per kappale. Rivit, joilla on sama julkaisun nimi ja päivä, muodostavat yhden julkaisuluonnoksen. Sarakkeet: {{columns}}.",
+      "result": "Luotu {{created}}, ohitettu {{skipped}}."
     },
     "waveformEditor": {
       "showingTheBasicWaveformThe": "Näytetään perusaaltomuoto: tarkempi editori ei käynnistynyt tässä selaimessa. Muokkaus, zoomaus ja pikanäppäimet toimivat silti.",
@@ -14270,7 +14283,8 @@
       "widgetPublicPlaylists": "Löydä julkisia soittolistoja seurattavaksi, soitettavaksi ja upotettavaksi Discover-sivulta.",
       "widgetTahtiSelects": "Soita kappaleet, jotka ovat nyt kuratoidussa Tahti Selects -rotaatiossa.",
       "widgetLatestReleases": "Katso uusimmat albumit, EP:t ja singlet ja avaa niiden älylinkit.",
-      "widgetRandomTrack": "Soita satunnainen kappale valitsemistasi genreistä ja arvo uudelleen."
+      "widgetRandomTrack": "Soita satunnainen kappale valitsemistasi genreistä ja arvo uudelleen.",
+      "widgetUpcomingEvents": "Artistien ja tapahtumapaikkojen seuraavat tapahtumat kortteina, lähimmät ensin."
     },
     "clipEditorDialogBatch31": {
       "removeRumble": "Poista jyminä",
@@ -14889,7 +14903,9 @@
       "loading": "Ladataan tapahtumia…",
       "loadFailed": "Tapahtumia ei voitu ladata",
       "emptyTitle": "Ei tulevia tapahtumia",
-      "emptyDescription": "Kalenterissa ei ole vielä mitään. Lisää ensimmäinen."
+      "emptyDescription": "Kalenterissa ei ole vielä mitään. Lisää ensimmäinen.",
+      "nextTitle": "Seuraavat tapahtumat",
+      "seeAll": "Näytä kaikki tapahtumat"
     },
     "eventForm": {
       "postTitle": "Lisää tapahtuma",

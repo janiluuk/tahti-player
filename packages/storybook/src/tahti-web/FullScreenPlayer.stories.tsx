@@ -7,6 +7,8 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import type { QueueItem } from '@tahti-player/model';
 
+import { MOCK_USERS, seedMockAuth } from './_lib/decorators';
+import { stubPhoneViewport } from './_lib/phone';
 import { withinBody } from './_lib/play';
 
 function mockQueueItem(
@@ -175,26 +177,16 @@ export const DrivingMode: Story = {
     }),
     (Story) => {
       useEffect(() => {
-        const descriptor = Object.getOwnPropertyDescriptor(
-          Document.prototype,
-          'fullscreenElement',
-        );
         Object.defineProperty(document, 'fullscreenElement', {
           configurable: true,
           get: () => document.documentElement,
         });
         document.dispatchEvent(new Event('fullscreenchange'));
         return () => {
-          if (descriptor) {
-            Object.defineProperty(
-              Document.prototype,
-              'fullscreenElement',
-              descriptor,
-            );
-          } else {
-            delete (document as { fullscreenElement?: Element })
-              .fullscreenElement;
-          }
+          // The stub is an own property of `document`; removing it brings
+          // back the prototype getter for the stories that run next.
+          delete (document as { fullscreenElement?: Element })
+            .fullscreenElement;
           document.dispatchEvent(new Event('fullscreenchange'));
         };
       }, []);
@@ -218,5 +210,55 @@ export const DrivingMode: Story = {
     await expect(
       player.queryByTestId('player-shuffle-button'),
     ).not.toBeInTheDocument();
+  },
+};
+
+/** Phones keep Add to playlist in the ⋯ sheet; the slot under the title is
+ * a Love toggle for a signed-in listener. */
+export const PhoneLove: Story = {
+  decorators: [
+    withSeededFullScreenPlayer({
+      queue: [
+        mockQueueItem(
+          'sound:northern-lights-archive-1',
+          'Midnight Drift',
+          'Northern Lights',
+          245000,
+        ),
+      ],
+    }),
+  ],
+  beforeEach: () => {
+    seedMockAuth(MOCK_USERS.listener);
+    const restore = stubPhoneViewport();
+    return () => {
+      restore();
+      seedMockAuth(null);
+    };
+  },
+  play: async ({ canvasElement }) => {
+    const body = withinBody(canvasElement);
+    const player = within(
+      await body.findByRole('dialog', { name: 'Now playing, full screen' }),
+    );
+    const love = await player.findByRole('button', {
+      name: 'Like Midnight Drift',
+    });
+    await expect(love).toHaveAttribute('aria-pressed', 'false');
+    await expect(
+      player.queryByRole('button', { name: /Add to playlist/ }),
+    ).toBeNull();
+    await userEvent.click(love);
+    await waitFor(() =>
+      expect(
+        player.getByRole('button', { name: 'Unlike Midnight Drift' }),
+      ).toHaveAttribute('aria-pressed', 'true'),
+    );
+    await userEvent.click(
+      player.getByRole('button', { name: /^More options for/ }),
+    );
+    await expect(
+      await body.findByRole('button', { name: 'Add to playlist' }),
+    ).toBeVisible();
   },
 };

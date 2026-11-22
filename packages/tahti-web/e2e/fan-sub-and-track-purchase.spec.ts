@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 
 import { grantBoardView, installStripeMock } from './helpers/mockStripe';
@@ -10,6 +11,11 @@ const RIFF_CANDIDATES = [
   path.join(os.homedir(), 'Downloads', 'riff.wav'),
   path.join(os.homedir(), 'Music', 'riff.wav'),
   process.env.TAHTI_E2E_RIFF_WAV ?? '',
+  path.join(
+    path.dirname(fileURLToPath(import.meta.url)),
+    'fixtures',
+    'mastering-target-quiet.wav',
+  ),
 ].filter(Boolean);
 
 type WavIdentity = {
@@ -108,15 +114,16 @@ async function signUpFan(
   await page.getByLabel('Confirm password').fill(password);
   await page.getByRole('button', { name: 'Create account' }).click();
   const signedIn = page.getByRole('button', { name: /^Signed in as/ });
-  const signInButton = page.getByRole('button', { name: 'Sign in' });
-  if (await signedIn.isVisible().catch(() => false)) {
-    await markOnboarded(page);
-    return;
-  }
-  if (await signInButton.isVisible().catch(() => false)) {
-    await page.getByLabel('Email').fill(email);
-    await page.getByLabel('Password').fill(password);
-    await signInButton.click();
+  const continueSignIn = page
+    .getByRole('dialog', { name: 'Check your email' })
+    .getByRole('button', { name: 'Sign in' });
+  await expect(signedIn.or(continueSignIn)).toBeVisible();
+  if (await continueSignIn.isVisible()) {
+    await continueSignIn.click();
+    const logIn = page.getByRole('dialog', { name: /Log in|Sign in/i });
+    await logIn.getByLabel('Email').fill(email);
+    await logIn.getByLabel('Password', { exact: true }).fill(password);
+    await logIn.getByRole('button', { name: 'Sign in' }).click();
   }
   await expect(signedIn).toBeVisible({ timeout: 20_000 });
   await markOnboarded(page);

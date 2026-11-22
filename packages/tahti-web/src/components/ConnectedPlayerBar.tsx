@@ -4,6 +4,7 @@ import {
   Maximize2Icon,
   PauseIcon,
   PlayIcon,
+  XIcon,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -53,6 +54,7 @@ export function ConnectedPlayerBar() {
   const shuffle = usePlayerStore((s) => s.shuffle);
   const repeatMode = usePlayerStore((s) => s.repeatMode);
   const playerBarVisible = usePlayerStore((s) => s.playerBarVisible);
+  const hidePlayerBar = usePlayerStore((s) => s.hidePlayerBar);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const setVolume = usePlayerStore((s) => s.setVolume);
   const next = usePlayerStore((s) => s.next);
@@ -421,6 +423,20 @@ export function ConnectedPlayerBar() {
           </Button>
           {embed ? null : mobilePlayPauseButton}
           {queueButton}
+          {isPlaying ? null : (
+            <Tooltip content={t('player.closePlayer')} side="top">
+              <Button
+                size="icon"
+                variant="text"
+                onClick={hidePlayerBar}
+                aria-label={t('player.closePlayer')}
+                className="text-foreground-secondary -mr-2 size-11 shrink-0"
+                data-testid="close-mobile-player-bar"
+              >
+                <XIcon size={16} aria-hidden />
+              </Button>
+            </Tooltip>
+          )}
         </div>
       </div>
     );

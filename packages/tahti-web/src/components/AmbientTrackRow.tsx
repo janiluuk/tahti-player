@@ -43,6 +43,8 @@ const DENSITY_LAYOUT: Record<
   {
     pad: string;
     gap: string;
+    /** Row gap of the phone grid, standing in for `gap` there. */
+    phoneGap: string;
     art: string;
     artist: string;
     title: string;
@@ -54,6 +56,7 @@ const DENSITY_LAYOUT: Record<
   comfortable: {
     pad: 'gap-3 p-3 sm:gap-4 sm:p-4',
     gap: 'gap-2',
+    phoneGap: 'max-md:gap-y-2',
     art: 'size-32 sm:size-44 lg:size-56',
     artist: 'text-sm',
     title: 'text-lg sm:text-xl',
@@ -64,6 +67,7 @@ const DENSITY_LAYOUT: Record<
   compact: {
     pad: 'gap-3 p-2.5',
     gap: 'gap-1.5',
+    phoneGap: 'max-md:gap-y-1.5',
     art: 'size-28 sm:size-40',
     artist: 'text-xs',
     title: 'text-sm sm:text-base',
@@ -74,7 +78,8 @@ const DENSITY_LAYOUT: Record<
   dense: {
     pad: 'gap-2 px-2 py-1.5',
     gap: 'gap-0.5',
-    art: 'size-20 sm:size-16',
+    phoneGap: 'max-md:gap-y-1',
+    art: 'size-24 sm:size-16',
     artist: 'text-[10px]',
     title: 'text-xs',
     meta: 'text-[10px]',
@@ -144,7 +149,7 @@ function TrackStats({
   return (
     <div
       className={cn(
-        'text-foreground-secondary ml-auto flex flex-wrap items-center gap-3 tabular-nums',
+        'text-foreground-secondary ml-auto flex flex-wrap items-center gap-3 tabular-nums max-md:gap-2',
         className,
       )}
       data-testid="ambient-track-stats"
@@ -211,6 +216,8 @@ export type AmbientTrackRowProps = {
    * preview hover times. */
   durationSec?: number | null;
   genreLabel?: string;
+  /** Position on its album, shown before the title. */
+  trackNumber?: number;
   /** Public totals and the release date, shown bottom-right like a
    * hearthis.at row. Each part shows only when present. */
   stats?: AmbientTrackStats;
@@ -247,6 +254,7 @@ function AmbientTrackRowView({
   title,
   headingLevel = 3,
   titleNode,
+  trackNumber,
   belowTitle,
   artist,
   coverUrl,
@@ -303,14 +311,18 @@ function AmbientTrackRowView({
       className={cn(
         MEDIA_ROW_GROUP,
         'border-border/40 bg-background-secondary text-foreground flex w-full min-w-0 flex-nowrap items-center rounded-lg border',
+        // Phones: the artwork sits beside the title and waveform only; the
+        // actions and stats take the full width under both.
+        'max-md:grid max-md:grid-cols-[auto_minmax(0,1fr)] max-md:grid-rows-[auto_1fr] max-md:items-start',
         layout.pad,
+        layout.phoneGap,
         className,
       )}
       style={ambientStyle(rgb)}
     >
       <div
         className={cn(
-          'relative shrink-0 self-start overflow-hidden rounded-md',
+          'relative shrink-0 self-start overflow-hidden rounded-md max-md:row-span-2',
           layout.art,
         )}
         data-testid="ambient-track-row-artwork"
@@ -336,7 +348,12 @@ function AmbientTrackRowView({
           </span>
         ) : null}
       </div>
-      <div className={cn('flex min-w-0 flex-1 flex-col', layout.gap)}>
+      <div
+        className={cn(
+          'flex min-w-0 flex-1 flex-col max-md:contents',
+          layout.gap,
+        )}
+      >
         <div className="flex min-w-0 flex-1 items-start gap-2">
           <div className="min-w-0 flex-1">
             <p
@@ -353,6 +370,14 @@ function AmbientTrackRowView({
                 layout.title,
               )}
             >
+              {trackNumber != null ? (
+                <span
+                  className="text-foreground-secondary mr-1.5 font-normal tabular-nums"
+                  data-testid="ambient-track-number"
+                >
+                  {trackNumber}.
+                </span>
+              ) : null}
               {titleNode ?? title}
             </TitleHeading>
           </div>
@@ -375,10 +400,12 @@ function AmbientTrackRowView({
           ) : null}
         </div>
         {processing ? (
-          <TrackProcessing
-            variant="waveform"
-            label={t('ambientTrackRowText.processingAudio')}
-          />
+          <div className="min-w-0 max-md:self-end">
+            <TrackProcessing
+              variant="waveform"
+              label={t('ambientTrackRowText.processingAudio')}
+            />
+          </div>
         ) : media ? (
           <div
             className="border-border w-full min-w-0 overflow-hidden rounded-lg border contain-paint"
@@ -387,7 +414,10 @@ function AmbientTrackRowView({
             {media}
           </div>
         ) : (
-          <div className="w-full min-w-0" data-track-id={trackId}>
+          <div
+            className="w-full min-w-0 max-md:self-end"
+            data-track-id={trackId}
+          >
             {visible ? (
               <Waveform
                 progress={progress}
@@ -413,9 +443,14 @@ function AmbientTrackRowView({
             )}
           </div>
         )}
-        {belowTitle ? <div className="w-full min-w-0">{belowTitle}</div> : null}
+        {belowTitle ? (
+          <div className="w-full min-w-0 max-md:col-span-2">{belowTitle}</div>
+        ) : null}
         {actions || stats || like ? (
-          <div className="flex w-full flex-wrap items-center gap-1.5">
+          <div
+            className="flex w-full min-w-0 flex-wrap items-center gap-1.5 max-md:col-span-2"
+            data-testid="ambient-track-row-actions"
+          >
             {like ? <LikeToggle like={like} title={title} /> : null}
             {actions}
             {stats ? (

@@ -1,6 +1,8 @@
 # Discover: upcoming events list, events card-row widget, seed events
 
-**Status:** open
+**Status:** partial
+
+Shipped 2026-11-22: upcoming events first on Discover → Events (`DiscoverNextEvents`), the `upcoming-events` Discover widget (`UpcomingEventsStrip`, default layout, store v4), `UpcomingEventCard` shared with Listen's Coming up, mock events with banners. Left: item 1 (production seed events) and the e2e step.
 
 Requested 2026-11-22. Builds on [discover-events-tab.md](discover-events-tab.md).
 
