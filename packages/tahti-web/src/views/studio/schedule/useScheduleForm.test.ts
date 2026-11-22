@@ -304,6 +304,37 @@ describe('useScheduleForm editor state', () => {
     expect(result.current.durationHours).toBe(2);
   });
 
+  it('hides a long-overdue next broadcast from the upcoming list', async () => {
+    const { result } = await mountLoaded({
+      next: {
+        nextBroadcastAt: '2020-01-05T18:30:00.000Z',
+        nextBroadcastNote: 'Ancient session',
+        nextBroadcastDurationHours: 2,
+      },
+      slots: [
+        {
+          id: 'future-slot',
+          seriesId: 'show-a',
+          startAt: NEXT_AT,
+          title: 'Still coming',
+          episodeNumber: 1,
+          showType: 'LIVE_SET',
+          visibility: 'PUBLIC',
+          venue: null,
+          location: null,
+          description: null,
+          tagline: null,
+          artworkUrl: null,
+          autoPublish: true,
+        },
+      ],
+    });
+
+    expect(result.current.scheduledTimes.map((item) => item.id)).toEqual([
+      'future-slot',
+    ]);
+  });
+
   it('stops loading when the schedule cannot be read', async () => {
     fetchChannelSchedule.mockRejectedValue(new Error('offline'));
     fetchUpcomingBroadcasts.mockResolvedValue({ data: [], meta: {} });

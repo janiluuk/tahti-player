@@ -75,6 +75,20 @@ export function endAtFor(
   return new Date(start.getTime() + duration * 60 * 60 * 1000).toISOString();
 }
 
+/** Still upcoming or currently on air — hide long-overdue schedule rows. */
+export function isUpcomingOrLiveScheduleCard(
+  item: Pick<ScheduleCard, 'startAt' | 'endAt'>,
+  nowMs = Date.now(),
+): boolean {
+  const endMs = item.endAt
+    ? new Date(item.endAt).getTime()
+    : new Date(item.startAt).getTime();
+  if (Number.isNaN(endMs)) {
+    return false;
+  }
+  return endMs > nowMs;
+}
+
 export function formatTimeRange(
   startAt: string,
   endAt?: string | null,
