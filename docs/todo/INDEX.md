@@ -57,7 +57,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Library Playlists + Go live takeover (next-30); left: phase 3 Go live stepper polish |
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
-| partial | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Stats on top, slow calls cached (tahti-org#1128), Grafana embed unblocked in tahti-web CSP (0.0.442); left: Grafana `root_url` on the server, live check after deploy |
+| partial | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Stats on top, slow calls cached (tahti-org#1128), Grafana embed unblocked in tahti-web CSP (0.0.442); Grafana `root_url` set on vimage6 (2026-11-23); left: live check of the embed after the 0.0.442 deploy |
 | partial | [google-facebook-login.md](google-facebook-login.md) | Google/Facebook sign-in built (web + tahti-org#1124, #1125); left: provider apps, server secrets, deploy, live check |
 | partial | [navigation-performance.md](navigation-performance.md) | Snapshots/GET cache/shell cuts done; remount assert in `useSnapshotFetch.test`; left: real-browser check vs live API |
 | open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | Many-file Chromium drop; CI ~50-file shards; 406 tahti-web stories; no single-file culprit yet |

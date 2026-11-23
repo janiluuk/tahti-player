@@ -57,21 +57,16 @@ Checked 2026-11-23 from the lab Mac (`curl`):
   scrolled the admin page down to the frame; the panel puts the scroll back
   until the viewer acts.
 
-Left (server side, not changed from here; verify after the tahti-web
-deploy that the embed shows Grafana's sign-in page on tahti.live):
+Server side (verify after the tahti-web 0.0.442 deploy that the embed shows
+Grafana's sign-in page on tahti.live):
 
-1. Grafana's `root_url` is unset: the login page boot data says
-   `appUrl: "http://localhost:3000/"`. Links Grafana builds itself (alert
-   notifications, password reset mails, share links, OAuth callbacks if one is
-   added) point at localhost and fail with "cannot connect". In grafana.ini
-   (or `GF_SERVER_ROOT_URL` in the vimage6 compose,
-   `tahti-org/ops/monitoring/vimage6/`):
-
-   ```ini
-   [server]
-   domain = grafana.tahti.live
-   root_url = https://grafana.tahti.live/
-   ```
+1. Done 2026-11-23: Grafana's `root_url` was unset (boot data said
+   `appUrl: "http://localhost:3000/"`, so links Grafana builds itself pointed
+   at localhost). vimage6 `/opt/monitoring/grafana/grafana.ini` now starts with
+   `[server] domain = grafana.tahti.live` and
+   `root_url = https://grafana.tahti.live/` (backup
+   `grafana.ini.bak-2026-11-23`), `monitoring-grafana` restarted; the login
+   page reports `appUrl: "https://grafana.tahti.live/"`.
 
 2. Embedding needs nothing more for tahti.live: grafana.tahti.live is the
    same site, so the default `SameSite=Lax` session cookie is sent inside the
