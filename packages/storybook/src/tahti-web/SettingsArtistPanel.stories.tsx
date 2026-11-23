@@ -68,7 +68,7 @@ export const Identity: Story = {
     await expect(formChildren[0]).toBe(avatar);
     await expect(
       canvas.getByRole('textbox', { name: 'Display name' }),
-    ).toHaveValue('Demo Artist');
+    ).toHaveValue(MOCK_USERS.artist.displayName);
     await expectVisible(canvas.getByRole('group', { name: 'Creative roles' }));
     // A solo artist has no People tab.
     await expect(canvas.queryByRole('tab', { name: 'People' })).toBeNull();
