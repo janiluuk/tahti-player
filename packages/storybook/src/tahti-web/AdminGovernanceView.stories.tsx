@@ -23,7 +23,6 @@ function renderTab(tab?: AdminGovernanceTabId) {
   );
 }
 
-/** Asserts the area heading and that the hub back link is present. */
 async function expectArea(canvasElement: HTMLElement, label: string) {
   const canvas = within(canvasElement);
   await waitFor(() =>
@@ -31,7 +30,13 @@ async function expectArea(canvasElement: HTMLElement, label: string) {
       canvas.getByRole('heading', { level: 1, name: label }),
     ).toBeVisible(),
   );
-  await expect(canvas.getByTestId('admin-governance-back')).toBeVisible();
+  await expect(
+    canvas.getByRole('tablist', { name: 'Admin sections' }),
+  ).toBeVisible();
+  await expect(canvas.getByTestId('admin-hub-back')).toHaveAttribute(
+    'href',
+    '/admin/governance',
+  );
   await expect(
     canvas.queryByRole('tablist', { name: 'Governance sections' }),
   ).toBeNull();

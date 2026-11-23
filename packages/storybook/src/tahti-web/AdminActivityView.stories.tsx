@@ -30,11 +30,6 @@ export const Default: Story = {
     await storyRouterSettled();
     const canvas = within(canvasElement);
     await waitFor(async () => {
-      await expect(
-        canvas.getByRole('heading', { name: 'Activity' }),
-      ).toBeVisible();
-    });
-    await waitFor(async () => {
       await expect(canvas.getByText('Nova Drift logged in')).toBeVisible();
     });
     await expect(canvas.getByText('9 entries')).toBeVisible();

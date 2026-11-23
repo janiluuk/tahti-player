@@ -7038,3 +7038,7 @@ Every view the catalog listed without a story now has one with play tests. On th
 ## 2026-11-22 — Phones, Discover events, album order (0.0.435)
 
 On a phone the full-screen player has a Love button, the player bar can be closed while nothing plays, and track lists use the width properly with one date per row. Discover opens Events with what is next and has an Upcoming events widget. Albums show their track numbers, and the board can put any album in order. Playlist pages glow softly from their cover instead of turning one solid colour, and board members can edit or remove news straight from the widget.
+
+## 2026-11-23 — Pattern-fraud notice in the money filter (0.0.453)
+
+The API now tells an artist when the daily pattern-fraud scan flags their channel (tahti-org `PATTERN_FRAUD_FLAGGED`). The notifications popover files it under Money with grants and memberships.

@@ -41,6 +41,6 @@ export const Default: Story = {
     await expect(canvas.getByText('Moonlight Drive')).toBeInTheDocument();
     await expect(
       canvas.getByRole('link', { name: 'Back to Storage' }),
-    ).toHaveAttribute('href', '/admin/storage');
+    ).toHaveAttribute('href', '/admin/storage?tab=files');
   },
 };
