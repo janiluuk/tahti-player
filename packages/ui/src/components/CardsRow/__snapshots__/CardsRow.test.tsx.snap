@@ -74,7 +74,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         <div>
           <button
             aria-label="Scroll left"
-            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-8 justify-center"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow not-disabled:hover:translate-x-shadow-x not-disabled:hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) not-disabled:hover:shadow-none not-disabled:hover:brightness-95 size-8 justify-center"
             data-disabled=""
             data-headlessui-state="disabled"
             data-testid="cards-row-scroll-left"
@@ -103,7 +103,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         <div>
           <button
             aria-label="Scroll right"
-            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-8 justify-center"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow not-disabled:hover:translate-x-shadow-x not-disabled:hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) not-disabled:hover:shadow-none not-disabled:hover:brightness-95 size-8 justify-center"
             data-headlessui-state=""
             data-testid="cards-row-scroll-right"
             type="button"
@@ -135,7 +135,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         <div>
           <button
             aria-label="Show as list"
-            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-8 justify-center"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow not-disabled:hover:translate-x-shadow-x not-disabled:hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) not-disabled:hover:shadow-none not-disabled:hover:brightness-95 size-8 justify-center"
             data-headlessui-state=""
             data-testid="cards-row-zoom-out"
             type="button"
@@ -176,7 +176,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         <div>
           <button
             aria-label="Show full artwork"
-            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-8 justify-center"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow not-disabled:hover:translate-x-shadow-x not-disabled:hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) not-disabled:hover:shadow-none not-disabled:hover:brightness-95 size-8 justify-center"
             data-headlessui-state=""
             data-testid="cards-row-zoom-in"
             type="button"

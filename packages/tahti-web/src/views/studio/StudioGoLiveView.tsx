@@ -76,7 +76,7 @@ function NextStepFooter({
       <Button
         variant="plain"
         size="flexible"
-        className="bg-foreground text-background focus-visible:outline-focus-ring min-h-11 rounded-md px-4 font-semibold focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2"
+        className="bg-foreground text-background focus-visible:outline-focus-ring min-h-11 rounded-md px-4 font-semibold not-disabled:hover:opacity-90 focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2"
         onClick={() => onNext(next)}
       >
         {t('goLivePage.next.label', {

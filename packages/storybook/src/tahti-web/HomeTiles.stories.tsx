@@ -27,14 +27,14 @@ export const CompactBroadcast: Story = {
         icon={RadioIcon}
         label="Go live"
         subtitle="Start a broadcast"
-        color="#e11d48"
+        color="bg-accent-red"
       />
       <CompactBroadcastTile
         to="/studio/schedule"
         icon={CalendarDaysIcon}
         label="Schedule"
         subtitle="Next: Friday 20:00"
-        color="#2563eb"
+        color="bg-accent-blue"
       />
     </div>
   ),

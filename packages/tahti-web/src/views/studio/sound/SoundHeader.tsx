@@ -92,7 +92,7 @@ export function SoundHeader({
             <Button
               variant="secondary"
               size="icon-sm"
-              className="bg-background border-border rounded-md border-(length:--border-width)"
+              className="bg-background text-foreground border-border rounded-md border-(length:--border-width)"
               disabled={pinBusy}
               onClick={() => void togglePin()}
               aria-label={
@@ -114,7 +114,7 @@ export function SoundHeader({
                 <Button
                   variant="text"
                   size="icon-sm"
-                  className="bg-background border-border rounded-md border-(length:--border-width)"
+                  className="bg-background text-foreground border-border rounded-md border-(length:--border-width)"
                   disabled={notReady || hasError}
                   aria-label={t('soundHeader.quickEdits')}
                 >
@@ -165,7 +165,7 @@ export function SoundHeader({
               size="icon-sm"
               disabled={notReady || hasError}
               aria-label={t('soundHeader.openAudioEditor')}
-              className="bg-background border-border rounded-md border-(length:--border-width)"
+              className="bg-background text-foreground border-border rounded-md border-(length:--border-width)"
             >
               <AudioLinesIcon size={16} aria-hidden />
             </ButtonLink>

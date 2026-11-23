@@ -12,7 +12,7 @@ const meta: Meta<typeof StudioHomeView> = {
     docs: {
       description: {
         component:
-          'Studio home: action tiles, stats and recent broadcasts. Renders against the mock API layer.',
+          'Studio home: creation actions, next show, recent work and neutral navigation shortcuts. Renders against the mock API layer.',
       },
     },
   },
@@ -28,5 +28,12 @@ export const Default: Story = {
     await expect(
       await canvas.findByRole('heading', { name: /^Studio$/, level: 1 }),
     ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('link', { name: 'Upload', exact: true }),
+    ).toHaveAttribute('href', '/studio/upload');
+    await expect(
+      canvas.getByRole('link', { name: 'Create release', exact: true }),
+    ).toHaveAttribute('href', '/studio/releases?create=true');
+    await expect(canvas.getAllByTestId('studio-action-tile')).toHaveLength(5);
   },
 };

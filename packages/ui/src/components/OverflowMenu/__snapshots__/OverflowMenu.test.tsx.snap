@@ -10,7 +10,7 @@ exports[`OverflowMenu > (Snapshot) renders the trigger 1`] = `
       <button
         aria-expanded="false"
         aria-label="More actions"
-        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground not-disabled:hover:bg-foreground/5 not-disabled:active:bg-foreground/10 bg-transparent size-8 justify-center"
         data-headlessui-state=""
         data-testid="overflow-menu"
         id="headlessui-popover-button-:r2:"

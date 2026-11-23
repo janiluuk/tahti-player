@@ -10,16 +10,16 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none',
+          'text-primary-foreground bg-primary border-border shadow-shadow not-disabled:hover:translate-x-shadow-x not-disabled:hover:translate-y-shadow-y border-(length:--border-width) not-disabled:hover:shadow-none not-disabled:hover:brightness-95',
         secondary:
-          'border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none',
+          'border-border shadow-shadow not-disabled:hover:translate-x-shadow-x not-disabled:hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) not-disabled:hover:shadow-none not-disabled:hover:brightness-95',
         tertiary:
-          'border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) hover:shadow-none',
+          'border-border shadow-shadow not-disabled:hover:translate-x-shadow-x not-disabled:hover:translate-y-shadow-y bg-background-secondary text-foreground border-(length:--border-width) not-disabled:hover:shadow-none not-disabled:hover:brightness-95',
         noShadow:
-          'text-primary-foreground bg-primary border-border border-(length:--border-width)',
-        text: 'text-foreground bg-transparent hover:bg-black/5 active:bg-black/10',
+          'text-primary-foreground bg-primary border-border border-(length:--border-width) not-disabled:hover:brightness-95',
+        text: 'text-foreground not-disabled:hover:bg-foreground/5 not-disabled:active:bg-foreground/10 bg-transparent',
         ghost:
-          'border border-current bg-transparent hover:bg-black/10 active:bg-black/15',
+          'not-disabled:hover:bg-foreground/10 not-disabled:active:bg-foreground/15 border border-current bg-transparent',
         plain: '',
       },
       size: {

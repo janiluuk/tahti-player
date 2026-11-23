@@ -6609,3 +6609,10 @@ Pairs with tahti-org#1143 (`Channel.artistBlockVisibilityJson`, `artistBlockVisi
 - **One back link:** `AdminPageLayout` `parent` prop (`ADMIN_PARENT_PAGES`: diagnostics, storageFiles, governance, governanceGrants) overrides the hub back link; Logs/Orphan pages/Map → Diagnostics, a user's storage → Storage files, a governance area → Governance, a grant cycle → Grants. The Governance and storage-user pages lost their second, page-level back link. `AdminActivityView`'s unused standalone shell removed (it only renders inside Logs). Admin Map passes its title/description to `MoreView`.
 - **User tabs:** `AdminUserEditPanel` keeps the identity header and splits the rest into Overview (stats, engagement), Account (details, access, restrictions, delete) and Tracks. `AdminUserTracksPanel` lists the user's uploads (`fetchAdminFiles({ userId })`) with play, public/private toggle (`bulkPatchAdminFiles`), delete (`deleteAdminFile` + confirm) and a link to the user's storage page.
 - Tests: unit (panel tabs + tracks, venues/financial/dashboard headers); e2e back-link hrefs and Account tab clicks updated (not run locally; they target beta).
+
+
+## 2026-11-23 — Studio dashboard, button contrast and PR #2141 stories
+
+Studio 0.0.454 puts Upload / Create release / Go live first, upcoming shows before recent work, and neutral shortcuts beside activity on wide screens. Fixed mismatched text colors on Studio detail buttons and shortcut icons; shared buttons gain subtle hover feedback in flat/dark themes. Automatic primary text for imported themes now uses WCAG contrast with inherited tokens and black/white fallback, preserving explicit overrides. The theme engine changed; no marketplace theme or plugin manifest changed.
+
+Updated the three stale admin stories behind PR #2141's failures. Validation: 28 affected story plays, 643 UI tests, 770 theme tests, Studio/notification/theme-store tests, web type-check/lint and theme type-check; Chromium checks across six built-in themes plus Gruvbox in light/dark at 390 and 1440 pixels. View catalog cross-checked: no routes, navigation items, or story exports added/removed. No deploy requested.

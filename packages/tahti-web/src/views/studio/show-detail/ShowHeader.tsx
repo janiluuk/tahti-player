@@ -52,7 +52,7 @@ export function ShowHeader({
                 <Button
                   variant="secondary"
                   size="icon-sm"
-                  className="bg-background border-border rounded-md border-(length:--border-width)"
+                  className="bg-background text-foreground border-border rounded-md border-(length:--border-width)"
                   onClick={() => setCreateOpen(true)}
                   aria-label={t('showHeader.newEpisode')}
                 >

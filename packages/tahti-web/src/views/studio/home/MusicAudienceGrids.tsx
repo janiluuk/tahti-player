@@ -16,7 +16,7 @@ export function MusicAudienceGrids() {
 
   return (
     <Group title={t('studioHomeView.studio')}>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-2 @lg:grid-cols-2 @4xl:grid-cols-1">
         <StudioActionTile
           to="/studio/releases"
           icon={RocketIcon}
