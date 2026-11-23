@@ -145,7 +145,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
     lookVisibility,
     setLookVisibility,
     reloadLook,
-  } = useArtistChannelLook(profile?.channel?.slug, username);
+  } = useArtistChannelLook(profile?.channel?.slug, username, isOwnerEarly);
 
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);

@@ -5,6 +5,8 @@ import {
   isArtistLookBlockId,
   isChannelLookElementId,
   loadArtistLookVisibility,
+  parseArtistLookVisibility,
+  resolveArtistLookVisibility,
   saveArtistLookVisibility,
 } from './channelLookElements';
 import { CHANNEL_PAGE_ITEM_TYPES } from './channelPageLayout';
@@ -81,6 +83,46 @@ describe('artist look visibility', () => {
     expect(loadArtistLookVisibility('demo').shows).toBe(true);
     expect(loadArtistLookVisibility('demo').gallery).toBe(true);
     expect(isArtistLookBlockId('backdrop')).toBe(false);
+  });
+
+  it('reads the channel value, dropping unknown and non-boolean entries', () => {
+    const parsed = parseArtistLookVisibility(
+      JSON.stringify({ bio: false, backdrop: false, gallery: 'no' }),
+    );
+    expect(parsed?.bio).toBe(false);
+    expect(parsed?.gallery).toBe(true);
+    expect(parsed).not.toHaveProperty('backdrop');
+  });
+
+  it.each([null, undefined, '', '[]', 'null', 'not json'])(
+    'treats %p as no channel value',
+    (json) => {
+      expect(parseArtistLookVisibility(json)).toBeNull();
+    },
+  );
+
+  it('prefers the channel value over this browser and defaults', () => {
+    saveArtistLookVisibility('demo', {
+      ...loadArtistLookVisibility('demo'),
+      news: false,
+    });
+    const resolved = resolveArtistLookVisibility(
+      'demo',
+      JSON.stringify({ bio: false, gallery: false }),
+    );
+    expect(resolved.bio).toBe(false);
+    expect(resolved.gallery).toBe(false);
+    expect(resolved.news).toBe(true);
+  });
+
+  it('falls back to this browser, then to every block shown', () => {
+    expect(resolveArtistLookVisibility('demo', null).news).toBe(true);
+    saveArtistLookVisibility('demo', {
+      ...loadArtistLookVisibility('demo'),
+      news: false,
+    });
+    expect(resolveArtistLookVisibility('demo', null).news).toBe(false);
+    expect(resolveArtistLookVisibility('other', undefined).news).toBe(true);
   });
 
   it('persists a hidden block and showing it again', () => {

@@ -177,6 +177,16 @@ export const artistHeroHiddenData: MockOverrides = {
   },
 };
 
+/** The artist hid Bio & widgets and Gallery in the designer; the choice is
+ * saved on the channel, so every visitor gets it. */
+export const artistServerHiddenBlocksData: MockOverrides = {
+  ...artistRichData,
+  channel: (base) => ({
+    ...base,
+    artistBlockVisibilityJson: JSON.stringify({ bio: false, gallery: false }),
+  }),
+};
+
 export const artistLikesData: MockOverrides = {
   userLikes: { showLikes: true, items: LIKED_TRACKS },
 };

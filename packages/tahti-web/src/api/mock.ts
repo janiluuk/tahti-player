@@ -500,6 +500,7 @@ function buildMockChannel(slug: string): PublicChannel {
           showSiteSidebar: mockVisual.showSiteSidebar,
           showSiteBottomBar: mockVisual.showSiteBottomBar,
           showSiteHeader: mockVisual.showSiteHeader,
+          artistBlockVisibilityJson: mockVisual.artistBlockVisibilityJson,
         }
       : {}),
     state: live ? 'LIVE' : 'OFFLINE',

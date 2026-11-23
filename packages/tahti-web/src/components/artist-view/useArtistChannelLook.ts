@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   fetchPinnedAnnouncements,
@@ -19,8 +19,10 @@ import { fetchChannelPosts, type ArtistPost } from '../../api/studio-extras';
 import type { PublicChannel } from '../../api/types';
 import {
   loadArtistLookVisibility,
+  resolveArtistLookVisibility,
   type ArtistLookBlockId,
 } from '../../lib/channelLookElements';
+import { uploadLocalArtistLookVisibilityOnce } from '../../lib/persistArtistLookVisibility';
 
 export type ArtistChannelVisual = Pick<
   PublicChannel,
@@ -69,10 +71,13 @@ export function pickChannelVisual(data: PublicChannel): ArtistChannelVisual {
   };
 }
 
-/** Channel look, disco widgets, feed/news and live shows for an artist page. */
+/** Channel look, disco widgets, feed/news and live shows for an artist page.
+ * Block visibility comes from the channel first, so visitors see the
+ * artist's choice. */
 export function useArtistChannelLook(
   slug: string | undefined,
   username: string,
+  isOwner = false,
 ) {
   const [channelVisual, setChannelVisual] =
     useState<ArtistChannelVisual | null>(null);
@@ -84,6 +89,33 @@ export function useArtistChannelLook(
   const [lookVisibility, setLookVisibility] = useState<
     Record<ArtistLookBlockId, boolean>
   >(() => loadArtistLookVisibility(username));
+  const isOwnerRef = useRef(isOwner);
+  isOwnerRef.current = isOwner;
+
+  const applyChannel = useCallback(
+    (channelSlug: string, data: PublicChannel) => {
+      setChannelVisual(pickChannelVisual(data));
+      setLookExtras(
+        resolveChannelLookExtras(
+          channelSlug,
+          channelLookExtrasFromVisual(data),
+        ),
+      );
+      setLookVisibility(
+        resolveArtistLookVisibility(
+          channelSlug,
+          data.artistBlockVisibilityJson,
+        ),
+      );
+      if (isOwnerRef.current) {
+        uploadLocalArtistLookVisibilityOnce(
+          channelSlug,
+          data.artistBlockVisibilityJson,
+        );
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     setChannelVisual(null);
@@ -105,10 +137,7 @@ export function useArtistChannelLook(
         if (cancelled || !res.data) {
           return;
         }
-        setChannelVisual(pickChannelVisual(res.data));
-        setLookExtras(
-          resolveChannelLookExtras(slug, channelLookExtrasFromVisual(res.data)),
-        );
+        applyChannel(slug, res.data);
       })
       .catch(() => undefined);
     void fetchChannelDiscoWidgets(slug)
@@ -123,7 +152,7 @@ export function useArtistChannelLook(
     return () => {
       cancelled = true;
     };
-  }, [slug, username]);
+  }, [slug, username, applyChannel]);
 
   useEffect(() => {
     setLiveShows(null);
@@ -146,16 +175,12 @@ export function useArtistChannelLook(
     }
     void fetchChannel(slug)
       .then((res) => {
-        if (!res.data) {
-          return;
+        if (res.data) {
+          applyChannel(slug, res.data);
         }
-        setChannelVisual(pickChannelVisual(res.data));
-        setLookExtras(
-          resolveChannelLookExtras(slug, channelLookExtrasFromVisual(res.data)),
-        );
       })
       .catch(() => undefined);
-  }, [slug]);
+  }, [slug, applyChannel]);
 
   return {
     channelVisual,

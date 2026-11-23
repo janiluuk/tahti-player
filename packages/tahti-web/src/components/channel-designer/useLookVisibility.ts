@@ -4,7 +4,6 @@ import {
   channelLookElements,
   isArtistLookBlockId,
   loadArtistLookVisibility,
-  saveArtistLookVisibility,
   type ArtistLookBlockId,
   type ChannelLookElementId,
 } from '../../lib/channelLookElements';
@@ -14,12 +13,16 @@ import {
   type ChannelPageItem,
   type ChannelPageItemType,
 } from '../../lib/channelPageLayout';
+import { persistArtistLookVisibility } from '../../lib/persistArtistLookVisibility';
 import { persistChannelPageLayout } from '../../lib/persistChannelPageLayout';
 import { webT } from '../../lib/webT';
 
 type Options = {
   layoutSlug: string;
   reloadToken: number;
+  /** Bumps after the designer's look load seeded this browser's copy from
+   * the channel. */
+  lookLoadToken?: number;
   layout?: ChannelPageItem[];
   onLayoutChange?: (
     updater:
@@ -31,10 +34,11 @@ type Options = {
 };
 
 /** Which look elements (player, backdrop, layout blocks) are switched on,
- * persisted per channel, plus the matching page-layout toggle. */
+ * saved on the channel, plus the matching page-layout toggle. */
 export function useLookVisibility({
   layoutSlug,
   reloadToken,
+  lookLoadToken = 0,
   layout,
   onLayoutChange,
   onLookVisibilityChange,
@@ -52,7 +56,7 @@ export function useLookVisibility({
     const visibility = loadArtistLookVisibility(layoutSlug);
     setLookVisibility(visibility);
     onLookVisibilityChangeRef.current?.(visibility);
-  }, [layoutSlug, reloadToken]);
+  }, [layoutSlug, reloadToken, lookLoadToken]);
 
   // Inside ChannelView's editor the page layout belongs to the parent
   // (unsaved until its own Save); writing storage behind its back left its
@@ -105,7 +109,7 @@ export function useLookVisibility({
       [id]: !lookBlockVisible(id),
     };
     setLookVisibility(next);
-    saveArtistLookVisibility(layoutSlug, next);
+    void persistArtistLookVisibility(layoutSlug, next);
     onLookVisibilityChange?.(next);
   };
 

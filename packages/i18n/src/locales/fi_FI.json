@@ -2480,6 +2480,7 @@
       "audioUploadedProcessing": "Ääni ladattu. Sitä käsitellään nyt.",
       "uploadCancelled": "Lataus peruutettu.",
       "channelLayoutSaveFailed": "Sivun asettelua ei voitu tallentaa. Se säilyy tällä laitteella.",
+      "artistBlocksSaveFailed": "Artistisivun osioiden näkyvyyttä ei voitu tallentaa. Muutos säilyy tällä laitteella.",
       "movedSavedTracksToLikes_one": "{{count}} tallennettu kappale siirrettiin tykkäyksiisi",
       "movedSavedTracksToLikes_other": "{{count}} tallennettua kappaletta siirrettiin tykkäyksiisi"
     },

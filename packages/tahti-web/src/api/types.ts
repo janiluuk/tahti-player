@@ -84,6 +84,9 @@ export type PublicChannel = {
   topBarText?: string | null;
   /** Channel Designer page layout (JSON array); null = player default. */
   pageLayoutJson?: string | null;
+  /** Artist page blocks the artist switched on/off (JSON object of block id
+   * → shown); null = every block shown. */
+  artistBlockVisibilityJson?: string | null;
   showSiteSidebar?: boolean;
   showSiteBottomBar?: boolean;
   showSiteHeader?: boolean;

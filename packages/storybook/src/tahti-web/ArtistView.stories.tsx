@@ -8,6 +8,7 @@ import {
   ARTIST_USERNAME,
   artistHeroHiddenData,
   artistRichData,
+  artistServerHiddenBlocksData,
   artistThemeFallbackData,
   AVATAR_GIF,
   AVATAR_POSTER,
@@ -189,5 +190,32 @@ export const HeroHidden: Story = {
         name: `More actions for ${ARTIST_NAME}`,
       }),
     ).toBeVisible();
+  },
+};
+
+export const ServerHiddenBlocks: Story = {
+  decorators: [withMockAuth(MOCK_USERS.listener)],
+  parameters: { mockData: artistServerHiddenBlocksData },
+  beforeEach: () => {
+    const restoreMedia = stubMediaPlayback();
+    localStorage.removeItem(`tahti.artistLookBlocks.${ARTIST_USERNAME}`);
+    return restoreMedia;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = await findHero(canvasElement);
+
+    await step("the visitor gets the artist's hidden blocks", async () => {
+      await waitFor(() =>
+        expect(canvas.queryByRole('tab', { name: /Gallery/ })).toBeNull(),
+      );
+      await expect(
+        canvas.queryByText(/Started as a pirate shortwave project/),
+      ).toBeNull();
+    });
+
+    await step('other blocks still show', async () => {
+      await expect(canvas.getByTestId('artist-releases')).toBeVisible();
+      await expect(canvas.getByRole('tab', { name: /Stage/ })).toBeVisible();
+    });
   },
 };

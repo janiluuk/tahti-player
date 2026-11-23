@@ -6564,3 +6564,13 @@ Built from the todos requested during the first batch (web + tahti-org#1128, #11
 - **Real bugs:** `/studio/schedule` `validateSearch` only kept `tab=programme`, so the Events tabs (Past, Invites) and the `?show=events&tab=invites` notification link fell back to Upcoming; tab values now in `lib/scheduleTabs.ts` (also narrows old `/studio/events?tab=`). `#channel-programme` / `#channel-clips` links open the Programme tab (`scheduleTab(tab, hash)`). Studio → Channel no longer nests Tahti Radio in a second "Tahti Radio" panel with the Schedule description (that description moved to the Schedule links panel). `/studio/chat` labels its chat section (the hidden heading left a dangling `aria-labelledby`).
 - **i18n:** 11 Finnish strings (Admin Streams/Add-ons tabs, collection edit tabs, Distribution tabs).
 - **Tests:** unit (Home five tiles, collection Details tab, Distribution royalties tab), stories (Hubs Fans/Chat/Profile, Streams/Add-ons/Schedule/collection tabs, Home h1, channel-design fixture without the dropped `chat` block), e2e (moderation → `/studio/chat`, add-ons Review tab, collection edit tabs, Earnings/Studio h1, Channel radio tabs, Home tiles).
+
+## 2026-11-23 - Artist page block visibility saved on the channel (0.0.449)
+
+Pairs with tahti-org#1143 (`Channel.artistBlockVisibilityJson`, `artistBlockVisibility` on `PATCH /api/me/channel/visual`, returned on `GET /api/channels/:slug`). Folded `channel-layout-server-side.md` (its page-layout half shipped with tahti-org #1075, deployed).
+- **Precedence:** the artist page (`useArtistChannelLook`) shows the channel's `artistBlockVisibilityJson`, else this browser's `tahti.artistLookBlocks.<slug>`, else every block (`resolveArtistLookVisibility`).
+- **Save:** the designer's block toggles go through `persistArtistLookVisibility` (local + `patchChannelVisual`, toast on failure); the designer's look load seeds the local copy from the channel (`syncArtistLookVisibilityFromChannel` + `lookLoadToken` into `useLookVisibility`).
+- **Upload once:** an owner's local-only choice is uploaded once per session when the channel has none (designer load, and the owner's own `/u/<username>`).
+- **Order:** safe to ship before #1143 deploys; the API strips unknown patch keys, so toggles stay local until then.
+- Mock visual carries the field; `ArtistView` story `ServerHiddenBlocks`; e2e `channel-designer-elements.spec.ts` checks a hidden block survives clearing local storage.
+

@@ -137,6 +137,24 @@ function artistLookStorageKey(slug: string) {
   return `tahti.artistLookBlocks.${slug}`;
 }
 
+function withDefaultVisibility(
+  parsed: unknown,
+): Record<ArtistLookBlockId, boolean> | null {
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return null;
+  }
+  return {
+    ...DEFAULT_ARTIST_LOOK_VISIBILITY,
+    ...Object.fromEntries(
+      Object.entries(parsed).filter(
+        ([key, value]) =>
+          isArtistLookBlockId(key) && typeof value === 'boolean',
+      ),
+    ),
+  };
+}
+
+/** This browser's copy for `slug`, or every block shown. */
 export function loadArtistLookVisibility(
   slug: string,
 ): Record<ArtistLookBlockId, boolean> {
@@ -145,21 +163,48 @@ export function loadArtistLookVisibility(
   }
   try {
     const raw = localStorage.getItem(artistLookStorageKey(slug));
-    if (!raw) {
-      return { ...DEFAULT_ARTIST_LOOK_VISIBILITY };
-    }
-    const parsed = JSON.parse(raw) as Partial<
-      Record<ArtistLookBlockId, boolean>
-    >;
-    return {
-      ...DEFAULT_ARTIST_LOOK_VISIBILITY,
-      ...Object.fromEntries(
-        Object.entries(parsed).filter(([key]) => isArtistLookBlockId(key)),
-      ),
-    };
+    return (
+      (raw ? withDefaultVisibility(JSON.parse(raw)) : null) ?? {
+        ...DEFAULT_ARTIST_LOOK_VISIBILITY,
+      }
+    );
   } catch {
     return { ...DEFAULT_ARTIST_LOOK_VISIBILITY };
   }
+}
+
+export function hasLocalArtistLookVisibility(slug: string): boolean {
+  try {
+    return !!slug && localStorage.getItem(artistLookStorageKey(slug)) != null;
+  } catch {
+    return false;
+  }
+}
+
+/** The visibility a channel response carries in `artistBlockVisibilityJson`,
+ * or null when it is unset or unreadable. */
+export function parseArtistLookVisibility(
+  json: string | null | undefined,
+): Record<ArtistLookBlockId, boolean> | null {
+  if (!json) {
+    return null;
+  }
+  try {
+    return withDefaultVisibility(JSON.parse(json));
+  } catch {
+    return null;
+  }
+}
+
+/** What the artist page shows: the channel's saved choice, else this
+ * browser's copy, else every block. */
+export function resolveArtistLookVisibility(
+  slug: string,
+  serverJson: string | null | undefined,
+): Record<ArtistLookBlockId, boolean> {
+  return (
+    parseArtistLookVisibility(serverJson) ?? loadArtistLookVisibility(slug)
+  );
 }
 
 export function saveArtistLookVisibility(

@@ -39,6 +39,7 @@ import {
   channelVizPackId,
   withChannelVizPack,
 } from '../../lib/channelVizPacks';
+import { syncArtistLookVisibilityFromChannel } from '../../lib/persistArtistLookVisibility';
 import { buildVisualPatch } from './buildVisualPatch';
 import { buildLoadedLook } from './lookLoad';
 import type { LookSnapshot } from './lookSnapshot';
@@ -107,6 +108,7 @@ export function useChannelLook({
     null,
   );
   const [previousSave, setPreviousSave] = useState<LookSnapshot | null>(null);
+  const [lookLoadToken, setLookLoadToken] = useState(0);
   const {
     pendingVideoFile,
     pendingVideoPreviewUrl,
@@ -157,6 +159,11 @@ export function useChannelLook({
         if (serverLayout) {
           saveChannelPageLayout(layoutSlug, serverLayout);
         }
+        syncArtistLookVisibilityFromChannel(
+          layoutSlug,
+          visualResult.data.artistBlockVisibilityJson,
+        );
+        setLookLoadToken((token) => token + 1);
         const loaded = buildLoadedLook(
           visualResult.data,
           galleryResult.data,
@@ -668,6 +675,7 @@ export function useChannelLook({
   };
 
   return {
+    lookLoadToken,
     editBackgroundScheme,
     editGalleryMode,
     editPlayerScheme,

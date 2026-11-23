@@ -71,6 +71,13 @@ export async function patchChannelVisual(
       ...(patch.channelLinks !== undefined
         ? { channelLinks: patch.channelLinks }
         : {}),
+      ...(patch.artistBlockVisibility !== undefined
+        ? {
+            artistBlockVisibilityJson: patch.artistBlockVisibility
+              ? JSON.stringify(patch.artistBlockVisibility)
+              : null,
+          }
+        : {}),
       ...(patch.textOverlayMode !== undefined
         ? { textOverlayMode: patch.textOverlayMode }
         : {}),
