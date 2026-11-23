@@ -4414,7 +4414,10 @@
       "requiredBeforeSuspending": "Pakollinen ennen jäädytystä",
       "thisUsesTheSameDirect": "Tämä käyttää samaa yksityisviestiketjua, jonka käyttäjä näkee Viesteissä.",
       "writeAMessage": "Kirjoita viesti…",
-      "sendMessage": "Lähetä viesti"
+      "sendMessage": "Lähetä viesti",
+      "tabOverview": "Yleiskatsaus",
+      "tabAccount": "Tili",
+      "tabTracks": "Kappaleet"
     },
     "adminGovernanceOverview": {
       "recentVotingActivity": "Viimeaikainen äänestystoiminta",
@@ -7576,6 +7579,7 @@
       "storage": "Tallennustila",
       "files": "Tiedostot",
       "backToStorage": "Takaisin tallennustilaan",
+      "subtitle": "Tämän tilin käyttämä tallennustila ja kaikki sen lataamat tiedostot.",
       "used": "Käytetty",
       "quota": "Kiintiö",
       "usedOfQuota": "Käytetty kiintiöstä",
@@ -14846,6 +14850,7 @@
     },
     "adminGrantCycleViewBatch33": {
       "title": "Apurahakierros {{year}}",
+      "subtitle": "Kunkin artistin osuus tämän vuoden apurahapotista hallituksen hyväksyttäväksi.",
       "approveNote_one": "Tämä luo apurahakirjauksen {{count}} oikeutetulle artistille ja ilmoittaa hänelle apurahasta, myös sähköpostilla, jos hän on pyytänyt rahailmoitukset.",
       "approveNote_other": "Tämä luo apurahakirjaukset {{count}} oikeutetulle artistille ja ilmoittaa jokaiselle apurahasta, myös sähköpostilla, jos he ovat pyytäneet rahailmoitukset."
     },
@@ -15628,6 +15633,25 @@
     "adminCommunityView": {
       "community": "Yhteisö",
       "subtitle": "Alustan chatin määrä ja lähtevä posti."
+    },
+    "adminUserTracks": {
+      "title": "Kappaleet",
+      "description_one": "{{count}} lataus. Tee siitä julkinen tai yksityinen, toista tai poista se.",
+      "description_other": "{{count}} latausta. Tee kustakin julkinen tai yksityinen, toista tai poista se.",
+      "loading": "Ladataan kappaleita…",
+      "couldNotLoad": "Tämän tilin kappaleita ei voitu ladata",
+      "empty": "Ei vielä latauksia",
+      "public": "Julkinen",
+      "private": "Yksityinen",
+      "publicToggle": "Julkinen: {{title}}",
+      "play": "Toista",
+      "playTitle": "Toista {{title}}",
+      "delete": "Poista",
+      "deleteTitle": "Poista {{title}}",
+      "openInStorage": "Avaa tallennustilassa",
+      "couldNotPlay": "Kappaletta {{title}} ei voitu toistaa",
+      "couldNotUpdate": "Kappaletta {{title}} ei voitu päivittää: {{error}}",
+      "couldNotDelete": "Kappaletta {{title}} ei voitu poistaa: {{error}}"
     }
   },
   "studioEditor": {

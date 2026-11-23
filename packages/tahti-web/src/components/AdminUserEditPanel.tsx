@@ -1,8 +1,10 @@
 import {
   ExternalLinkIcon,
   MessageSquareIcon,
+  MusicIcon,
   SendIcon,
   ShieldAlertIcon,
+  UserRoundIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -16,6 +18,7 @@ import {
   MediaArtwork,
   SaveButton,
   Select,
+  Tabs,
   Textarea,
   Toggle,
   Tooltip,
@@ -41,12 +44,16 @@ import { AdminChannelKindControl } from './admin-user/AdminChannelKindControl';
 import { AdminUserDeletePanel } from './admin-user/AdminUserDeletePanel';
 import { AdminUserEngagementPanel } from './admin-user/AdminUserEngagementPanel';
 import { AdminUserRestrictionsPanel } from './admin-user/AdminUserRestrictionsPanel';
+import { AdminUserTracksPanel } from './admin-user/AdminUserTracksPanel';
 import { ImageLightbox } from './ImageLightbox';
 import { ListingDate } from './ListingDate';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 const ROLES = ['BOARD', 'ARTIST', 'LISTENER'] as const;
+
+const TABS = ['overview', 'account', 'tracks'] as const;
+type AdminUserTab = (typeof TABS)[number];
 
 const ROLE_LABEL_KEYS = {
   BOARD: 'adminUserEditPanelBatch32.roleBoard',
@@ -88,6 +95,7 @@ export function AdminUserEditPanel({
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [detailError, setDetailError] = useState<string | null>(null);
   const [detailAttempt, setDetailAttempt] = useState(0);
+  const [tab, setTab] = useState<AdminUserTab>('overview');
 
   const syncDetail = (user: AdminUserDetail) => {
     setDetail(user);
@@ -317,266 +325,315 @@ export function AdminUserEditPanel({
             {publicProfile.artist.bio}
           </p>
         ) : null}
-
-        <dl className="border-border mt-4 grid gap-3 border-t pt-4 text-sm @sm:grid-cols-2 @2xl:grid-cols-4">
-          <div>
-            <dt className="text-foreground-secondary text-xs uppercase">
-              {t('adminUserEdit.memberSince')}
-            </dt>
-            <dd>
-              {detail.memberSince ? (
-                <ListingDate value={detail.memberSince} />
-              ) : (
-                i18n.t('web:batch51.notAMember')
-              )}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-foreground-secondary text-xs uppercase">
-              {t('adminUserEdit.followers')}
-            </dt>
-            <dd>
-              {publicProfile?.artist.followerCount ??
-                i18n.t('web:batch57.hiddenOrUnavailable')}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-foreground-secondary text-xs uppercase">
-              {t('adminUserEdit.artistType')}
-            </dt>
-            <dd>
-              {publicProfile?.channel?.artistKind ??
-                (detail.channel
-                  ? t('adminUserEditPanelStates.artist')
-                  : t('adminUserEditPanelStates.listener'))}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-foreground-secondary text-xs uppercase">
-              {t('adminUserEdit.publishedMaterial')}
-            </dt>
-            <dd>
-              {publicProfile
-                ? [
-                    t('adminUserEditPanelBatch32.trackCount', {
-                      count: publicProfile.tracks.length,
-                    }),
-                    t('adminUserEditPanelBatch32.releaseCount', {
-                      count: publicProfile.releases.length,
-                    }),
-                    t('adminUserEditPanelBatch32.collectionCount', {
-                      count: publicProfile.collections.length,
-                    }),
-                  ].join(' · ')
-                : t('adminUserEditPanelBatch32.loading')}
-            </dd>
-          </div>
-        </dl>
-
-        <dl className="mt-5 grid gap-3 @sm:grid-cols-2 @2xl:grid-cols-4">
-          <div className="bg-background-secondary rounded-lg p-3">
-            <dt className="text-foreground-secondary text-xs uppercase">
-              {t('adminUserEdit.engagement')}
-            </dt>
-            <dd className="font-display mt-1 text-xl font-bold">
-              {detail.engagementUnitsYtd}
-            </dd>
-            <dd className="text-foreground-secondary text-xs">
-              {t('adminUserEditPanelBatch32.unitsYtd')}
-            </dd>
-          </div>
-          <div className="bg-background-secondary rounded-lg p-3">
-            <dt className="text-foreground-secondary text-xs uppercase">
-              {t('adminUserEdit.fanSubscriptions')}
-            </dt>
-            <dd className="font-display mt-1 text-xl font-bold">
-              {detail.fanSubscriptionsAsArtist}
-            </dd>
-            <dd className="text-foreground-secondary text-xs">
-              {t('adminUserEditPanelBatch32.active')}
-            </dd>
-          </div>
-          <div className="bg-background-secondary rounded-lg p-3">
-            <dt className="text-foreground-secondary text-xs uppercase">
-              {t('adminUserEdit.channel')}
-            </dt>
-            <dd className="mt-1 text-sm font-medium">
-              {detail.channel?.state ?? i18n.t('web:batch57.noChannel')}
-            </dd>
-            <dd className="text-foreground-secondary text-xs">
-              {detail.channel
-                ? t('adminUserEditPanelBatch32.liveHours', {
-                    hours: detail.channel.totalLiveHours.toFixed(1),
-                  })
-                : t('adminUserEditPanelBatch32.listenerAccount')}
-            </dd>
-            {detail.channel ? (
-              <dd className="mt-2">
-                <AdminChannelKindControl
-                  key={detail.channel.slug}
-                  slug={detail.channel.slug}
-                  initialKind={detail.channel.channelKind ?? 'ARTIST'}
-                />
-              </dd>
-            ) : null}
-          </div>
-          <div className="bg-background-secondary rounded-lg p-3">
-            <dt className="text-foreground-secondary text-xs uppercase">
-              {t('adminUserEdit.payments')}
-            </dt>
-            <dd className="mt-1 text-sm font-medium">
-              {detail.stripeConnectChargesEnabled
-                ? t('adminUserEditPanelStates.chargesEnabled')
-                : t('adminUserEditPanelStates.notReady')}
-            </dd>
-          </div>
-        </dl>
       </StudioPanel>
 
-      <div className="grid gap-4 @3xl:grid-cols-2">
-        <StudioPanel
-          title={t('adminUserEdit.accountDetails')}
-          description={t('adminUserEdit.accessMembershipAndGovernanceRoles')}
-          action={
-            <EditIconButton
-              label={t('adminUserEdit.editAccountDetails')}
-              editing={accountEditing}
-              onClick={() => {
-                if (accountEditing) {
-                  syncDetail(detail);
-                }
-                setAccountEditing(!accountEditing);
-              }}
-            />
-          }
-        >
-          {accountEditing ? (
-            <form
-              className="flex flex-col gap-3"
-              onSubmit={(event) => {
-                event.preventDefault();
-                void saveUser();
-              }}
-            >
-              <Select
-                label={t('adminUserEdit.role')}
-                value={editRole}
-                onValueChange={(value) => setEditRole(value as AccountRole)}
-                options={ROLES.map((value) => ({
-                  id: value,
-                  label: t(ROLE_LABEL_KEYS[value]),
-                }))}
-              />
-              <Input
-                label={t('adminUserEdit.memberNumber')}
-                inputMode="numeric"
-                value={editMemberNumber}
-                onChange={(event) => setEditMemberNumber(event.target.value)}
-                placeholder={t('adminUserEdit.notAssigned')}
-              />
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span>{t('adminUserEdit.associationMember')}</span>
-                <Toggle
-                  label={t('adminUserEdit.associationMember')}
-                  checked={editMember}
-                  onChange={setEditMember}
+      <Tabs
+        selectedIndex={TABS.indexOf(tab)}
+        onChange={(index) => setTab(TABS[index] ?? 'overview')}
+        listClassName="flex-wrap"
+        panelClassName="pt-2"
+        items={[
+          {
+            id: 'overview',
+            label: t('adminUserEdit.tabOverview'),
+            icon: <UserRoundIcon size={14} aria-hidden />,
+            content: (
+              <div className="flex flex-col gap-4">
+                <StudioPanel>
+                  <dl className="border-border grid gap-3 text-sm @sm:grid-cols-2 @2xl:grid-cols-4">
+                    <div>
+                      <dt className="text-foreground-secondary text-xs uppercase">
+                        {t('adminUserEdit.memberSince')}
+                      </dt>
+                      <dd>
+                        {detail.memberSince ? (
+                          <ListingDate value={detail.memberSince} />
+                        ) : (
+                          i18n.t('web:batch51.notAMember')
+                        )}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-foreground-secondary text-xs uppercase">
+                        {t('adminUserEdit.followers')}
+                      </dt>
+                      <dd>
+                        {publicProfile?.artist.followerCount ??
+                          i18n.t('web:batch57.hiddenOrUnavailable')}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-foreground-secondary text-xs uppercase">
+                        {t('adminUserEdit.artistType')}
+                      </dt>
+                      <dd>
+                        {publicProfile?.channel?.artistKind ??
+                          (detail.channel
+                            ? t('adminUserEditPanelStates.artist')
+                            : t('adminUserEditPanelStates.listener'))}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-foreground-secondary text-xs uppercase">
+                        {t('adminUserEdit.publishedMaterial')}
+                      </dt>
+                      <dd>
+                        {publicProfile
+                          ? [
+                              t('adminUserEditPanelBatch32.trackCount', {
+                                count: publicProfile.tracks.length,
+                              }),
+                              t('adminUserEditPanelBatch32.releaseCount', {
+                                count: publicProfile.releases.length,
+                              }),
+                              t('adminUserEditPanelBatch32.collectionCount', {
+                                count: publicProfile.collections.length,
+                              }),
+                            ].join(' · ')
+                          : t('adminUserEditPanelBatch32.loading')}
+                      </dd>
+                    </div>
+                  </dl>
+
+                  <dl className="mt-5 grid gap-3 @sm:grid-cols-2 @2xl:grid-cols-4">
+                    <div className="bg-background-secondary rounded-lg p-3">
+                      <dt className="text-foreground-secondary text-xs uppercase">
+                        {t('adminUserEdit.engagement')}
+                      </dt>
+                      <dd className="font-display mt-1 text-xl font-bold">
+                        {detail.engagementUnitsYtd}
+                      </dd>
+                      <dd className="text-foreground-secondary text-xs">
+                        {t('adminUserEditPanelBatch32.unitsYtd')}
+                      </dd>
+                    </div>
+                    <div className="bg-background-secondary rounded-lg p-3">
+                      <dt className="text-foreground-secondary text-xs uppercase">
+                        {t('adminUserEdit.fanSubscriptions')}
+                      </dt>
+                      <dd className="font-display mt-1 text-xl font-bold">
+                        {detail.fanSubscriptionsAsArtist}
+                      </dd>
+                      <dd className="text-foreground-secondary text-xs">
+                        {t('adminUserEditPanelBatch32.active')}
+                      </dd>
+                    </div>
+                    <div className="bg-background-secondary rounded-lg p-3">
+                      <dt className="text-foreground-secondary text-xs uppercase">
+                        {t('adminUserEdit.channel')}
+                      </dt>
+                      <dd className="mt-1 text-sm font-medium">
+                        {detail.channel?.state ??
+                          i18n.t('web:batch57.noChannel')}
+                      </dd>
+                      <dd className="text-foreground-secondary text-xs">
+                        {detail.channel
+                          ? t('adminUserEditPanelBatch32.liveHours', {
+                              hours: detail.channel.totalLiveHours.toFixed(1),
+                            })
+                          : t('adminUserEditPanelBatch32.listenerAccount')}
+                      </dd>
+                      {detail.channel ? (
+                        <dd className="mt-2">
+                          <AdminChannelKindControl
+                            key={detail.channel.slug}
+                            slug={detail.channel.slug}
+                            initialKind={detail.channel.channelKind ?? 'ARTIST'}
+                          />
+                        </dd>
+                      ) : null}
+                    </div>
+                    <div className="bg-background-secondary rounded-lg p-3">
+                      <dt className="text-foreground-secondary text-xs uppercase">
+                        {t('adminUserEdit.payments')}
+                      </dt>
+                      <dd className="mt-1 text-sm font-medium">
+                        {detail.stripeConnectChargesEnabled
+                          ? t('adminUserEditPanelStates.chargesEnabled')
+                          : t('adminUserEditPanelStates.notReady')}
+                      </dd>
+                    </div>
+                  </dl>
+                </StudioPanel>
+                <AdminUserEngagementPanel userId={detail.id} />
+              </div>
+            ),
+          },
+          {
+            id: 'account',
+            label: t('adminUserEdit.tabAccount'),
+            icon: <ShieldAlertIcon size={14} aria-hidden />,
+            content: (
+              <div className="flex flex-col gap-4">
+                <div className="grid gap-4 @3xl:grid-cols-2">
+                  <StudioPanel
+                    title={t('adminUserEdit.accountDetails')}
+                    description={t(
+                      'adminUserEdit.accessMembershipAndGovernanceRoles',
+                    )}
+                    action={
+                      <EditIconButton
+                        label={t('adminUserEdit.editAccountDetails')}
+                        editing={accountEditing}
+                        onClick={() => {
+                          if (accountEditing) {
+                            syncDetail(detail);
+                          }
+                          setAccountEditing(!accountEditing);
+                        }}
+                      />
+                    }
+                  >
+                    {accountEditing ? (
+                      <form
+                        className="flex flex-col gap-3"
+                        onSubmit={(event) => {
+                          event.preventDefault();
+                          void saveUser();
+                        }}
+                      >
+                        <Select
+                          label={t('adminUserEdit.role')}
+                          value={editRole}
+                          onValueChange={(value) =>
+                            setEditRole(value as AccountRole)
+                          }
+                          options={ROLES.map((value) => ({
+                            id: value,
+                            label: t(ROLE_LABEL_KEYS[value]),
+                          }))}
+                        />
+                        <Input
+                          label={t('adminUserEdit.memberNumber')}
+                          inputMode="numeric"
+                          value={editMemberNumber}
+                          onChange={(event) =>
+                            setEditMemberNumber(event.target.value)
+                          }
+                          placeholder={t('adminUserEdit.notAssigned')}
+                        />
+                        <div className="flex items-center justify-between gap-3 text-sm">
+                          <span>{t('adminUserEdit.associationMember')}</span>
+                          <Toggle
+                            label={t('adminUserEdit.associationMember')}
+                            checked={editMember}
+                            onChange={setEditMember}
+                          />
+                        </div>
+                        <div className="flex justify-end">
+                          <SaveButton
+                            saving={busy}
+                            label={t('adminUserEdit.saveAccount')}
+                            type="submit"
+                          />
+                        </div>
+                      </form>
+                    ) : (
+                      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+                        <dt className="text-foreground-secondary">
+                          {t('adminUserEdit.role')}
+                        </dt>
+                        <dd>{t(ROLE_LABEL_KEYS[detail.role])}</dd>
+                        <dt className="text-foreground-secondary">
+                          {t('adminUserEdit.memberNumber')}
+                        </dt>
+                        <dd>
+                          {detail.memberNumber ??
+                            i18n.t('web:adminUserEdit.notAssigned')}
+                        </dd>
+                        <dt className="text-foreground-secondary">
+                          {t('adminUserEdit.associationMember')}
+                        </dt>
+                        <dd>
+                          {detail.isMember
+                            ? t('adminUserEditPanelStates.yes')
+                            : t('adminUserEditPanelStates.no')}
+                        </dd>
+                      </dl>
+                    )}
+                  </StudioPanel>
+
+                  <StudioPanel
+                    title={t('adminUserEdit.accountAccess')}
+                    description={
+                      detail.suspendedAt ? (
+                        <>
+                          {t('adminUserEditPanelBatch32.suspendedSince')}{' '}
+                          <ListingDate value={detail.suspendedAt} />
+                          {detail.suspendReason
+                            ? ` · ${detail.suspendReason}`
+                            : ''}
+                          {t('adminUserEditPanelBatch32.restoreNote')}
+                        </>
+                      ) : (
+                        t('adminUserEditPanelBatch32.suspensionNote')
+                      )
+                    }
+                  >
+                    <form
+                      className="flex flex-col gap-3"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        void toggleSuspension();
+                      }}
+                    >
+                      {!detail.suspendedAt ? (
+                        <Textarea
+                          label={t('adminUserEdit.suspensionReason')}
+                          tone="secondary"
+                          value={suspendReason}
+                          onChange={(event) =>
+                            setSuspendReason(event.target.value)
+                          }
+                          rows={4}
+                          maxLength={500}
+                          placeholder={t(
+                            'adminUserEdit.requiredBeforeSuspending',
+                          )}
+                          submitOnModEnter
+                        />
+                      ) : null}
+                      <Button
+                        type="submit"
+                        size="sm"
+                        variant={detail.suspendedAt ? 'secondary' : 'text'}
+                        disabled={busy}
+                        className={
+                          detail.suspendedAt
+                            ? undefined
+                            : 'text-accent-red-strong hover:text-accent-red-strong'
+                        }
+                      >
+                        <ShieldAlertIcon
+                          size={14}
+                          aria-hidden
+                          className="mr-1.5"
+                        />
+                        {detail.suspendedAt
+                          ? t('adminUserEditPanelStates.restoreAccount')
+                          : t('adminUserEditPanelStates.suspendAccount')}
+                      </Button>
+                    </form>
+                  </StudioPanel>
+                </div>
+
+                <AdminUserRestrictionsPanel userId={detail.id} />
+
+                <AdminUserDeletePanel
+                  user={detail}
+                  isSelf={me?.id === detail.id}
+                  onDeleted={() => onUserDeleted?.(detail.id)}
                 />
               </div>
-              <div className="flex justify-end">
-                <SaveButton
-                  saving={busy}
-                  label={t('adminUserEdit.saveAccount')}
-                  type="submit"
-                />
-              </div>
-            </form>
-          ) : (
-            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-              <dt className="text-foreground-secondary">
-                {t('adminUserEdit.role')}
-              </dt>
-              <dd>{t(ROLE_LABEL_KEYS[detail.role])}</dd>
-              <dt className="text-foreground-secondary">
-                {t('adminUserEdit.memberNumber')}
-              </dt>
-              <dd>
-                {detail.memberNumber ?? i18n.t('web:adminUserEdit.notAssigned')}
-              </dd>
-              <dt className="text-foreground-secondary">
-                {t('adminUserEdit.associationMember')}
-              </dt>
-              <dd>
-                {detail.isMember
-                  ? t('adminUserEditPanelStates.yes')
-                  : t('adminUserEditPanelStates.no')}
-              </dd>
-            </dl>
-          )}
-        </StudioPanel>
-
-        <StudioPanel
-          title={t('adminUserEdit.accountAccess')}
-          description={
-            detail.suspendedAt ? (
-              <>
-                {t('adminUserEditPanelBatch32.suspendedSince')}{' '}
-                <ListingDate value={detail.suspendedAt} />
-                {detail.suspendReason ? ` · ${detail.suspendReason}` : ''}
-                {t('adminUserEditPanelBatch32.restoreNote')}
-              </>
-            ) : (
-              t('adminUserEditPanelBatch32.suspensionNote')
-            )
-          }
-        >
-          <form
-            className="flex flex-col gap-3"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void toggleSuspension();
-            }}
-          >
-            {!detail.suspendedAt ? (
-              <Textarea
-                label={t('adminUserEdit.suspensionReason')}
-                tone="secondary"
-                value={suspendReason}
-                onChange={(event) => setSuspendReason(event.target.value)}
-                rows={4}
-                maxLength={500}
-                placeholder={t('adminUserEdit.requiredBeforeSuspending')}
-                submitOnModEnter
-              />
-            ) : null}
-            <Button
-              type="submit"
-              size="sm"
-              variant={detail.suspendedAt ? 'secondary' : 'text'}
-              disabled={busy}
-              className={
-                detail.suspendedAt
-                  ? undefined
-                  : 'text-accent-red-strong hover:text-accent-red-strong'
-              }
-            >
-              <ShieldAlertIcon size={14} aria-hidden className="mr-1.5" />
-              {detail.suspendedAt
-                ? t('adminUserEditPanelStates.restoreAccount')
-                : t('adminUserEditPanelStates.suspendAccount')}
-            </Button>
-          </form>
-        </StudioPanel>
-      </div>
-
-      <div className="grid gap-4 @3xl:grid-cols-2">
-        <AdminUserEngagementPanel userId={detail.id} />
-        <AdminUserRestrictionsPanel userId={detail.id} />
-      </div>
-
-      <AdminUserDeletePanel
-        user={detail}
-        isSelf={me?.id === detail.id}
-        onDeleted={() => onUserDeleted?.(detail.id)}
+            ),
+          },
+          {
+            id: 'tracks',
+            label: t('adminUserEdit.tabTracks'),
+            icon: <MusicIcon size={14} aria-hidden />,
+            content: <AdminUserTracksPanel userId={detail.id} />,
+          },
+        ]}
       />
 
       {messageOpen ? (

@@ -2,16 +2,9 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { CloudIcon, HardDriveIcon } from 'lucide-react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  Tabs,
-  ViewShell,
-} from '@tahti-player/ui';
+import { Tabs, ViewShell } from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { FilesBrowserTab } from './storage/FilesBrowserTab';
 import { StorageOverviewTab } from './storage/StorageOverviewTab';
@@ -27,28 +20,9 @@ export function AdminStorageView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/storage">
           <div className="flex max-w-6xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminStorageView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="platform" />
-              {tab === 'files' ? (
-                <>
-                  <BreadcrumbLink to="/admin/storage">
-                    {t('adminStorageView.storage')}
-                  </BreadcrumbLink>
-                  <BreadcrumbCurrent>
-                    {t('adminStorageViewStates.files')}
-                  </BreadcrumbCurrent>
-                </>
-              ) : (
-                <BreadcrumbCurrent>
-                  {t('adminStorageView.storage')}
-                </BreadcrumbCurrent>
-              )}
-            </Breadcrumbs>
             <ViewShell
               title={t('adminStorageView.storage')}
+              subtitle={t('adminPages.storageDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <Tabs

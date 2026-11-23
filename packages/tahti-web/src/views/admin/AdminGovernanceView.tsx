@@ -1,5 +1,4 @@
 import {
-  ArrowLeftIcon,
   BanknoteIcon,
   FileTextIcon,
   FlagIcon,
@@ -10,17 +9,9 @@ import {
 } from 'lucide-react';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
-import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  ButtonLink,
-  HubCards,
-  ViewShell,
-} from '@tahti-player/ui';
+import { HubCards, ViewShell } from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { renderHubLink } from '../../components/HubLink';
 import { DiscussionsAdminPanel } from './governance/discussions/DiscussionsAdminPanel';
@@ -101,15 +92,6 @@ export function AdminGovernanceView({ tab }: { tab?: AdminGovernanceTabId }) {
         <div className="admin-page-layout px-1 py-2">
           <AdminPageLayout current="/admin/governance">
             <div className="flex max-w-5xl flex-col gap-4">
-              <Breadcrumbs>
-                <BreadcrumbLink to="/admin">
-                  {t('adminGovernanceView.admin')}
-                </BreadcrumbLink>
-                <AdminHubBreadcrumb hub="coop" />
-                <BreadcrumbCurrent>
-                  {t('adminGovernanceView.governance')}
-                </BreadcrumbCurrent>
-              </Breadcrumbs>
               <ViewShell
                 title={t('adminGovernanceView.governance')}
                 subtitle={t('adminGovernanceHub.subtitle')}
@@ -131,31 +113,11 @@ export function AdminGovernanceView({ tab }: { tab?: AdminGovernanceTabId }) {
   return (
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
-        <AdminPageLayout current="/admin/governance">
+        <AdminPageLayout current="/admin/governance" parent="governance">
           <div className="flex max-w-4xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminGovernanceView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="coop" />
-              <BreadcrumbLink to="/admin/governance">
-                {t('adminGovernanceView.governance')}
-              </BreadcrumbLink>
-              <BreadcrumbCurrent>{activeLabel}</BreadcrumbCurrent>
-            </Breadcrumbs>
-            <ButtonLink
-              to="/admin/governance"
-              size="sm"
-              variant="text"
-              className="w-fit gap-1.5"
-              data-testid="admin-governance-back"
-              aria-label={t('adminGovernanceHub.backToGovernance')}
-            >
-              <ArrowLeftIcon size={16} aria-hidden />
-              {t('adminGovernanceView.governance')}
-            </ButtonLink>
             <ViewShell
               title={activeLabel}
+              subtitle={t(GOVERNANCE_DESCRIPTION_KEYS[active])}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {tabContent(active)}

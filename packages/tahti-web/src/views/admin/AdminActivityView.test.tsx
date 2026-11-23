@@ -37,7 +37,7 @@ describe('AdminActivityView', () => {
       limit: 50,
       meta: { source: 'api' },
     } as never);
-    render(<AdminActivityView embedded />);
+    render(<AdminActivityView />);
     expect(await screen.findByText(/^2 events/)).toBeTruthy();
 
     fetch.mockResolvedValue({
@@ -62,7 +62,7 @@ describe('AdminActivityView', () => {
       limit: 50,
       meta: { source: 'api', reason: 'HTTP 502' },
     } as never);
-    render(<AdminActivityView embedded />);
+    render(<AdminActivityView />);
     expect(await screen.findByText("Couldn't load activity")).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Retry' })).toBeTruthy();
   });

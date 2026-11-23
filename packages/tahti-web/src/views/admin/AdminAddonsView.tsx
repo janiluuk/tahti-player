@@ -4,9 +4,6 @@ import { useEffect } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
   Button,
   FilterBar,
   FilterChips,
@@ -18,7 +15,6 @@ import {
 
 import type { AdminAddonScope } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
@@ -151,17 +147,9 @@ export function AdminAddonsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/addons">
           <div className="flex max-w-5xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminAddonsView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbCurrent>
-                {t('adminAddonsView.addOns')}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminAddonsView.addOns')}
+              subtitle={t('adminPages.addonsDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
               actions={
                 <Tooltip

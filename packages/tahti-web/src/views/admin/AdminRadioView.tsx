@@ -14,16 +14,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import {
-  Badge,
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  Button,
-  MediaArtwork,
-  Tabs,
-  ViewShell,
-} from '@tahti-player/ui';
+import { Badge, Button, MediaArtwork, Tabs, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminRadio,
@@ -36,7 +27,6 @@ import {
 } from '../../api/admin';
 import { fetchRadioStation } from '../../api/client';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ListingDate } from '../../components/ListingDate';
 import { MulticastSection } from '../../components/MulticastSection';
@@ -51,14 +41,6 @@ import {
 } from './adminRadioTabs';
 import { InternetRadioPresetsPanel } from './InternetRadioPresetsPanel';
 import { TahtiRadioPlaylistPanel } from './TahtiRadioPlaylistPanel';
-
-const ADMIN_RADIO_TAB_LABELS: Record<AdminRadioTabId, string> = {
-  feature: 'Feature',
-  playlist: 'Playlist',
-  presets: 'Stations',
-  'opt-outs': 'Opt-outs',
-  history: 'History',
-};
 
 export function AdminRadioView() {
   const { t } = useTranslation('web');
@@ -143,20 +125,9 @@ export function AdminRadioView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/radio">
           <div className="flex max-w-4xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminRadioView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="content" />
-              <BreadcrumbLink to="/admin/radio">
-                {t('adminRadioView.radio')}
-              </BreadcrumbLink>
-              <BreadcrumbCurrent>
-                {ADMIN_RADIO_TAB_LABELS[activeTab]}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminRadioView.radio')}
+              subtitle={t('adminPages.radioDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {msg && (

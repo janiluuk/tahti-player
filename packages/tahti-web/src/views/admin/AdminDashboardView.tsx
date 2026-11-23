@@ -13,9 +13,6 @@ import { useTranslation } from '@tahti-player/i18n';
 import {
   Alert,
   Badge,
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
   Button,
   ButtonLink,
   Dialog,
@@ -346,14 +343,6 @@ export function AdminDashboardView({ tab }: { tab?: AdminDashboardTab }) {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin">
           <div className="flex flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminDashboard.admin')}
-              </BreadcrumbLink>
-              <BreadcrumbCurrent>
-                {t('adminDashboard.dashboard')}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminDashboard.dashboard')}
               subtitle={t('adminDashboard.subtitle')}

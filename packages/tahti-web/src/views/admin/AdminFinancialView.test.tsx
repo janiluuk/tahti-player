@@ -27,7 +27,7 @@ describe('AdminFinancialView', () => {
       meta: { source: 'api', reason: 'HTTP 502' },
     } as never);
     await renderWithRouter(<AdminFinancialView />);
-    expect(screen.getByRole('navigation', { name: 'Breadcrumb' })).toBeTruthy();
+    expect(screen.queryByRole('navigation', { name: 'Breadcrumb' })).toBeNull();
     expect(
       await screen.findByText('Could not load financial data'),
     ).toBeTruthy();

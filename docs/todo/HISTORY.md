@@ -6574,3 +6574,10 @@ Pairs with tahti-org#1143 (`Channel.artistBlockVisibilityJson`, `artistBlockVisi
 - **Order:** safe to ship before #1143 deploys; the API strips unknown patch keys, so toggles stay local until then.
 - Mock visual carries the field; `ArtistView` story `ServerHiddenBlocks`; e2e `channel-designer-elements.spec.ts` checks a hidden block survives clearing local storage.
 
+
+## 2026-11-23 - Admin pages: title + description, one back link; user tabs with tracks (0.0.450)
+
+- **No breadcrumbs:** every admin view dropped its `Breadcrumbs`; `AdminHubBreadcrumb` deleted. Each page with `AdminPageLayout` has a `ViewShell` title and a `subtitle` (`adminPages.*Description`, governance area descriptions, new grant-cycle and storage-user subtitles); `AdminNav.test.ts` enforces both.
+- **One back link:** `AdminPageLayout` `parent` prop (`ADMIN_PARENT_PAGES`: diagnostics, storageFiles, governance, governanceGrants) overrides the hub back link; Logs/Orphan pages/Map → Diagnostics, a user's storage → Storage files, a governance area → Governance, a grant cycle → Grants. The Governance and storage-user pages lost their second, page-level back link. `AdminActivityView`'s unused standalone shell removed (it only renders inside Logs). Admin Map passes its title/description to `MoreView`.
+- **User tabs:** `AdminUserEditPanel` keeps the identity header and splits the rest into Overview (stats, engagement), Account (details, access, restrictions, delete) and Tracks. `AdminUserTracksPanel` lists the user's uploads (`fetchAdminFiles({ userId })`) with play, public/private toggle (`bulkPatchAdminFiles`), delete (`deleteAdminFile` + confirm) and a link to the user's storage page.
+- Tests: unit (panel tabs + tracks, venues/financial/dashboard headers); e2e back-link hrefs and Account tab clicks updated (not run locally; they target beta).

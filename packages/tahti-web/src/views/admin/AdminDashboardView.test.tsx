@@ -85,9 +85,7 @@ describe('AdminDashboardView', () => {
     await renderWithRouter(<AdminDashboardView />);
 
     expect(screen.getByTestId('admin-nav')).toBeTruthy();
-    expect(
-      screen.getByRole('navigation', { name: 'Breadcrumb' }).textContent,
-    ).toContain('Dashboard');
+    expect(screen.getByRole('heading', { name: 'Dashboard' })).toBeTruthy();
     expect(await screen.findByText("Couldn't load the dashboard")).toBeTruthy();
     expect(screen.getByText('HTTP 503')).toBeTruthy();
     expect(screen.queryByText('Loading dashboard…')).toBeNull();

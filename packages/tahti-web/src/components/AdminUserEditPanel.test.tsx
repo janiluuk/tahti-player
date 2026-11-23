@@ -54,6 +54,7 @@ describe('AdminUserEditPanel', () => {
   it('says a suspension emails the reason', async () => {
     mockUser();
     await renderWithRouter(<AdminUserEditPanel userId="u1" />);
+    fireEvent.click(await screen.findByRole('tab', { name: 'Account' }));
     expect(
       await screen.findByText(/They are emailed your reason/),
     ).toBeTruthy();
@@ -63,6 +64,7 @@ describe('AdminUserEditPanel', () => {
   it('shows account details read-only until Edit account details', async () => {
     mockUser();
     await renderWithRouter(<AdminUserEditPanel userId="u1" />);
+    fireEvent.click(await screen.findByRole('tab', { name: 'Account' }));
     const edit = await screen.findByRole('button', {
       name: 'Edit account details',
     });
@@ -75,5 +77,47 @@ describe('AdminUserEditPanel', () => {
       'value',
       '12',
     );
+  });
+
+  it("lists the account's tracks on the Tracks tab and makes one private", async () => {
+    mockUser();
+    const track = {
+      id: 'f1',
+      title: 'Midnight Signal',
+      artistName: 'DJ Moonlight',
+      genre: 'Ambient',
+      contentType: 'TRACK',
+      isPublic: true,
+      durationSec: 200,
+      sizeBytes: 4_000_000,
+      format: 'MP3',
+      createdAt: '2026-11-01T09:00:00.000Z',
+      channelSlug: 'dj-moonlight',
+      userId: 'u1',
+      username: 'dj-moonlight',
+      displayName: 'DJ Moonlight',
+      audioUrl: null,
+      revisionCount: 1,
+    } satisfies admin.AdminFileRow;
+    const fetchFiles = vi.spyOn(admin, 'fetchAdminFiles').mockResolvedValue({
+      data: [track],
+      total: 1,
+      meta: { source: 'api' },
+    });
+    const patch = vi
+      .spyOn(admin, 'bulkPatchAdminFiles')
+      .mockResolvedValue({ ok: true, updated: 1 });
+    await renderWithRouter(<AdminUserEditPanel userId="u1" />);
+    fireEvent.click(await screen.findByRole('tab', { name: 'Tracks' }));
+    expect(await screen.findByText('Midnight Signal')).toBeTruthy();
+    expect(fetchFiles).toHaveBeenCalledWith({ userId: 'u1' });
+    fireEvent.click(
+      screen.getByRole('switch', { name: 'Public: Midnight Signal' }),
+    );
+    expect(patch).toHaveBeenCalledWith(['f1'], { isPublic: false });
+    expect(await screen.findByText('Private')).toBeTruthy();
+    expect(
+      screen.getByRole('button', { name: 'Delete Midnight Signal' }),
+    ).toBeTruthy();
   });
 });

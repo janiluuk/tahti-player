@@ -1,16 +1,9 @@
 import { FileTextIcon, MapIcon, PuzzleIcon } from 'lucide-react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  HubCards,
-  ViewShell,
-} from '@tahti-player/ui';
+import { HubCards, ViewShell } from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { renderHubLink } from '../../components/HubLink';
 
@@ -46,15 +39,6 @@ export function AdminDiagnosticsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/diagnostics">
           <div className="flex max-w-5xl flex-col gap-4">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminDiagnosticsView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbCurrent>
-                {t('adminPages.diagnostics')}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminPages.diagnostics')}
               subtitle={t('adminPages.diagnosticsDescription')}

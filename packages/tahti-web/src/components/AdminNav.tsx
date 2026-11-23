@@ -457,6 +457,40 @@ export function adminHubItems(hub: string) {
   });
 }
 
+/** Pages opened from a card on another admin page rather than from a section
+ * hub link back to that page instead of the hub. */
+export const ADMIN_PARENT_PAGES = {
+  diagnostics: {
+    to: '/admin/diagnostics',
+    search: undefined,
+    labelKey: 'adminPages.diagnostics',
+  },
+  storageFiles: {
+    to: '/admin/storage',
+    search: { tab: 'files' },
+    labelKey: 'adminPages.storage',
+  },
+  governance: {
+    to: '/admin/governance',
+    search: undefined,
+    labelKey: 'adminPages.governance',
+  },
+  governanceGrants: {
+    to: '/admin/governance/grants',
+    search: undefined,
+    labelKey: 'grantCycle.grants',
+  },
+} as const satisfies Record<
+  string,
+  {
+    to: string;
+    search: Record<string, string> | undefined;
+    labelKey: ParseKeys<'web'>;
+  }
+>;
+
+export type AdminParentPageId = keyof typeof ADMIN_PARENT_PAGES;
+
 const SUBMENU_SLOT_CLASS = 'min-h-7';
 
 export function isAdminNavItemActive(
@@ -477,6 +511,7 @@ export function isAdminNavItemActive(
 function useAdminNavParts(
   current: string | undefined,
   moderationPendingCount: number | undefined,
+  parent?: AdminParentPageId,
 ) {
   const { t } = useTranslation('web');
   const navigate = useNavigate();
@@ -537,19 +572,26 @@ function useAdminNavParts(
   );
   const onHubChild =
     section?.hub !== undefined && !isAdminNavItemActive(current, section.hub);
+  const parentPage = parent ? ADMIN_PARENT_PAGES[parent] : null;
+  const back = parentPage
+    ? { ...parentPage, label: t(parentPage.labelKey) }
+    : section?.hub && onHubChild
+      ? { to: section.hub, search: undefined, label: sectionLabel(section) }
+      : null;
   const menu = (
     <div className={SUBMENU_SLOT_CLASS} data-admin-section-menu>
-      {section?.hub && onHubChild ? (
+      {back ? (
         <ButtonLink
-          to={section.hub}
+          to={back.to}
+          search={back.search}
           size="sm"
           variant="text"
           className="gap-1.5"
           data-testid="admin-hub-back"
-          aria-label={t('adminNav.backTo', { section: sectionLabel(section) })}
+          aria-label={t('adminNav.backTo', { section: back.label })}
         >
           <ArrowLeftIcon size={16} aria-hidden />
-          {sectionLabel(section)}
+          {back.label}
         </ButtonLink>
       ) : section && !section.hub && section.items.length > 1 ? (
         <SectionTabs
@@ -602,13 +644,19 @@ export function AdminNav({
 export function AdminPageLayout({
   current,
   moderationPendingCount,
+  parent,
   children,
 }: {
   current?: string;
   moderationPendingCount?: number;
+  parent?: AdminParentPageId;
   children: ReactNode;
 }) {
-  const { tabs, menu } = useAdminNavParts(current, moderationPendingCount);
+  const { tabs, menu } = useAdminNavParts(
+    current,
+    moderationPendingCount,
+    parent,
+  );
 
   return (
     <div className="flex flex-col gap-3" data-admin-shell>

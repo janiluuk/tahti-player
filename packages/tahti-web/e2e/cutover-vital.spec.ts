@@ -632,6 +632,7 @@ test('admin user profile includes identity details and an expandable avatar', as
   await expect(page.getByRole('option', { name: 'Artist' })).toBeVisible();
   await expect(page.getByRole('option', { name: 'Listener' })).toBeVisible();
   await page.keyboard.press('Escape');
+  await page.getByRole('tab', { name: 'Account' }).click();
   await expect(page.getByRole('button', { name: 'Save account' })).toHaveCount(
     0,
   );

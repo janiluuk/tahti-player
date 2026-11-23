@@ -21,6 +21,7 @@ test('admin: suspends an account with a reason and restores it', async ({
   await main(page)
     .getByRole('radio', { name: /^Listener One/ })
     .click();
+  await main(page).getByRole('tab', { name: 'Account' }).click();
   await main(page)
     .getByRole('textbox', { name: 'Suspension reason' })
     .fill('Spam in chat');
@@ -55,7 +56,7 @@ test('admin: a grant year opens from Co-op governance', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.getByTestId('admin-hub-back')).toHaveAttribute(
     'href',
-    '/admin/hubs/coop',
+    '/admin/governance/grants',
   );
 });
 

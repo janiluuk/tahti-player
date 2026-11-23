@@ -47,24 +47,17 @@ vi.mock('../../api/admin', () => ({
 describe('admin venues list', () => {
   afterEach(cleanup);
 
-  it('shows the Admin → Content → Venues breadcrumb', async () => {
+  it('shows the Venues title and description, no breadcrumbs', async () => {
     await renderWithRouter(<AdminVenuesView />, {
       paths: ['/u/$username'],
     });
-    const nav = await screen.findByRole('navigation', { name: 'Breadcrumb' });
-    expect(nav.textContent).toContain('Admin');
-    expect(nav.textContent).toContain('Venues');
     expect(
-      screen.getByText(/notifies the person who registered it/),
+      await screen.findByRole('heading', { level: 1, name: 'Venues' }),
     ).toBeTruthy();
-    expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute(
-      'href',
-      '/admin',
-    );
-    expect(screen.getByTestId('admin-hub-breadcrumb')).toHaveAttribute(
-      'href',
-      '/admin/hubs/content',
-    );
+    expect(
+      screen.getByText('Verify and manage registered venue listings.'),
+    ).toBeTruthy();
+    expect(screen.queryByRole('navigation', { name: 'Breadcrumb' })).toBeNull();
   });
 
   it('shows when a venue was submitted, not the submitter account id', async () => {

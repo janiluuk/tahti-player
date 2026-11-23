@@ -5,7 +5,6 @@ import {
   FilterChips,
   LogViewer,
   Pagination,
-  ViewShell,
   type LogEntryData,
   type LogLevel,
 } from '@tahti-player/ui';
@@ -17,8 +16,6 @@ import {
   type AdminActivityEntry,
   type AdminAuditTopicId,
 } from '../../api/admin';
-import { AdminGate } from '../../components/AdminGate';
-import { AdminPageLayout } from '../../components/AdminNav';
 import {
   PageError,
   PageErrorBanner,
@@ -212,11 +209,7 @@ function toLogEntry(entry: AdminActivityEntry): LogEntryData {
   };
 }
 
-export function AdminActivityView({
-  embedded = false,
-}: {
-  embedded?: boolean;
-}) {
+export function AdminActivityView() {
   const { t } = useTranslation('web');
   const [entries, setEntries] = useState<AdminActivityEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -359,24 +352,5 @@ export function AdminActivityView({
     </StudioPanel>
   );
 
-  if (embedded) {
-    return content;
-  }
-
-  return (
-    <AdminGate>
-      <div className="admin-page-layout px-1 py-2">
-        <AdminPageLayout current="/admin/logs">
-          <div className="flex max-w-6xl flex-col gap-6">
-            <ViewShell
-              title={t('adminActivityView.activity')}
-              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
-            >
-              {content}
-            </ViewShell>
-          </div>
-        </AdminPageLayout>
-      </div>
-    </AdminGate>
-  );
+  return content;
 }

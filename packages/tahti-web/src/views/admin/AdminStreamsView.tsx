@@ -2,16 +2,9 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { RadioTowerIcon, Settings2Icon } from 'lucide-react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  Tabs,
-  ViewShell,
-} from '@tahti-player/ui';
+import { Tabs, ViewShell } from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { AdminStreamManagerPanel } from '../../components/AdminStreamManagerPanel';
 import { ChannelRotationPanel } from './streams/ChannelRotationPanel';
@@ -30,17 +23,9 @@ export function AdminStreamsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/streams">
           <div className="flex flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminStreamsView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbCurrent>
-                {t('adminStreamsView.streams')}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminStreamsView.streams')}
+              subtitle={t('adminPages.streamsDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <Tabs

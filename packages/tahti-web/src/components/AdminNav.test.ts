@@ -104,30 +104,19 @@ describe('AdminNav section coverage', () => {
     expect(paths.filter((path) => !known.has(path))).toEqual([]);
   });
 
-  it('puts the hub in the breadcrumb trail of every hub page, and only there', () => {
+  it('gives every admin page a title and description and no breadcrumbs', () => {
     const viewsDir = join(__dirname, '..', 'views', 'admin');
-    const files = readdirSync(viewsDir, { recursive: true, encoding: 'utf8' })
+    const pages = readdirSync(viewsDir, { recursive: true, encoding: 'utf8' })
       .filter((file) => file.endsWith('View.tsx'))
-      .map((file) => readFileSync(join(viewsDir, file), 'utf8'))
-      .filter((source) => source.includes('<Breadcrumbs'));
-    const checked = files.flatMap((source) => {
-      const current = /<AdminPageLayout current="([^"]+)"/.exec(source)?.[1];
-      if (!current) {
-        return [];
-      }
-      const section = adminSectionForPath(current);
-      const crumb = /<AdminHubBreadcrumb hub="([^"]+)"/.exec(source)?.[1];
-      return [
-        {
-          current,
-          crumb: crumb ?? null,
-          expected: section?.hub && section.hub !== current ? section.id : null,
-        },
-      ];
-    });
-    expect(checked.length).toBeGreaterThan(15);
-    for (const { current, crumb, expected } of checked) {
-      expect(crumb, current).toBe(expected);
+      .map((file) => ({
+        file,
+        source: readFileSync(join(viewsDir, file), 'utf8'),
+      }))
+      .filter(({ source }) => source.includes('<AdminPageLayout'));
+    expect(pages.length).toBeGreaterThan(20);
+    for (const { file, source } of pages) {
+      expect(source, file).not.toContain('<Breadcrumbs');
+      expect(source, file).toMatch(/subtitle=/);
     }
   });
 });

@@ -11,9 +11,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from '@tahti-player/i18n';
 import {
   Alert,
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
   ButtonAnchor,
   LogViewer,
   Tabs,
@@ -27,7 +24,6 @@ import {
   type AdminDashboard,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -43,13 +39,6 @@ import { ContainerLogsPanel } from './monitoring/ContainerLogsPanel';
 
 const TAB_IDS = ['activity', 'containers', 'client', 'recent-audit'] as const;
 type LogsTabId = (typeof TAB_IDS)[number];
-
-const LOGS_TAB_LABELS: Record<LogsTabId, string> = {
-  activity: 'Audit events',
-  containers: 'Container logs',
-  client: 'Client logs',
-  'recent-audit': 'Recent audit',
-};
 
 function toAuditLogEntry(entry: AdminAuditRow): LogEntryData {
   return {
@@ -210,25 +199,11 @@ export function AdminLogsView() {
   return (
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
-        <AdminPageLayout current="/admin/logs">
+        <AdminPageLayout current="/admin/logs" parent="diagnostics">
           <div className="flex max-w-6xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminLogsView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbLink to="/admin/diagnostics">
-                {t('adminPages.diagnostics')}
-              </BreadcrumbLink>
-              <BreadcrumbLink to="/admin/logs">
-                {t('adminLogsView.logs')}
-              </BreadcrumbLink>
-              <BreadcrumbCurrent>
-                {LOGS_TAB_LABELS[TAB_IDS[selectedIndex] ?? 'activity']}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminLogsView.logs')}
+              subtitle={t('adminPages.logsDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <Tabs
@@ -239,7 +214,7 @@ export function AdminLogsView() {
                     id: 'activity',
                     label: t('adminLogsViewMore.auditEvents'),
                     icon: <ActivityIcon size={14} />,
-                    content: <AdminActivityView embedded />,
+                    content: <AdminActivityView />,
                   },
                   {
                     id: 'containers',
