@@ -61,4 +61,21 @@ describe('LinkPageView', () => {
     expect(screen.getByTestId('link-page-link')).toBeTruthy();
     expect(screen.getByText('Open profile')).toBeTruthy();
   });
+
+  it('keeps the avatar inside its round frame', async () => {
+    await renderWithRouter(
+      <LinkPageView
+        profile={profile}
+        loading={false}
+        error={null}
+        onRetry={vi.fn()}
+      />,
+    );
+    const frame = screen.getByTestId('link-page-avatar');
+    // MediaArtwork fills its frame with absolute positioning; without a
+    // positioned frame it covered the whole page.
+    expect(frame.className).toContain('relative');
+    expect(frame.className).toContain('overflow-hidden');
+    expect(frame.querySelector('[data-testid="media-artwork"]')).toBeTruthy();
+  });
 });

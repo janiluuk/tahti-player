@@ -169,7 +169,10 @@ export function LinkPageView({
       data-testid="link-page"
     >
       <header className="flex flex-col items-center gap-3 text-center">
-        <div className="size-28 overflow-hidden rounded-full">
+        <div
+          data-testid="link-page-avatar"
+          className="relative size-28 shrink-0 overflow-hidden rounded-full"
+        >
           <MediaArtwork
             src={artist.avatarUrl ?? undefined}
             seed={artist.username}
