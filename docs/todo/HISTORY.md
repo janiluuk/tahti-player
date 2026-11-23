@@ -11,6 +11,14 @@ mock artwork, e2e (`use-cases-discover-events.spec.ts`). Production
 listings from City of Helsinki Linked Events on @yaniho
 (tahti-org#1145 `seed-helsinki-linked-events.ts`); demo mock event titles
 removed. Folded `discover-events-widget.md`.
+
+## 2026-11-23 — Artwork preset cover backfill
+
+Ran `backfill-preset-covers.ts` on production (dry-run then apply): 2 sounds,
+1 collection, 4 channel avatars. Yaniho album title cleanup already applied
+earlier; dry-run finds nothing left to rename. Folded `artwork-preset-covers.md`
+and `artwork-preset-backfill.md`.
+
 ## 2026-11-23 — Go live stepper polish (0.0.452)
 
 OverflowMenu for Help/Share; one primary Start/End; Destinations naming

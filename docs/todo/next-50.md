@@ -8,7 +8,7 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 11. [ ] [HearThis release product defaults](hearthis-release-product-defaults.md) (`hearthis-to-tahti-release-cli.md`).
 12. [ ] [HearThis release live run](hearthis-release-live-run.md) (`hearthis-to-tahti-release-cli.md`).
 13. [ ] [HearThis collection live run](hearthis-collection-live-run.md) (`hearthis-collections-cli.md`).
-31. [ ] [Run artwork preset cover backfill](artwork-preset-backfill.md) (`artwork-preset-covers.md`).
+31. [x] [Run artwork preset cover backfill](artwork-preset-backfill.md) (`artwork-preset-covers.md`).
 32. [ ] [Listings news opening post](listings-news-opening-post.md) (`listings-news-polish.md`).
 39. [ ] [Finnish API notification bodies](finnish-api-notifications.md).
 42. [ ] [Board track-edit product call](board-track-edit-product-call.md) (`ui-requests-2026-11-03.md`).
