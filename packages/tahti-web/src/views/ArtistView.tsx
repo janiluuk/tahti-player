@@ -1,6 +1,11 @@
 import { useRouterState } from '@tanstack/react-router';
 
+import { fetchChannel } from '../api/client';
+import { RequestJsonError } from '../api/request-json';
+import type { PublicChannel } from '../api/types';
 import { artistSubdomainLabel } from '../lib/channelSubdomain';
+import { useSnapshotFetch } from '../lib/useSnapshotFetch';
+import { usePublishChannelChrome } from '../stores/channelChromeStore';
 import { ArtistProfilePage } from './artist-view/ArtistProfilePage';
 import { useArtistProfileLoad } from './artist-view/useArtistProfileLoad';
 import { LinkPageView } from './link-page/LinkPageView';
@@ -32,20 +37,24 @@ function searchFullFlag(search: unknown): boolean {
   return false;
 }
 
+function currentHost(): string {
+  return typeof window !== 'undefined'
+    ? window.location.hostname
+    : 'tahti.live';
+}
+
+function isOwnSubdomain(username: string): boolean {
+  return artistSubdomainLabel(currentHost()) === username.toLowerCase();
+}
+
 function useShowShortLinkPage(username: string): boolean {
   const search = useRouterState({
     select: (s) => s.location.search,
   });
-  if (searchFullFlag(search)) {
+  if (searchFullFlag(search) || isOwnSubdomain(username)) {
     return false;
   }
-  const host =
-    typeof window !== 'undefined' ? window.location.hostname : 'tahti.live';
-  const subdomain = artistSubdomainLabel(host);
-  if (subdomain && subdomain === username.toLowerCase()) {
-    return false;
-  }
-  return isLinkPageHost(host);
+  return isLinkPageHost(currentHost());
 }
 
 /** Keyed by username so navigating between artists resets all local state.
@@ -56,7 +65,31 @@ export function ArtistView({ username }: { username: string }) {
   if (short) {
     return <ArtistLinkPage key={username} username={username} />;
   }
+  if (isOwnSubdomain(username)) {
+    return <ArtistSitePage key={username} username={username} />;
+  }
   return <ArtistProfilePage key={username} username={username} />;
+}
+
+/** `username.tahti.live` opens the full artist page, and the site header,
+ * sidebar and bottom bar follow the channel's designer settings, which only
+ * the channel page published before. Shares the channel page's snapshot. */
+function ArtistSitePage({ username }: { username: string }) {
+  const { data: channel } = useSnapshotFetch<PublicChannel | null>(
+    `channel:${username}`,
+    async () => {
+      try {
+        return (await fetchChannel(username)).data;
+      } catch (err) {
+        if (err instanceof RequestJsonError && err.status === 404) {
+          return null;
+        }
+        throw err;
+      }
+    },
+  );
+  usePublishChannelChrome(channel ?? null);
+  return <ArtistProfilePage username={username} />;
 }
 
 function ArtistLinkPage({ username }: { username: string }) {
