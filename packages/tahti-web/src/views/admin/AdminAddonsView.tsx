@@ -1,4 +1,6 @@
-import { PlusIcon } from 'lucide-react';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { ClipboardCheckIcon, LayoutGridIcon, PlusIcon } from 'lucide-react';
+import { useEffect } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -9,6 +11,7 @@ import {
   FilterBar,
   FilterChips,
   InlineError,
+  Tabs,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -86,6 +89,62 @@ export function AdminAddonsView() {
     pendingCount,
     visibleAddons,
   } = useAdminAddons();
+  const navigate = useNavigate();
+  const search = useSearch({ strict: false }) as { tab?: string };
+  const pageTab = search.tab === 'review' ? 'review' : 'catalogue';
+
+  useEffect(() => {
+    setNeedsReviewOnly(pageTab === 'review');
+    if (pageTab === 'review') {
+      setScope('ALL');
+    }
+  }, [pageTab, setNeedsReviewOnly, setScope]);
+
+  const addonGrid =
+    error &&
+    !registerOpen &&
+    !rejectTarget &&
+    !manageTarget &&
+    !publishTarget &&
+    !editTarget ? (
+      <InlineError>{error}</InlineError>
+    ) : null;
+
+  const addonList = loading ? (
+    <PageLoading label={t('loading.loadingAddOnCatalog')} />
+  ) : visibleAddons.length === 0 ? (
+    <PageEmpty
+      title={
+        needsReviewOnly
+          ? t('adminAddonsViewStates.noAddOnsNeedReview')
+          : t('adminAddonsViewStates.noAddOnsRegisteredFor')
+      }
+      action={
+        needsReviewOnly ? undefined : (
+          <Button size="sm" variant="secondary" onClick={openRegister}>
+            <PlusIcon size={16} aria-hidden />
+            {t('emptyActions.registerAddon')}
+          </Button>
+        )
+      }
+    />
+  ) : (
+    <div className="grid gap-4 md:grid-cols-2">
+      {visibleAddons.map((addon) => (
+        <AddonCard
+          key={addon.id}
+          addon={addon}
+          pending={pending}
+          onApprove={approve}
+          onReject={setRejectTarget}
+          onManage={setManageTarget}
+          onPublish={openPublish}
+          onEdit={openEdit}
+          onDelete={setDeleteTarget}
+        />
+      ))}
+    </div>
+  );
 
   return (
     <AdminGate>
@@ -124,85 +183,78 @@ export function AdminAddonsView() {
                 {t('adminAddonsView.intro')}
               </p>
 
-              <FilterBar className="border-border border-b pb-3">
-                <FilterChips
-                  aria-label={t('adminAddonsView.addOnTypes')}
-                  items={[
-                    { id: 'ALL', label: t('adminAddonsViewMore.allAddOns') },
-                    ...addonScopes(t).map((item) => ({
-                      id: item.id,
-                      label: item.label,
-                    })),
-                  ]}
-                  selected={scope}
-                  onChange={(id) => setScope(id as AdminAddonScope | 'ALL')}
-                />
-                <FilterChips
-                  aria-label={t('adminAddonsView.addOnReviewStatus')}
-                  items={[
-                    { id: 'ALL', label: t('adminAddonsViewMore.allStatuses') },
-                    {
-                      id: 'PENDING',
-                      label:
-                        pendingCount > 0
-                          ? t('adminAddonsView.needsReviewCount', {
-                              count: pendingCount,
-                            })
-                          : t('adminAddonsView.needsReview'),
-                    },
-                  ]}
-                  selected={needsReviewOnly ? 'PENDING' : 'ALL'}
-                  onChange={(id) => setNeedsReviewOnly(id === 'PENDING')}
-                />
-              </FilterBar>
-
-              {error &&
-              !registerOpen &&
-              !rejectTarget &&
-              !manageTarget &&
-              !publishTarget &&
-              !editTarget ? (
-                <InlineError>{error}</InlineError>
-              ) : null}
-              {loading ? (
-                <PageLoading label={t('loading.loadingAddOnCatalog')} />
-              ) : visibleAddons.length === 0 ? (
-                <PageEmpty
-                  title={
-                    needsReviewOnly
-                      ? t('adminAddonsViewStates.noAddOnsNeedReview')
-                      : t('adminAddonsViewStates.noAddOnsRegisteredFor')
-                  }
-                  action={
-                    needsReviewOnly ? undefined : (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={openRegister}
-                      >
-                        <PlusIcon size={16} aria-hidden />
-                        {t('emptyActions.registerAddon')}
-                      </Button>
-                    )
-                  }
-                />
-              ) : (
-                <div className="grid gap-4 md:grid-cols-2">
-                  {visibleAddons.map((addon) => (
-                    <AddonCard
-                      key={addon.id}
-                      addon={addon}
-                      pending={pending}
-                      onApprove={approve}
-                      onReject={setRejectTarget}
-                      onManage={setManageTarget}
-                      onPublish={openPublish}
-                      onEdit={openEdit}
-                      onDelete={setDeleteTarget}
-                    />
-                  ))}
-                </div>
-              )}
+              <Tabs
+                selectedIndex={pageTab === 'review' ? 0 : 1}
+                onChange={(index) => {
+                  void navigate({
+                    to: '/admin/addons',
+                    search: index === 0 ? { tab: 'review' } : {},
+                    replace: true,
+                  });
+                }}
+                listClassName="flex-wrap"
+                panelClassName="pt-2"
+                items={[
+                  {
+                    id: 'review',
+                    label:
+                      pendingCount > 0
+                        ? t('adminAddonsView.needsReviewCount', {
+                            count: pendingCount,
+                          })
+                        : t('adminAddonsView.review'),
+                    icon: <ClipboardCheckIcon size={14} />,
+                    content: (
+                      <div className="flex flex-col gap-4">
+                        {addonGrid}
+                        {addonList}
+                      </div>
+                    ),
+                  },
+                  {
+                    id: 'catalogue',
+                    label: t('adminAddonsView.catalogue'),
+                    icon: <LayoutGridIcon size={14} />,
+                    content: (
+                      <div className="flex flex-col gap-4">
+                        <FilterBar className="border-border border-b pb-3">
+                          <FilterChips
+                            aria-label={t('adminAddonsView.addOnTypes')}
+                            items={[
+                              {
+                                id: 'ALL',
+                                label: t('adminAddonsViewMore.allAddOns'),
+                              },
+                              ...addonScopes(t).map((item) => ({
+                                id: item.id,
+                                label: item.label,
+                              })),
+                            ]}
+                            selected={scope}
+                            onChange={(id) =>
+                              setScope(id as AdminAddonScope | 'ALL')
+                            }
+                          />
+                        </FilterBar>
+                        {addonGrid}
+                        {addonList}
+                        <InstallsPanel
+                          surface={surface}
+                          onSurfaceChange={setSurface}
+                          installs={installs}
+                          loading={installsLoading}
+                          pending={installsPending}
+                          error={installsError}
+                          onOpenPicker={openInstallPicker}
+                          onToggleEnabled={toggleInstallEnabled}
+                          onMove={moveInstall}
+                          onRemove={setRemoveInstallTarget}
+                        />
+                      </div>
+                    ),
+                  },
+                ]}
+              />
 
               <RegisterDialog
                 isOpen={registerOpen}
@@ -264,19 +316,6 @@ export function AdminAddonsView() {
                 error={error}
                 onCancel={() => setPublishTarget(null)}
                 onPublish={publish}
-              />
-
-              <InstallsPanel
-                surface={surface}
-                onSurfaceChange={setSurface}
-                installs={installs}
-                loading={installsLoading}
-                pending={installsPending}
-                error={installsError}
-                onOpenPicker={openInstallPicker}
-                onToggleEnabled={toggleInstallEnabled}
-                onMove={moveInstall}
-                onRemove={setRemoveInstallTarget}
               />
 
               <InstallPickerDialog

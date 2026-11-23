@@ -94,7 +94,7 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
           {
             id: 'studio-go-live-tahti-radio',
             label: 'Tahti Radio',
-            path: '/studio/channel?radio=tahti-radio#radio',
+            path: '/studio/channel#radio',
           },
         ],
       },

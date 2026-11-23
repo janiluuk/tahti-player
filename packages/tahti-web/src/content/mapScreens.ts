@@ -2018,7 +2018,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/studio-channel-tahti-radio.png',
-          route: '/studio/channel?radio=tahti-radio#radio',
+          route: '/studio/channel#radio',
           caption: 'Tahti Radio submission panel',
         },
       },

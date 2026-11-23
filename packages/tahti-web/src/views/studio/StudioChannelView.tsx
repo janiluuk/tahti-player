@@ -8,18 +8,11 @@ import {
   RadioTowerIcon,
   WifiIcon,
 } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, ButtonLink, Tabs, ViewShell } from '@tahti-player/ui';
 
-import {
-  fetchStatsPlays,
-  type StatsPlays,
-  type StatsPlaysRange,
-} from '../../api/studio-extras';
-import { MultistreamStatusPanel } from '../../components/MultistreamStatusPanel';
-import { PageLoading } from '../../components/PageStates';
 import { PinnedAnnouncementsPanel } from '../../components/PinnedAnnouncementsPanel';
 import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
@@ -30,10 +23,8 @@ import {
   type ChannelRadioTab,
   type ChannelSection,
 } from '../../lib/channelSections';
-import { dateLocaleTag } from '../../lib/locale';
 import { useAuthStore } from '../../stores/authStore';
 import { useChannelSetupModalStore } from '../../stores/channelSetupModalStore';
-import { BroadcastPanel } from '../settings/SettingsPanels';
 
 function radioSettingTabs(t: TFunction<'web'>) {
   return [
@@ -42,86 +33,17 @@ function radioSettingTabs(t: TFunction<'web'>) {
       label: t('studioChannelViewMore.stream'),
       icon: RadioTowerIcon,
     },
-    { id: 'rotation' as const, label: '24/7', icon: ListMusicIcon },
     {
       id: 'pinned' as const,
       label: t('studioChannelViewMore.pinned'),
       icon: PinIcon,
     },
-    { id: 'tahti-radio' as const, label: 'Tahti Radio', icon: RadioIcon },
     {
       id: 'multicast' as const,
       label: t('studioChannelViewMore.multicast'),
       icon: WifiIcon,
     },
   ] satisfies { id: ChannelRadioTab; label: string; icon: unknown }[];
-}
-
-const RADIO_STATS_RANGES: StatsPlaysRange[] = ['1', '7', '30'];
-
-function ChannelOverallStats() {
-  const { t } = useTranslation('web');
-  const [stats, setStats] = useState<
-    Partial<Record<StatsPlaysRange, StatsPlays>>
-  >({});
-
-  useEffect(() => {
-    let cancelled = false;
-    void Promise.all(
-      RADIO_STATS_RANGES.map((range) => fetchStatsPlays(range)),
-    ).then((results) => {
-      if (cancelled) {
-        return;
-      }
-      const next: Partial<Record<StatsPlaysRange, StatsPlays>> = {};
-      results.forEach((result, index) => {
-        const range = RADIO_STATS_RANGES[index];
-        if (range) {
-          next[range] = result.data;
-        }
-      });
-      setStats(next);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return (
-    <StudioPanel title={t('studioChannelView.overallStatistics')}>
-      {RADIO_STATS_RANGES.every((range) => !stats[range]) ? (
-        <PageLoading label={t('loading.loadingStatistics')} />
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-3">
-          {RADIO_STATS_RANGES.map((range) => {
-            const periodStats = stats[range];
-            return (
-              <div
-                key={range}
-                className="border-border bg-background-secondary/40 rounded-lg border p-3"
-              >
-                <p className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-                  {t('studioChannelText.lastDays', { count: Number(range) })}
-                </p>
-                <p className="mt-2 text-2xl font-bold tabular-nums">
-                  {periodStats?.totalPlays.toLocaleString(dateLocaleTag()) ??
-                    '—'}
-                </p>
-                <p className="text-foreground-secondary text-xs">
-                  {t('studioChannelText.playsAndDownloads', {
-                    downloads:
-                      periodStats?.totalDownloads.toLocaleString(
-                        dateLocaleTag(),
-                      ) ?? '—',
-                  })}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </StudioPanel>
-  );
 }
 
 function ChannelSectionBlock({
@@ -151,6 +73,64 @@ function ChannelSectionBlock({
   );
 }
 
+function ChannelHomeLinks() {
+  const { t } = useTranslation('web');
+  const username = useAuthStore((s) => s.user?.username);
+  return (
+    <StudioPanel title={t('studioChannelView.programmeOnSchedule')}>
+      <div className="flex flex-col gap-2">
+        <ButtonLink
+          to="/studio/schedule"
+          search={{ tab: 'programme' }}
+          size="sm"
+          variant="secondary"
+          className="w-fit"
+        >
+          <ListMusicIcon size={14} aria-hidden className="mr-1.5" />
+          {t('studioChannelView.openSchedule')}
+        </ButtonLink>
+        <ButtonLink
+          to="/studio/stats"
+          size="sm"
+          variant="secondary"
+          className="w-fit"
+        >
+          {t('studioChannelView.overallStatistics')}
+        </ButtonLink>
+        <ButtonLink
+          to="/studio/chat"
+          size="sm"
+          variant="secondary"
+          className="w-fit"
+        >
+          <MessageSquareIcon size={14} aria-hidden className="mr-1.5" />
+          {t('channelChatSettings.chat')}
+        </ButtonLink>
+        {username ? (
+          <ButtonLink
+            to="/u/$username/green-room"
+            params={{ username }}
+            size="sm"
+            variant="secondary"
+            className="w-fit"
+          >
+            {t('studioChannelView.openGreenRoomChat')}
+          </ButtonLink>
+        ) : null}
+        <ButtonLink
+          to="/studio/go-live"
+          search={{ step: 'green-room' }}
+          size="sm"
+          variant="secondary"
+          className="w-fit"
+        >
+          {t('studioChannelView.sessionOnBroadcast')}
+        </ButtonLink>
+      </div>
+    </StudioPanel>
+  );
+}
+
 function RadioSection({ tab }: { tab: ChannelRadioTab }) {
   const { t } = useTranslation('web');
   const navigate = useNavigate();
@@ -160,14 +140,7 @@ function RadioSection({ tab }: { tab: ChannelRadioTab }) {
   const panel = (id: ChannelRadioTab) => {
     if (id === 'stream') {
       return channel?.slug ? (
-        <div className="flex flex-col gap-4">
-          <StreamManagerPanel
-            slug={channel.slug}
-            channelState={channel.state}
-          />
-          <MultistreamStatusPanel slug={channel.slug} />
-          <ChannelOverallStats />
-        </div>
+        <StreamManagerPanel slug={channel.slug} channelState={channel.state} />
       ) : (
         <StudioPanel title={t('studioChannelView.streamManager')}>
           <p className="text-foreground-secondary text-sm">
@@ -176,34 +149,10 @@ function RadioSection({ tab }: { tab: ChannelRadioTab }) {
         </StudioPanel>
       );
     }
-    if (id === 'rotation') {
-      return (
-        <StudioPanel
-          title={t('studioChannelView.programmeOnSchedule')}
-          action={
-            <ButtonLink
-              to="/studio/schedule"
-              hash="channel-programme"
-              size="sm"
-              variant="secondary"
-            >
-              {t('studioChannelView.openSchedule')}
-            </ButtonLink>
-          }
-        >
-          <p className="text-foreground-secondary text-sm">
-            {t('studioChannelView.programmeOnScheduleDescription')}
-          </p>
-        </StudioPanel>
-      );
-    }
     if (id === 'pinned') {
       return channel?.slug ? (
         <PinnedAnnouncementsPanel slug={channel.slug} />
       ) : null;
-    }
-    if (id === 'tahti-radio') {
-      return <StudioRadioSubmissionPanel />;
     }
     return (
       <StudioPanel title={t('studioChannelView.multistreamDestinations')}>
@@ -253,40 +202,16 @@ function RadioSection({ tab }: { tab: ChannelRadioTab }) {
           content: panel(item.id),
         }))}
       />
-    </ChannelSectionBlock>
-  );
-}
-
-function GreenRoomSection() {
-  const { t } = useTranslation('web');
-  const username = useAuthStore((s) => s.user?.username);
-  return (
-    <ChannelSectionBlock
-      id="green-room"
-      title={t('studioChannelViewMore.greenRoom')}
-    >
-      <div className="flex flex-wrap items-center gap-2">
-        {username ? (
-          <ButtonLink
-            to="/u/$username/green-room"
-            params={{ username }}
-            size="sm"
-            variant="secondary"
-          >
-            <MessageSquareIcon size={14} aria-hidden className="mr-1.5" />
-            {t('studioChannelView.openGreenRoomChat')}
-          </ButtonLink>
-        ) : null}
-        <ButtonLink
-          to="/studio/go-live"
-          search={{ step: 'green-room' }}
-          size="sm"
-          variant="secondary"
-        >
-          {t('studioChannelView.sessionOnBroadcast')}
-        </ButtonLink>
-      </div>
-      <BroadcastPanel section="green-room" />
+      <ChannelHomeLinks />
+      <StudioPanel
+        title="Tahti Radio"
+        description={t('studioChannelView.programmeOnScheduleDescription')}
+      >
+        <div className="mb-3">
+          <RadioIcon size={16} className="text-foreground-secondary" />
+        </div>
+        <StudioRadioSubmissionPanel />
+      </StudioPanel>
     </ChannelSectionBlock>
   );
 }
@@ -337,13 +262,11 @@ function ChannelSections() {
         </StudioPanel>
       )}
       <RadioSection tab={radioTab} />
-      <GreenRoomSection />
     </ViewShell>
   );
 }
 
-/** Studio → Broadcast → Channel: the Radio and Green room sections on one
- * page. */
+/** Studio → Broadcast → Channel: 24/7 radio (Stream · Pinned · Multicast). */
 export function StudioChannelView() {
   return (
     <StudioGate requireChannel={false}>

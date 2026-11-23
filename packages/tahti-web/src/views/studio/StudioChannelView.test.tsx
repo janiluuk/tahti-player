@@ -13,39 +13,21 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  channelRadioRedirect,
   channelTabRedirect,
   isChannelRadioTab,
 } from '../../lib/channelSections';
 import { useAuthStore } from '../../stores/authStore';
 import { StudioChannelView } from './StudioChannelView';
 
-vi.mock('../../api/studio-extras', () => ({
-  fetchStatsPlays: async () => ({ data: { totalPlays: 0, totalDownloads: 0 } }),
-}));
-
-vi.mock('../../components/ChannelAnnouncementsPanel', () => ({
-  ChannelAnnouncementsPanel: () => null,
-}));
-vi.mock('../../components/ChannelRadioPlaylistPanel', () => ({
-  ChannelRadioPlaylistPanel: () => null,
-}));
-vi.mock('../../components/MultistreamStatusPanel', () => ({
-  MultistreamStatusPanel: () => null,
-}));
 vi.mock('../../components/PinnedAnnouncementsPanel', () => ({
   PinnedAnnouncementsPanel: () => null,
-}));
-vi.mock('../../components/RotationSourcePicker', () => ({
-  RotationSourcePicker: () => null,
 }));
 vi.mock('../../components/StreamManagerPanel', () => ({
   StreamManagerPanel: () => null,
 }));
 vi.mock('../../components/StudioRadioSubmissionPanel', () => ({
   StudioRadioSubmissionPanel: () => null,
-}));
-vi.mock('../settings/SettingsPanels', () => ({
-  BroadcastPanel: () => null,
 }));
 
 let container: HTMLDivElement;
@@ -81,6 +63,22 @@ async function renderChannel(url: string, withChannel = true, board = false) {
     profileLoaded: true,
   });
   const rootRoute = createRootRoute({ component: () => <Outlet /> });
+  const scheduleRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/studio/schedule',
+    validateSearch: (search: Record<string, unknown>) => ({
+      ...(typeof search.tab === 'string' ? { tab: search.tab } : {}),
+    }),
+    component: () => <div data-testid="schedule-stub" />,
+  });
+  const goLiveRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/studio/go-live',
+    validateSearch: (search: Record<string, unknown>) => ({
+      ...(typeof search.step === 'string' ? { step: search.step } : {}),
+    }),
+    component: () => <div data-testid="go-live-stub" />,
+  });
   const channelRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/studio/channel',
@@ -88,18 +86,29 @@ async function renderChannel(url: string, withChannel = true, board = false) {
       search: Record<string, unknown>,
     ): { tab?: string; radio?: string } => ({
       ...(typeof search.tab === 'string' ? { tab: search.tab } : {}),
-      ...(isChannelRadioTab(search.radio) ? { radio: search.radio } : {}),
+      ...(typeof search.radio === 'string' ? { radio: search.radio } : {}),
     }),
     beforeLoad: ({ search }) => {
-      const target = channelTabRedirect(search.tab);
-      if (target) {
-        throw redirect(target as never);
+      const fromTab = channelTabRedirect(search.tab);
+      if (fromTab) {
+        throw redirect(fromTab as never);
+      }
+      const fromRadio = channelRadioRedirect(search.radio);
+      if (fromRadio) {
+        throw redirect(fromRadio as never);
+      }
+      if (search.radio && !isChannelRadioTab(search.radio)) {
+        throw redirect({ to: '/studio/channel', search: {}, replace: true });
       }
     },
     component: StudioChannelView,
   });
   const router = createRouter({
-    routeTree: rootRoute.addChildren([channelRoute]),
+    routeTree: rootRoute.addChildren([
+      channelRoute,
+      scheduleRoute,
+      goLiveRoute,
+    ]),
     history: createMemoryHistory({ initialEntries: [url] }),
   });
   await act(async () => {
@@ -112,44 +121,39 @@ async function renderChannel(url: string, withChannel = true, board = false) {
 const clickTab = (name: string) =>
   act(async () => fireEvent.click(screen.getByRole('tab', { name })));
 
-const sectionIds = () =>
-  Array.from(document.querySelectorAll('section[id]')).map(
-    (section) => section.id,
-  );
-
 describe('StudioChannelView sections', () => {
-  it('shows Radio and Green room as sections of one page, with no section tabs', async () => {
+  it('shows Radio as Stream · Pinned · Multicast with home links', async () => {
     await renderChannel('/studio/channel');
 
-    expect(sectionIds()).toEqual(['radio', 'green-room']);
-    expect(screen.getByRole('heading', { name: 'Radio' })).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: 'Green room' }),
-    ).toBeInTheDocument();
-    expect(screen.queryByRole('tab', { name: 'Green room' })).toBeNull();
+      Array.from(document.querySelectorAll('section[id]')).map((s) => s.id),
+    ).toEqual(['radio']);
+    expect(screen.getByRole('heading', { name: 'Radio' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Stream' })).toHaveAttribute(
       'aria-selected',
       'true',
     );
+    expect(screen.getByRole('tab', { name: 'Pinned' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Multicast' })).toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: '24/7' })).toBeNull();
+    expect(screen.queryByRole('tab', { name: 'Green room' })).toBeNull();
   });
 
   it('keeps Tahti Selects out of Studio, even for the board', async () => {
     await renderChannel('/studio/channel', true, true);
-    expect(sectionIds()).toEqual(['radio', 'green-room']);
+    expect(screen.queryByRole('tab', { name: 'Tahti Selects' })).toBeNull();
   });
 
   it.each([
-    ['design', '/studio/profile/appearance'],
-    ['profile', '/studio/profile/branding'],
+    ['design', '/studio/profile/$section'],
+    ['profile', '/studio/profile/$section'],
     ['selects', '/admin/tahti-selects'],
+    ['rotation', '/studio/schedule'],
+    ['green-room', '/studio/go-live'],
   ])('sends the old ?tab=%s to %s', (tab, path) => {
     const target = channelTabRedirect(tab);
     expect(target).not.toBeNull();
-    expect(
-      'params' in target!
-        ? target.to.replace('$section', target.params.section)
-        : target!.to,
-    ).toBe(path);
+    expect(target!.to).toBe(path);
   });
 
   it('offers channel setup while there is no channel', async () => {
@@ -169,34 +173,41 @@ describe('StudioChannelView sections', () => {
   });
 
   it.each([
-    ['/studio/channel?tab=radio', {}, 'radio', 'Stream'],
-    ['/studio/channel?tab=rotation', { radio: 'rotation' }, 'radio', '24/7'],
+    ['/studio/channel?tab=radio', '/studio/channel', {}, 'radio'],
     [
-      '/studio/channel?tab=announcements',
-      { radio: 'rotation' },
+      '/studio/channel?tab=pinned',
+      '/studio/channel',
+      { radio: 'pinned' },
       'radio',
-      '24/7',
     ],
-    ['/studio/channel?tab=pinned', { radio: 'pinned' }, 'radio', 'Pinned'],
     [
       '/studio/channel?tab=multicast',
+      '/studio/channel',
       { radio: 'multicast' },
       'radio',
-      'Multicast',
     ],
-    ['/studio/channel?tab=green-room', {}, 'green-room', 'Stream'],
-    ['/studio/channel?tab=setup', {}, '', 'Stream'],
-  ])(
-    'redirects the old %s to its section',
-    async (url, search, hash, radioTab) => {
-      const { router } = await renderChannel(url);
-      expect(router.state.location.pathname).toBe('/studio/channel');
-      expect(router.state.location.search).toEqual(search);
-      expect(router.state.location.hash).toBe(hash);
-      expect(screen.getByRole('tab', { name: radioTab })).toHaveAttribute(
-        'aria-selected',
-        'true',
-      );
-    },
-  );
+    [
+      '/studio/channel?tab=rotation',
+      '/studio/schedule',
+      { tab: 'programme' },
+      '',
+    ],
+    [
+      '/studio/channel?radio=rotation',
+      '/studio/schedule',
+      { tab: 'programme' },
+      '',
+    ],
+    [
+      '/studio/channel?tab=green-room',
+      '/studio/go-live',
+      { step: 'green-room' },
+      '',
+    ],
+  ])('redirects %s', async (url, path, search, hash) => {
+    const { router } = await renderChannel(url);
+    expect(router.state.location.pathname).toBe(path);
+    expect(router.state.location.search).toEqual(search);
+    expect(router.state.location.hash).toBe(hash);
+  });
 });

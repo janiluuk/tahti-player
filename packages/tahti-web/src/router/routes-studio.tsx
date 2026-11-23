@@ -1,6 +1,7 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
 import {
+  channelRadioRedirect,
   channelTabRedirect,
   isChannelRadioTab,
   type ChannelRadioTab,
@@ -17,6 +18,7 @@ import { appLayoutRoute } from './router-core';
 import {
   StudioBroadcastView,
   StudioChannelView,
+  StudioChatView,
   StudioCollectionEditView,
   StudioCollectionsView,
   StudioDistributionView,
@@ -264,11 +266,11 @@ export const studioScheduleRoute = createRoute({
   path: '/studio/schedule',
   validateSearch: (
     search: Record<string, unknown>,
-  ): { show?: 'events' | 'parties'; tab?: string } => ({
+  ): { show?: 'events' | 'parties'; tab?: 'programme' } => ({
     ...(search.show === 'events' || search.show === 'parties'
       ? { show: search.show }
       : {}),
-    ...(typeof search.tab === 'string' ? { tab: search.tab } : {}),
+    ...(search.tab === 'programme' ? { tab: 'programme' as const } : {}),
   }),
   component: StudioScheduleView,
 });
@@ -329,14 +331,27 @@ export const studioChannelRoute = createRoute({
   path: '/studio/channel',
   validateSearch: (
     search: Record<string, unknown>,
-  ): { tab?: string; radio?: ChannelRadioTab } => ({
+  ): { tab?: string; radio?: ChannelRadioTab | string } => ({
     ...(typeof search.tab === 'string' ? { tab: search.tab } : {}),
-    ...(isChannelRadioTab(search.radio) ? { radio: search.radio } : {}),
+    ...(typeof search.radio === 'string' ? { radio: search.radio } : {}),
   }),
   beforeLoad: ({ search }) => {
-    const target = channelTabRedirect(search.tab);
-    if (target) {
-      throw redirect(target as never);
+    const fromTab = channelTabRedirect(search.tab);
+    if (fromTab) {
+      throw redirect(fromTab as never);
+    }
+    const fromRadio = channelRadioRedirect(
+      typeof search.radio === 'string' ? search.radio : undefined,
+    );
+    if (fromRadio) {
+      throw redirect(fromRadio as never);
+    }
+    if (search.radio && !isChannelRadioTab(search.radio)) {
+      throw redirect({
+        to: '/studio/channel',
+        search: {},
+        replace: true,
+      });
     }
   },
   component: StudioChannelView,
@@ -491,7 +506,33 @@ export const studioFansRoute = createRoute({
         ? search.section
         : undefined,
   }),
+  beforeLoad: ({ search }) => {
+    if (search.tab === 'chat') {
+      throw redirect({
+        to: '/studio/chat',
+        search: search.section ? { section: search.section } : {},
+        replace: true,
+      });
+    }
+  },
   component: StudioFansView,
+});
+
+export const studioChatRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/chat',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { section?: 'access' | 'messages' | 'moderators' | 'bans' } => ({
+    section:
+      search.section === 'access' ||
+      search.section === 'messages' ||
+      search.section === 'moderators' ||
+      search.section === 'bans'
+        ? search.section
+        : undefined,
+  }),
+  component: StudioChatView,
 });
 
 export const studioProfileRoute = createRoute({
@@ -532,7 +573,7 @@ export const studioModerationRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/moderation',
   beforeLoad: () => {
-    throw redirect({ to: '/studio/fans', search: { tab: 'chat' } });
+    throw redirect({ to: '/studio/chat' });
   },
 });
 

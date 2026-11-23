@@ -1,17 +1,11 @@
-/** Studio → Broadcast → Channel is one page of sections (`#radio`,
- * `#green-room`); the Radio section's own tabs live in `?radio=`. Old
- * `?tab=` links redirect here. Tahti Selects is an Admin tool. */
-export const CHANNEL_RADIO_TABS = [
-  'stream',
-  'rotation',
-  'pinned',
-  'tahti-radio',
-  'multicast',
-] as const;
+/** Studio → Broadcast → Channel is 24/7 radio (Stream · Pinned · Multicast).
+ * Programme, stats, green room and Tahti Radio live as links to their homes.
+ * Old `?tab=` / `?radio=` values redirect here or to Schedule / Go live. */
+export const CHANNEL_RADIO_TABS = ['stream', 'pinned', 'multicast'] as const;
 
 export type ChannelRadioTab = (typeof CHANNEL_RADIO_TABS)[number];
 
-export type ChannelSection = 'radio' | 'green-room';
+export type ChannelSection = 'radio';
 
 export const isChannelRadioTab = (value: unknown): value is ChannelRadioTab =>
   (CHANNEL_RADIO_TABS as readonly unknown[]).includes(value);
@@ -28,6 +22,17 @@ export type ChannelTabRedirect =
       params: { section: 'appearance' | 'branding' };
       replace: true;
     }
+  | {
+      to: '/studio/schedule';
+      search: { tab: 'programme' };
+      replace: true;
+    }
+  | {
+      to: '/studio/go-live';
+      search: { step: 'green-room' | 'destinations' };
+      replace: true;
+    }
+  | { to: '/studio/stats'; replace: true }
   | { to: '/admin/tahti-selects'; replace: true };
 
 /** Where an old `/studio/channel?tab=…` link goes now, or null when the
@@ -55,29 +60,52 @@ export function channelTabRedirect(
   if (tab === 'radio' || tab === 'stream') {
     return { to: '/studio/channel', search: {}, hash: 'radio', replace: true };
   }
-  if (tab === 'announcements') {
+  if (tab === 'announcements' || tab === 'rotation') {
     return {
-      to: '/studio/channel',
-      search: { radio: 'rotation' },
-      hash: 'radio',
-      replace: true,
-    };
-  }
-  if (isChannelRadioTab(tab)) {
-    return {
-      to: '/studio/channel',
-      search: { radio: tab },
-      hash: 'radio',
+      to: '/studio/schedule',
+      search: { tab: 'programme' },
       replace: true,
     };
   }
   if (tab === 'green-room') {
-    return { to: '/studio/channel', search: {}, hash: tab, replace: true };
+    return {
+      to: '/studio/go-live',
+      search: { step: 'green-room' },
+      replace: true,
+    };
   }
   if (tab === 'selects') {
     return { to: '/admin/tahti-selects', replace: true };
   }
+  if (isChannelRadioTab(tab)) {
+    return {
+      to: '/studio/channel',
+      search: tab === 'stream' ? {} : { radio: tab },
+      hash: 'radio',
+      replace: true,
+    };
+  }
+  if (tab === 'tahti-radio') {
+    return { to: '/studio/channel', search: {}, hash: 'radio', replace: true };
+  }
   return { to: '/studio/channel', search: {}, replace: true };
+}
+
+/** Legacy `?radio=` values that are no longer Channel tabs. */
+export function channelRadioRedirect(
+  radio: string | undefined,
+): ChannelTabRedirect | null {
+  if (radio === 'rotation' || radio === 'announcements') {
+    return {
+      to: '/studio/schedule',
+      search: { tab: 'programme' },
+      replace: true,
+    };
+  }
+  if (radio === 'tahti-radio') {
+    return { to: '/studio/channel', search: {}, hash: 'radio', replace: true };
+  }
+  return null;
 }
 
 /** In-app path of a Radio section tab, e.g. for links and redirects. */

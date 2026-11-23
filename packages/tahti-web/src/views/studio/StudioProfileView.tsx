@@ -6,9 +6,7 @@ import {
   ImageIcon,
   ImagesIcon,
   LinkIcon,
-  MessageSquareIcon,
   PaletteIcon,
-  ShieldIcon,
   UserIcon,
   UsersIcon,
 } from 'lucide-react';
@@ -114,20 +112,6 @@ export function studioProfileChannelItems(t: TFunction<'web'>): HubCardItem[] {
       icon: GlobeIcon,
       title: t('studioProfileView.addressAndDomain'),
       description: t('studioProfileView.yourChannelAddressAndA'),
-    },
-    {
-      id: 'chat',
-      href: '/studio/fans?tab=chat',
-      icon: MessageSquareIcon,
-      title: t('studioProfileView.chat'),
-      description: t('studioProfileView.whoCanChatOnYour'),
-    },
-    {
-      id: 'moderators',
-      href: '/studio/fans?tab=chat&section=moderators',
-      icon: ShieldIcon,
-      title: t('studioProfileView.moderators'),
-      description: t('studioProfileView.peopleWhoCanModerateYour'),
     },
   ];
 }
