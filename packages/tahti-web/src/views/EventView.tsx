@@ -24,6 +24,7 @@ import {
   googleCalendarUrl,
   type CalendarEvent,
 } from '../api/event-calendar';
+import { EventComments } from '../components/EventComments';
 import { EventBannerBackdrop } from '../components/events/EventBannerBackdrop';
 import { EventCard } from '../components/events/EventCard';
 import { EventGallery } from '../components/events/EventGallery';
@@ -187,6 +188,12 @@ export function EventView({ eventId }: { eventId: string }) {
         </ExternalLink>
         <CopyButton text={window.location.href} label={t('events.share')} />
       </div>
+      {event.status !== 'CANCELLED' ? (
+        <EventComments
+          eventId={event.id}
+          isHost={Boolean(viewer && viewer.username === event.artistUsername)}
+        />
+      ) : null}
     </ViewShell>
   );
 }

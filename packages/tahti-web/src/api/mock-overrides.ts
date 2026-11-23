@@ -73,6 +73,10 @@ export interface MockFixtures {
     data: { comments: TrackComment[]; commentsEnabled: boolean };
     args: [slug: string];
   };
+  eventComments: {
+    data: { comments: TrackComment[]; commentsEnabled: boolean };
+    args: [eventId: string];
+  };
   channelEvents: { data: ArtistEvent[]; args: [slug: string] };
   channelListeningParties: {
     data: ListeningPartySummaryDto[];

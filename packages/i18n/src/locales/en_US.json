@@ -14987,6 +14987,23 @@
       "edit": "Edit event",
       "venue": "Venue"
     },
+    "eventComments": {
+      "title": "Comments",
+      "emptyTitle": "No comments yet",
+      "emptyFirstSignedIn": "Be the first to leave a note for this event.",
+      "emptyFirstGuest": "Log in to be the first to leave a note.",
+      "emptyDisabled": "Comments are off for this event.",
+      "logInToComment": "Log in to comment",
+      "writeAria": "Write a comment",
+      "placeholder": "Say something about this event…",
+      "posting": "Posting…",
+      "post": "Post comment",
+      "removeTitle": "Remove this comment?",
+      "removeFallbackDescription": "The comment leaves this event.",
+      "commentPosted": "Comment posted.",
+      "commentRemoved": "Comment removed.",
+      "ariaLabel": "Event comments"
+    },
     "eventGallery": {
       "heading": "Photo gallery",
       "addTitle": "Add photos",

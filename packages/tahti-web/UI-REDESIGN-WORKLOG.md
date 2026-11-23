@@ -1,3 +1,8 @@
+## 2026-11-23 - Event page comments (0.0.451)
+
+Chat-alike thread on EventView; signed-out visitors get a sign-in CTA.
+API sibling tahti-org#1147.
+
 ## 2026-11-23 - Master CI fixes after the design-audit PRs (0.0.447)
 
 Schedule keeps Events tabs (route search), programme anchors open the
