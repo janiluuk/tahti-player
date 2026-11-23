@@ -48,7 +48,7 @@ test('a sound shows Playlists and Insights until Edit details adds the form', as
 });
 
 test('Stats shows where listeners came from', async ({ page }) => {
-  await page.goto('/studio/stats');
+  await page.goto('/studio/stats?tab=audience');
   const sources = page.getByTestId('stats-referrers');
   await expect(sources).toBeVisible();
   await expect(

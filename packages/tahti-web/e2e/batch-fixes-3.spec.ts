@@ -33,17 +33,17 @@ test('community guidelines show as a Listen banner, not a toast over nav', async
   ).toHaveCount(0);
 });
 
-test('Studio Stats uses section chips, not a nested Stats tab strip', async ({
-  page,
-}) => {
+test('Studio Stats is one tab row under the page header', async ({ page }) => {
   await signIn(page);
   await page.goto('/studio/stats');
   await expect(page.getByRole('tablist', { name: 'Stats pages' })).toHaveCount(
     0,
   );
-  await expect(
-    page.getByRole('radiogroup', { name: 'Stats sections' }),
-  ).toBeVisible();
+  const main = page.getByRole('main');
+  await expect(main.getByRole('tablist')).toHaveCount(1);
+  for (const name of ['Overview', 'Plays', 'Audience', 'Top lists']) {
+    await expect(main.getByRole('tab', { name })).toBeVisible();
+  }
 });
 
 test('Messages has one compose field and one Message action', async ({

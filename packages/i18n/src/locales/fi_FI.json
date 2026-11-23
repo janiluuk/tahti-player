@@ -1247,7 +1247,9 @@
       "diagnosticsDescription": "Lokit, orvot sivut ja näyttöatlas.",
       "hubContentCardDescription": "Uutiset, tiedotteet, Selects, huippulistat, radio, esiintymispaikat, kansikuvien esiasetukset ja katalogi.",
       "hubCoopCardDescription": "Hallitus, yhtiökokous, apurahat, vuosikertomukset, asiakirjat ja talous.",
-      "hubPlatformCardDescription": "Lisäosat, kielet, toimittajat, tallennustila, streamit ja diagnostiikka."
+      "hubPlatformCardDescription": "Lisäosat, kielet, toimittajat, tallennustila, streamit ja diagnostiikka.",
+      "community": "Yhteisö",
+      "communityDescription": "Chatin määrä ja postin toimitus viimeisen vuorokauden ajalta."
     },
     "adminDiagnosticsView": {
       "admin": "Ylläpito",
@@ -5488,7 +5490,10 @@
       "versionLine": "Versio {{version}} · ",
       "uptimeHours": "Käynnissä {{hours}} h",
       "checked": "tarkistettu",
-      "latencyMs": "{{ms}} ms"
+      "latencyMs": "{{ms}} ms",
+      "subtitle": "Alustan kunto ja asiat, jotka vaativat hallituksen huomiota.",
+      "tabHealth": "Kunto",
+      "tabActivity": "Toiminta"
     },
     "proEditor": {
       "metadata": "Metatiedot",
@@ -6661,7 +6666,8 @@
       "sounds": "Äänet",
       "releaseStats": "Julkaisujen tilastot",
       "releases": "Julkaisut",
-      "trackInsights": "Kappaleen tilastot"
+      "trackInsights": "Kappaleen tilastot",
+      "subtitle": "Tämän kappaleen soitot, yleisö ja lataukset."
     },
     "soundHeader": {
       "quickEdits": "Pikamuokkaukset",
@@ -6885,7 +6891,8 @@
       "units_one": "1 yksikkö",
       "units_other": "{{count}} yksikköä",
       "payoutsUnder": "Fanitilausten maksut ja avustushistoria löytyvät kohdasta",
-      "geographyNote": ". Kuuntelijoiden sijainnit on koottu yhteen eivätkä yksilöi ketään kuuntelijaa."
+      "geographyNote": ". Kuuntelijoiden sijainnit on koottu yhteen eivätkä yksilöi ketään kuuntelijaa.",
+      "engagementDescription": "Miten ilmaiset lataukset, maksetut lataukset ja fanitilaukset kertyvät avustusosuuteesi."
     },
     "hourlyDialog": {
       "distributionOfPlaysAcrossThe": "Soittojen jakautuminen vuorokauden ajalle. Vertaa napsauttamalla toista päivää kaaviossa.",
@@ -8061,14 +8068,16 @@
       "statsSections": "Tilastojen osiot",
       "overview": "Yleiskatsaus",
       "playsAndListeners": "Soitot ja kuuntelijat",
-      "topLists": "Suosituimmat"
+      "topLists": "Suosituimmat",
+      "subtitle": "Soitot, yleisö ja sijoitukset valitsemaltasi ajalta."
     },
     "studioStatsDetailView": {
       "stats": "Tilastot",
       "insights": "Tilastotiedot",
       "playsTimeRange": "Soittojen aikaväli",
       "dailyActivity": "Päivittäinen aktiivisuus",
-      "downloadCountries": "Latausmaat"
+      "downloadCountries": "Latausmaat",
+      "subtitle": "Päivittäiset soitot valitsemaltasi ajalta."
     },
     "studioScheduleView": {
       "cancel": "Peruuta",
@@ -9479,7 +9488,9 @@
       "overview": "Yleiskatsaus",
       "playsAndListeners": "Soitot ja kuuntelijat",
       "topLists": "Listat",
-      "insights": "Näkemykset"
+      "insights": "Näkemykset",
+      "plays": "Soitot",
+      "audience": "Yleisö"
     },
     "storageShared": {
       "name": "Nimi",
@@ -15583,6 +15594,10 @@
       "previewHint": "Näyttää muutokset ennen tallennusta.",
       "save": "Tallenna",
       "tab": "Linkkisivu"
+    },
+    "adminCommunityView": {
+      "community": "Yhteisö",
+      "subtitle": "Alustan chatin määrä ja lähtevä posti."
     }
   },
   "studioEditor": {

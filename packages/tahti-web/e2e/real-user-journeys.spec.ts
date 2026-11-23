@@ -332,7 +332,7 @@ test('artist stats show real listen minutes and the listener geography map', asy
     page.getByRole('heading', { level: 1, name: 'Stats' }),
   ).toBeVisible();
   await expect(page.getByText('Minutes listened')).toBeVisible();
-  await page.getByRole('radio', { name: 'Plays and listeners' }).click();
+  await page.getByRole('tab', { name: 'Audience' }).click();
   await expect(page.getByLabel('Listener world map')).toBeVisible();
   // Edge case worth documenting in the test itself: there is no "likes"
   // metric anywhere on this page -- favoriting a track never leaves the
