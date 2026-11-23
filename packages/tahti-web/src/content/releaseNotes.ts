@@ -37,6 +37,21 @@ export function countHighlights(note: ReleaseNote): number {
  * what an artist or listener would notice — not every internal bump. */
 export const RELEASE_NOTES: ReleaseNote[] = [
   {
+    id: '2026-12-06',
+    period: '23 Nov – 6 Dec 2026',
+    date: '2026-12-06',
+    version: '0.0.441',
+    sections: [
+      {
+        id: 'listen',
+        label: 'Listen',
+        highlights: [
+          'An artist’s own site (name.tahti.live) shows their header, colours and menu choices again, so it looks the way they designed it.',
+        ],
+      },
+    ],
+  },
+  {
     id: '2026-11-22',
     period: '9–22 Nov 2026',
     date: '2026-11-22',
