@@ -47,6 +47,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
         label: 'Listen',
         highlights: [
           'An artist’s own site (name.tahti.live) shows their header, colours and menu choices again, so it looks the way they designed it.',
+          'The full-screen player is calmer: Add to playlist moved into the ⋯ menu with the other track actions, leaving the artwork and controls in focus.',
         ],
       },
       {
