@@ -7,26 +7,17 @@ import {
 } from '../../api/upcoming-events';
 import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { UpcomingEventCard } from '../events/UpcomingEventCard';
+import { UpcomingEventsCarousel } from '../events/UpcomingEventsCarousel';
 
 export const NEXT_EVENTS_LIMIT = 12;
 
 /** The `upcoming-events` Discover widget body: upcoming events as a
- * horizontal row of cards, soonest first, with a way to the Events tab. */
+ * browsable poster carousel, soonest first, with a way to the Events tab. */
 export function UpcomingEventsStrip({ events }: { events: UpcomingEvent[] }) {
   const { t } = useTranslation('web');
   return (
-    <div className="flex min-w-0 flex-col gap-2">
-      <ul
-        data-testid="upcoming-events"
-        aria-label={t('discover.widgets.upcomingEvents')}
-        className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-2"
-      >
-        {events.map((event) => (
-          <li key={event.id} className="shrink-0 snap-start">
-            <UpcomingEventCard event={event} />
-          </li>
-        ))}
-      </ul>
+    <div className="flex min-w-0 flex-col gap-3">
+      <UpcomingEventsCarousel events={events} />
       <ButtonLink
         to="/discover"
         search={{ tab: 'events' }}

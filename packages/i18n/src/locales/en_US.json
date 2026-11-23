@@ -14949,6 +14949,10 @@
       "noMatch": "No venues match “{{query}}”"
     },
     "discoverEvents": {
+      "previousEvent": "Previous event",
+      "nextEvent": "Next event",
+      "eventPosition": "Event {{current}} of {{total}}",
+      "carouselLabel": "Upcoming events, use the arrow keys to browse",
       "tab": "Events",
       "post": "Post event",
       "signInToPost": "Sign in to post an event.",

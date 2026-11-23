@@ -5,7 +5,7 @@ import {
   UpcomingEventsStrip,
 } from '@tahti-web/components/discover/UpcomingEventsRow';
 import { WidgetCard } from '@tahti-web/components/discover/WidgetCard';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { MediaArtworkDefaultProvider } from '@tahti-player/ui';
 
@@ -21,7 +21,7 @@ const meta: Meta<typeof UpcomingEventsStrip> = {
     docs: {
       description: {
         component:
-          'Upcoming events as `Card`s (banner, title, start time in the event time zone, host, venue + city), soonest first, from `fetchUpcomingEvents` (`GET /api/v1/events/upcoming`). An event without a banner falls back to the host avatar, then the default artwork (`MediaArtwork` seeded with the event id). Used as the `upcoming-events` Discover widget (inside `WidgetCard`, with See all events) and as the Next events row at the top of Discover → Events.',
+          'Upcoming events, soonest first: the Discover widget shows one poster at a time with an ambient glow from its image (browse with the arrow buttons, a drag or swipe, or the arrow keys; both ends wrap), the Next events row shows `Card`s. Each shows banner, title, 24-hour start time in the event time zone, host and venue + city, with icons, from `fetchUpcomingEvents` (`GET /api/v1/events/upcoming`). An event without a banner falls back to the host avatar, then the default artwork (`MediaArtwork` seeded with the event id). Used as the `upcoming-events` Discover widget (inside `WidgetCard`, with See all events) and as the Next events row at the top of Discover → Events.',
       },
     },
   },
@@ -99,22 +99,21 @@ export const DiscoverWidget: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const row = canvas.getByTestId('upcoming-events');
-    await expect(within(row).getAllByRole('listitem')).toHaveLength(3);
-    await expect(
-      within(row)
-        .getAllByTestId('event-card-title')
-        .map((node) => node.textContent),
-    ).toEqual([
-      'Album release show',
-      'Boathouse Sessions - audience recording',
-      'Loop Diary release cypher',
-    ]);
-    await expect(within(row).getByText('Kaiku, Helsinki')).toBeVisible();
-    const images = [...row.querySelectorAll('img')].map((img) =>
-      img.getAttribute('src'),
+    const carousel = canvas.getByTestId('upcoming-events');
+    const title = () =>
+      within(carousel).getByTestId('event-card-title').textContent;
+    await expect(title()).toBe('Album release show');
+    await expect(within(carousel).getByText('Kaiku, Helsinki')).toBeVisible();
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Previous event' }),
     );
-    await expect(images[1]).toBe(DEFAULT_ARTWORK);
+    await expect(title()).toBe('Loop Diary release cypher');
+    await userEvent.click(canvas.getByRole('button', { name: 'Next event' }));
+    await userEvent.click(canvas.getByRole('button', { name: 'Next event' }));
+    await expect(title()).toBe('Boathouse Sessions - audience recording');
+    await expect(carousel.querySelector('img')?.getAttribute('src')).toBe(
+      DEFAULT_ARTWORK,
+    );
     await expect(
       canvas.getByRole('link', { name: 'See all events' }),
     ).toHaveAttribute('href', '/discover?tab=events');

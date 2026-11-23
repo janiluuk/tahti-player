@@ -176,3 +176,55 @@ body,
     align-items: stretch;
   }
 }
+
+@keyframes tahti-poster-enter-next {
+  from {
+    opacity: 0;
+    transform: translateX(8%) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes tahti-poster-enter-previous {
+  from {
+    opacity: 0;
+    transform: translateX(-8%) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes tahti-poster-glow-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.45;
+  }
+}
+
+.tahti-poster-enter-next {
+  animation: tahti-poster-enter-next 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.tahti-poster-enter-previous {
+  animation: tahti-poster-enter-previous 0.28s cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.tahti-poster-glow {
+  animation: tahti-poster-glow-in 0.45s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tahti-poster-enter-next,
+  .tahti-poster-enter-previous,
+  .tahti-poster-glow {
+    animation: none;
+  }
+}
