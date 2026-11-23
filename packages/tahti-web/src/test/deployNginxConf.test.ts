@@ -73,6 +73,11 @@ describe('deploy/nginx.conf', () => {
     expect(sandbox).toMatch(/script-src 'self'/);
   });
 
+  it('lets the admin dashboard frame Grafana', () => {
+    const frameSrc = /frame-src ([^;]*);/.exec(mapBlock('tahti_csp'))?.[1];
+    expect(frameSrc?.split(' ')).toContain('https://grafana.tahti.live');
+  });
+
   it('does not open frame-ancestors for non-embed SPA routes', () => {
     const ancestors = mapBlock('tahti_frame_ancestors');
     expect(ancestors).not.toMatch(/~\^\/library\//);

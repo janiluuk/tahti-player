@@ -92,7 +92,15 @@ export type AdminQueueRow = { name: string; waiting: number; failed: number };
 export type AdminCronRow = {
   jobName: string;
   description: string;
-  lastRun: { outcome: string | null; startedAt: string } | null;
+  /** Cron expression, or `every <n>ms` for interval jobs. */
+  pattern?: string;
+  lastRun: {
+    outcome: string | null;
+    startedAt: string;
+    finishedAt?: string | null;
+    durationMs?: number | null;
+    errorMessage?: string | null;
+  } | null;
 };
 
 export type AdminAuditRow = {
@@ -105,6 +113,8 @@ export type AdminAuditRow = {
 export type AdminLiveStream = {
   slug: string;
   artistName: string;
+  username?: string;
+  avatarUrl?: string | null;
   elapsedSec: number;
 };
 
@@ -289,9 +299,21 @@ function mockDashboard(): AdminDashboard {
       {
         slug: 'northern-lights',
         artistName: 'Northern Lights',
+        username: 'northern-lights',
         elapsedSec: 5400,
       },
-      { slug: 'dj-moonlight', artistName: 'DJ Moonlight', elapsedSec: 1860 },
+      {
+        slug: 'dj-moonlight',
+        artistName: 'DJ Moonlight',
+        username: 'dj-moonlight',
+        elapsedSec: 1860,
+      },
+      {
+        slug: 'kaiku',
+        artistName: 'Kaiku Collective',
+        username: 'kaiku',
+        elapsedSec: 420,
+      },
     ],
     queues: [
       { name: 'transcode', waiting: 2, failed: 0 },
@@ -302,12 +324,42 @@ function mockDashboard(): AdminDashboard {
       {
         jobName: 'nightly-backup',
         description: 'Postgres dump to offsite storage',
-        lastRun: { outcome: 'SUCCESS', startedAt: '2026-08-17T03:00:00.000Z' },
+        pattern: '0 3 * * *',
+        lastRun: {
+          outcome: 'SUCCESS',
+          startedAt: '2026-08-17T03:00:00.000Z',
+          finishedAt: '2026-08-17T03:02:14.000Z',
+          durationMs: 134_000,
+        },
       },
       {
         jobName: 'fansub-payout-sweep',
         description: 'Retry failed Stripe transfers',
-        lastRun: { outcome: 'ERROR', startedAt: '2026-08-17T02:00:00.000Z' },
+        pattern: '0 * * * *',
+        lastRun: {
+          outcome: 'ERROR',
+          startedAt: '2026-08-17T02:00:00.000Z',
+          finishedAt: '2026-08-17T02:00:03.400Z',
+          durationMs: 3400,
+          errorMessage: 'Stripe transfer rejected',
+        },
+      },
+      {
+        jobName: 'live-stream-sweep',
+        description: 'Ends channels whose ingest went quiet',
+        pattern: 'every 60000ms',
+        lastRun: {
+          outcome: 'SUCCESS',
+          startedAt: '2026-08-17T03:10:00.000Z',
+          finishedAt: '2026-08-17T03:10:00.180Z',
+          durationMs: 180,
+        },
+      },
+      {
+        jobName: 'newsletter-digest',
+        description: 'Weekly listener digest mail',
+        pattern: '0 8 * * 1',
+        lastRun: null,
       },
     ],
     audit: [

@@ -3,6 +3,7 @@ import { AdminMonitoringView } from '@tahti-web/views/admin/AdminMonitoringView'
 import { expect, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { stubGrafanaHealth } from './_lib/grafana';
 
 const meta: Meta<typeof AdminMonitoringView> = {
   title: 'Tahti/Admin/AdminMonitoringView',
@@ -15,6 +16,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  beforeEach: () => stubGrafanaHealth(true),
   render: () => (
     <div className="p-6">
       <AdminMonitoringView />
@@ -48,5 +50,25 @@ export const Default: Story = {
         name: 'Container logs (all services)',
       }),
     ).toBeNull();
+  },
+};
+
+export const GrafanaUnreachable: Story = {
+  beforeEach: () => stubGrafanaHealth(false),
+  render: () => (
+    <div className="p-6">
+      <AdminMonitoringView />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const fallback = await canvas.findByTestId('grafana-embed-fallback');
+    await expect(fallback).toHaveTextContent(/did not answer/);
+    await expect(
+      canvas.queryByTitle('Tahti vital services — Grafana'),
+    ).toBeNull();
+    await expect(
+      canvas.getAllByRole('link', { name: /Open Grafana/ }).length,
+    ).toBe(2);
   },
 };

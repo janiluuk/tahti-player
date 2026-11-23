@@ -68,6 +68,12 @@ const legacyRoutes: AdminVisit[] = [
     url: /\/admin\/storage\?tab=files$/,
   },
   {
+    path: '/admin/monitoring',
+    heading: /^Dashboard$/,
+    url: /\/admin\?tab=monitoring$/,
+    tab: 'Monitoring',
+  },
+  {
     path: '/admin/radio-station-suggestions',
     heading: /^Orphan pages$/,
     url: /\/admin\/orphan-pages\/radio-station-suggestions$/,

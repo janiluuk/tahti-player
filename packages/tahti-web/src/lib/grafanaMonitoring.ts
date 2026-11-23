@@ -3,9 +3,18 @@
  * tahti-org/ops/monitoring/vimage6/README.md.
  */
 
-const GRAFANA_BASE_URL =
+/** The Admin → Monitoring embed needs this origin in tahti-web's CSP
+ * `frame-src` (deploy/nginx.conf); a custom `VITE_GRAFANA_URL` must be added
+ * there too. */
+export const GRAFANA_BASE_URL =
   import.meta.env.VITE_GRAFANA_URL?.replace(/\/$/, '') ||
   'https://grafana.tahti.live';
+
+/** Unauthenticated JSON health endpoint, used to tell "Grafana is down" apart
+ * from "the embed is waiting for a sign-in". */
+export function grafanaHealthUrl(): string {
+  return `${GRAFANA_BASE_URL}/api/health`;
+}
 
 export type GrafanaDashboard = {
   uid: string;

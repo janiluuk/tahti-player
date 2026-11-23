@@ -63,7 +63,7 @@ export const ADMIN_TAB_ONLY_ROUTES = [
   '/admin/missed-shows',
   '/admin/storage/$userId',
   '/admin/status', // → /admin#status-checks
-  '/admin/monitoring', // → /admin#monitoring
+  '/admin/monitoring', // → /admin?tab=monitoring
 ] as const;
 
 const ADMIN_PAGE_KEYS = {

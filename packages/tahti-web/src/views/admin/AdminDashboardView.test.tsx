@@ -28,9 +28,29 @@ function mockDashboard() {
         failedFanSubPayouts: 0,
       },
       financeYtdCents: { surplus: 0, revenue: 0, costs: 0 },
-      liveStreams: [],
-      queues: [],
-      cronJobs: [],
+      liveStreams: [
+        {
+          slug: 'northern-lights',
+          artistName: 'Northern Lights',
+          elapsedSec: 5400,
+        },
+      ],
+      queues: [
+        { name: 'transcode', waiting: 2, failed: 0 },
+        { name: 'email', waiting: 0, failed: 3 },
+      ],
+      cronJobs: [
+        {
+          jobName: 'nightly-backup',
+          description: 'Postgres dump',
+          pattern: '0 3 * * *',
+          lastRun: {
+            outcome: 'ERROR',
+            startedAt: '2026-11-22T03:00:00Z',
+            durationMs: 3400,
+          },
+        },
+      ],
       audit: [
         { id: 'a1', action: 'BOARD_LOGIN', createdAt: '2026-11-22T10:00:00Z' },
       ],
@@ -93,6 +113,15 @@ describe('AdminDashboardView', () => {
     );
     expect(headings).toContain('System health');
     expect(headings).toContain('Status checks');
+    expect(headings).toContain('Live now (1)');
+    expect(headings).not.toContain('Cron jobs');
+    expect(headings).not.toContain('Grafana dashboards');
+    expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
+      'Health',
+      'Jobs2',
+      'Monitoring',
+      'Activity',
+    ]);
     expect(screen.getByRole('link', { name: 'Status checks' })).toHaveAttribute(
       'href',
       '/admin#status-checks',
@@ -128,9 +157,58 @@ describe('AdminDashboardView', () => {
     expect(
       await screen.findByRole('heading', { name: 'Needs action' }),
     ).toBeTruthy();
+    expect(screen.getByRole('tab', { name: 'Activity' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
     expect(
       screen.getByRole('heading', { name: 'Recent audit events' }),
     ).toBeTruthy();
     expect(screen.queryByText('System health')).toBeNull();
+  });
+
+  it('puts queue health and cron jobs on the Jobs tab and opens run history from a row', async () => {
+    mockDashboard();
+    const history = vi.spyOn(admin, 'fetchAdminCronHistory').mockResolvedValue({
+      ok: true,
+      runs: [],
+      total: 0,
+    });
+    await renderWithRouter(<AdminDashboardView tab="jobs" />, {
+      paths: ['/admin', '/admin/streams'],
+    });
+    const queues = await screen.findByRole('list', { name: 'Queue health' });
+    expect(queues.textContent).toContain('transcode');
+    expect(queues.textContent).toContain('3 failed');
+    const rows = screen.getAllByTestId('cron-job-row');
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.textContent).toContain('Failed');
+    expect(rows[0]?.textContent).toContain('3.4 s');
+    expect(rows[0]?.textContent).toContain('0 3 * * *');
+    await act(async () => {
+      fireEvent.click(rows[0]!);
+    });
+    expect(history).toHaveBeenCalledWith('nightly-backup');
+    expect(screen.queryByText('System health')).toBeNull();
+  });
+
+  it('opens the Monitoring tab from an old #monitoring link', async () => {
+    mockDashboard();
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null));
+    await renderWithRouter(<AdminDashboardView />, {
+      at: '/#monitoring',
+      paths: ['/admin', '/admin/logs'],
+    });
+    expect(
+      await screen.findByRole('heading', { name: 'Grafana dashboards' }),
+    ).toBeTruthy();
+    expect(screen.getByRole('tab', { name: 'Monitoring' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    expect(screen.getByRole('link', { name: /Open Grafana/ })).toHaveAttribute(
+      'href',
+      expect.stringContaining('https://grafana.tahti.live/d/'),
+    );
   });
 });

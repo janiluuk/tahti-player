@@ -1,3 +1,4 @@
+import { HourglassIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -57,7 +58,11 @@ export function StuckPendingPanel() {
 
   return (
     <div data-testid="admin-queues-stuck">
-      <StudioPanel title={t('adminQueues.stuckTitle')}>
+      <StudioPanel
+        title={t('adminQueues.stuckTitle')}
+        icon={HourglassIcon}
+        compact
+      >
         {loading ? <PageLoading label={t('settingsBody.loading')} /> : null}
         {error ? (
           <div className="flex flex-col gap-2">

@@ -1,6 +1,10 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
 import { isAdminHubId } from '../views/admin/adminHubs';
+import {
+  parseAdminDashboardTab,
+  type AdminDashboardTab,
+} from '../views/admin/dashboard/adminDashboardTabs';
 import type { AdminGovernanceTabId } from '../views/admin/governance/governanceNav';
 import type { AdminModerationTabId } from '../views/admin/moderation/moderationNav';
 import type { AdminOrphanPageTabId } from '../views/admin/orphanPages/orphanPagesNav';
@@ -37,12 +41,14 @@ import {
 export const adminRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin',
-  validateSearch: (search: Record<string, unknown>): { tab?: 'activity' } => ({
-    tab: search.tab === 'activity' ? 'activity' : undefined,
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: AdminDashboardTab } => ({
+    tab: parseAdminDashboardTab(search.tab),
   }),
   component: function AdminDashboardRoute() {
     const search = adminRoute.useSearch();
-    return <AdminDashboardView tab={search.tab ?? 'health'} />;
+    return <AdminDashboardView tab={search.tab} />;
   },
 });
 
@@ -70,7 +76,7 @@ export const adminMonitoringRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/monitoring',
   beforeLoad: () => {
-    throw redirect({ to: '/admin', hash: 'monitoring' });
+    throw redirect({ to: '/admin', search: { tab: 'monitoring' } });
   },
 });
 

@@ -1,5 +1,12 @@
 import { useLocation, useNavigate } from '@tanstack/react-router';
-import { ActivityIcon, HeartPulseIcon } from 'lucide-react';
+import {
+  ActivityIcon,
+  GaugeIcon,
+  HeartPulseIcon,
+  HistoryIcon,
+  ListChecksIcon,
+  ServerCogIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -12,10 +19,9 @@ import {
   Button,
   ButtonLink,
   Dialog,
-  InlineError,
   InlineLoader,
+  StatTile,
   Tabs,
-  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -24,26 +30,21 @@ import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
-import { StatNumber } from '../../components/tahti/StatNumber';
-import { humanizePastDate } from '../../lib/humanizeDate';
 import { dateLocaleTag } from '../../lib/locale';
 import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import {
   ADMIN_DASHBOARD_TABS,
+  adminDashboardTabForHash,
   type AdminDashboardTab,
 } from './dashboard/adminDashboardTabs';
+import { CronJobsTable } from './dashboard/CronJobsTable';
+import { LiveNowStrip } from './dashboard/LiveNowStrip';
 import { MonitoringEmbedPanel } from './dashboard/MonitoringEmbedPanel';
+import { QueueHealthStrip } from './dashboard/QueueHealthStrip';
 import { StatusChecksPanel } from './dashboard/StatusChecksPanel';
 import { CronHistoryDialog } from './status/CronHistoryDialog';
-import { cronOutcomeColor, cronOutcomeLabel } from './status/cronOutcome';
 import { QueuesJobsPanel } from './status/QueuesJobsPanel';
 import { WorkersPanel } from './status/WorkersPanel';
-
-function formatDuration(sec: number): string {
-  const hours = Math.floor(sec / 3600);
-  const minutes = Math.floor((sec % 3600) / 60);
-  return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
-}
 
 function healthChip(
   ok: boolean,
@@ -67,13 +68,7 @@ function useScrollToHash(hash: string) {
   }, [hash]);
 }
 
-function HealthTab({
-  data,
-  onOpenCron,
-}: {
-  data: AdminDashboard;
-  onOpenCron: (job: string) => void;
-}) {
+function HealthTab({ data }: { data: AdminDashboard }) {
   const { t } = useTranslation('web');
   const healthRows = [
     [t('adminDashboard.healthIcecast'), data.health.icecast === 'up'],
@@ -111,8 +106,12 @@ function HealthTab({
 
   return (
     <div className="flex flex-col gap-4">
-      <StudioPanel title={t('adminDashboard.systemHealth')}>
-        <div className="grid gap-3 sm:grid-cols-2">
+      <StudioPanel
+        title={t('adminDashboard.systemHealth')}
+        icon={HeartPulseIcon}
+        compact
+      >
+        <div className="grid gap-x-6 gap-y-2 sm:grid-cols-2 xl:grid-cols-4">
           {healthRows.map(([label, ok]) => {
             const chip = healthChip(ok, {
               ok: t('adminDashboard.ok'),
@@ -121,9 +120,9 @@ function HealthTab({
             return (
               <div
                 key={label}
-                className="flex items-center justify-between text-sm"
+                className="flex items-center justify-between gap-2 text-sm"
               >
-                <span>{label}</span>
+                <span className="min-w-0 truncate">{label}</span>
                 <Badge variant="pill" color={chip.color}>
                   {chip.label}
                 </Badge>
@@ -131,7 +130,7 @@ function HealthTab({
             );
           })}
         </div>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-2 flex flex-wrap gap-1">
           <ButtonLink
             to="/admin"
             search={{}}
@@ -140,15 +139,6 @@ function HealthTab({
             variant="text"
           >
             {t('adminDashboard.statusChecks')}
-          </ButtonLink>
-          <ButtonLink
-            to="/admin"
-            search={{}}
-            hash="monitoring"
-            size="sm"
-            variant="text"
-          >
-            {t('adminDashboard.monitoring')}
           </ButtonLink>
           <ButtonLink to="/admin/logs" size="sm" variant="text">
             {t('adminDashboard.viewLogs')}
@@ -162,146 +152,47 @@ function HealthTab({
         </div>
       </StudioPanel>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {kpiRows.map(([label, value, note]) => (
-          <StudioPanel key={label} className="!p-4 sm:!p-5">
-            <div className="text-foreground-secondary text-xs tracking-wide uppercase">
-              {label}
-            </div>
-            <StatNumber className="mt-2 block text-3xl">
-              {value.toLocaleString(dateLocaleTag())}
-            </StatNumber>
-            {note ? (
-              <InlineError
-                textSize="xs"
-                className="mt-1 font-semibold"
-                announce={false}
-              >
-                {note}
-              </InlineError>
-            ) : null}
-          </StudioPanel>
+          <StatTile
+            key={label}
+            label={label}
+            value={value.toLocaleString(dateLocaleTag())}
+            sublabel={
+              note ? (
+                <span className="text-accent-red-strong font-semibold">
+                  {note}
+                </span>
+              ) : undefined
+            }
+          />
         ))}
       </div>
 
+      <LiveNowStrip streams={data.liveStreams} />
+
       <StatusChecksPanel />
+    </div>
+  );
+}
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <StudioPanel title={t('adminDashboard.queueHealth')}>
-          <ul className="divide-border divide-y">
-            {data.queues.map((queue) => (
-              <li
-                key={queue.name}
-                className="flex items-center justify-between py-2 text-sm first:pt-0 last:pb-0"
-              >
-                <span>{queue.name}</span>
-                <span className="text-foreground-secondary text-xs">
-                  {t('adminDashboard.queueWaiting', {
-                    waiting: queue.waiting,
-                  })}
-                  {queue.failed > 0
-                    ? t('adminDashboard.queueFailed', {
-                        failed: queue.failed,
-                      })
-                    : ''}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </StudioPanel>
-        <StudioPanel title={t('adminDashboard.cronJobs')}>
-          <ul className="divide-border divide-y">
-            {data.cronJobs.map((job) => (
-              <li
-                key={job.jobName}
-                className="flex items-center justify-between py-2 text-sm first:pt-0 last:pb-0"
-              >
-                <Tooltip
-                  content={job.description}
-                  side="right"
-                  wrapperClassName="inline-flex"
-                  multiline
-                >
-                  <Button
-                    aria-description={job.description}
-                    size="flexible"
-                    variant="text"
-                    className="p-0 text-sm underline-offset-2 hover:underline"
-                    aria-label={t('cronOutcome.runHistory', {
-                      job: job.jobName,
-                    })}
-                    onClick={() => onOpenCron(job.jobName)}
-                  >
-                    {job.jobName}
-                  </Button>
-                </Tooltip>
-                <span className="text-foreground-secondary text-xs">
-                  {job.lastRun ? (
-                    <>
-                      <Badge
-                        variant="pill"
-                        color={cronOutcomeColor(job.lastRun.outcome)}
-                        className="mr-1.5 align-middle"
-                      >
-                        {cronOutcomeLabel(job.lastRun.outcome)}
-                      </Badge>
-                      <Tooltip
-                        content={new Date(job.lastRun.startedAt).toLocaleString(
-                          dateLocaleTag(),
-                        )}
-                        side="top"
-                        wrapperClassName="inline"
-                      >
-                        <time
-                          dateTime={job.lastRun.startedAt}
-                          aria-description={new Date(
-                            job.lastRun.startedAt,
-                          ).toLocaleString(dateLocaleTag())}
-                        >
-                          {humanizePastDate(job.lastRun.startedAt)}
-                        </time>
-                      </Tooltip>
-                    </>
-                  ) : (
-                    '—'
-                  )}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </StudioPanel>
-      </div>
-
+function JobsTab({
+  data,
+  onOpenCron,
+}: {
+  data: AdminDashboard;
+  onOpenCron: (job: string) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-4">
+      <QueueHealthStrip queues={data.queues} />
+      <CronJobsTable jobs={data.cronJobs} onOpen={onOpenCron} />
       <div id="queues" className="scroll-mt-20">
         <QueuesJobsPanel />
       </div>
       <div id="workers" className="scroll-mt-20">
         <WorkersPanel />
       </div>
-
-      <MonitoringEmbedPanel />
-
-      {data.liveStreams.length > 0 ? (
-        <StudioPanel
-          title={t('adminDashboardViewLabels.liveNowLength', {
-            length: data.liveStreams.length,
-          })}
-        >
-          <ul className="divide-border divide-y">
-            {data.liveStreams.map((stream) => (
-              <li
-                key={stream.slug}
-                className="flex items-center justify-between py-2 text-sm first:pt-0 last:pb-0"
-              >
-                <span>{stream.artistName}</span>
-                <span className="text-foreground-secondary text-xs">
-                  {formatDuration(stream.elapsedSec)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </StudioPanel>
-      ) : null}
     </div>
   );
 }
@@ -318,7 +209,13 @@ function ActivityTab({
   const { t } = useTranslation('web');
   return (
     <div className="flex flex-col gap-4">
-      <StudioPanel title={t('adminDashboard.needsAction')}>
+      <StudioPanel
+        id="needs-action"
+        title={t('adminDashboard.needsAction')}
+        icon={ListChecksIcon}
+        compact
+        className="scroll-mt-20"
+      >
         {data.actionRows.length === 0 ? (
           <PageEmpty title={t('empties.nothingNeedsAction')} />
         ) : (
@@ -326,7 +223,7 @@ function ActivityTab({
             {data.actionRows.map((row) => (
               <li
                 key={row.id}
-                className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
+                className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm first:pt-0 last:pb-0"
               >
                 <div className="min-w-0 flex-1 basis-48">
                   <div className="font-medium">{row.title}</div>
@@ -382,12 +279,16 @@ function ActivityTab({
         ) : null}
       </Dialog.Root>
 
-      <StudioPanel title={t('adminDashboard.recentAuditEvents')}>
+      <StudioPanel
+        title={t('adminDashboard.recentAuditEvents')}
+        icon={HistoryIcon}
+        compact
+      >
         <ul className="divide-border divide-y">
           {data.audit.map((row) => (
             <li
               key={row.id}
-              className="flex items-center justify-between py-2 text-sm first:pt-0 last:pb-0"
+              className="flex items-center justify-between gap-2 py-1.5 text-sm first:pt-0 last:pb-0"
             >
               <span>{row.action}</span>
               <span className="text-foreground-secondary text-xs">
@@ -401,15 +302,30 @@ function ActivityTab({
   );
 }
 
-export function AdminDashboardView({
-  tab = 'health',
-}: {
-  tab?: AdminDashboardTab;
-}) {
+/** On a phone only the selected tab keeps its visible label, so the four
+ * tabs stay on one row; the others keep theirs for screen readers. */
+function tabLabel(text: string, selected: boolean) {
+  return (
+    <span className={selected ? undefined : 'max-sm:sr-only'}>{text}</span>
+  );
+}
+
+function jobsProblemCount(data: AdminDashboard): number {
+  return (
+    data.queues.filter((queue) => queue.failed > 0).length +
+    data.cronJobs.filter(
+      (job) =>
+        job.lastRun?.outcome != null && job.lastRun.outcome !== 'SUCCESS',
+    ).length
+  );
+}
+
+export function AdminDashboardView({ tab }: { tab?: AdminDashboardTab }) {
   const { t } = useTranslation('web');
   const navigate = useNavigate();
   const hash = useLocation({ select: (location) => location.hash });
   useScrollToHash(hash);
+  const activeTab = tab ?? adminDashboardTabForHash(hash) ?? 'health';
   const { data, error, loading, refreshing, retry } =
     useSnapshotFetch<AdminDashboard>('admin-dashboard', async () => {
       const res = await fetchAdminDashboard();
@@ -423,7 +339,7 @@ export function AdminDashboardView({
     AdminDashboard['actionRows'][number] | null
   >(null);
   const [cronJob, setCronJob] = useState<string | null>(null);
-  const selectedIndex = Math.max(0, ADMIN_DASHBOARD_TABS.indexOf(tab));
+  const selectedIndex = Math.max(0, ADMIN_DASHBOARD_TABS.indexOf(activeTab));
 
   return (
     <AdminGate>
@@ -482,21 +398,47 @@ export function AdminDashboardView({
                         replace: true,
                       });
                     }}
-                    listClassName="flex-wrap"
+                    listClassName="flex-nowrap overflow-x-auto"
                     panelClassName="pt-4"
                     items={[
                       {
                         id: 'health',
-                        label: t('adminDashboard.tabHealth'),
+                        label: tabLabel(
+                          t('adminDashboard.tabHealth'),
+                          activeTab === 'health',
+                        ),
                         icon: <HeartPulseIcon size={14} />,
+                        content: <HealthTab data={data} />,
+                      },
+                      {
+                        id: 'jobs',
+                        label: tabLabel(
+                          t('adminDashboard.tabJobs'),
+                          activeTab === 'jobs',
+                        ),
+                        icon: <ServerCogIcon size={14} />,
+                        count: jobsProblemCount(data) || undefined,
                         content: (
-                          <HealthTab data={data} onOpenCron={setCronJob} />
+                          <JobsTab data={data} onOpenCron={setCronJob} />
                         ),
                       },
                       {
+                        id: 'monitoring',
+                        label: tabLabel(
+                          t('adminDashboard.tabMonitoring'),
+                          activeTab === 'monitoring',
+                        ),
+                        icon: <GaugeIcon size={14} />,
+                        content: <MonitoringEmbedPanel />,
+                      },
+                      {
                         id: 'activity',
-                        label: t('adminDashboard.tabActivity'),
+                        label: tabLabel(
+                          t('adminDashboard.tabActivity'),
+                          activeTab === 'activity',
+                        ),
                         icon: <ActivityIcon size={14} />,
+                        count: data.actionRows.length || undefined,
                         content: (
                           <ActivityTab
                             data={data}
