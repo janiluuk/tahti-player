@@ -14983,6 +14983,23 @@
       "edit": "Muokkaa tapahtumaa",
       "venue": "Tapahtumapaikka"
     },
+    "eventComments": {
+      "title": "Kommentit",
+      "emptyTitle": "Ei kommentteja vielä",
+      "emptyFirstSignedIn": "Ole ensimmäinen, joka jättää viestin tähän tapahtumaan.",
+      "emptyFirstGuest": "Kirjaudu sisään jättääksesi ensimmäisen viestin.",
+      "emptyDisabled": "Kommentit on poistettu käytöstä tässä tapahtumassa.",
+      "logInToComment": "Kirjaudu kommentoidaksesi",
+      "writeAria": "Kirjoita kommentti",
+      "placeholder": "Kerro jotain tästä tapahtumasta…",
+      "posting": "Lähetetään…",
+      "post": "Lähetä kommentti",
+      "removeTitle": "Poistetaanko tämä kommentti?",
+      "removeFallbackDescription": "Kommentti poistuu tästä tapahtumasta.",
+      "commentPosted": "Kommentti lähetetty.",
+      "commentRemoved": "Kommentti poistettu.",
+      "ariaLabel": "Tapahtuman kommentit"
+    },
     "eventGallery": {
       "heading": "Kuvagalleria",
       "addTitle": "Lisää kuvia",

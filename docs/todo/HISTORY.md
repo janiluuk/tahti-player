@@ -1,3 +1,17 @@
+## 2026-11-23 — Event page comments
+
+Chat-alike comment thread on `EventView` for signed-in users (sign-in CTA
+when signed out). API: tahti-org#1147 (`GET`/`POST /api/comments/event/:id`,
+`Comment.eventId`). Folded `event-page-comments.md`.
+
+## 2026-11-23 — Discover events widget + Helsinki Linked Events seed
+
+Upcoming events first on Discover → Events, `upcoming-events` widget,
+mock artwork, e2e (`use-cases-discover-events.spec.ts`). Production
+listings from City of Helsinki Linked Events on @yaniho
+(tahti-org#1145 `seed-helsinki-linked-events.ts`); demo mock event titles
+removed. Folded `discover-events-widget.md`.
+
 ## 2026-11-23 — Design audit slice 11 (collection + distribution tabs)
 
 From `studio-admin-design-audit.md` / `studio-admin-audit-remaining.md`:
