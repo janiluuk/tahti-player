@@ -6671,3 +6671,8 @@ sub-page. `HubCards` contrast raised (icon chip, card background, description).
 positioned `MediaArtwork` filled the nearest positioned ancestor and drew the
 avatar as one huge blurred image over `tahti.live/u/<name>`. Frame is now
 `relative`; regression test added.
+
+## 2026-11-24 - Listening parties at the bottom of Discover (0.0.461)
+
+`DiscoverPartiesRow` renders after the filters and widget grid on the
+Discover tab instead of above them; ordering test in `DiscoverView.test.tsx`.

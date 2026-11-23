@@ -553,8 +553,6 @@ export function DiscoverView() {
 
         {activeTab === 'discover' ? <HomeNews /> : null}
 
-        {activeTab === 'discover' ? <DiscoverPartiesRow /> : null}
-
         {activeTab === 'discover' ? (
           <div className="flex flex-col gap-3">
             <div
@@ -730,6 +728,8 @@ export function DiscoverView() {
             })}
           </Masonry>
         )}
+
+        {activeTab === 'discover' ? <DiscoverPartiesRow /> : null}
 
         {activeTab === 'artists' && artistsError && artists.length === 0 ? (
           <PageError
