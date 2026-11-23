@@ -4723,7 +4723,10 @@
       "grafanaDashboards": "Grafana dashboards",
       "services": "Services",
       "vitalServicesGrafana": "Vital services (Grafana)",
-      "tahtiVitalServicesGrafana": "Tahti vital services — Grafana"
+      "tahtiVitalServicesGrafana": "Tahti vital services — Grafana",
+      "openGrafana": "Open Grafana",
+      "grafanaEmbedBlocked": "This browser blocked the Grafana panel on this page. Open Grafana in a new tab to see the dashboards at {{host}}.",
+      "grafanaUnreachable": "Grafana at {{host}} did not answer from this browser. It may be down, or your network blocks it. Open Grafana in a new tab to check."
     },
     "auditors": {
       "addAnAuditor": "Add an auditor",
@@ -5461,7 +5464,6 @@
       "tabHealth": "Health",
       "tabActivity": "Activity",
       "statusChecks": "Status checks",
-      "monitoring": "Monitoring",
       "viewLogs": "View logs",
       "viewDetails": "View details",
       "close": "Close",
@@ -5492,12 +5494,26 @@
       "ticketsNeedReply": "{{count}} need a reply",
       "actionWaitingDetail": "This item is waiting for an admin action. Open its queue to inspect the full record before completing “{{action}}”.",
       "queueWaiting": "{{waiting}} waiting",
-      "queueFailed": ", {{failed}} failed",
       "financeBreakdown": "Revenue {{revenue}} · Costs {{costs}}",
       "versionLine": "Version {{version}} · ",
       "uptimeHours": "Uptime {{hours}}h",
       "checked": "checked",
-      "latencyMs": "{{ms}} ms"
+      "latencyMs": "{{ms}} ms",
+      "tabJobs": "Jobs",
+      "tabMonitoring": "Monitoring",
+      "manageStreams": "Manage streams",
+      "showAllCount": "Show all ({{count}})",
+      "showFewer": "Show fewer",
+      "queueFailedCount": "{{failed}} failed",
+      "queuesEmpty": "No queues reported.",
+      "cronJobsEmpty": "No cron jobs reported.",
+      "cronColJob": "Job",
+      "cronColStatus": "Status",
+      "cronColLastRun": "Last run",
+      "cronColDuration": "Duration",
+      "cronColSchedule": "Schedule",
+      "cronNeverRun": "Not run yet",
+      "cronEvery": "Every {{interval}}"
     },
     "proEditor": {
       "metadata": "Metadata",

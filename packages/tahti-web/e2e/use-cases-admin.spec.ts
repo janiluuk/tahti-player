@@ -95,6 +95,39 @@ test('admin: the dashboard Health tab links to status checks and Community', asy
   ).toBeVisible();
 });
 
+test('admin: the dashboard tabs keep Jobs, Monitoring and Activity one click away', async ({
+  page,
+}) => {
+  const errors = collectPageErrors(page);
+  await page.route(/grafana\.tahti\.live/, (route) => route.abort());
+  await open(page, '/admin');
+  const main = page.getByRole('main');
+  await main.getByRole('tab', { name: /^Jobs/ }).click();
+  await expect(page).toHaveURL(/\/admin\?tab=jobs$/);
+  await expect(main.getByRole('list', { name: 'Queue health' })).toBeVisible();
+  await main.getByTestId('cron-job-row').first().click();
+  await expect(
+    page.getByRole('heading', { name: 'nightly-backup runs' }),
+  ).toBeVisible();
+  await page.keyboard.press('Escape');
+  await main.getByRole('tab', { name: 'Monitoring' }).click();
+  await expect(page).toHaveURL(/\/admin\?tab=monitoring$/);
+  await expect(main.getByTestId('grafana-embed-fallback')).toBeVisible();
+  await expect(
+    main.getByRole('link', { name: /Open Grafana/ }).first(),
+  ).toHaveAttribute('href', /^https:\/\/grafana\.tahti\.live\/d\//);
+  await main.getByRole('tab', { name: /^Activity/ }).click();
+  await expect(page).toHaveURL(/\/admin\?tab=activity$/);
+  await expect(
+    main.getByRole('heading', { level: 2, name: 'Needs action' }),
+  ).toBeVisible();
+  await page.goto('/admin#queues');
+  await expect(
+    page.getByRole('main').getByRole('tab', { name: /^Jobs/, selected: true }),
+  ).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
 test('admin: People filters by role', async ({ page }) => {
   await open(page, '/admin/users');
   await page.getByRole('button', { name: 'Filter by role' }).click();

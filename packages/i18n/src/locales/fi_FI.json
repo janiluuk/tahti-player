@@ -4723,7 +4723,10 @@
       "grafanaDashboards": "Grafana-kojelaudat",
       "services": "Palvelut",
       "vitalServicesGrafana": "Keskeiset palvelut (Grafana)",
-      "tahtiVitalServicesGrafana": "Tahdin keskeiset palvelut — Grafana"
+      "tahtiVitalServicesGrafana": "Tahdin keskeiset palvelut — Grafana",
+      "openGrafana": "Avaa Grafana",
+      "grafanaEmbedBlocked": "Selain esti Grafana-paneelin tällä sivulla. Avaa Grafana uuteen välilehteen nähdäksesi kojelaudat osoitteessa {{host}}.",
+      "grafanaUnreachable": "Grafana osoitteessa {{host}} ei vastannut tähän selaimeen. Se voi olla alhaalla, tai verkkosi estää sen. Avaa Grafana uuteen välilehteen tarkistaaksesi."
     },
     "auditors": {
       "addAnAuditor": "Lisää tilintarkastaja",
@@ -5454,7 +5457,6 @@
       "admin": "Ylläpito",
       "dashboard": "Kojelauta",
       "statusChecks": "Tilatarkistukset",
-      "monitoring": "Valvonta",
       "viewLogs": "Näytä lokit",
       "viewDetails": "Näytä tiedot",
       "close": "Sulje",
@@ -5485,7 +5487,6 @@
       "ticketsNeedReply": "{{count}} odottaa vastausta",
       "actionWaitingDetail": "Tämä odottaa ylläpidon toimenpidettä. Avaa jono ja tarkista tietue ennen kuin teet “{{action}}”.",
       "queueWaiting": "{{waiting}} odottaa",
-      "queueFailed": ", {{failed}} epäonnistui",
       "financeBreakdown": "Tulot {{revenue}} · Kulut {{costs}}",
       "versionLine": "Versio {{version}} · ",
       "uptimeHours": "Käynnissä {{hours}} h",
@@ -5493,7 +5494,22 @@
       "latencyMs": "{{ms}} ms",
       "subtitle": "Alustan kunto ja asiat, jotka vaativat hallituksen huomiota.",
       "tabHealth": "Kunto",
-      "tabActivity": "Toiminta"
+      "tabActivity": "Toiminta",
+      "tabJobs": "Ajot",
+      "tabMonitoring": "Valvonta",
+      "manageStreams": "Hallitse lähetyksiä",
+      "showAllCount": "Näytä kaikki ({{count}})",
+      "showFewer": "Näytä vähemmän",
+      "queueFailedCount": "{{failed}} epäonnistui",
+      "queuesEmpty": "Jonoja ei raportoitu.",
+      "cronJobsEmpty": "Ajastettuja töitä ei raportoitu.",
+      "cronColJob": "Työ",
+      "cronColStatus": "Tila",
+      "cronColLastRun": "Viimeksi ajettu",
+      "cronColDuration": "Kesto",
+      "cronColSchedule": "Aikataulu",
+      "cronNeverRun": "Ei vielä ajettu",
+      "cronEvery": "{{interval}} välein"
     },
     "proEditor": {
       "metadata": "Metatiedot",

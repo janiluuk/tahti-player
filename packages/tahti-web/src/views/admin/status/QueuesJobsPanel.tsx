@@ -1,3 +1,4 @@
+import { ListVideoIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -133,8 +134,8 @@ export function QueuesJobsPanel() {
   };
 
   return (
-    <div className="flex flex-col gap-6" data-testid="admin-queues-jobs">
-      <StudioPanel title={t('adminQueues.title')}>
+    <div className="flex flex-col gap-4" data-testid="admin-queues-jobs">
+      <StudioPanel title={t('adminQueues.title')} icon={ListVideoIcon} compact>
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <Button
             size="sm"

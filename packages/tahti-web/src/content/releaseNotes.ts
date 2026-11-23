@@ -40,13 +40,21 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.441',
+    version: '0.0.442',
     sections: [
       {
         id: 'listen',
         label: 'Listen',
         highlights: [
           'An artist’s own site (name.tahti.live) shows their header, colours and menu choices again, so it looks the way they designed it.',
+        ],
+      },
+      {
+        id: 'admin',
+        label: 'Admin',
+        highlights: [
+          'The admin dashboard is split into Health, Jobs, Monitoring and Activity tabs, and live channels, queues and cron jobs fit in a few compact rows, so the board sees what needs attention without scrolling through one long page.',
+          'Grafana opens inside Admin → Monitoring again, and when it cannot load there you get a clear Open Grafana button instead of a blank frame.',
         ],
       },
     ],

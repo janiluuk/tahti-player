@@ -11,7 +11,7 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { MonitoringEmbedPanel } from './dashboard/MonitoringEmbedPanel';
 
 /** Storybook surface for the monitoring panels. The live `/admin/monitoring`
- * route redirects into the Overview dashboard (`#monitoring`). */
+ * route redirects into the dashboard Monitoring tab (`?tab=monitoring`). */
 export function AdminMonitoringView() {
   const { t } = useTranslation('web');
 

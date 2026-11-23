@@ -1,4 +1,4 @@
-import { HistoryIcon } from 'lucide-react';
+import { CpuIcon, HistoryIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -159,6 +159,8 @@ export function WorkersPanel() {
 
   return (
     <StudioPanel
+      compact
+      icon={CpuIcon}
       title={t('workersPanel.workers')}
       description={
         offline && offline.length > 0
