@@ -37,14 +37,12 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/AdminMapView` | `tahti-web/AdminMapView.stories.tsx` |
 | `Tahti/Admin/AdminMissedShowsView` | `tahti-web/AdminMissedShowsView.stories.tsx` |
 | `Tahti/Admin/AdminModerationView` | `tahti-web/AdminModerationView.stories.tsx` |
-| `Tahti/Admin/AdminMonitoringView` | `tahti-web/AdminMonitoringView.stories.tsx` |
 | `Tahti/Admin/AdminNav` | `tahti-web/AdminNav.stories.tsx` |
 | `Tahti/Admin/AdminNewsView` | `tahti-web/AdminNewsView.stories.tsx` |
 | `Tahti/Admin/AdminOrphanPagesView` | `tahti-web/AdminOrphanPagesView.stories.tsx` |
 | `Tahti/Admin/AdminRadioView` | `tahti-web/AdminRadioView.stories.tsx` |
 | `Tahti/Admin/AdminSelectsGenerateDialog` | `tahti-web/AdminSelectsGenerateDialog.stories.tsx` |
 | `Tahti/Admin/AdminSelectsView` | `tahti-web/AdminSelectsView.stories.tsx` |
-| `Tahti/Admin/AdminStatusView` | `tahti-web/AdminStatusView.stories.tsx` |
 | `Tahti/Admin/AdminStorageUserView` | `tahti-web/AdminStorageUserView.stories.tsx` |
 | `Tahti/Admin/AdminStorageView` | `tahti-web/AdminStorageView.stories.tsx` |
 | `Tahti/Admin/AdminStreamManagerPanel` | `tahti-web/AdminStreamManagerPanel.stories.tsx` |

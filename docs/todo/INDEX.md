@@ -40,7 +40,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | ------- | ---- | -------- |
 | partial | [discover-events-widget.md](discover-events-widget.md) | Upcoming events first on Discover → Events, events widget, mock events with artwork, e2e step shipped; left: production seed events (admin session) |
 | partial | [yaniho-hearthis-albums.md](yaniho-hearthis-albums.md) | Album track numbers, dense order, owner + board reorder shipped (tahti-org#1128, web); left: clean existing "artist - album - NN - title" names on production, 1:1 check against hearthis.at |
-| partial | [studio-admin-design-audit.md](studio-admin-design-audit.md) | Findings written (per-view table, 15 chat surfaces, proposed slices); Stats tabs shipped; remaining slices await OK |
+| partial | [studio-admin-design-audit.md](studio-admin-design-audit.md) | Slices 7–9 shipped (Stats tabs, Admin Overview tabs, orphan Status/Monitoring deleted); left: 1–6, 10–12 |
 | partial | [more-3d-visualizers.md](more-3d-visualizers.md) | Visualizers follow the artwork colour; left: 3-4 new 3D presets (user picks the list) |
 | partial | [discover-events-tab.md](discover-events-tab.md) | Events tab with range / past / city / venue / search filters and calendar view, posting, banner crop, event page backdrop built; left: live post check, event gallery API deploy (tahti-org#1122 merged) |
 | partial | [mobile-bottom-nav-readability.md](mobile-bottom-nav-readability.md) | Taller bar that grows by the gesture-bar inset, bigger labels/icons; left: check on a real Android phone |

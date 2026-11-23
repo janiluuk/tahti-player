@@ -1,3 +1,8 @@
+## 2026-11-23 - Remove orphan Admin Status / Monitoring views (0.0.443)
+
+Deleted Storybook-only AdminStatusView and AdminMonitoringView; redirects and
+dashboard panels remain. mapScreens stories point at AdminDashboardView.
+
 ## 2026-11-23 - Release header ambience + description list (0.0.440)
 
 Studio release detail: artwork-driven header visualizer/wash (unless a

@@ -2292,7 +2292,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/admin#status-checks',
           caption: 'Platform and service status',
         },
-        storybookUrl: storybookStory('Tahti/Admin/AdminStatusView', 'Default'),
+        storybookUrl: storybookStory(
+          'Tahti/Admin/AdminDashboardView',
+          'Default',
+        ),
       },
       {
         id: 'account-notifications',
@@ -2438,8 +2441,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           caption: 'Grafana vitals embed and container logs hub',
         },
         storybookUrl: storybookStory(
-          'Tahti/Admin/AdminMonitoringView',
-          'Default',
+          'Tahti/Admin/AdminDashboardView',
+          'MonitoringTab',
         ),
       },
       {
