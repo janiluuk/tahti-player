@@ -9069,6 +9069,8 @@
       "statusFailed": "Epäonnistui"
     },
     "artistProfilePage": {
+      "albums": "Albumit",
+      "djSets": "DJ-setit",
       "stage": "Lava",
       "gallery": "Galleria",
       "design": "Ulkoasu"

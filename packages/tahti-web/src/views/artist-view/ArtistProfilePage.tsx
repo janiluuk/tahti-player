@@ -1,6 +1,8 @@
 import {
   CirclePlayIcon,
+  DiscAlbumIcon,
   DownloadIcon,
+  HeadphonesIcon,
   HeartIcon,
   ImagesIcon,
   ListMusicIcon,
@@ -76,6 +78,7 @@ import {
 import { resolveArtworkVisualizerPreset } from '../../lib/artworkVisualizer';
 import { artistHeroImage } from '../../lib/avatarTheme';
 import { resolveStorefront } from '../../lib/channelStore';
+import { collectionsOfKind } from '../../lib/collectionKind';
 import { colorSchemeCssVars } from '../../lib/colorScheme';
 import { countryName } from '../../lib/countries';
 import { entityStatLabel, type EntityStatKey } from '../../lib/entityStatLabel';
@@ -203,6 +206,20 @@ export function ArtistProfilePage({ username }: { username: string }) {
         icon: MonitorPlayIcon,
       });
     }
+    if (collectionsOfKind(profile.collections, 'album').length > 0) {
+      list.push({
+        id: 'albums',
+        label: t('artistProfilePage.albums'),
+        icon: DiscAlbumIcon,
+      });
+    }
+    if (collectionsOfKind(profile.collections, 'dj-set').length > 0) {
+      list.push({
+        id: 'dj-sets',
+        label: t('artistProfilePage.djSets'),
+        icon: HeadphonesIcon,
+      });
+    }
     if (hasGallery) {
       list.push({
         id: 'gallery',
@@ -272,6 +289,9 @@ export function ArtistProfilePage({ username }: { username: string }) {
   }
 
   const { artist, channel, collections, fanTiers } = profile;
+  const albumCollections = collectionsOfKind(collections, 'album');
+  const djSetCollections = collectionsOfKind(collections, 'dj-set');
+  const otherCollections = collectionsOfKind(collections, 'other');
   const profileEmbeds = Object.entries(artist.socialLinks ?? {})
     .filter(
       ([key, url]) =>
@@ -504,9 +524,9 @@ export function ArtistProfilePage({ username }: { username: string }) {
         />
       ) : null}
 
-      {collections.length > 0 ? (
+      {otherCollections.length > 0 ? (
         <ArtistPlaylistsGrid
-          collections={collections}
+          collections={otherCollections}
           username={artist.username}
         />
       ) : null}
@@ -631,6 +651,24 @@ export function ArtistProfilePage({ username }: { username: string }) {
           onPlayRelease={playOrPromptAlbum}
           onOpenManager={() => setManagerOpen(true)}
         />
+      )}
+
+      {tab === 'albums' && albumCollections.length > 0 && (
+        <div data-testid="artist-albums-tab">
+          <ArtistPlaylistsGrid
+            collections={albumCollections}
+            username={artist.username}
+          />
+        </div>
+      )}
+
+      {tab === 'dj-sets' && djSetCollections.length > 0 && (
+        <div data-testid="artist-dj-sets-tab">
+          <ArtistPlaylistsGrid
+            collections={djSetCollections}
+            username={artist.username}
+          />
+        </div>
       )}
 
       {tab === 'gallery' && hasGallery && (

@@ -9073,6 +9073,8 @@
       "statusFailed": "Failed"
     },
     "artistProfilePage": {
+      "albums": "Albums",
+      "djSets": "DJ sets",
       "stage": "Stage",
       "gallery": "Gallery",
       "design": "Design"
