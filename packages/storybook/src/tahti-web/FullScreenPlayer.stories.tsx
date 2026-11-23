@@ -264,3 +264,40 @@ export const PhoneLove: Story = {
     await waitFor(() => expect(addToPlaylist).toBeVisible());
   },
 };
+
+/** Every width: Add to playlist is only in the ⋯ menu, not a button under
+ * the title. */
+export const AddToPlaylistInMenu: Story = {
+  decorators: [
+    withSeededFullScreenPlayer({
+      queue: [
+        mockQueueItem(
+          'sound:northern-lights-archive-1',
+          'Midnight Drift',
+          'Northern Lights',
+          245000,
+        ),
+      ],
+    }),
+  ],
+  beforeEach: () => {
+    seedMockAuth(MOCK_USERS.listener);
+    return () => seedMockAuth(null);
+  },
+  play: async ({ canvasElement }) => {
+    const body = withinBody(canvasElement);
+    const player = within(
+      await body.findByRole('dialog', { name: 'Now playing, full screen' }),
+    );
+    await expect(
+      player.queryByRole('button', { name: /Add to playlist/ }),
+    ).toBeNull();
+    await userEvent.click(
+      player.getByRole('button', { name: /^More options for/ }),
+    );
+    const addToPlaylist = await body.findByRole('button', {
+      name: 'Add to playlist',
+    });
+    await waitFor(() => expect(addToPlaylist).toBeVisible());
+  },
+};

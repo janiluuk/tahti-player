@@ -436,12 +436,14 @@ describe('FullScreenPlayer on a phone', () => {
     ).toHaveAttribute('aria-pressed', 'true');
   });
 
-  it('keeps Add to playlist under the title on wider screens', async () => {
+  it('has no Add to playlist button on wider screens either; it lives in the ⋯ menu', async () => {
     stubWidth(false);
     await open('playing');
     expect(
-      screen.getByRole('button', { name: 'Add to playlist' }),
+      screen.queryByRole('button', { name: 'Add to playlist' }),
+    ).toBeNull();
+    expect(
+      screen.getByRole('button', { name: /^More options for/ }),
     ).toBeInTheDocument();
-    expect(screen.queryByTestId('full-screen-player-love')).toBeNull();
   });
 });

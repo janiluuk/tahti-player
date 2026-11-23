@@ -34,7 +34,6 @@ import { useDominantColor } from '../lib/useDominantColor';
 import { useLayoutStore } from '../stores/layoutStore';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
-import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { ChannelVisualizer } from './ChannelVisualizer';
 import { useHearthisEmbedClaimed } from './HearthisEmbedHost';
 import { NowPlayingActionSheet } from './NowPlayingActionSheet';
@@ -505,16 +504,6 @@ export function FullScreenPlayer() {
                     title={playable.title}
                     liked={isLiked(playable)}
                     onToggle={() => toggleLike(playable)}
-                  />
-                </div>
-              ) : null}
-              {!isMobile && soundId && playable && !driving ? (
-                <div className="mt-3 flex justify-center">
-                  <AddToPlaylistButton
-                    soundId={soundId}
-                    trackTitle={playable.title}
-                    variant="secondary"
-                    iconOnly={false}
                   />
                 </div>
               ) : null}
