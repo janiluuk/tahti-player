@@ -409,7 +409,7 @@ test('artist stats combine audience metrics and listener maps in one place', asy
   await expect(
     page.getByRole('heading', { name: 'Engagement units' }),
   ).toBeVisible();
-  await page.getByRole('radio', { name: 'Plays and listeners' }).click();
+  await page.getByRole('tab', { name: 'Audience' }).click();
   await expect(page.getByLabel('Listener world map')).toBeVisible();
 });
 
