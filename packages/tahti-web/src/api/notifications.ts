@@ -240,6 +240,7 @@ const NOTIFICATION_KIND_TYPES: Record<
     'FAN_SUB_CANCELED',
     'GRANT_AWARDED',
     'MEMBERSHIP_ENDED',
+    'PATTERN_FRAUD_FLAGGED',
   ],
   governance: [
     'MOTION_OPENED',

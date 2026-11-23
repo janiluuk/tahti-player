@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.450',
+    version: '0.0.453',
     sections: [
       {
         id: 'listen',
@@ -58,6 +58,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
           'Links to your channel programme, from Broadcast, Channel design or an old bookmark, open Schedule on the Programme tab instead of the time slots.',
           'Studio → Channel shows the Tahti Radio panel once, with its own description, instead of a doubled panel.',
           'Sections you hide on your artist page (bio, gallery, feed and the rest) now stay hidden for every visitor and on your other devices, not just in the browser you hid them in.',
+          'If the board’s daily check sees unusual download activity on your channel, you get a notification saying so, in Finnish or English, before anything about your units changes.',
         ],
       },
       {
