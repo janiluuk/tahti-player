@@ -25,7 +25,13 @@ function trackOrderOptions(t: TFunction<'web'>): SelectOption[] {
   ];
 }
 
-export function DetailsPanel({ state }: { state: CollectionEditState }) {
+export function DetailsPanel({
+  state,
+  showVisibility = false,
+}: {
+  state: CollectionEditState;
+  showVisibility?: boolean;
+}) {
   const { t } = useTranslation('web');
   const {
     name,
@@ -95,23 +101,50 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
         />
-        <section className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-lg border p-3 sm:col-span-2">
-          <Select
-            label={t('collectionDetails.visibility')}
-            description={t('collectionDetails.chooseWhoCanFindThis')}
-            value={visibility}
-            onValueChange={(value) => setVisibility(value as typeof visibility)}
-            options={[
-              { id: 'PUBLIC', label: t('detailsPanel.public') },
-              {
-                id: 'UNLISTED',
-                label: t('detailsPanel.unlistedDirectLinkOnly'),
-              },
-              { id: 'PRIVATE', label: t('detailsPanel.privateOnlyYou') },
-            ]}
-          />
-        </section>
+        {showVisibility ? (
+          <section className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-lg border p-3 sm:col-span-2">
+            <Select
+              label={t('collectionDetails.visibility')}
+              description={t('collectionDetails.chooseWhoCanFindThis')}
+              value={visibility}
+              onValueChange={(value) =>
+                setVisibility(value as typeof visibility)
+              }
+              options={[
+                { id: 'PUBLIC', label: t('detailsPanel.public') },
+                {
+                  id: 'UNLISTED',
+                  label: t('detailsPanel.unlistedDirectLinkOnly'),
+                },
+                { id: 'PRIVATE', label: t('detailsPanel.privateOnlyYou') },
+              ]}
+            />
+          </section>
+        ) : null}
       </div>
+    </StudioPanel>
+  );
+}
+
+export function SharingPanel({ state }: { state: CollectionEditState }) {
+  const { t } = useTranslation('web');
+  const { visibility, setVisibility } = state;
+  return (
+    <StudioPanel title={t('collectionDetails.visibility')}>
+      <Select
+        label={t('collectionDetails.visibility')}
+        description={t('collectionDetails.chooseWhoCanFindThis')}
+        value={visibility}
+        onValueChange={(value) => setVisibility(value as typeof visibility)}
+        options={[
+          { id: 'PUBLIC', label: t('detailsPanel.public') },
+          {
+            id: 'UNLISTED',
+            label: t('detailsPanel.unlistedDirectLinkOnly'),
+          },
+          { id: 'PRIVATE', label: t('detailsPanel.privateOnlyYou') },
+        ]}
+      />
     </StudioPanel>
   );
 }

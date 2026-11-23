@@ -8770,7 +8770,16 @@
       "backToShows": "Back to Shows"
     },
     "studioCollectionEditView": {
-      "backToCollections": "Back to Collections"
+      "backToCollections": "Back to Collections",
+      "artwork": "Artwork",
+      "artworkHint": "Cover and backdrop live in the header above. Text overlays are below.",
+      "tracks": "Tracks",
+      "sharing": "Sharing"
+    },
+    "studioDistributionTabs": {
+      "status": "Status",
+      "settings": "Settings",
+      "royalties": "Royalty reports"
     },
     "processingFailedAlert": {
       "retryProcessing": "Retry processing"

@@ -1,3 +1,10 @@
+## 2026-11-23 — Design audit slice 11 (collection + distribution tabs)
+
+From `studio-admin-design-audit.md` / `studio-admin-audit-remaining.md`:
+collection edit tabs Tracks · Details · Artwork · Sharing; Distribution
+Status · Settings · Royalty reports. Full audit slices 1–12 complete.
+tahti-web 0.0.446.
+
 ## 2026-11-23 — Design audit slices 1, 3–6, 10, 12
 
 Studio chat home `/studio/chat`; Channel Stream·Pinned·Multicast; Schedule
