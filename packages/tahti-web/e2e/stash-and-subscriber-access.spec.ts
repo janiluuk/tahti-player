@@ -59,7 +59,7 @@ async function uploadSound(
   await expect(page).toHaveURL(/\/studio\/sounds\/[^/]+$/, {
     timeout: 15_000,
   });
-  const match = /\/studio\/sounds\/([^/]+)$/.exec(page.url());
+  const match = /\/studio\/sounds\/([^/]+)$/.exec(new URL(page.url()).pathname);
   const id = match?.[1];
   if (!id) {
     throw new Error(`Could not extract sound id from ${page.url()}`);

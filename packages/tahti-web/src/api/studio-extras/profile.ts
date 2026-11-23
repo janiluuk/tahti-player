@@ -1,6 +1,7 @@
 import type { AvatarTheme } from '../../lib/avatarTheme';
 import type { FetchMeta } from '.././client';
 import { setMockFreeSubscriptionsEnabled } from '.././mock-profile-preferences';
+import { getMockSessionUser } from '.././mock-session';
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -62,7 +63,7 @@ export type ProfileFields = {
   uiLocale?: 'en' | 'fi' | null;
 };
 
-export let mockProfile: ProfileFields = {
+const mockProfileDefaults: ProfileFields = {
   id: 'user-mock',
   username: 'demo',
   displayName: 'Demo Artist',
@@ -89,13 +90,25 @@ export let mockProfile: ProfileFields = {
   publicAttribution: true,
 };
 
+let mockProfileEdits: Partial<ProfileFields> = {};
+
+/** The signed-in mock user owns the profile, so the Studio designer and the
+ * public channel page (`mockChannel(username)`) show the same name. */
+function currentMockProfile(): ProfileFields {
+  const user = getMockSessionUser();
+  const identity: Partial<ProfileFields> = user
+    ? { id: user.id, username: user.username, displayName: user.displayName }
+    : {};
+  return { ...mockProfileDefaults, ...identity, ...mockProfileEdits };
+}
+
 export async function fetchMeProfile(): Promise<{
   data: ProfileFields;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
     return {
-      data: { ...mockProfile },
+      data: currentMockProfile(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -105,7 +118,7 @@ export async function fetchMeProfile(): Promise<{
   } catch (err) {
     if (allowMockFallback()) {
       return {
-        data: { ...mockProfile, username: 'unknown' },
+        data: { ...currentMockProfile(), username: 'unknown' },
         meta: mockFallbackMeta(err),
       };
     }
@@ -180,14 +193,15 @@ export async function patchMeProfile(
   patch: ProfilePatch,
 ): Promise<{ ok: true; data: ProfileFields } | { ok: false; error: string }> {
   if (isForceMock()) {
-    mockProfile = { ...mockProfile, ...patch };
+    mockProfileEdits = { ...mockProfileEdits, ...patch };
+    const profile = currentMockProfile();
     if (patch.freeSubscriptionsEnabled !== undefined) {
       setMockFreeSubscriptionsEnabled(
-        mockProfile.username,
+        profile.username,
         patch.freeSubscriptionsEnabled,
       );
     }
-    return { ok: true, data: { ...mockProfile } };
+    return { ok: true, data: profile };
   }
   try {
     const { data } = await requestJson<ProfileFields>('/api/me/profile', {
