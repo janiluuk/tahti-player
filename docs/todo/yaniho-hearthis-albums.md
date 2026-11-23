@@ -15,7 +15,7 @@ Requested 2026-11-22. Account: the Yaniho channel (`/channel/yaniho`).
 
 - tahti-org#1128 (deployed): every collection item has a dense 1..n `position` and a `trackNumber` in the owner, public and admin DTOs; removing or inserting renumbers; owner `PUT /api/me/collections/:slug/reorder`; board `GET /api/admin/collections/:slug` + `PUT /api/admin/collections/:slug/reorder` (audit `COLLECTION_ADMIN_REORDER`). New uploads get clean titles from file names (`@tahti/shared` track-title cleanup).
 - Web: album rows show the track number before the title (`collectionTrackMeta` → `AmbientTrackRow` `trackNumber`); a board member gets "Sort tracks (board)" on any album page (`BoardCollectionSortSounds`, the same `SortSoundsDialog` the owner uses).
-- Left: existing production titles like `yaniho - euphorizer LP - 02 - Particular particle` → `Particular particle` at position 2 of "euphorizer LP". tahti-org#1130 adds the cleanup script (`apps/api/scripts/clean-album-track-titles.ts`: dry run by default, JSON backup, `--apply`, `--restore`; commands in the PR body); running it on production needs the user's OK. Then the 1:1 check against hearthis.at.
+- Titles cleaned on production (tahti-org `clean-album-track-titles.ts yaniho`, HISTORY 2026-11-23). Left on purpose: older Hysterizer / Sisufuzz uploads still in Sets/Tracks. Left: 1:1 check against hearthis.at for covers/art.
 
 ## Where to look
 
