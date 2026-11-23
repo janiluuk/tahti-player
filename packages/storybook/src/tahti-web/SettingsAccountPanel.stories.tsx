@@ -27,7 +27,7 @@ const meta: Meta<typeof AccountPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Account is one tab row: Session, Membership (with a link to Co-op), Your subs, Purchases, Storage and Privacy & data. Security and Notifications are their own Settings items. Signed out it only offers Log in.',
+          'Settings → Account is one tab row: Session (profile card), Membership (with a link to Co-op), Subs & purchases (summary tiles, subscriptions with status pills, purchases), Storage (used vs free donut with tiles) and Privacy & data. Security and Notifications are their own Settings items. Signed out it only offers Log in.',
       },
     },
   },
@@ -52,7 +52,7 @@ export const Session: Story = {
     );
     await expect(canvas.getAllByRole('tablist')).toHaveLength(1);
     await expect(canvas.queryByRole('tab', { name: 'Governance' })).toBeNull();
-    await expectVisible(canvas.getByText('@listener-liina'));
+    await expectVisible(canvas.getByText(/@listener-liina/));
     await expectVisible(canvas.getByText('Liina'));
     await expect(
       canvas.getByRole('link', { name: 'Keyboard shortcuts' }),
@@ -79,11 +79,12 @@ export const Devices: Story = {
 export const SubscriptionsAndPurchases: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await selectTab(canvas, 'Your subs');
+    await selectTab(canvas, 'Subs & purchases');
+    await expectVisible(canvas.getByTestId('account-billing-summary'));
     await expect(
       await canvas.findByRole('link', { name: 'Northern Lights' }),
     ).toHaveAttribute('href', '/u/northern-lights');
-    await expectVisible(canvas.getByText(/Supporter, €5\/mo/));
+    await expectVisible(canvas.getByText(/Supporter · €5\/mo/));
     const confirm = await openDialog(
       canvasElement,
       'Manage',
@@ -94,7 +95,6 @@ export const SubscriptionsAndPurchases: Story = {
     );
     await expectNoDialog(canvasElement);
 
-    await selectTab(canvas, 'Purchases');
     await expectVisible(await canvas.findByText('Nightfall Over Helsinki'));
     await expect(
       canvas.getByRole('link', { name: 'Midnight Cartography' }),
@@ -170,7 +170,9 @@ export const Storage: Story = {
     await expectVisible(
       await canvas.findByRole('heading', { name: 'Your storage' }),
     );
-    await expectVisible(canvas.getByText('Used'));
+    await expectVisible(await canvas.findByTestId('account-storage-donut'));
+    await expect(canvas.getAllByText('Used').length).toBeGreaterThan(0);
+    await expectVisible(canvas.getByText('Free'));
     await expectVisible(canvas.getByText('Quota'));
   },
 };

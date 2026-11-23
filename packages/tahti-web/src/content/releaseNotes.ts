@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.457',
+    version: '0.0.458',
     sections: [
       {
         id: 'listen',
@@ -68,6 +68,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
         label: 'Settings',
         highlights: [
           'Settings → Security is one page: change your password or email from a small edit button that opens the form in a window, with clear messages when an address looks wrong or the new password matches the old one. Two-factor authentication sits on the same page, and while it is off a friendly note suggests turning it on.',
+          'Settings → Account is easier to read at a glance: your subscriptions and purchases share one tab with totals on top, each subscription shows a coloured status, and Storage shows used and free space as a ring chart.',
         ],
       },
       {

@@ -53,7 +53,7 @@ export const Account: Story = {
     const dialog = await findDialog(canvasElement);
     await expectSection(dialog, 'Account');
     await expectSelectedTab(dialog, 'Session');
-    await expectVisible(dialog.getByText('@northern-lights'));
+    await expectVisible(dialog.getByText(/@northern-lights/));
   },
 };
 
@@ -76,7 +76,7 @@ export const AccountSubscriptions: Story = {
   decorators: [withTahtiRouter('/settings/account?tab=subscriptions')],
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
-    await expectSelectedTab(dialog, 'Your subs');
+    await expectSelectedTab(dialog, 'Subs & purchases');
   },
 };
 

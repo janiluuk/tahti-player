@@ -57,7 +57,7 @@ async function renderSubscriptionsTab(
     render(<RouterProvider router={router} />);
   });
   await act(async () => {
-    fireEvent.click(screen.getByRole('tab', { name: /Your subs/ }));
+    fireEvent.click(screen.getByRole('tab', { name: /Subs & purchases/ }));
   });
 }
 

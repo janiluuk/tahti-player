@@ -8,12 +8,11 @@ import {
 } from './accountTabGroups';
 
 describe('account tabs', () => {
-  it('is one row of six tabs without Governance', () => {
+  it('is one row of five tabs, subscriptions and purchases together', () => {
     expect(ACCOUNT_TAB_IDS).toEqual([
       'session',
       'membership',
       'subscriptions',
-      'purchases',
       'storage',
       'privacy',
     ]);
@@ -21,7 +20,8 @@ describe('account tabs', () => {
 
   it('lands a deep link on its tab', () => {
     expect(accountTabIndex('subscriptions')).toBe(2);
-    expect(accountTabIndex('privacy')).toBe(5);
+    expect(accountTabIndex('purchases')).toBe(2);
+    expect(accountTabIndex('privacy')).toBe(4);
   });
 
   it('opens Membership for an old Governance link', () => {

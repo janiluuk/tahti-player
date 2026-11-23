@@ -4,16 +4,21 @@ export const ACCOUNT_TAB_IDS = [
   'session',
   'membership',
   'subscriptions',
-  'purchases',
   'storage',
   'privacy',
 ] as const;
 
 export type AccountTabId = (typeof ACCOUNT_TAB_IDS)[number];
 
-/** The tab a deep link to Account opens. */
+/** The tab a deep link to Account opens. Purchases share the
+ * subscriptions tab. */
 export function accountTabIndex(tabId: string | null | undefined): number {
-  const target = tabId === 'governance' ? 'membership' : tabId;
+  const target =
+    tabId === 'governance'
+      ? 'membership'
+      : tabId === 'purchases'
+        ? 'subscriptions'
+        : tabId;
   return Math.max(0, (ACCOUNT_TAB_IDS as readonly unknown[]).indexOf(target));
 }
 

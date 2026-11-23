@@ -19,60 +19,26 @@ import {
   Button,
   ButtonAnchor,
   ButtonLink,
-  InlineLoader,
-  Meter,
+  MediaArtwork,
   Tabs,
   Textarea,
-  toast,
   type TabsItem,
 } from '@tahti-player/ui';
 
-import {
-  cancelMySubscription,
-  fetchMembership,
-  fetchMyPurchases,
-  fetchMySubscriptions,
-  requestAccountDeletion,
-} from '../../../api/client';
-import {
-  fetchStorageUsage,
-  type StorageUsage,
-} from '../../../api/studio-extras';
-import type {
-  FanSubscriptionRow,
-  MembershipStatus,
-  PurchaseRow,
-} from '../../../api/types';
+import { fetchMembership, requestAccountDeletion } from '../../../api/client';
+import type { MembershipStatus } from '../../../api/types';
 import { BlockedAccounts } from '../../../components/BlockedAccounts';
-import { ConfirmDialog } from '../../../components/ConfirmDialog';
-import { FanSubscriptionsBillingButton } from '../../../components/FanSubscriptionsBillingButton';
-import { ListingDate } from '../../../components/ListingDate';
 import { MembershipInvoices } from '../../../components/MembershipInvoices';
 import { MembershipStatusPanel } from '../../../components/MembershipStatusPanel';
-import {
-  PageEmpty,
-  PageError,
-  PageLoading,
-} from '../../../components/PageStates';
+import { PageError, PageLoading } from '../../../components/PageStates';
 import { RestrictionNotices } from '../../../components/RestrictionNotice';
-import {
-  fanSubscriptionStatusLabel,
-  hasPortalManagedSubscription,
-  isCanceledAtPeriodEnd,
-} from '../../../lib/fanSubscriptionStatus';
 import { useAuthModalStore } from '../../../stores/authModalStore';
 import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
-import { SettingsHint, SettingsInfo } from '../SettingsFields';
+import { SettingsHint } from '../SettingsFields';
+import { AccountBillingPanel } from './AccountBillingPanel';
+import { AccountStoragePanel } from './AccountStoragePanel';
 import { ACCOUNT_TAB_IDS, accountTabIndex } from './accountTabGroups';
-
-function euros(cents: number | string): string {
-  const n = typeof cents === 'string' ? Number(cents) : cents;
-  if (!Number.isFinite(n)) {
-    return '—';
-  }
-  return `€${(n / 100).toFixed(n % 100 === 0 ? 0 : 2)}`;
-}
 
 export function AccountPanel() {
   const { t } = useTranslation('web');
@@ -83,33 +49,6 @@ export function AccountPanel() {
   const [membership, setMembership] = useState<MembershipStatus | null>(null);
   const [membershipError, setMembershipError] = useState<string | null>(null);
   const [membershipAttempt, setMembershipAttempt] = useState(0);
-  const [subscriptions, setSubscriptions] = useState<FanSubscriptionRow[]>([]);
-  const [subscriptionsError, setSubscriptionsError] = useState<string | null>(
-    null,
-  );
-  const [purchases, setPurchases] = useState<PurchaseRow[]>([]);
-  const [purchasesError, setPurchasesError] = useState<string | null>(null);
-  const [pendingCancel, setPendingCancel] = useState<FanSubscriptionRow | null>(
-    null,
-  );
-  const [cancelBusy, setCancelBusy] = useState(false);
-
-  const reloadSubscriptions = () =>
-    fetchMySubscriptions().then((r) => {
-      setSubscriptions(r.data);
-      setSubscriptionsError(
-        r.meta.source === 'api' ? (r.meta.reason ?? null) : null,
-      );
-    });
-
-  const reloadPurchases = () =>
-    fetchMyPurchases().then((r) => {
-      setPurchases(r.data);
-      setPurchasesError(
-        r.meta.source === 'api' ? (r.meta.reason ?? null) : null,
-      );
-    });
-
   useEffect(() => {
     if (!user) {
       return;
@@ -123,11 +62,6 @@ export function AccountPanel() {
       );
     });
   }, [user, membershipAttempt]);
-
-  useEffect(() => {
-    void reloadSubscriptions();
-    void reloadPurchases();
-  }, []);
 
   if (!user) {
     return (
@@ -151,20 +85,31 @@ export function AccountPanel() {
       icon: <User size={14} />,
       content: (
         <div className="flex flex-col gap-6">
-          <SettingsInfo
-            label={t('settingsBody.account.signedInAs')}
-            value={`@${user.username}`}
-          />
-          <SettingsInfo
-            label={t('settingsBody.account.displayName')}
-            value={user.displayName}
-          />
-          {user.email && (
-            <SettingsInfo
-              label={t('settingsBody.account.email')}
-              value={user.email}
+          <div
+            data-testid="account-profile-card"
+            className="border-border bg-background-secondary/35 flex items-center gap-4 rounded-lg border p-4"
+          >
+            <MediaArtwork
+              src={user.avatarUrl ?? undefined}
+              alt=""
+              seed={user.username}
+              size="thumb"
+              className="size-14 shrink-0 rounded-full"
             />
-          )}
+            <div className="flex min-w-0 flex-col">
+              <span className="truncate text-lg font-bold">
+                {user.displayName || user.username}
+              </span>
+              <span className="text-foreground-secondary truncate text-sm">
+                {t('settingsBody.account.signedInAs')} @{user.username}
+              </span>
+              {user.email ? (
+                <span className="text-foreground-secondary truncate text-sm">
+                  {user.email}
+                </span>
+              ) : null}
+            </div>
+          </div>
           <div className="flex flex-wrap gap-2">
             <ButtonLink
               to="/help/$slug"
@@ -242,151 +187,9 @@ export function AccountPanel() {
     },
     {
       id: 'subscriptions',
-      label: t('settingsBody.account.tabSubscriptions'),
-      icon: <Wallet size={14} />,
-      content: (
-        <div className="flex flex-col gap-4">
-          {subscriptionsError && subscriptions.length === 0 ? (
-            <PageError
-              title={t('settingsBody.account.subscriptionsLoadError')}
-              description={subscriptionsError}
-              onRetry={() => void reloadSubscriptions()}
-            />
-          ) : subscriptions.length === 0 ? (
-            <PageEmpty title={t('settingsBody.account.subscriptionsEmpty')} />
-          ) : (
-            <ul className="flex flex-col gap-2">
-              {subscriptions.map((subscription) => (
-                <li
-                  key={subscription.id}
-                  className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
-                >
-                  <div>
-                    <Link
-                      to="/u/$username"
-                      params={{ username: subscription.artist.username }}
-                      onClick={closeSettings}
-                      className="font-medium underline-offset-2 hover:underline"
-                    >
-                      {subscription.artist.displayName}
-                    </Link>
-                    <p className="text-foreground-secondary text-xs">
-                      {subscription.tierName}, {euros(subscription.amountCents)}
-                      /mo, {fanSubscriptionStatusLabel(subscription)}
-                    </p>
-                  </div>
-                  {isCanceledAtPeriodEnd(subscription) ? null : (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setPendingCancel(subscription)}
-                    >
-                      {t('settingsBody.account.manage')}
-                    </Button>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-          {hasPortalManagedSubscription(subscriptions) ? (
-            <FanSubscriptionsBillingButton />
-          ) : null}
-          <ConfirmDialog
-            destructive
-            isOpen={pendingCancel !== null}
-            title={
-              pendingCancel
-                ? t('settingsBody.account.cancelSubscriptionNamed', {
-                    tier: pendingCancel.tierName,
-                    artist: pendingCancel.artist.displayName,
-                  })
-                : t('settingsBody.account.cancelSubscriptionTitle')
-            }
-            description={t(
-              'settingsBody.account.cancelSubscriptionDescription',
-            )}
-            confirmLabel={
-              cancelBusy
-                ? t('settingsBody.account.cancelSubscriptionBusy')
-                : t('settingsBody.account.cancelSubscriptionConfirm')
-            }
-            cancelLabel={t('settingsBody.account.keepSubscription')}
-            onCancel={() => setPendingCancel(null)}
-            onConfirm={() => {
-              const target = pendingCancel;
-              if (!target || cancelBusy) {
-                return;
-              }
-              setCancelBusy(true);
-              void cancelMySubscription(target.id).then((r) => {
-                setCancelBusy(false);
-                setPendingCancel(null);
-                if (r.ok) {
-                  void reloadSubscriptions();
-                } else {
-                  toast.error(r.error);
-                }
-              });
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: 'purchases',
-      label: t('settingsBody.account.tabPurchases'),
+      label: t('settingsBody.account.tabSubsPurchases'),
       icon: <CreditCardIcon size={14} />,
-      content:
-        purchasesError && purchases.length === 0 ? (
-          <PageError
-            title={t('settingsBody.account.purchasesLoadError')}
-            description={purchasesError}
-            onRetry={() => void reloadPurchases()}
-          />
-        ) : purchases.length === 0 ? (
-          <PageEmpty title={t('settingsBody.account.purchasesEmpty')} />
-        ) : (
-          <ul className="flex flex-col gap-2">
-            {purchases.map((purchase) => (
-              <li
-                key={purchase.id}
-                className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
-              >
-                <div>
-                  <p className="font-medium">
-                    {purchase.tracks.map((t) => t.title).join(', ') ||
-                      purchase.tierName}
-                  </p>
-                  <p className="text-foreground-secondary text-xs">
-                    <Link
-                      to="/u/$username"
-                      params={{ username: purchase.artist.username }}
-                      onClick={closeSettings}
-                      className="underline-offset-2 hover:underline"
-                    >
-                      {purchase.artist.displayName}
-                    </Link>
-                    {' · '}
-                    {euros(purchase.amountCents)}
-                    {' · '}
-                    <ListingDate value={purchase.createdAt} />
-                  </p>
-                </div>
-                {purchase.tracks[0] ? (
-                  <ButtonLink
-                    to="/t/$id"
-                    params={{ id: purchase.tracks[0].id }}
-                    onClick={closeSettings}
-                    variant="ghost"
-                    size="sm"
-                  >
-                    {t('accountPanelText.listen')}
-                  </ButtonLink>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        ),
+      content: <AccountBillingPanel />,
     },
     {
       id: 'privacy',
@@ -411,86 +214,6 @@ export function AccountPanel() {
         defaultIndex={accountTabIndex(accountSection)}
         items={orderedTabs}
       />
-    </div>
-  );
-}
-
-function formatStorageBytes(bytes: number | null): string {
-  if (bytes == null || !Number.isFinite(bytes)) {
-    return '—';
-  }
-  if (bytes >= 1024 ** 3) {
-    return `${(bytes / 1024 ** 3).toFixed(1)} GB`;
-  }
-  if (bytes >= 1024 ** 2) {
-    return `${(bytes / 1024 ** 2).toFixed(0)} MB`;
-  }
-  return `${Math.round(bytes / 1024)} KB`;
-}
-
-function AccountStoragePanel() {
-  const { t } = useTranslation('web');
-  const [storage, setStorage] = useState<StorageUsage | null>(null);
-
-  useEffect(() => {
-    void fetchStorageUsage().then((result) => setStorage(result.data));
-  }, []);
-
-  if (!storage) {
-    return <InlineLoader label={t('settingsBody.account.loadingStorage')} />;
-  }
-
-  const usedPercent = storage.quotaBytes
-    ? Math.min(100, (storage.usedBytes / storage.quotaBytes) * 100)
-    : 0;
-
-  return (
-    <div className="flex flex-col gap-5">
-      <div className="flex items-start gap-3">
-        <div className="bg-primary/10 text-primary-strong flex size-10 shrink-0 items-center justify-center rounded-lg">
-          <Database size={19} aria-hidden />
-        </div>
-        <div>
-          <h2 className="font-semibold">
-            {t('settingsBody.account.yourStorage')}
-          </h2>
-          <p className="text-foreground-secondary mt-1 text-sm">
-            {t('settingsBody.account.storageDescription')}
-          </p>
-        </div>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <SettingsInfo
-          label={t('settingsBody.account.used')}
-          value={formatStorageBytes(storage.usedBytes)}
-        />
-        <SettingsInfo
-          label={t('settingsBody.account.quota')}
-          value={
-            storage.unlimited
-              ? t('settingsBody.account.unlimited')
-              : formatStorageBytes(storage.quotaBytes)
-          }
-        />
-      </div>
-      {!storage.unlimited && storage.quotaBytes ? (
-        <div className="flex flex-col gap-2">
-          <Meter
-            value={usedPercent}
-            className="h-2"
-            barClassName="transition-[width]"
-            aria-label={t('settingsBody.account.storageUsedAria')}
-          />
-          <p className="text-foreground-secondary text-xs">
-            {t('settingsBody.account.storagePercentUsed', {
-              percent: Math.round(usedPercent),
-            })}
-          </p>
-        </div>
-      ) : null}
-      <SettingsHint>
-        {t('settingsBody.account.storageMembershipHint')}
-      </SettingsHint>
     </div>
   );
 }

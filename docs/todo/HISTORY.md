@@ -6644,3 +6644,13 @@ Discover (the Upcoming events poster widget and Events → Next events).
 `HomeComingUp` and its test/story deleted; `listenerWidgetsStore` v5 migration
 drops `coming-up` from saved section orders and hidden lists. Unused
 `listen.comingUp` / `listen.couldNotLoadEvents` strings removed.
+
+## 2026-11-24 - Account settings restyle: Subs & purchases, storage donut (0.0.458)
+
+Settings → Account tabs: Session · Membership · Subs & purchases · Storage ·
+Privacy & data. `AccountBillingPanel` puts `StatTile` totals (active subs,
+monthly, purchases, spent) over the subscription list (status `Badge` pills)
+and purchases; `?tab=purchases` opens it and scrolls to Purchases.
+`AccountStoragePanel` shows used vs free as a `DonutChart` (green → yellow →
+red as it fills) beside Used / Free / Quota tiles. Session is a profile card
+with the `MediaArtwork` avatar.
