@@ -7115,7 +7115,9 @@
     },
     "adminStreamsView": {
       "admin": "Ylläpito",
-      "streams": "Lähetykset"
+      "streams": "Lähetykset",
+      "liveNow": "Livenä nyt",
+      "ingestSettings": "Vastaanottoasetukset"
     },
     "adminStorageView": {
       "admin": "Ylläpito",
@@ -8155,7 +8157,9 @@
       "addOnReviewStatus": "Lisäosan tarkastuksen tila",
       "intro": "Kattaa hiekkalaatikoidun widget-kaupan kahdesta 13:sta Asetukset → Lisäosat -kategoriasta: Löytäminen (Listen) ja Kanava (artistisivu). Muut 11 ovat kiinteitä rekistereitä tai yksityisiä käyttäjäyhteyksiä, joita ei moderoida täällä.",
       "needsReview": "Tarkastettava",
-      "needsReviewCount": "Tarkastettava ({{count}})"
+      "needsReviewCount": "Tarkastettava ({{count}})",
+      "review": "Tarkastus",
+      "catalogue": "Luettelo"
     },
     "manageDialog": {
       "enabledByDefault": "Oletuksena käytössä",
@@ -8762,7 +8766,16 @@
       "backToShows": "Takaisin ohjelmiin"
     },
     "studioCollectionEditView": {
-      "backToCollections": "Takaisin kokoelmiin"
+      "backToCollections": "Takaisin kokoelmiin",
+      "artwork": "Kansikuva",
+      "artworkHint": "Kansikuva ja taustakuva ovat yllä olevassa otsakkeessa. Tekstikerrokset ovat alla.",
+      "tracks": "Kappaleet",
+      "sharing": "Jakaminen"
+    },
+    "studioDistributionTabs": {
+      "status": "Tila",
+      "settings": "Asetukset",
+      "royalties": "Tekijänoikeusraportit"
     },
     "processingFailedAlert": {
       "retryProcessing": "Yritä käsittelyä uudelleen"

@@ -193,7 +193,9 @@ test('listener buys a track, sees it in Purchases, artist sees the order', async
   await signOut(page);
   await signIn(page, artistEmail, artistPassword);
   await page.goto('/studio/audience');
-  await expect(page.getByRole('heading', { name: 'Earnings' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Earnings', level: 1 }),
+  ).toBeVisible();
   await expect(
     page
       .getByTestId('fan-order-list')

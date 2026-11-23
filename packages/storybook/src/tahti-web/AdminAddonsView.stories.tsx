@@ -32,7 +32,7 @@ export const Catalog: Story = {
       canvas.getByRole('heading', { name: 'Admin surface installs' }),
     ).toBeVisible();
     await userEvent.click(
-      canvas.getByRole('radio', { name: 'Needs review (1)' }),
+      canvas.getByRole('tab', { name: 'Needs review (1)' }),
     );
     await waitFor(() =>
       expect(

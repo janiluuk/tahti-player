@@ -33,7 +33,6 @@ export function StudioChatView() {
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
           <ChannelChatSettings
-            headingId="studio-chat"
             hideHeading
             initialTab={section}
             onTabChange={(next) => {

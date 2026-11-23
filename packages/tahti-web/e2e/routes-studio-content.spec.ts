@@ -99,6 +99,11 @@ test('collection and playlist editors open from Collections', async ({
     await expectLanded(page, errors, path, SIDEBAR);
     await expect(page.getByRole('heading', { name: 'Details' })).toHaveCount(0);
     await page.getByRole('button', { name: 'Edit details' }).click();
+    // The collection editor groups its edit form into tabs; the playlist
+    // editor shows Details straight away.
+    if (path === collection) {
+      await page.getByRole('tab', { name: 'Details' }).click();
+    }
     await expect(
       page.getByRole('heading', { name: 'Details', exact: true }).first(),
     ).toBeVisible();

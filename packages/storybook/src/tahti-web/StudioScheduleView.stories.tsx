@@ -14,7 +14,7 @@ const meta: Meta<typeof StudioScheduleView> = {
     docs: {
       description: {
         component:
-          'Studio → Schedule: upcoming slots and analytics, then the Channel programme (`#channel-programme`): announcements, offline fallback and auto-enroll switches, the 24/7 rotation source, the radio playlist and announcement clips. It is the one place to edit the programme; the Channel Designer, Studio → Channel → 24/7 and old Settings → Broadcast links point here. Renders against the mock API layer.',
+          'Studio → Schedule: upcoming slots and analytics on the first tab, then the Channel programme tab (`?tab=programme`): announcements, offline fallback and auto-enroll switches, the 24/7 rotation source, the radio playlist and announcement clips. It is the one place to edit the programme; the Channel Designer, Studio → Channel → 24/7 and old Settings → Broadcast links point here. Renders against the mock API layer.',
       },
     },
   },
@@ -30,6 +30,9 @@ export const ChannelProgramme: Story = {
   decorators: [withToaster(), withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await userEvent.click(
+      await canvas.findByRole('tab', { name: 'Channel programme' }),
+    );
     await expect(
       await canvas.findByRole('heading', { name: 'Channel programme' }),
     ).toBeVisible();

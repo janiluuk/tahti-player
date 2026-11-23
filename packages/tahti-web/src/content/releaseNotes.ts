@@ -40,13 +40,22 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.442',
+    version: '0.0.447',
     sections: [
       {
         id: 'listen',
         label: 'Listen',
         highlights: [
           'An artist’s own site (name.tahti.live) shows their header, colours and menu choices again, so it looks the way they designed it.',
+        ],
+      },
+      {
+        id: 'studio',
+        label: 'Studio',
+        highlights: [
+          'Schedule → Events stays on the Upcoming, Past or Invites tab you pick, and an event invite notification opens straight on Invites.',
+          'Links to your channel programme, from Broadcast, Channel design or an old bookmark, open Schedule on the Programme tab instead of the time slots.',
+          'Studio → Channel shows the Tahti Radio panel once, with its own description, instead of a doubled panel.',
         ],
       },
       {

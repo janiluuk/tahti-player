@@ -26,7 +26,7 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      await canvas.findByRole('heading', { name: /^Studio$/ }),
+      await canvas.findByRole('heading', { name: /^Studio$/, level: 1 }),
     ).toBeInTheDocument();
   },
 };

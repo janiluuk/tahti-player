@@ -104,8 +104,8 @@ const oldStudioBookmarks: RouteVisit[] = [
   },
   {
     path: '/studio/moderation',
-    heading: /^Fans$/,
-    url: /\/studio\/fans\?tab=chat$/,
+    heading: /^Chat$/,
+    url: /\/studio\/chat$/,
   },
 ];
 

@@ -25,10 +25,9 @@ import { EventInvitesPanel } from '../../components/events/EventInvitesPanel';
 import { EventStatusBadge } from '../../components/events/EventStatusBadge';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { SCHEDULE_EVENT_TABS } from '../../lib/scheduleTabs';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
 import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
-
-const EVENT_TABS = ['upcoming', 'past', 'invites'];
 
 /** The events filter of Studio → Broadcast → Schedule (`?show=events`). */
 export function StudioEventsSection() {
@@ -36,7 +35,12 @@ export function StudioEventsSection() {
   const [pendingRemove, setPendingRemove] = useState<ArtistEvent | null>(null);
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as { tab?: string };
-  const tabIndex = Math.max(0, EVENT_TABS.indexOf(search.tab ?? 'upcoming'));
+  const tabIndex = Math.max(
+    0,
+    (SCHEDULE_EVENT_TABS as readonly string[]).indexOf(
+      search.tab ?? 'upcoming',
+    ),
+  );
 
   const snapshot = useSnapshotFetch<ArtistEvent[]>('studio-events', async () =>
     apiResult(await fetchMyEvents()),
@@ -155,7 +159,7 @@ export function StudioEventsSection() {
             search:
               index === 0
                 ? { show: 'events' }
-                : { show: 'events', tab: EVENT_TABS[index] },
+                : { show: 'events', tab: SCHEDULE_EVENT_TABS[index] },
             replace: true,
           })
         }
