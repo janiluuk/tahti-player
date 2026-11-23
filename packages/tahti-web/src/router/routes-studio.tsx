@@ -213,8 +213,19 @@ export const studioCollectionsRoute = createRoute({
 export const studioCollectionEditRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/collections/$slug',
-  validateSearch: (search: Record<string, unknown>): { edit?: true } =>
-    editSearch(search),
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): {
+    edit?: true;
+    tab?: 'details' | 'artwork' | 'sharing';
+  } => ({
+    ...editSearch(search),
+    ...(search.tab === 'details' ||
+    search.tab === 'artwork' ||
+    search.tab === 'sharing'
+      ? { tab: search.tab }
+      : {}),
+  }),
   component: function StudioCollectionEditRoute() {
     const { slug } = studioCollectionEditRoute.useParams();
     return <StudioCollectionEditView slug={slug} />;
@@ -566,6 +577,13 @@ export const studioStripeRoute = createRoute({
 export const studioDistributionRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/distribution',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: 'settings' | 'royalties' } => ({
+    ...(search.tab === 'settings' || search.tab === 'royalties'
+      ? { tab: search.tab }
+      : {}),
+  }),
   component: StudioDistributionView,
 });
 

@@ -1,3 +1,8 @@
+## 2026-11-23 - Collection edit + Distribution tabs (0.0.446)
+
+Collection edit: Tracks · Details · Artwork · Sharing. Distribution: Status ·
+Settings · Royalty reports. Audit slice 11.
+
 ## 2026-11-23 - Design audit slices 1, 3–6, 10, 12 (0.0.445)
 
 `/studio/chat` home; Channel radio-only tabs; Schedule programme tab;
