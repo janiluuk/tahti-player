@@ -1,3 +1,8 @@
+## 2026-11-23 - Drop channel layout chat block (0.0.444)
+
+Removed the Designer `chat` layout item; chat stays on the page tab and
+right rail. Saved layouts lose the item via normalizeLayout.
+
 ## 2026-11-23 - Remove orphan Admin Status / Monitoring views (0.0.443)
 
 Deleted Storybook-only AdminStatusView and AdminMonitoringView; redirects and

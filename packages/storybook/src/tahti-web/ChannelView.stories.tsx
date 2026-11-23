@@ -12,7 +12,7 @@ const meta: Meta<typeof ChannelView> = {
     docs: {
       description: {
         component:
-          'The public channel page, assembled from the eight Channel Designer blocks (`hero`, `actions`, `archive`, `chat`, `about`, `links`, `textOverlay`, `subscribe` — see `../lib/channelPageLayout.ts`). Each block is rendered by `ChannelView`’s own `renderBlock` switch, not a standalone component per block.',
+          'The public channel page, assembled from Channel Designer layout blocks (see `channelPageLayout.ts`). Chat is the page tab / right rail, not a layout block. Each block is rendered by `ChannelView`’s own `renderBlock` switch.',
       },
     },
   },

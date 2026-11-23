@@ -1,13 +1,9 @@
 import { Link } from '@tanstack/react-router';
-import {
-  CalendarClockIcon,
-  LayoutTemplateIcon,
-  MessageCircle,
-} from 'lucide-react';
+import { CalendarClockIcon, LayoutTemplateIcon } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 
 import { i18n } from '@tahti-player/i18n';
-import { Badge, Button, Tooltip } from '@tahti-player/ui';
+import { Badge } from '@tahti-player/ui';
 
 import type { ChannelLink } from '../../api/channel-design';
 import type { PublicRadioShow } from '../../api/shows';
@@ -54,8 +50,6 @@ export type ChannelBlockRenderContext = {
   liveShows: PublicRadioShow | null;
   sectionStatus: Record<ChannelSection, ChannelSectionStatus>;
   onRetrySection: (section: ChannelSection) => void;
-  chatOn: boolean;
-  onOpenChat: () => void;
   listenerWidgetInstances: ListenerWidgetInstance[];
 };
 
@@ -195,43 +189,6 @@ export function renderChannelBlock(
         </>
       );
     }
-    case 'chat':
-      // Chat lives in the Nuclear right rail only — never embed a second panel.
-      return (
-        <section
-          className={`flex max-w-xl items-center gap-3 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border border-dashed'}`}
-        >
-          <MessageCircle
-            size={18}
-            className="text-foreground-secondary shrink-0 opacity-70"
-          />
-          <div className="min-w-0 flex-1">
-            <div className="text-sm font-bold tracking-tight">
-              {i18n.t('web:channelBlocks.liveChat')}
-            </div>
-            <p className="text-foreground-secondary text-xs">
-              {ctx.chatOn
-                ? i18n.t('web:channelBlocks.chatOpenDescription')
-                : i18n.t('web:channelBlocks.chatDisabled')}
-            </p>
-          </div>
-          {ctx.chatOn ? (
-            <Tooltip
-              content={i18n.t('web:channelBlocks.openLiveChat')}
-              side="top"
-            >
-              <Button
-                size="icon-sm"
-                variant="secondary"
-                onClick={ctx.onOpenChat}
-                aria-label={i18n.t('web:channelBlocks.openLiveChat')}
-              >
-                <MessageCircle size={16} aria-hidden />
-              </Button>
-            </Tooltip>
-          ) : null}
-        </section>
-      );
     case 'navigation': {
       const navTabCount = item.navigationTabs?.length ?? 0;
       return (

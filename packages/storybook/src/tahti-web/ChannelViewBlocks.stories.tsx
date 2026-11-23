@@ -26,7 +26,7 @@ const meta: Meta<typeof ChannelBlock> = {
     docs: {
       description: {
         component:
-          "The channel page's small blocks as `renderChannelBlock` draws them: tracks, chat pointer, navigation, links, programming, stats, live shows and feed. The hero is `ChannelHeroBlock`; about, subscribe and avatar fold into the backdrop.",
+          "The channel page's small blocks as `renderChannelBlock` draws them: tracks, navigation, links, programming, stats, live shows and feed. The hero is `ChannelHeroBlock`; about, subscribe and avatar fold into the backdrop. Chat is the page tab / right rail, not a layout block.",
       },
     },
   },
@@ -72,37 +72,6 @@ export const TracksFailed: Story = {
       canvas.getByRole('button', { name: /retry|try again/i }),
     );
     await expect(args.ctx.onRetrySection).toHaveBeenCalledWith('sounds');
-  },
-};
-
-export const ChatPointer: Story = {
-  args: {
-    item: { id: 'chat-1', type: 'chat', visible: true },
-    ctx: blockContext({ onOpenChat: fn() }),
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    await expect(
-      canvas.getByText(/Open the live chat page to talk/),
-    ).toBeVisible();
-    await userEvent.click(
-      canvas.getByRole('button', { name: 'Open live chat' }),
-    );
-    await expect(args.ctx.onOpenChat).toHaveBeenCalledOnce();
-  },
-};
-
-export const ChatOff: Story = {
-  args: {
-    item: { id: 'chat-1', type: 'chat', visible: true },
-    ctx: blockContext({ chatOn: false }),
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await expect(
-      canvas.getByText('Chat is disabled for this channel.'),
-    ).toBeVisible();
-    await expect(canvas.queryByRole('button')).toBeNull();
   },
 };
 

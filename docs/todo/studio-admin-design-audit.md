@@ -136,7 +136,7 @@ shows at once. Components imported from `src/components/` are not counted.
 | # | Slice | Files | Size |
 | --- | --- | --- | --- |
 | 1 | Chat home: `/studio/chat` sectioned page from `ChannelChatSettings` (side list, no tab row), Fans hub card, redirects from `/studio/fans?tab=chat…`, drop Profile Chat/Moderators cards, green room links point there | `StudioFansView.tsx`, `moderation/ChannelChatSettings.tsx`, `StudioProfileView.tsx`, `lib/studioProfileSections.ts`, `routes-studio.tsx`, `StudioChannelView.tsx`, `go-live/GreenRoomSessionPanel.tsx`, stories, e2e redirects | M |
-| 2 | Drop the channel layout "chat" block (migration keeps saved layouts valid) | `lib/channelPageLayout.ts`, `ChannelViewBlocks.tsx`, `channelVisibleItems.ts`, `ChannelLayersPanel.tsx` | S |
+| 2 | Drop the channel layout "chat" block (migration keeps saved layouts valid) | Shipped → HISTORY (0.0.444) | done |
 | 3 | Studio Channel = 24/7 radio only; statistics, multistream, green room, programme become links | `StudioChannelView.tsx` + test, story | S |
 | 4 | Schedule tabs `?tab=slots|programme` | `StudioScheduleView.tsx`, `schedule/`, route search, story | S |
 | 5 | Earnings trimmed to payouts, sales ledger (with grant disbursements), Stripe; links to Memberships and Store | `StudioRevenueView.tsx` + test, story | S |

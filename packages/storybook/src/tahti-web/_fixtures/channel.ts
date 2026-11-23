@@ -122,8 +122,6 @@ export function blockContext(
     liveShows: LIVE_SHOWS,
     sectionStatus: { sounds: 'ready', widgets: 'ready', shows: 'ready' },
     onRetrySection: () => undefined,
-    chatOn: true,
-    onOpenChat: () => undefined,
     listenerWidgetInstances: [],
     ...patch,
   };

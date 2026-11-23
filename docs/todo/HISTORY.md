@@ -1,3 +1,9 @@
+## 2026-11-23 — Drop channel layout chat block
+
+Removed the unused `chat` Channel Designer layout item (always off in
+presets; duplicated page-tab / right-rail chat). `normalizeLayout` drops
+legacy saved chat items. Audit slice 2. tahti-web 0.0.444.
+
 ## 2026-11-23 — Delete orphan Admin Status / Monitoring views
 
 Removed unused `AdminStatusView` and `AdminMonitoringView` (panels stay on

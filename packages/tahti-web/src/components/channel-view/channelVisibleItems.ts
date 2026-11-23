@@ -6,14 +6,14 @@ import {
 
 /** The layout items the channel page renders as blocks.
  *
- * In view mode, chat (the right rail) and navigation (config for the hero's
- * tab bar) never render as blocks, even when an older saved layout marks
- * them visible. With 2+ navigation tabs, an item assigned to a tab shows
- * only while that tab is active; an item in no tab always shows, so a block
- * added after the tabs exist doesn't vanish. Bio, CTA and avatar are part
- * of the backdrop, never their own block, in either mode. Links sit
- * under the bio in that same block, so the links layer does not paint a
- * second card.
+ * In view mode, navigation (config for the hero's tab bar) never renders as
+ * a block, even when an older saved layout marks it visible. With 2+
+ * navigation tabs, an item assigned to a tab shows only while that tab is
+ * active; an item in no tab always shows, so a block added after the tabs
+ * exist doesn't vanish. Bio, CTA and avatar are part of the backdrop, never
+ * their own block, in either mode. Links sit under the bio in that same
+ * block, so the links layer does not paint a second card. Chat is the page
+ * tab / right rail only — not a layout block (dropped in normalizeLayout).
  *
  * Radio stations show programming instead of artist identity: no bio,
  * links or subscribe CTA, and always a Programming block. */
@@ -36,11 +36,7 @@ export function channelVisibleItems({
     editing
       ? layout
       : layout.filter((item) => {
-          if (
-            !item.visible ||
-            item.type === 'chat' ||
-            item.type === 'navigation'
-          ) {
+          if (!item.visible || item.type === 'navigation') {
             return false;
           }
           if (showNavTabs && navTabbedItemIds.has(item.id)) {
