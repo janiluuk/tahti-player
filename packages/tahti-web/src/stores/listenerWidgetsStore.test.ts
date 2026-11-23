@@ -255,6 +255,20 @@ describe('listener widgets store', () => {
     });
   });
 
+  it('drops the retired Coming up block from saved Listen orders', () => {
+    const migrate = useListenerWidgetsStore.persist.getOptions().migrate;
+    const upgraded = migrate?.(
+      {
+        enabledStationIds: ['x'],
+        listenOrder: ['trending', 'coming-up', 'new-tracks'],
+        hiddenListenBlockIds: ['coming-up', 'radio'],
+      },
+      4,
+    ) as { listenOrder: string[]; hiddenListenBlockIds: string[] };
+    expect(upgraded.listenOrder).toEqual(['trending', 'new-tracks']);
+    expect(upgraded.hiddenListenBlockIds).toEqual(['radio']);
+  });
+
   it('moves saved Discover news feeds to Feed when upgrading', () => {
     const migrate = useListenerWidgetsStore.persist.getOptions().migrate;
     const upgraded = migrate?.(

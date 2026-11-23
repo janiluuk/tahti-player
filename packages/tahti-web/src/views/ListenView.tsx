@@ -30,7 +30,6 @@ import { AddListenWidgetDialog } from '../components/AddListenWidgetDialog';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { GuidelinesBanner } from '../components/GuidelinesBanner';
-import { HomeComingUp } from '../components/listen-view/HomeComingUp';
 import {
   NewReleasesRow,
   TahtiSelectsRow,
@@ -383,11 +382,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       id: 'trending',
       label: t('listen.trending'),
       content: <TrendingRow />,
-    },
-    {
-      id: 'coming-up',
-      label: t('listen.comingUp'),
-      content: <HomeComingUp />,
     },
     {
       id: 'new-tracks',

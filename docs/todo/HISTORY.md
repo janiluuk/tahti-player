@@ -6636,3 +6636,11 @@ recommends 2FA while it is off. The Two-factor tab is gone; `?tab=two-factor`
 still opens the overview and scrolls to 2FA. Validation: new password must
 differ from the current one; new email must look like an address and differ
 from the current one. Story fixture resets `securitySection`.
+
+## 2026-11-24 - Coming up leaves Home for Discover (0.0.457)
+
+Home (Listen) no longer has the Coming up events row; upcoming events are on
+Discover (the Upcoming events poster widget and Events → Next events).
+`HomeComingUp` and its test/story deleted; `listenerWidgetsStore` v5 migration
+drops `coming-up` from saved section orders and hidden lists. Unused
+`listen.comingUp` / `listen.couldNotLoadEvents` strings removed.

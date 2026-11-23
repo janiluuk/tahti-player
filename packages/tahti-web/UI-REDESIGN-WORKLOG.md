@@ -7062,3 +7062,8 @@ Validated with affected Storybook plays, UI/theme/unit tests, type-check/lint, a
 - Password and email edits open in `Dialog`; forms take `embedded` to drop their own heading.
 - `newEmailProblem` (format, same as current) and a same-as-current password check; errors via `InlineError`.
 - Help and the email-link expiry text now point to Settings → Security.
+
+## 2026-11-24 - Coming up moved off Home (0.0.457)
+
+- `ListenView` drops the `coming-up` section; Discover's `upcoming-events` widget (on by default) and Events → Next events carry upcoming events.
+- `listenerWidgetsStore` version 5 strips `coming-up` from `listenOrder` and `hiddenListenBlockIds`.
