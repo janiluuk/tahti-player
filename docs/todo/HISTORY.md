@@ -1,3 +1,9 @@
+## 2026-11-23 — Delete orphan Admin Status / Monitoring views
+
+Removed unused `AdminStatusView` and `AdminMonitoringView` (panels stay on
+Overview). Lazy exports and Storybook stories gone; mapScreens points at
+AdminDashboardView. Audit slice 9. tahti-web 0.0.443.
+
 ## 2026-11-23 — Admin Overview tabs + Stats detail polish
 
 Admin Dashboard Health · Activity (`?tab=`); Finance YTD on Financial; Chat

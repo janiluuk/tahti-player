@@ -121,10 +121,6 @@ export const AdminLogsView = lazyRouteComponent(
   () => import('../views/admin/AdminLogsView'),
   'AdminLogsView',
 );
-export const AdminMonitoringView = lazyRouteComponent(
-  () => import('../views/admin/AdminMonitoringView'),
-  'AdminMonitoringView',
-);
 export const AdminAnnouncementsView = lazyRouteComponent(
   () => import('../views/admin/AdminAnnouncementsView'),
   'AdminAnnouncementsView',
@@ -168,10 +164,6 @@ export const AdminOrphanPagesView = lazyRouteComponent(
 export const AdminRadioView = lazyRouteComponent(
   () => import('../views/admin/AdminRadioView'),
   'AdminRadioView',
-);
-export const AdminStatusView = lazyRouteComponent(
-  () => import('../views/admin/AdminStatusView'),
-  'AdminStatusView',
 );
 export const AdminVendorsView = lazyRouteComponent(
   () => import('../views/admin/AdminVendorsView'),
