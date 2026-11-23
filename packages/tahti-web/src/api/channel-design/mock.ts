@@ -31,6 +31,7 @@ export let mockVisual: ChannelVisual = {
   playerOverlayMode: 'NONE',
   playerOverlayText: '',
   playerOverlayAlign: 'CENTER',
+  artistBlockVisibilityJson: null,
 };
 
 const MOCK_VISUAL_KEY = 'tahti-mock-channel-visual';

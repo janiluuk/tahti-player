@@ -1,3 +1,4 @@
+import type { ArtistLookBlockId } from '../../lib/channelLookElements';
 import type { ChannelPageItem } from '../../lib/channelPageLayout';
 import type { FetchMeta } from '.././client';
 import { mockFixture } from '.././mock-overrides';
@@ -95,6 +96,8 @@ export type ChannelVisualPatch = {
   channelLinks?: ChannelLink[] | null;
   /** Channel page layout (sections, Identity toggles); null clears. */
   pageLayout?: ChannelPageItem[] | null;
+  /** Artist page block visibility; null clears back to every block shown. */
+  artistBlockVisibility?: Partial<Record<ArtistLookBlockId, boolean>> | null;
   textOverlayMode?: string;
   textOverlayText?: string;
   textOverlayAlign?: string;
@@ -131,6 +134,7 @@ export const CHANNEL_VISUAL_API_PATCH_KEYS = [
   'playerOverlayAlign',
   'channelLinks',
   'pageLayout',
+  'artistBlockVisibility',
 ] as const;
 
 export type ChannelVisualApiPatch = Pick<

@@ -38,6 +38,7 @@ key alone (dead, harmless).
 | `tahti-studio-show-series-v1`, `tahti-studio-episodes-v1` | `shows.ts` | Mock-mode show/episode data (dev/beta only) |
 | `tahti.pendingArtistKind` | `pendingArtistKind.ts` | One-shot flag carried across the signup → provision-channel redirect |
 | `tahti.channelPageLayout.{slug}`, `tahti.channelPageLayoutPreset.{slug}` | `channelPageLayout.ts` | Per-channel, per-viewer page-block layout and active preset id |
+| `tahti.artistLookBlocks.{slug}` | `channelLookElements.ts` | Owner's copy of the artist page block visibility; the channel's `artistBlockVisibilityJson` wins when set |
 | `tahti-web-onboarded:{userId}` | `OnboardingView.tsx` | Per-user "seen the onboarding tour" flag |
 
 ## Cutover notes (historical; cutover done 2026-10-21)

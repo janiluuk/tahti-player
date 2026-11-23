@@ -72,7 +72,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp API approval, Google Drive Picker, governance Retry |
-| partial | [channel-layout-server-side.md](channel-layout-server-side.md) | Page layout saved on the channel (tahti-org #1075 + web); left: deploy the API first, and the per-browser player/backdrop look visibility |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
 | partial | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | EditorWaveSurfer trim/zoom/region parity tests; ProWaveform delete still deferred; ui Waveform desktop preview story |

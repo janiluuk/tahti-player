@@ -2480,6 +2480,7 @@
       "audioUploadedProcessing": "Audio uploaded. It is being processed now.",
       "uploadCancelled": "Upload cancelled.",
       "channelLayoutSaveFailed": "Could not save the page layout. It is kept on this device.",
+      "artistBlocksSaveFailed": "Could not save which sections your artist page shows. The change is kept on this device.",
       "movedSavedTracksToLikes_one": "Moved {{count}} saved track to your likes",
       "movedSavedTracksToLikes_other": "Moved {{count}} saved tracks to your likes"
     },

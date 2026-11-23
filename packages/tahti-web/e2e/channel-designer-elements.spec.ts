@@ -88,3 +88,37 @@ test('channel editor keeps appearance drafts across panels and reverts unsaved c
     fullPage: true,
   });
 });
+
+test('a hidden artist page block stays hidden without this browser’s copy', async ({
+  page,
+  baseURL,
+}) => {
+  // Hiding a block saves it on the channel; against a deployed host that
+  // would change the shared e2e account's real artist page.
+  test.skip(
+    !['localhost', '127.0.0.1'].includes(
+      new URL(baseURL ?? 'http://x').hostname,
+    ),
+    'Requires the local mock app on localhost or 127.0.0.1',
+  );
+  await signIn(page);
+  await page.goto('/u/artist');
+  await expect(page.getByRole('button', { name: /full bio/ })).toBeVisible();
+  await page.getByRole('tab', { name: 'Design' }).click();
+  const editor = page.getByTestId('channel-element-editor');
+  await editor.getByRole('button', { name: 'Section', exact: true }).click();
+  await page.getByRole('option', { name: 'Bio & widgets' }).click();
+  await editor.getByRole('button', { name: 'Hide Bio & widgets' }).click();
+  await expect(page.getByRole('button', { name: /full bio/ })).toHaveCount(0);
+
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('tahti.artistLookBlocks.')) {
+        localStorage.removeItem(key);
+      }
+    }
+  });
+  await page.reload();
+  await expect(page.getByRole('tab', { name: 'Design' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /full bio/ })).toHaveCount(0);
+});

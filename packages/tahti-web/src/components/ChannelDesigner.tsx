@@ -203,6 +203,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       slideshowTransition,
       videoBackgroundUrl,
       loadFailed,
+      lookLoadToken,
       retryLoad,
       visual,
       visualSettings,
@@ -239,6 +240,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     const { lookBlockVisible, toggleSelectedLook } = useLookVisibility({
       layoutSlug,
       reloadToken,
+      lookLoadToken,
       layout,
       onLayoutChange,
       onLookVisibilityChange,
