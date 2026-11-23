@@ -68,4 +68,28 @@ describe('ChangePasswordForm', () => {
     });
     expect(screen.getByText('Current password is wrong')).toBeTruthy();
   });
+
+  it('refuses a new password that matches the current one', () => {
+    render(<ChangePasswordForm />);
+    fill('Current password', 'Same-Password-1');
+    fill('New password', 'Same-Password-1');
+    fill('Confirm new password', 'Same-Password-1');
+
+    expect(
+      screen.getByText('Choose a password different from your current one.'),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole('button', { name: 'Change password' }),
+    ).toBeDisabled();
+  });
+
+  it('drops its heading inside a dialog', () => {
+    render(<ChangePasswordForm embedded />);
+    expect(
+      screen.queryByRole('heading', { name: 'Change password' }),
+    ).toBeNull();
+    expect(
+      screen.getByRole('region', { name: 'Change password' }),
+    ).toBeTruthy();
+  });
 });

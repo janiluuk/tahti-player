@@ -2605,6 +2605,19 @@
         "currentPassword": "Nykyinen salasana",
         "newPassword": "Uusi salasana",
         "confirmNewPassword": "Vahvista uusi salasana",
+        "passwordSameAsCurrent": "Valitse eri salasana kuin nykyinen.",
+        "invalidEmail": "Anna kelvollinen sähköpostiosoite, esim. nimi@esimerkki.fi.",
+        "emailSameAsCurrent": "Tämä on jo sähköpostiosoitteesi.",
+        "passwordRowNote": "Käytä pitkää salasanaa, jota et käytä muualla.",
+        "noPasswordRowNote": "Kirjaudut linkitetyllä tilillä. Aseta salasana, niin voit kirjautua myös sähköpostilla.",
+        "setPasswordAction": "Aseta salasana",
+        "emailRowMissing": "Ei sähköpostiosoitetta",
+        "twoFactorBannerTitle": "Lisää tilillesi toinen lukko",
+        "twoFactorBannerBody": "Kaksivaiheisessa tunnistautumisessa kirjautuminen vaatii myös koodin puhelimestasi, joten pelkkä vuotanut salasana ei avaa tiliäsi. Käyttöönotto vie noin minuutin.",
+        "twoFactorBannerAction": "Ota kaksivaiheinen käyttöön",
+        "signInSection": "Kirjautuminen",
+        "tabSecurityOverview": "Tietoturva",
+        "emailRowNote": "Kirjautumislinkit ja ilmoitukset tulevat tähän osoitteeseen. Muutos vahvistetaan uudesta osoitteesta.",
         "passwordsMismatch": "Salasanat eivät täsmää.",
         "emailConfirmNote": "Lähetimme sähköpostin muutoksen vahvistamiseksi.",
         "changing": "Vaihdetaan…",
@@ -14734,7 +14747,7 @@
     },
     "emailChangeViewBatch33": {
       "noToken": "Linkistä puuttuu tunniste. Avaa linkki sähköpostista uudelleen.",
-      "linksExpire": "Linkit toimivat kerran ja vanhenevat 24 tunnissa. Pyydä uusi kohdassa Asetukset → Tili → Salasana ja sähköposti."
+      "linksExpire": "Linkit toimivat kerran ja vanhenevat 24 tunnissa. Pyydä uusi kohdassa Asetukset → Tietoturva."
     },
     "messagesViewBatch33": {
       "noAccountFound": "Tiliä ”{{query}}” ei löytynyt.",

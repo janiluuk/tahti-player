@@ -76,7 +76,7 @@ export const MissingToken: Story = {
     ).toBeVisible();
     await expect(
       canvas.getByText(
-        'Links work once and expire after 24 hours. Ask for a new one in Settings → Account → Password & email.',
+        'Links work once and expire after 24 hours. Ask for a new one in Settings → Security.',
       ),
     ).toBeVisible();
     await expect(canvas.queryByRole('link')).toBeNull();

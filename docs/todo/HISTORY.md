@@ -6625,3 +6625,14 @@ artwork), prev/next buttons, mouse drag / touch swipe, arrow keys, wraps at
 both ends, slide animation (off under reduced motion). Event cards and the
 poster show the start on a 24-hour clock with calendar / host / place icons.
 `useMediaArtworkDefaultSrc` exported from `@tahti-player/ui`.
+
+## 2026-11-24 - Security settings: dialogs, validation, 2FA on the main page (0.0.456)
+
+Settings → Security opens on one overview tab: password and email rows with
+`EditIconButton`s that open `ChangePasswordForm` / `SetPasswordForm` /
+`ChangeEmailForm` (new `embedded` prop) in a `Dialog`, then two-factor
+(`SecurityTotpPanel`, new `onStatusChange`) and linked logins. An info `Alert`
+recommends 2FA while it is off. The Two-factor tab is gone; `?tab=two-factor`
+still opens the overview and scrolls to 2FA. Validation: new password must
+differ from the current one; new email must look like an address and differ
+from the current one. Story fixture resets `securitySection`.

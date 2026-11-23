@@ -680,7 +680,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Salasana ja sähköposti',
         body: [
-          'Vaihda salasanasi kohdassa Asetukset → Tili → Salasana ja sähköposti. Tarvitset nykyisen salasanan; kaikki muut laitteet kirjataan ulos, ja aiemmin lähetetyt salasanan palautuslinkit lakkaavat toimimasta.',
+          'Vaihda salasanasi kohdassa Asetukset → Tietoturva. Tarvitset nykyisen salasanan; kaikki muut laitteet kirjataan ulos, ja aiemmin lähetetyt salasanan palautuslinkit lakkaavat toimimasta.',
           'Vaihtaaksesi sähköpostin kirjoita uusi osoite ja salasanasi. Lähetämme linkin uuteen osoitteeseen, eikä mikään muutu ennen kuin se avataan (24 tunnin sisällä). Nykyiseen osoitteeseesi ilmoitetaan heti, ja voit perua odottavan muutoksen samassa paikassa.',
           'Salasanassa on oltava vähintään 10 merkkiä, pieni kirjain, iso kirjain ja numero.',
         ],

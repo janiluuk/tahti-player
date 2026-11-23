@@ -23,9 +23,19 @@ function formatSecret(secret: string): string {
   return secret.replace(/(.{4})/g, '$1 ').trim();
 }
 
-export function SecurityTotpPanel() {
+/** `onStatusChange` reports whether 2FA is on once known and after each change. */
+export function SecurityTotpPanel({
+  onStatusChange,
+}: {
+  onStatusChange?: (enabled: boolean) => void;
+} = {}) {
   const { t } = useTranslation('web');
   const [enabled, setEnabled] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (enabled !== null) {
+      onStatusChange?.(enabled);
+    }
+  }, [enabled, onStatusChange]);
   const [statusError, setStatusError] = useState<string | null>(null);
   const [statusAttempt, setStatusAttempt] = useState(0);
   const [setup, setSetup] = useState<{

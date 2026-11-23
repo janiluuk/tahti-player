@@ -6,7 +6,12 @@ import { Button, InlineError, Input } from '@tahti-player/ui';
 import { changePassword } from '../api/account-credentials';
 import { passwordProblem, passwordRulesHint } from '../lib/passwordRules';
 
-export function ChangePasswordForm() {
+/** `embedded` drops the heading when a dialog already titles the form. */
+export function ChangePasswordForm({
+  embedded = false,
+}: {
+  embedded?: boolean;
+}) {
   const { t } = useTranslation('web');
   const headingId = useId();
   const [current, setCurrent] = useState('');
@@ -16,7 +21,12 @@ export function ChangePasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
 
-  const problem = next ? passwordProblem(next) : null;
+  const sameAsCurrent = next.length > 0 && next === current;
+  const problem = next
+    ? sameAsCurrent
+      ? t('settingsBody.account.passwordSameAsCurrent')
+      : passwordProblem(next)
+    : null;
   const mismatch = confirm.length > 0 && confirm !== next;
   const canSubmit =
     !saving &&
@@ -46,10 +56,18 @@ export function ChangePasswordForm() {
   };
 
   return (
-    <section aria-labelledby={headingId} className="flex flex-col gap-3">
-      <h3 id={headingId} className="font-semibold">
-        {t('settingsBody.account.changePassword')}
-      </h3>
+    <section
+      aria-labelledby={embedded ? undefined : headingId}
+      aria-label={
+        embedded ? t('settingsBody.account.changePassword') : undefined
+      }
+      className="flex flex-col gap-3"
+    >
+      {embedded ? null : (
+        <h3 id={headingId} className="font-semibold">
+          {t('settingsBody.account.changePassword')}
+        </h3>
+      )}
       <form
         className="flex max-w-md flex-col gap-3"
         onSubmit={(event) => {

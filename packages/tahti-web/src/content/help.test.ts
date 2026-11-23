@@ -159,7 +159,7 @@ describe('account security help', () => {
   it('lists the account emails and where to change credentials', () => {
     const article = getHelpArticle('account-security');
     const text = article?.sections.flatMap((section) => section.body).join(' ');
-    expect(text).toContain('Settings → Account → Password & email');
+    expect(text).toContain('Settings → Security');
     expect(text).toContain('a new API token is created');
     expect(text).toContain('at least 10 characters');
   });

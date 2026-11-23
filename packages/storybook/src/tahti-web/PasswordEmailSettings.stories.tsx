@@ -3,7 +3,7 @@ import { ChangeEmailForm } from '@tahti-web/components/ChangeEmailForm';
 import { ChangePasswordForm } from '@tahti-web/components/ChangePasswordForm';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
-/** Settings → Account → Password & email. Under `VITE_FORCE_MOCK` both
+/** Settings → Security. Under `VITE_FORCE_MOCK` both
  * requests succeed, and a sent email-change link shows as pending. */
 function PasswordEmailSettings() {
   return (
