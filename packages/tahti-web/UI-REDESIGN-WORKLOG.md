@@ -7067,3 +7067,8 @@ Validated with affected Storybook plays, UI/theme/unit tests, type-check/lint, a
 
 - `ListenView` drops the `coming-up` section; Discover's `upcoming-events` widget (on by default) and Events → Next events carry upcoming events.
 - `listenerWidgetsStore` version 5 strips `coming-up` from `listenOrder` and `hiddenListenBlockIds`.
+
+## 2026-11-24 - Account settings restyle (0.0.458)
+
+- `AccountPanel` split: `AccountBillingPanel` (subs + purchases, StatTile summary, Badge status pills) and `AccountStoragePanel` (DonutChart + StatTiles); `ACCOUNT_TAB_IDS` drops `purchases`, `accountTabIndex('purchases')` lands on `subscriptions`.
+- Session tab: profile card (avatar, display name, @username, email).
