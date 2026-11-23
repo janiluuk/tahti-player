@@ -8,15 +8,12 @@ import { useId } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, OverflowMenu, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../../../lib/cn';
 import { dateLocaleTag } from '../../../lib/locale';
 import { GoLiveStatusChip, type GoLiveStatus } from './GoLiveStatusChip';
 import type { GoLiveStepId } from './goLiveSteps';
-
-const ICON_BUTTON =
-  'text-foreground hover:bg-background-secondary focus-visible:outline-focus-ring size-11 justify-center rounded-full focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2';
 
 const ACTION_BUTTON =
   'focus-visible:outline-focus-ring min-h-11 gap-2 px-4 font-semibold focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2';
@@ -87,6 +84,27 @@ export function GoLiveHeader({
     }
   };
 
+  const overflowItems = [
+    {
+      id: 'help',
+      label: t('goLivePage.help.open'),
+      icon: <CircleHelpIcon size={14} aria-hidden />,
+      onSelect: onHelp,
+    },
+    ...(slug
+      ? [
+          {
+            id: 'share',
+            label: t('goLivePage.share.copy'),
+            icon: <Share2Icon size={14} aria-hidden />,
+            onSelect: () => {
+              void share();
+            },
+          },
+        ]
+      : []),
+  ];
+
   return (
     <header className="flex w-full flex-wrap items-center gap-x-4 gap-y-3">
       <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
@@ -100,26 +118,6 @@ export function GoLiveHeader({
         />
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        <Button
-          variant="plain"
-          size="flexible"
-          className={ICON_BUTTON}
-          aria-label={t('goLivePage.help.open')}
-          onClick={onHelp}
-        >
-          <CircleHelpIcon size={20} aria-hidden />
-        </Button>
-        {slug ? (
-          <Button
-            variant="plain"
-            size="flexible"
-            className={ICON_BUTTON}
-            aria-label={t('goLivePage.share.copy')}
-            onClick={() => void share()}
-          >
-            <Share2Icon size={20} aria-hidden />
-          </Button>
-        ) : null}
         {onAir ? (
           <Button
             variant="plain"
@@ -168,6 +166,11 @@ export function GoLiveHeader({
             ) : null}
           </Tooltip>
         )}
+        <OverflowMenu
+          label={t('goLivePage.moreActions')}
+          items={overflowItems}
+          data-testid="go-live-more-actions"
+        />
       </div>
     </header>
   );

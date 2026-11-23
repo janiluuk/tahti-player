@@ -95,20 +95,37 @@ describe('GoLiveHeader', () => {
     expect(props.onEnd).toHaveBeenCalledTimes(1);
   });
 
-  it('has labelled 44px Help and Share buttons; Share copies the channel link', async () => {
+  it('keeps Start as the only primary action and puts Help/Share in overflow', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.assign(navigator, { clipboard: { writeText } });
     const props = renderHeader();
 
-    const help = screen.getByRole('button', { name: 'How broadcasting works' });
-    const share = screen.getByRole('button', { name: 'Copy channel link' });
-    expect(help.className).toContain('size-11');
-    expect(share.className).toContain('size-11');
+    expect(
+      screen.queryByRole('button', { name: 'How broadcasting works' }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'Copy channel link' }),
+    ).toBeNull();
+    expect(
+      screen.getByRole('button', { name: 'Start broadcast' }).className,
+    ).toContain('bg-primary');
 
-    fireEvent.click(help);
+    fireEvent.click(
+      screen.getByRole('button', { name: 'More Go live actions' }),
+    );
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'How broadcasting works' }),
+    );
     expect(props.onHelp).toHaveBeenCalledTimes(1);
 
-    await act(async () => fireEvent.click(share));
+    fireEvent.click(
+      screen.getByRole('button', { name: 'More Go live actions' }),
+    );
+    await act(async () => {
+      fireEvent.click(
+        await screen.findByRole('button', { name: 'Copy channel link' }),
+      );
+    });
     expect(writeText).toHaveBeenCalledWith(
       `${window.location.origin}/channel/artist`,
     );

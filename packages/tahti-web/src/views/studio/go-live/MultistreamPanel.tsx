@@ -42,7 +42,7 @@ export function MultistreamPanel({
   return (
     <>
       <StudioPanel
-        title={t('multistreamPanel.multistream')}
+        title={t('goLivePage.steps.destinations')}
         description={t('multistreamPanel.destinationsForThisSessionAdd')}
         action={
           <div className="flex items-center gap-2">

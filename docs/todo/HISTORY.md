@@ -11,6 +11,12 @@ mock artwork, e2e (`use-cases-discover-events.spec.ts`). Production
 listings from City of Helsinki Linked Events on @yaniho
 (tahti-org#1145 `seed-helsinki-linked-events.ts`); demo mock event titles
 removed. Folded `discover-events-widget.md`.
+## 2026-11-23 — Go live stepper polish (0.0.452)
+
+OverflowMenu for Help/Share; one primary Start/End; Destinations naming
+on the session panel; quieter Stepper captions and a narrower rail.
+Chrome takeover was already on master. Folded `navigation-simplification.md`
+and `simplify-studio-library-settings-admin.md`.
 
 ## 2026-11-23 — Design audit slice 11 (collection + distribution tabs)
 

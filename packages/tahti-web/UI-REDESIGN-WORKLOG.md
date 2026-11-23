@@ -3,6 +3,11 @@
 Chat-alike thread on EventView; signed-out visitors get a sign-in CTA.
 API sibling tahti-org#1147.
 
+## 2026-11-23 - Go live stepper polish (0.0.452)
+
+OverflowMenu for Help/Share, one primary Start/End, Destinations naming,
+quieter Stepper captions.
+
 ## 2026-11-23 - Master CI fixes after the design-audit PRs (0.0.447)
 
 Schedule keeps Events tabs (route search), programme anchors open the
