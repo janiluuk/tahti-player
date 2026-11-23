@@ -4,9 +4,6 @@ import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
   Button,
   MediaArtwork,
   Toggle,
@@ -22,7 +19,6 @@ import {
   type ArtworkPreset,
 } from '../../api/artwork-presets';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ArtworkPresetUploadDialog } from '../../components/ArtworkPresetUploadDialog';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
@@ -130,15 +126,6 @@ export function AdminArtworkPresetsView() {
     <AdminGate>
       <AdminPageLayout current="/admin/artwork-presets">
         <div className="flex flex-col gap-6">
-          <Breadcrumbs>
-            <BreadcrumbLink to="/admin">
-              {t('adminArtworkPresetsView.admin')}
-            </BreadcrumbLink>
-            <AdminHubBreadcrumb hub="content" />
-            <BreadcrumbCurrent>
-              {t('adminArtworkPresetsView.artworkPresets')}
-            </BreadcrumbCurrent>
-          </Breadcrumbs>
           <ViewShell
             title={t('adminArtworkPresetsView.artworkPresets')}
             subtitle={t(

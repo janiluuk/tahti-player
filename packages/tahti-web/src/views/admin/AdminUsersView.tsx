@@ -72,6 +72,7 @@ export const AdminUsersView = () => {
         <AdminPageLayout current="/admin/users">
           <ViewShell
             title={t('adminUsersView.users')}
+            subtitle={t('adminPages.usersDescription')}
             classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
           >
             <div className="flex flex-wrap items-center justify-between gap-2">

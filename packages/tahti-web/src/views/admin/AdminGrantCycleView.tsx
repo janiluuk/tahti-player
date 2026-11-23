@@ -5,9 +5,6 @@ import { useMemo, useState } from 'react';
 import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
   Button,
   ButtonAnchor,
   ButtonLink,
@@ -32,7 +29,6 @@ import {
   type AdminGrantPreview,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -97,26 +93,11 @@ export function AdminGrantCycleView() {
   return (
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
-        <AdminPageLayout current="/admin/governance">
+        <AdminPageLayout current="/admin/governance" parent="governanceGrants">
           <div className="flex max-w-5xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('grantCycle.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="coop" />
-              <BreadcrumbLink to="/admin/governance">
-                {t('grantCycle.governance')}
-              </BreadcrumbLink>
-              <BreadcrumbLink
-                to="/admin/governance/$tab"
-                params={{ tab: 'grants' }}
-              >
-                {t('grantCycle.grants')}
-              </BreadcrumbLink>
-              <BreadcrumbCurrent>{year}</BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminGrantCycleViewBatch33.title', { year })}
+              subtitle={t('adminGrantCycleViewBatch33.subtitle')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <div className="flex flex-wrap gap-2">

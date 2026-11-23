@@ -4414,7 +4414,10 @@
       "requiredBeforeSuspending": "Required before suspending",
       "thisUsesTheSameDirect": "This uses the same direct-message thread the user sees in Messages.",
       "writeAMessage": "Write a message…",
-      "sendMessage": "Send message"
+      "sendMessage": "Send message",
+      "tabOverview": "Overview",
+      "tabAccount": "Account",
+      "tabTracks": "Tracks"
     },
     "adminGovernanceOverview": {
       "recentVotingActivity": "Recent voting activity",
@@ -7580,6 +7583,7 @@
       "storage": "Storage",
       "files": "Files",
       "backToStorage": "Back to Storage",
+      "subtitle": "Storage used by this account and every file it uploaded.",
       "used": "Used",
       "quota": "Quota",
       "usedOfQuota": "Used of quota",
@@ -14850,6 +14854,7 @@
     },
     "adminGrantCycleViewBatch33": {
       "title": "{{year}} grant cycle",
+      "subtitle": "Each artist's share of this year's grant pool, ready for the board to approve.",
       "approveNote_one": "This creates a grant ledger entry for {{count}} eligible artist and notifies them of their grant, by email too where they asked for money notices.",
       "approveNote_other": "This creates grant ledger entries for {{count}} eligible artists and notifies each of them of their grant, by email too where they asked for money notices."
     },
@@ -15628,6 +15633,25 @@
       "previewHint": "Shows your changes before you save.",
       "save": "Save",
       "tab": "Link page"
+    },
+    "adminUserTracks": {
+      "title": "Tracks",
+      "description_one": "{{count}} upload. Make one public or private, play it, or delete it.",
+      "description_other": "{{count}} uploads. Make each public or private, play it, or delete it.",
+      "loading": "Loading tracks…",
+      "couldNotLoad": "Could not load this account's tracks",
+      "empty": "No uploads yet",
+      "public": "Public",
+      "private": "Private",
+      "publicToggle": "Public: {{title}}",
+      "play": "Play",
+      "playTitle": "Play {{title}}",
+      "delete": "Delete",
+      "deleteTitle": "Delete {{title}}",
+      "openInStorage": "Open in Storage",
+      "couldNotPlay": "Could not play {{title}}",
+      "couldNotUpdate": "Could not update {{title}}: {{error}}",
+      "couldNotDelete": "Could not delete {{title}}: {{error}}"
     }
   },
   "studioEditor": {

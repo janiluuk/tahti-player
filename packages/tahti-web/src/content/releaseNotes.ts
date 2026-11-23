@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.449',
+    version: '0.0.450',
     sections: [
       {
         id: 'listen',
@@ -66,6 +66,8 @@ export const RELEASE_NOTES: ReleaseNote[] = [
         highlights: [
           'The admin dashboard is split into Health, Jobs, Monitoring and Activity tabs, and live channels, queues and cron jobs fit in a few compact rows, so the board sees what needs attention without scrolling through one long page.',
           'Grafana opens inside Admin → Monitoring again, and when it cannot load there you get a clear Open Grafana button instead of a blank frame.',
+          'Every admin page opens the same way: its title, one line on what it is for, and a single back link, without a breadcrumb trail on top.',
+          'A user in Admin → Users opens on Overview, Account and Tracks tabs. Tracks lists everything they uploaded, so you can play a track, make it public or private, or delete it without leaving the account.',
         ],
       },
     ],

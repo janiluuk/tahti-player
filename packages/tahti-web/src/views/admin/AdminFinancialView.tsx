@@ -1,19 +1,13 @@
 import { useState } from 'react';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
-import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  ViewShell,
-} from '@tahti-player/ui';
+import { ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminFinancial,
   type AdminFinancialOverview,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -50,17 +44,9 @@ export function AdminFinancialView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/financial">
           <div className="flex max-w-4xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminFinancialView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="coop" />
-              <BreadcrumbCurrent>
-                {t('adminFinancialView.financial')}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminFinancialView.financial')}
+              subtitle={t('adminPages.financialDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {loading ? (

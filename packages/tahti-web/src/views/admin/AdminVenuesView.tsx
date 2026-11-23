@@ -3,15 +3,7 @@ import { CheckIcon, MapPinIcon, XIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  Button,
-  FilterBar,
-  InlineError,
-  ViewShell,
-} from '@tahti-player/ui';
+import { Button, FilterBar, InlineError, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminVenues,
@@ -19,7 +11,6 @@ import {
   type AdminVenue,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
@@ -89,17 +80,9 @@ export function AdminVenuesView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/venues">
           <div className="flex max-w-4xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminVenuesView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="content" />
-              <BreadcrumbCurrent>
-                {t('adminVenuesView.venues')}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminVenuesView.venues')}
+              subtitle={t('adminPages.venuesDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <StudioPanel>

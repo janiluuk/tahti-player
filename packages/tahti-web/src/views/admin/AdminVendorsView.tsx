@@ -5,20 +5,13 @@ import {
   type ParseKeys,
   type TFunction,
 } from '@tahti-player/i18n';
-import {
-  Badge,
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  ViewShell,
-} from '@tahti-player/ui';
+import { Badge, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminIntegrationStatus,
   type AdminIntegrationStatus,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -313,6 +306,7 @@ export function AdminVendorsContent() {
     <div className="flex flex-col gap-6">
       <ViewShell
         title={t('adminVendors.vendors')}
+        subtitle={t('adminPages.vendorsDescription')}
         classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
       >
         <StudioPanel
@@ -433,19 +427,11 @@ export function AdminVendorsContent() {
 }
 
 export function AdminVendorsView() {
-  const { t } = useTranslation('web');
   return (
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/vendors">
           <div className="flex max-w-5xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminVendors.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbCurrent>{t('adminVendors.vendors')}</BreadcrumbCurrent>
-            </Breadcrumbs>
             <AdminVendorsContent />
           </div>
         </AdminPageLayout>

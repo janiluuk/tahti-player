@@ -11,13 +11,7 @@ import {
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  FilterChips,
-  ViewShell,
-} from '@tahti-player/ui';
+import { FilterChips, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminContentReports,
@@ -177,14 +171,6 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
           moderationPendingCount={pendingCount}
         >
           <div className="flex max-w-5xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminModeration.admin')}
-              </BreadcrumbLink>
-              <BreadcrumbCurrent>
-                {t('adminModeration.inbox')}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <FilterChips
               aria-label={t('adminModeration.queuesAria')}
               selected={inboxChipSelected(active)}
@@ -210,6 +196,7 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
             />
             <ViewShell
               title={t('adminModeration.inbox')}
+              subtitle={t('adminPages.moderationDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {tabContent(active)}

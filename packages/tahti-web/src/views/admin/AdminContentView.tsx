@@ -7,21 +7,13 @@ import {
 import { useEffect, useState } from 'react';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
-import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  ButtonLink,
-  Tooltip,
-  ViewShell,
-} from '@tahti-player/ui';
+import { ButtonLink, Tooltip, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminContentOverview,
   type AdminContentOverview,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
@@ -59,17 +51,9 @@ export function AdminContentView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/content">
           <div className="flex flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminContentView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="content" />
-              <BreadcrumbCurrent>
-                {t('adminContentView.catalog')}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminContentView.catalog')}
+              subtitle={t('adminPages.contentDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <div>

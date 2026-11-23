@@ -1,25 +1,15 @@
-import { ArrowLeftIcon, PlayIcon } from 'lucide-react';
+import { PlayIcon } from 'lucide-react';
 
 import 'react';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
-import {
-  Badge,
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  Button,
-  ButtonLink,
-  Tooltip,
-  ViewShell,
-} from '@tahti-player/ui';
+import { Badge, Button, Tooltip, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminStorageUserFiles,
   type AdminStorageUserDetail,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -53,33 +43,8 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
   return (
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
-        <AdminPageLayout current="/admin/storage">
+        <AdminPageLayout current="/admin/storage" parent="storageFiles">
           <div className="mx-auto flex max-w-4xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminStorageUserView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbLink to="/admin/storage">
-                {t('adminStorageUserView.storage')}
-              </BreadcrumbLink>
-              <BreadcrumbLink to="/admin/storage" search={{ tab: 'files' }}>
-                {t('adminStorageUserView.files')}
-              </BreadcrumbLink>
-              <BreadcrumbCurrent>
-                {detail?.displayName ?? 'User'}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
-            <ButtonLink
-              className="w-fit"
-              to="/admin/storage"
-              size="sm"
-              variant="text"
-            >
-              <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
-              {t('adminStorageUserView.backToStorage')}
-            </ButtonLink>
-
             {loading ? (
               <StudioPanel>
                 <PageLoading label={t('loading.loadingStorageDetails')} />
@@ -94,6 +59,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
               <>
                 <ViewShell
                   title={detail.displayName}
+                  subtitle={t('adminStorageUserView.subtitle')}
                   classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
                 >
                   <StudioPanel>

@@ -2,17 +2,9 @@ import { useNavigate } from '@tanstack/react-router';
 import { RadioIcon } from 'lucide-react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
-  TabLabel,
-  Tabs,
-  ViewShell,
-} from '@tahti-player/ui';
+import { TabLabel, Tabs, ViewShell } from '@tahti-player/ui';
 
 import { AdminGate } from '../../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../../components/AdminNav';
 import {
   ADMIN_ORPHAN_PAGE_TABS,
@@ -45,19 +37,7 @@ export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
         className="admin-page-layout px-1 py-2"
         data-testid="admin-page-layout"
       >
-        <AdminPageLayout current="/admin/orphan-pages">
-          <Breadcrumbs className="mb-4">
-            <BreadcrumbLink to="/admin">
-              {t('adminOrphanPagesViewText.admin')}
-            </BreadcrumbLink>
-            <AdminHubBreadcrumb hub="platform" />
-            <BreadcrumbLink to="/admin/diagnostics">
-              {t('adminPages.diagnostics')}
-            </BreadcrumbLink>
-            <BreadcrumbCurrent>
-              {t('adminOrphanPagesViewText.orphanPages')}
-            </BreadcrumbCurrent>
-          </Breadcrumbs>
+        <AdminPageLayout current="/admin/orphan-pages" parent="diagnostics">
           <Tabs.Root
             selectedIndex={selectedIndex < 0 ? 0 : selectedIndex}
             onChange={(index) => {

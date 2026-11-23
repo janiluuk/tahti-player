@@ -143,12 +143,11 @@ test('governance navigation keeps member, artist, and board entries reachable an
   );
   await expect(page.getByTestId('admin-hub-back')).toHaveAttribute(
     'href',
-    '/admin/hubs/coop',
+    '/admin/governance',
   );
   await expect(
     page.getByRole('heading', { level: 1, name: 'AGM' }),
   ).toBeVisible();
-  await expect(page.getByTestId('admin-governance-back')).toBeVisible();
 });
 
 test('library is its own sidebar section with Library tabs, not a Studio tab', async ({

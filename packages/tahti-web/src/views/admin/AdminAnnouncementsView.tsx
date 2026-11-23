@@ -9,9 +9,6 @@ import { useState } from 'react';
 import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
   Button,
   FilePicker,
   Toggle,
@@ -28,7 +25,6 @@ import {
   type AdminAnnouncementClip,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
@@ -98,17 +94,9 @@ export function AdminAnnouncementsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/announcements">
           <div className="flex flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminAnnouncements.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="content" />
-              <BreadcrumbCurrent>
-                {t('adminAnnouncements.announcements')}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminAnnouncements.announcements')}
+              subtitle={t('adminPages.announcementsDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {msg && (

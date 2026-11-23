@@ -4,9 +4,6 @@ import { useState } from 'react';
 import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
   Button,
   Dialog,
   FilePicker,
@@ -23,7 +20,6 @@ import {
   type AdminLanguage,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -99,17 +95,9 @@ export function AdminI18nView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/i18n">
           <div className="flex max-w-4xl flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminI18nView.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbCurrent>
-                {t('adminI18nView.languages')}
-              </BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminI18nView.languages')}
+              subtitle={t('adminPages.i18nDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
               actions={
                 unavailable ? undefined : (

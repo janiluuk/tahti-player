@@ -27,12 +27,19 @@ const JUMP_LINKS = [
   { href: '#saved-comments', label: 'Comments' },
 ] as const;
 
-export function MoreView() {
+export function MoreView({
+  title = 'Tahti map',
+  subtitle,
+}: {
+  title?: string;
+  subtitle?: string;
+} = {}) {
   const gapCount = FEATURES.filter((r) => featureParity(r) !== 'both').length;
 
   return (
     <ViewShell
-      title="Tahti map"
+      title={title}
+      subtitle={subtitle}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-7xl',
         content: 'gap-8',

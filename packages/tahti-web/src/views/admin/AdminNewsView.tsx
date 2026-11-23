@@ -10,9 +10,6 @@ import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
-  BreadcrumbCurrent,
-  BreadcrumbLink,
-  Breadcrumbs,
   Button,
   Dialog,
   EditIconButton,
@@ -31,7 +28,6 @@ import {
   type AdminNewsPost,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageUploadField } from '../../components/ImageUploadField';
@@ -91,15 +87,9 @@ export function AdminNewsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/news">
           <div className="flex flex-col gap-6">
-            <Breadcrumbs>
-              <BreadcrumbLink to="/admin">
-                {t('adminNews.admin')}
-              </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="content" />
-              <BreadcrumbCurrent>{t('adminNews.news')}</BreadcrumbCurrent>
-            </Breadcrumbs>
             <ViewShell
               title={t('adminNews.news')}
+              subtitle={t('adminPages.newsDescription')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
               actions={
                 <Tooltip content={t('adminNews.writePost')} side="top">

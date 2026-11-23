@@ -91,6 +91,7 @@ export function AdminTopListsView() {
         <AdminPageLayout current="/admin/top-lists">
           <ViewShell
             title={t('adminTopListsView.topLists')}
+            subtitle={t('adminPages.topListsDescription')}
             classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
           >
             <div className="flex flex-col gap-3">

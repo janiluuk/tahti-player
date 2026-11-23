@@ -164,11 +164,10 @@ test('a grant cycle and a storage user open from their admin lists', async ({
   });
   await page.locator('main a[href^="/admin/grants/"]').first().click();
   await expect(page).toHaveURL(/\/admin\/grants\/\d{4}$/);
-  await expect(
-    page.getByRole('navigation', { name: 'Breadcrumb' }).getByRole('link', {
-      name: 'Grants',
-    }),
-  ).toBeVisible();
+  await expect(page.getByTestId('admin-hub-back')).toHaveAttribute(
+    'href',
+    '/admin/governance/grants',
+  );
   await expectAdminPage(page, { path: '/admin/grants/$year', heading: '' });
 
   await expectRouteHealthy(page, errors, {

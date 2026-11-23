@@ -113,7 +113,10 @@ test('admin: Co-op governance hub cards open grants and the AGM', async ({
     await expect(
       main(page).getByRole('heading', { level: 1, name }),
     ).toBeVisible();
-    await expect(page.getByTestId('admin-governance-back')).toBeVisible();
+    await expect(page.getByTestId('admin-hub-back')).toHaveAttribute(
+      'href',
+      '/admin/governance',
+    );
     await open(page, '/admin/governance');
   }
   await expect(page.getByText('Something went wrong')).toHaveCount(0);
