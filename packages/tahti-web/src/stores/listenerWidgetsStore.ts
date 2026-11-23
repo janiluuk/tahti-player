@@ -21,6 +21,9 @@ export const RADIO_BLOCK_ID = 'radio';
 /** Retired block id that persisted orders and hidden lists may still name;
  * the v4 migration strips it. */
 const RETIRED_BROWSER_STATIONS_BLOCK_ID = widgetBlockId('browser-stations');
+/** Upcoming events moved from Listen to Discover; the v5 migration strips
+ * the old Listen block id. */
+const RETIRED_COMING_UP_BLOCK_ID = 'coming-up';
 export const FAVORITES_BLOCK_ID = widgetBlockId('favorites');
 export const LATEST_NEWS_BLOCK_ID = widgetBlockId('latest-news');
 
@@ -30,7 +33,6 @@ const LISTEN_BLOCK_LABEL_KEYS: Record<string, string> = {
   'new-releases': 'listen.newReleases',
   'on-air': 'listen.liveAndReplays',
   trending: 'listen.trending',
-  'coming-up': 'listen.comingUp',
   'new-tracks': 'listen.newTracks',
   [RADIO_BLOCK_ID]: 'nav.radio',
   'disco-widgets': 'listen.communityWidgets',
@@ -311,9 +313,19 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
     }),
     {
       name: 'tahti-web-listener-widgets',
-      version: 4,
+      version: 5,
       migrate: (persisted, version) => {
         const state = (persisted ?? {}) as Partial<ListenerWidgetsState>;
+        if (version < 5) {
+          const live = (id: string) => id !== RETIRED_COMING_UP_BLOCK_ID;
+          if (Array.isArray(state.listenOrder)) {
+            state.listenOrder = state.listenOrder.filter(live);
+          }
+          if (Array.isArray(state.hiddenListenBlockIds)) {
+            state.hiddenListenBlockIds =
+              state.hiddenListenBlockIds.filter(live);
+          }
+        }
         if (version < 4) {
           const live = (id: string) => id !== RETIRED_BROWSER_STATIONS_BLOCK_ID;
           if (Array.isArray(state.listenOrder)) {

@@ -223,7 +223,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/History/HistoryListSection` | `tahti-web/HistoryListSection.stories.tsx` |
 | `Tahti/History/HistoryStatsSection` | `tahti-web/HistoryStatsSection.stories.tsx` |
 | `Tahti/History/HistoryView` | `tahti-web/HistoryView.stories.tsx` |
-| `Tahti/Listen/HomeComingUp` | `tahti-web/HomeComingUp.stories.tsx` |
 | `Tahti/Studio/Home/HomeTiles` | `tahti-web/HomeTiles.stories.tsx` |
 | `Tahti/Media/ImageLightbox` | `tahti-web/ImageLightbox.stories.tsx` |
 | `Tahti/Media/ImageUploadField` | `tahti-web/ImageUploadField.stories.tsx` |
