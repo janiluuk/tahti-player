@@ -135,14 +135,14 @@ export function StudioActionTile({
       <Link
         to={to}
         data-testid="studio-action-tile"
-        className="group border-border bg-background-secondary/40 hover:bg-background-secondary flex min-w-0 items-center gap-2.5 rounded-lg border px-2.5 py-2 transition-colors"
+        className="group border-border bg-background-secondary text-foreground hover:bg-foreground/5 focus-visible:ring-focus-ring flex min-w-0 items-center gap-3 rounded-lg border p-3 transition-colors focus-visible:ring-2 focus-visible:outline-none motion-reduce:transition-none"
       >
         <span
-          className={`flex size-8 shrink-0 items-center justify-center rounded-md text-white ${color}`}
+          className={`flex size-8 shrink-0 items-center justify-center rounded-md ${color === 'bg-primary' ? 'text-primary-foreground' : 'text-accent-foreground'} ${color}`}
         >
           <Icon
             size={16}
-            className="transition-transform group-hover:scale-110"
+            className="transition-transform group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
             aria-hidden
           />
         </span>
@@ -182,7 +182,7 @@ export const CompactBroadcastTile: FC<CompactBroadcastTileProps> = ({
       className="border-border bg-background-secondary/40 hover:bg-background-secondary group flex min-h-20 items-center gap-3 rounded-xl border px-4 py-3 shadow-sm transition-transform hover:-translate-y-0.5"
     >
       <span
-        className={`flex size-11 shrink-0 items-center justify-center rounded-lg text-white ${color}`}
+        className={`flex size-11 shrink-0 items-center justify-center rounded-lg ${color === 'bg-primary' ? 'text-primary-foreground' : 'text-accent-foreground'} ${color}`}
       >
         <Icon size={22} aria-hidden />
       </span>

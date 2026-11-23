@@ -105,7 +105,7 @@ export function CollectionHeader({
                 <Button
                   variant="secondary"
                   size="icon-sm"
-                  className="bg-background border-border rounded-md border-(length:--border-width)"
+                  className="bg-background text-foreground border-border rounded-md border-(length:--border-width)"
                   aria-label={
                     backdropUrl
                       ? t('collectionHeaderStates.previewBackdrop')

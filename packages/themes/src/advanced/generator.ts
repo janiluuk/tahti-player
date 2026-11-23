@@ -46,18 +46,30 @@ export function colourLightness(value: string): number | null {
   return null;
 }
 
-/** Text on the primary colour: the theme's background or foreground,
- * whichever is further from the primary in lightness. */
 function primaryForeground(vars: Record<string, string>): string | null {
-  const primary = colourLightness(vars.primary ?? '');
-  const background = colourLightness(vars.background ?? '');
-  const foreground = colourLightness(vars.foreground ?? '');
-  if (primary === null || background === null || foreground === null) {
+  const primary = resolveColour(vars, 'primary');
+  if (!primary) {
     return null;
   }
-  return Math.abs(primary - background) >= Math.abs(primary - foreground)
-    ? 'var(--background)'
-    : 'var(--foreground)';
+  const candidates = ['foreground', 'background']
+    .flatMap((token) => {
+      const colour = resolveColour(vars, token);
+      return colour
+        ? [
+            {
+              value: `var(--${token})`,
+              contrast: wcagContrast(primary, colour),
+            },
+          ]
+        : [];
+    })
+    .sort((a, b) => b.contrast - a.contrast);
+  if (candidates[0]?.contrast >= 4.5) {
+    return candidates[0].value;
+  }
+  return wcagContrast(primary, 'black') >= wcagContrast(primary, 'white')
+    ? 'oklch(0 0 0)'
+    : 'oklch(1 0 0)';
 }
 
 /** Tokens a theme may leave out, derived from ones it sets — otherwise they
@@ -206,7 +218,7 @@ export function withDerivedTokens(
     }
   }
   if (!out['primary-foreground'] && out.primary) {
-    const derived = primaryForeground(out);
+    const derived = primaryForeground({ ...inherited, ...out });
     if (derived) {
       out['primary-foreground'] = derived;
     }

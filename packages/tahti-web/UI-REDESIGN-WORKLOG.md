@@ -7042,3 +7042,9 @@ On a phone the full-screen player has a Love button, the player bar can be close
 ## 2026-11-23 — Pattern-fraud notice in the money filter (0.0.453)
 
 The API now tells an artist when the daily pattern-fraud scan flags their channel (tahti-org `PATTERN_FRAUD_FLAGGED`). The notifications popover files it under Money with grants and memberships.
+
+## 2026-11-23 — Studio dashboard and theme contrast (0.0.454)
+
+Prepared locally: creation actions at the top, next show ahead of recent work, and neutral navigation shortcuts beside the activity column on wide screens. Studio header buttons pair page backgrounds with the page foreground; shortcut icons use theme foreground tokens. Shared button hover feedback now works with flat themes and dark text/ghost controls. Automatically derived theme button text uses WCAG contrast, fixing Gruvbox's low-contrast primary label while preserving explicit theme overrides.
+
+Validated with affected Storybook plays, UI/theme/unit tests, type-check/lint, and Chromium at phone and desktop widths across seven light/dark palettes. Not deployed.

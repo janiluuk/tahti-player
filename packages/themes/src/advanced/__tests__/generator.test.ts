@@ -23,8 +23,8 @@ describe('generateAdvancedThemeCSS', () => {
     });
 
     expect(css).toMatchInlineSnapshot(`
-      "html:root{--background: oklch(98% 0 0); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background); --focus-ring: oklch(0 0 0); color-scheme: light;}
-      html[data-theme='dark']{--background: oklch(40% 0.03 277); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background); --focus-ring: var(--primary); color-scheme: dark;}"
+      "html:root{--background: oklch(98% 0 0); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background); --primary-foreground: oklch(0 0 0); --focus-ring: oklch(0 0 0); color-scheme: light;}
+      html[data-theme='dark']{--background: oklch(40% 0.03 277); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background); --primary-foreground: oklch(0 0 0); --focus-ring: var(--primary); color-scheme: dark;}"
     `);
   });
 
@@ -54,7 +54,7 @@ describe('generateAdvancedThemeCSS', () => {
       'background-input': 'var(--background)',
       'foreground-input': 'var(--foreground)',
       'border-input': 'var(--border)',
-      'primary-foreground': 'var(--background)',
+      'primary-foreground': 'oklch(0 0 0)',
     });
   });
 
@@ -75,6 +75,29 @@ describe('generateAdvancedThemeCSS', () => {
     expect(
       withDerivedTokens({
         primary: '#f0f0f0',
+        background: '#ffffff',
+        foreground: '#101010',
+      })['primary-foreground'],
+    ).toBe('var(--foreground)');
+  });
+
+  it('derives readable text when a dark block only changes primary', () => {
+    expect(
+      withDerivedTokens(
+        { primary: '#111111' },
+        {
+          background: '#ffffff',
+          foreground: '#101010',
+        },
+      )['primary-foreground'],
+    ).toBe('var(--background)');
+  });
+
+  it('resolves theme aliases before choosing primary text', () => {
+    expect(
+      withDerivedTokens({
+        primary: 'var(--accent)',
+        accent: '#ffffff',
         background: '#ffffff',
         foreground: '#101010',
       })['primary-foreground'],
