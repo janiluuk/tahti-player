@@ -474,6 +474,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/FilePicker` | `FilePicker.stories.tsx` |
 | `Components/FilterBar` | `FilterBar.stories.tsx` |
 | `Components/FilterChips` | `FilterChips.stories.tsx` |
+| `Components/HelpTip` | `HelpTip.stories.tsx` |
 | `Components/HistoryDayGroup` | `HistoryDayGroup.stories.tsx` |
 | `Components/HistoryRow` | `HistoryRow.stories.tsx` |
 | `Components/HorizontalScroll` | `HorizontalScroll.stories.tsx` |

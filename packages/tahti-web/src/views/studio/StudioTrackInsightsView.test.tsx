@@ -23,7 +23,7 @@ describe('StudioTrackInsightsView back link', () => {
     );
 
     const back = screen.getByTestId('page-back-link');
-    expect(back).toHaveTextContent('Release stats');
+    expect(back).toHaveAccessibleName('Release stats');
     expect(back).toHaveAttribute('href', '/studio/releases/r1?tab=stats');
   });
 

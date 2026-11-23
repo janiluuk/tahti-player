@@ -32,7 +32,7 @@ const defaultLink = (href: string, children: ReactNode, className: string) => (
 );
 
 const CARD_CLASS =
-  'group border-border bg-background-secondary/40 hover:bg-background-secondary focus-visible:ring-primary flex h-full min-w-0 items-start gap-3 rounded-lg border p-3 no-underline transition-colors focus-visible:ring-2 focus-visible:outline-none';
+  'group border-border bg-background-secondary/70 hover:bg-background-secondary focus-visible:ring-primary flex h-full min-w-0 items-start gap-3 rounded-lg border p-3 no-underline transition-colors focus-visible:ring-2 focus-visible:outline-none';
 
 /** A section's hub: one card per tool, each opening a focused page. Used
  * where a second row of tabs would otherwise appear. */
@@ -59,7 +59,7 @@ export const HubCards: FC<HubCardsProps> = ({
             {renderLink(
               item.href,
               <>
-                <span className="bg-primary/15 text-foreground flex size-9 shrink-0 items-center justify-center rounded-md">
+                <span className="bg-primary/25 text-primary-strong flex size-9 shrink-0 items-center justify-center rounded-md">
                   <Icon size={18} aria-hidden />
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -73,7 +73,7 @@ export const HubCards: FC<HubCardsProps> = ({
                       </span>
                     ) : null}
                   </span>
-                  <span className="text-foreground-secondary text-xs">
+                  <span className="text-foreground/80 text-xs">
                     {item.description}
                   </span>
                 </span>

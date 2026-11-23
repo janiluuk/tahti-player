@@ -17,8 +17,8 @@ async function back(
   await acknowledgeGuidelines(page);
   const link = page
     .getByRole('main')
-    .getByTestId('page-back-link')
-    .filter({ hasText: label });
+    .getByRole('link', { name: label, exact: true })
+    .and(page.getByTestId('page-back-link'));
   await expect(link).toHaveAccessibleName(label);
   await link.click();
   await expect(page).toHaveURL(to);

@@ -1,7 +1,6 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { patchMeProfile, type ProfileFields } from '../../../api/studio-extras';
 import {
   NotificationsPanel,
   NotificationsVisibilityPanel,
@@ -28,17 +27,11 @@ vi.mock('../../../api/artist-settings', () => ({
   patchNotificationPrefs: vi.fn(),
 }));
 
-vi.mock('../../../api/studio-extras', () => ({
-  fetchMeProfile: async () => ({
-    data: { id: 'u1', username: 'artist', socialLinks: {} },
-    meta: { source: 'api' },
-  }),
-  patchMeProfile: vi.fn(),
-}));
-
-vi.mock('./TopListsToggle', () => ({ TopListsToggle: () => null }));
-vi.mock('./CommentSettingsToggles', () => ({
-  CommentSettingsToggles: () => null,
+vi.mock('@tahti-player/ui', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@tahti-player/ui')>()),
+  ButtonLink: ({ children }: { children: React.ReactNode }) => (
+    <a href="/studio/profile/visibility">{children}</a>
+  ),
 }));
 
 describe('NotificationsPanel', () => {
@@ -67,31 +60,15 @@ describe('NotificationsPanel', () => {
     expect(await screen.findByText('Revenue moves')).toBeTruthy();
   });
 
-  it('saves whether liked tracks show on the profile', async () => {
-    vi.mocked(patchMeProfile).mockResolvedValue({
-      ok: true,
-      data: { showLikes: false } as ProfileFields,
-    });
+  it('points to Studio for profile visibility instead of showing it here', async () => {
     render(<NotificationsVisibilityPanel />);
-    const toggle = await screen.findByRole('switch', {
-      name: 'Show tracks I like on my profile',
-    });
-    expect(toggle.getAttribute('aria-checked')).toBe('true');
-    fireEvent.click(toggle);
-    expect(patchMeProfile).toHaveBeenCalledWith({ showLikes: false });
-  });
-
-  it('offers no switch that cannot be changed', async () => {
-    render(<NotificationsVisibilityPanel />);
-    await screen.findByRole('switch', {
-      name: 'Show tracks I like on my profile',
-    });
     expect(
-      screen.queryByRole('switch', { name: 'Show favourites' }),
-    ).toBeNull();
+      await screen.findByText(/now in Studio → Profile → Visibility/),
+    ).toBeTruthy();
     expect(
-      screen.queryByRole('switch', { name: 'Announce releases' }),
+      screen.queryByRole('switch', {
+        name: 'Show tracks I like on my profile',
+      }),
     ).toBeNull();
-    expect(screen.queryByText(/Coming soon/i)).toBeNull();
   });
 });

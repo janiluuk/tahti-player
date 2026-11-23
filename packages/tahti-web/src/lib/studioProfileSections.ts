@@ -17,6 +17,7 @@ export const STUDIO_PROFILE_ARTIST_SECTIONS = [
 export const STUDIO_PROFILE_CHANNEL_SECTIONS = [
   'appearance',
   'discovery',
+  'visibility',
   'domain',
 ] as const;
 

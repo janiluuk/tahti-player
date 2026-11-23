@@ -1,5 +1,5 @@
 import { useTranslation } from '@tahti-player/i18n';
-import { Select } from '@tahti-player/ui';
+import { HelpTip, Select } from '@tahti-player/ui';
 
 import { browserLocale, isWebLocale, WEB_LOCALES } from '../../../lib/locale';
 import { useLanguageStore } from '../../../stores/languageStore';
@@ -18,10 +18,19 @@ export function LanguagePanel() {
   ];
 
   return (
-    <div className="flex w-full max-w-xl flex-col" data-testid="language-panel">
+    <div
+      className="flex w-full max-w-xl flex-col gap-1.5"
+      data-testid="language-panel"
+    >
+      <div className="flex items-center gap-1">
+        <span className="text-sm font-semibold">{t('language.label')}</span>
+        <HelpTip
+          label={t('language.helpLabel')}
+          content={t('language.description')}
+        />
+      </div>
       <Select
-        label={t('language.label')}
-        description={t('language.description')}
+        aria-label={t('language.label')}
         options={options}
         value={choice}
         onValueChange={(value) => {

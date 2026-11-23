@@ -2,6 +2,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { ViewShell } from '@tahti-player/ui';
 
 import { PageBackLink } from '../../components/PageBackLink';
+import { ProfileVisibilitySection } from '../../components/ProfileVisibilitySection';
 import { StudioGate } from '../../components/StudioGate';
 import {
   isStudioProfileChannelSection,
@@ -23,7 +24,8 @@ export function StudioProfileSectionView({
   section: StudioProfileSection;
 }) {
   const { t } = useTranslation('web');
-  const channelForm = isStudioProfileChannelSection(section);
+  const channelForm =
+    isStudioProfileChannelSection(section) && section !== 'visibility';
   const card = [
     ...studioProfileArtistItems(t),
     ...studioProfileChannelItems(t),
@@ -41,6 +43,8 @@ export function StudioProfileSectionView({
           <div data-testid={`studio-profile-section-${section}`}>
             {section === 'link-page' ? (
               <LinkPageEditor />
+            ) : section === 'visibility' ? (
+              <ProfileVisibilitySection />
             ) : channelForm ? (
               <ChannelPanel section={section} />
             ) : (

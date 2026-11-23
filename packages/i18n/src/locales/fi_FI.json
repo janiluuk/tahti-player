@@ -733,6 +733,7 @@
       "notificationsDescription": "Sähköposti, sovellusilmoitukset ja maininnat."
     },
     "language": {
+      "helpLabel": "Tietoa kielestä",
       "label": "Kieli",
       "description": "Valikot, painikkeet ja päivämäärät näytetään tällä kielellä. Nimet ja otsikot pysyvät tekijöidensä kirjoittamina.",
       "auto": "Selaimen kieli ({{language}})"
@@ -2040,6 +2041,8 @@
       "myRadioStations": "Omat radioasemani"
     },
     "settingsThemes": {
+      "themeLabel": "Teema",
+      "helpLabel": "Tietoa teemoista",
       "hint": "Valitse värit sekä vaalea, tumma tai vuorokaudenajan mukaan vaihtuva ulkoasu, joka sopii sinulle.",
       "dynamicTheme": "Dynaaminen teema",
       "dynamic": "Dynaaminen",
@@ -2564,6 +2567,8 @@
     "settingsBody": {
       "loading": "Ladataan…",
       "account": {
+        "visibilityMovedNote": "Profiilin näkyvyys (luvut, yhteydet, top-listat ja kommentit) on nyt kohdassa Studio → Profiili → Näkyvyys.",
+        "openVisibility": "Avaa näkyvyysasetukset",
         "signInPrompt": "Kirjaudu hallitaksesi jäsenyyttä ja tietoturvaa.",
         "tabSession": "Istunto",
         "tabPasswordEmail": "Salasana ja sähköposti",
@@ -2572,7 +2577,7 @@
         "tabApiTokens": "API-avaimet",
         "tabMembership": "Jäsenyys",
         "tabStorage": "Tallennustila",
-        "tabNotifications": "Ilmoitukset ja näkyvyys",
+        "tabNotifications": "Ilmoitukset",
         "tabMentions": "Maininnat",
         "tabSubscriptions": "Tilaukseni",
         "tabPurchases": "Ostot",
@@ -9173,6 +9178,8 @@
       "readOnly": "Vain luku"
     },
     "studioProfileView": {
+      "visibility": "Näkyvyys",
+      "visibilityDescription": "Mitä vierailijat näkevät profiilistasi ja julkaisuistasi",
       "identity": "Identiteetti",
       "artistNamePictureGenresAnd": "Artistinimi, kuva, tyylilajit ja kotipaikka.",
       "story": "Tarina",

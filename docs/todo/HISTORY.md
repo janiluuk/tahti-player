@@ -6654,3 +6654,13 @@ and purchases; `?tab=purchases` opens it and scrolls to Purchases.
 `AccountStoragePanel` shows used vs free as a `DonutChart` (green → yellow →
 red as it fills) beside Used / Free / Quota tiles. Session is a profile card
 with the `MediaArtwork` avatar.
+
+## 2026-11-24 - Appearance help tips, Visibility in Studio, round back arrow (0.0.459)
+
+New `HelpTip` in `@tahti-player/ui` (icon button + tooltip, text is the
+accessible description); Settings → Appearance moves the language and theme
+explanations into it. Profile visibility moved from Settings → Notifications
+to Studio → Profile → Channel page → Visibility (`ProfileVisibilitySection`,
+section id `visibility`); Notifications links there. `PageBackLink` renders the
+round `BackButtonLink` (parent name as tooltip + accessible name) on every
+sub-page. `HubCards` contrast raised (icon chip, card background, description).

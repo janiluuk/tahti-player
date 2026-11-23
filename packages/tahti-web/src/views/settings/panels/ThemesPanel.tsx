@@ -1,6 +1,5 @@
 import {
   Check,
-  CircleHelpIcon,
   Download,
   LayoutGrid,
   Pencil,
@@ -15,6 +14,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
+  HelpTip,
   Input,
   Tabs,
   ThemeController,
@@ -41,7 +41,6 @@ import { isPresetCustomThemeId, useThemeStore } from '../../../plugins/themes';
 import { useAmbientStore } from '../../../stores/ambientStore';
 import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
-import { SettingsHint } from '../SettingsFields';
 
 export function ThemesPanel() {
   const { t } = useTranslation('web');
@@ -136,8 +135,16 @@ export function ThemesPanel() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <SettingsHint>{t('settingsThemes.hint')}</SettingsHint>
         <div className="flex flex-wrap items-center gap-4">
+          <span className="flex items-center gap-1">
+            <span className="text-sm font-semibold">
+              {t('settingsThemes.themeLabel')}
+            </span>
+            <HelpTip
+              label={t('settingsThemes.helpLabel')}
+              content={t('settingsThemes.hint')}
+            />
+          </span>
           <ThemeController
             isDark={dark}
             onThemeChange={(nextDark) =>
@@ -160,13 +167,10 @@ export function ThemesPanel() {
             <span className="text-sm font-medium">
               {t('settingsThemes.dynamic')}
             </span>
-            <Tooltip content={t('settingsThemes.dynamicTooltip')}>
-              <CircleHelpIcon
-                size={14}
-                className="text-foreground-secondary"
-                aria-label={t('settingsThemes.dynamicHelp')}
-              />
-            </Tooltip>
+            <HelpTip
+              label={t('settingsThemes.dynamicHelp')}
+              content={t('settingsThemes.dynamicTooltip')}
+            />
           </div>
         </div>
       </div>

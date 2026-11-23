@@ -174,9 +174,7 @@ export const NotificationsAndMentions: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expectVisible(
-      await canvas.findByRole('switch', {
-        name: 'Show my followers on my profile',
-      }),
+      await canvas.findByRole('link', { name: 'Open visibility settings' }),
     );
     await selectTab(canvas, 'Mentions');
     await expectVisible(
