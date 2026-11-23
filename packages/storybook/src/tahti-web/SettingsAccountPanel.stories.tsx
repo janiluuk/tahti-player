@@ -125,11 +125,9 @@ export const NotificationsAndMentions: Story = {
   decorators: [withTahtiRouter('/settings/notifications')],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await selectTab(canvas, 'Notifications & visibility');
+    await selectTab(canvas, 'Notifications');
     await expectVisible(
-      await canvas.findByRole('switch', {
-        name: 'Show my followers on my profile',
-      }),
+      await canvas.findByRole('link', { name: 'Open visibility settings' }),
     );
     await selectTab(canvas, 'Mentions');
     await expectVisible(

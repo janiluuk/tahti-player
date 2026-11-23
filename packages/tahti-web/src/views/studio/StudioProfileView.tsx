@@ -1,6 +1,7 @@
 import {
   BookOpenIcon,
   CompassIcon,
+  EyeIcon,
   FileTextIcon,
   GlobeIcon,
   ImageIcon,
@@ -105,6 +106,13 @@ export function studioProfileChannelItems(t: TFunction<'web'>): HubCardItem[] {
       icon: CompassIcon,
       title: t('studioProfileView.howFansFindYou'),
       description: t('studioProfileView.directoryListingTagsAndSearch'),
+    },
+    {
+      id: 'visibility',
+      href: '/studio/profile/visibility',
+      icon: EyeIcon,
+      title: t('studioProfileView.visibility'),
+      description: t('studioProfileView.visibilityDescription'),
     },
     {
       id: 'domain',

@@ -1,10 +1,9 @@
-import { ArrowLeftIcon } from 'lucide-react';
+import { BackButtonLink, Tooltip } from '@tahti-player/ui';
 
-import { ButtonLink } from '@tahti-player/ui';
-
-/** "← Parent" link at the top of a sub-page. The top bar's back arrow
- * follows browser history, which is empty on a fresh tab or a shared link;
- * this always leads to the page's parent. */
+/** Round back arrow at the top of a sub-page, named for its parent (tooltip
+ * and accessible name). The top bar's back arrow follows browser history,
+ * which is empty on a fresh tab or a shared link; this always leads to the
+ * page's parent. */
 export function PageBackLink({
   to,
   params,
@@ -17,17 +16,15 @@ export function PageBackLink({
   label: string;
 }) {
   return (
-    <ButtonLink
-      className="w-fit"
-      to={to as never}
-      params={params as never}
-      search={search as never}
-      size="xs"
-      variant="text"
-      data-testid="page-back-link"
-    >
-      <ArrowLeftIcon size={14} aria-hidden className="mr-1" />
-      {label}
-    </ButtonLink>
+    <Tooltip content={label} side="right">
+      <BackButtonLink
+        className="bg-background-secondary hover:bg-background-secondary/80 size-10 w-fit"
+        to={to as never}
+        params={params as never}
+        search={search as never}
+        aria-label={label}
+        data-testid="page-back-link"
+      />
+    </Tooltip>
   );
 }

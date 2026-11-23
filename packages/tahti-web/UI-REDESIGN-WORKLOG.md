@@ -7072,3 +7072,10 @@ Validated with affected Storybook plays, UI/theme/unit tests, type-check/lint, a
 
 - `AccountPanel` split: `AccountBillingPanel` (subs + purchases, StatTile summary, Badge status pills) and `AccountStoragePanel` (DonutChart + StatTiles); `ACCOUNT_TAB_IDS` drops `purchases`, `accountTabIndex('purchases')` lands on `subscriptions`.
 - Session tab: profile card (avatar, display name, @username, email).
+
+## 2026-11-24 - Appearance help tips, Visibility page, round back arrow (0.0.459)
+
+- `HelpTip` (ui) + story/test; `LanguagePanel` and `ThemesPanel` use it instead of descriptions and `SettingsHint`.
+- `STUDIO_PROFILE_CHANNEL_SECTIONS` gains `visibility`; `StudioProfileSectionView` renders `ProfileVisibilitySection`; `NotificationsVisibilityPanel` is notifications only, tab renamed "Notifications".
+- `PageBackLink` → `BackButtonLink` in a `Tooltip`; tests check the accessible name, e2e back-link helper finds the link by role + name.
+- `HubCards`: `bg-primary/25 text-primary-strong` chip, `bg-background-secondary/70` card, `text-foreground/80` description.

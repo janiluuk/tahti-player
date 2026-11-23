@@ -119,6 +119,27 @@ export const HowFansFindYou: Story = {
   },
 };
 
+/** Profile visibility moved here from Settings → Notifications: what
+ * visitors see (counts, connections, top lists, comments). */
+export const Visibility: Story = {
+  args: { section: 'visibility' },
+  decorators: [
+    withTahtiRouter('/studio/profile/visibility'),
+    withMockAuth(MOCK_USERS.artist),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = await expectPage(canvasElement, 'Visibility');
+    await expectVisible(
+      await canvas.findByRole('switch', {
+        name: 'Show my followers on my profile',
+      }),
+    );
+    await expect(canvas.getByTestId('page-back-link')).toHaveAccessibleName(
+      'Profile',
+    );
+  },
+};
+
 export const AddressAndDomain: Story = {
   args: { section: 'domain' },
   decorators: [

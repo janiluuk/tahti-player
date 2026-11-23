@@ -733,6 +733,7 @@
       "notificationsDescription": "Email, in-app alerts, and mentions."
     },
     "language": {
+      "helpLabel": "About language",
       "label": "Language",
       "description": "Menus, buttons and dates use this language. Titles and names stay as their creators wrote them.",
       "auto": "Browser language ({{language}})"
@@ -2040,6 +2041,8 @@
       "myRadioStations": "My radio stations"
     },
     "settingsThemes": {
+      "themeLabel": "Theme",
+      "helpLabel": "About themes",
       "hint": "Choose a palette and the light, dark, or time-of-day appearance that suits you.",
       "dynamicTheme": "Dynamic theme",
       "dynamic": "Dynamic",
@@ -2564,6 +2567,8 @@
     "settingsBody": {
       "loading": "Loading…",
       "account": {
+        "visibilityMovedNote": "Profile visibility (counts, connections, top lists and comments) is now in Studio → Profile → Visibility.",
+        "openVisibility": "Open visibility settings",
         "signInPrompt": "Sign in to manage membership and security.",
         "tabSession": "Session",
         "tabPasswordEmail": "Password & email",
@@ -2572,7 +2577,7 @@
         "tabApiTokens": "API tokens",
         "tabMembership": "Membership",
         "tabStorage": "Storage",
-        "tabNotifications": "Notifications & visibility",
+        "tabNotifications": "Notifications",
         "tabMentions": "Mentions",
         "tabSubscriptions": "Your subs",
         "tabPurchases": "Purchases",
@@ -9177,6 +9182,8 @@
       "readOnly": "Read-only"
     },
     "studioProfileView": {
+      "visibility": "Visibility",
+      "visibilityDescription": "What visitors see on your profile and uploads",
       "identity": "Identity",
       "artistNamePictureGenresAnd": "Artist name, picture, genres and where you are based.",
       "story": "Story",

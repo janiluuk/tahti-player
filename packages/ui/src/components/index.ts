@@ -31,6 +31,7 @@ export * from './DataTable';
 export * from './EmptyState';
 export * from './FilterChips';
 export * from './FilterBar';
+export * from './HelpTip';
 export * from './HistoryDayGroup';
 export * from './HistoryRow';
 export * from './ImageCropDialog';
