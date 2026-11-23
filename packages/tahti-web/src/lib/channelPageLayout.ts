@@ -7,7 +7,6 @@ import { webT } from './webT';
 export const CHANNEL_PAGE_ITEM_TYPES = [
   'hero',
   'sound',
-  'chat',
   'about',
   'links',
   'subscribe',
@@ -84,10 +83,6 @@ export const CHANNEL_PAGE_ITEM_META: Record<
   sound: {
     label: 'Tracks',
     hint: 'Published channel tracks',
-  },
-  chat: {
-    label: 'Chat',
-    hint: 'Right-rail chat (no in-page panel)',
   },
   about: {
     label: 'About',
@@ -203,7 +198,6 @@ export function channelLayoutPresets(
         item('about', true),
         item('sound', true),
         item('subscribe', false),
-        item('chat', false),
         item('links', false),
         item('stats', true),
         item('headerStats', true),
@@ -230,7 +224,6 @@ export function channelLayoutPresets(
         item('subscribe', true),
         item('sound', true),
         item('about', true),
-        item('chat', false),
         item('links', false),
         item('stats', true),
         item('headerStats', true),
@@ -258,7 +251,6 @@ export function channelLayoutPresets(
         item('about', true),
         item('subscribe', true),
         item('links', true),
-        item('chat', false),
         item('stats', true),
         item('headerStats', true),
       ],
@@ -285,7 +277,6 @@ export function channelLayoutPresets(
         item('sound', true),
         item('about', true),
         item('links', false),
-        item('chat', false),
         item('stats', true),
         item('headerStats', true),
       ],
@@ -325,7 +316,6 @@ export function defaultChannelPageLayout(): Array<{
     item('stats', true),
     item('headerStats', true),
     item('events', false),
-    item('chat', false),
     item('navigation', false),
     // Hidden by default for ordinary artist channels -- ChannelView forces
     // this one into view for RADIO-kind channels regardless of this flag.
@@ -651,7 +641,6 @@ function defaultNavigationTabs(
           (i) =>
             i.visible &&
             i.type !== 'hero' &&
-            i.type !== 'chat' &&
             i.type !== 'navigation' &&
             !BACKDROP_FOLDED_ITEM_TYPES.includes(i.type as ChannelPageItemType),
         )

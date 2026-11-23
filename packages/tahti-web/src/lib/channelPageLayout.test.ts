@@ -36,6 +36,15 @@ describe('normalizeLayout', () => {
     expect(out.some((item) => item.id === 'x')).toBe(false);
   });
 
+  it('drops legacy chat layout blocks from saved layouts', () => {
+    const out = normalizeLayout([
+      { id: 'hero', type: 'hero', visible: true },
+      { id: 'chat', type: 'chat' as never, visible: true },
+    ]);
+    expect(out.some((item) => item.type === ('chat' as never))).toBe(false);
+    expect(out.some((item) => item.type === 'hero')).toBe(true);
+  });
+
   it('drops embed items missing an embedInstanceId', () => {
     const out = normalizeLayout([{ id: 'e1', type: 'embed', visible: true }]);
     expect(out.some((item) => item.id === 'e1')).toBe(false);
@@ -252,8 +261,9 @@ describe('setPlaylistSlug / setPlaylistDisplay', () => {
 
 describe('addItemType', () => {
   it('appends a new, visible item for a type not yet present', () => {
-    const out = addItemType(defaultChannelPageLayout(), 'chat');
-    const added = out.find((i) => i.type === 'chat');
+    const base = defaultChannelPageLayout().filter((i) => i.type !== 'events');
+    const out = addItemType(base, 'events');
+    const added = out.find((i) => i.type === 'events');
     expect(added?.visible).toBe(true);
   });
 

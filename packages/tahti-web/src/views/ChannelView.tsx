@@ -435,7 +435,7 @@ export function ChannelView({ slug }: { slug: string }) {
           />
         );
       default:
-        // Every other block type (sound/chat/navigation/about/links/
+        // Every other block type (sound/navigation/about/links/
         // programming/stats/events/subscribe/embed/playlist) is small
         // enough (2-6 free variables each) to live in its own file --
         // see ChannelViewBlocks.tsx for the exhaustiveness guard covering
@@ -452,8 +452,6 @@ export function ChannelView({ slug }: { slug: string }) {
           liveShows,
           sectionStatus,
           onRetrySection: retrySection,
-          chatOn,
-          onOpenChat: openChat,
           listenerWidgetInstances,
         });
     }

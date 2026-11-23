@@ -353,7 +353,6 @@ export function ChannelLayersPanel({
                   (candidate) =>
                     candidate.visible &&
                     candidate.type !== 'hero' &&
-                    candidate.type !== 'chat' &&
                     candidate.type !== 'navigation' &&
                     !BACKDROP_FOLDED_ITEM_TYPES.includes(
                       candidate.type as ChannelPageItemType,
