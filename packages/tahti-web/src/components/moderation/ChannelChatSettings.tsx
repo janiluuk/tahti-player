@@ -96,7 +96,8 @@ export function ChannelChatSettings({
     <section
       id="chat"
       className="flex flex-col gap-4"
-      aria-labelledby={headingId}
+      aria-labelledby={hideHeading ? undefined : headingId}
+      aria-label={hideHeading ? t('channelChatSettings.chat') : undefined}
       data-testid="fans-chat-settings"
     >
       {hideHeading ? null : (

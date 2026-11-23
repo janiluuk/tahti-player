@@ -154,9 +154,16 @@ async function renderView(entry?: string) {
   });
 }
 
+async function switchTab(name: string) {
+  await act(async () => {
+    fireEvent.click(screen.getByRole('tab', { name }));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+}
+
 describe('StudioCollectionEditView add-track keeps unsaved details edits', () => {
   it('does not overwrite an in-progress title edit when a track is added', async () => {
-    await renderView();
+    await renderView('/studio/collections/my-album?edit=true&tab=details');
 
     const titleInput = screen.getByLabelText('Title') as HTMLInputElement;
     await act(async () =>
@@ -164,6 +171,7 @@ describe('StudioCollectionEditView add-track keeps unsaved details edits', () =>
     );
     expect(titleInput.value).toBe('My Edited Name');
 
+    await switchTab('Tracks');
     await act(async () =>
       fireEvent.click(screen.getByRole('button', { name: /Add content to/ })),
     );
@@ -172,9 +180,15 @@ describe('StudioCollectionEditView add-track keeps unsaved details edits', () =>
     );
 
     expect(addStudioCollectionItem).toHaveBeenCalledWith('my-album', 'sound-1');
-    // The title input still shows the unsaved edit — a full reload() would
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Done' })),
+    );
+    // The Details tab still shows the unsaved edit — a full reload() would
     // have overwritten it with the (changed) server value.
-    expect(titleInput.value).toBe('My Edited Name');
+    await switchTab('Details');
+    expect((screen.getByLabelText('Title') as HTMLInputElement).value).toBe(
+      'My Edited Name',
+    );
   });
 });
 

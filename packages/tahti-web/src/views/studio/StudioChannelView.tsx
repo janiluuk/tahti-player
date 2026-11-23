@@ -4,7 +4,6 @@ import {
   MessageSquareIcon,
   PinIcon,
   PlusIcon,
-  RadioIcon,
   RadioTowerIcon,
   WifiIcon,
 } from 'lucide-react';
@@ -77,7 +76,10 @@ function ChannelHomeLinks() {
   const { t } = useTranslation('web');
   const username = useAuthStore((s) => s.user?.username);
   return (
-    <StudioPanel title={t('studioChannelView.programmeOnSchedule')}>
+    <StudioPanel
+      title={t('studioChannelView.programmeOnSchedule')}
+      description={t('studioChannelView.programmeOnScheduleDescription')}
+    >
       <div className="flex flex-col gap-2">
         <ButtonLink
           to="/studio/schedule"
@@ -203,15 +205,7 @@ function RadioSection({ tab }: { tab: ChannelRadioTab }) {
         }))}
       />
       <ChannelHomeLinks />
-      <StudioPanel
-        title="Tahti Radio"
-        description={t('studioChannelView.programmeOnScheduleDescription')}
-      >
-        <div className="mb-3">
-          <RadioIcon size={16} className="text-foreground-secondary" />
-        </div>
-        <StudioRadioSubmissionPanel />
-      </StudioPanel>
+      <StudioRadioSubmissionPanel />
     </ChannelSectionBlock>
   );
 }

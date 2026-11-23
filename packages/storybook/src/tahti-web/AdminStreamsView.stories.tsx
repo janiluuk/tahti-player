@@ -27,17 +27,27 @@ export const Default: Story = {
     });
     await waitFor(() => expect(live).toBeVisible());
     await expect(
-      canvas.getByRole('heading', { name: 'Channel 24/7 rotation' }),
-    ).toBeVisible();
-    await expect(
-      canvas.getByRole('heading', { name: 'Channel tracks' }),
-    ).toBeVisible();
+      canvas.queryByRole('heading', { name: 'Channel 24/7 rotation' }),
+    ).toBeNull();
     await userEvent.click(
       canvas.getByRole('button', { name: 'Expand live streams' }),
     );
     await expect(
       canvas.getByRole('button', { name: 'Collapse live streams' }),
     ).toHaveAttribute('aria-expanded', 'true');
+
+    await userEvent.click(canvas.getByRole('tab', { name: 'Ingest settings' }));
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('heading', { name: 'Channel 24/7 rotation' }),
+      ).toBeVisible(),
+    );
+    await expect(
+      canvas.getByRole('heading', { name: 'Channel tracks' }),
+    ).toBeVisible();
+    await expect(
+      canvas.queryByRole('heading', { name: 'Live streams (2)' }),
+    ).toBeNull();
   },
 };
 
@@ -49,6 +59,9 @@ export const ChannelTracksSoftCover: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await userEvent.click(
+      await canvas.findByRole('tab', { name: 'Ingest settings' }),
+    );
     const open = await canvas.findByRole('button', { name: /Open tracks/ });
     const form = within(open.closest('form') as HTMLElement);
     await userEvent.type(

@@ -82,22 +82,31 @@ test('artist can sign in and reach broadcast and upload tools', async ({
   ).toBeVisible();
 });
 
-test('studio home groups its tools and the Stats card opens Stats', async ({
+test('studio home has one tile per Studio tab and the Stats tile opens Stats', async ({
   page,
 }) => {
   await signIn(page);
   await page.goto('/studio');
 
-  await expect(page.getByRole('heading', { name: 'Studio' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Studio', level: 1 }),
+  ).toBeVisible();
   const main = page.getByRole('main');
-  for (const group of ['Broadcast', 'Music', 'Audience & channel']) {
-    await expect(
-      main.getByRole('heading', { name: group, level: 2, exact: true }),
-    ).toBeVisible();
+  await expect(
+    main.getByRole('heading', { name: 'Studio', level: 2, exact: true }),
+  ).toBeVisible();
+  for (const href of [
+    '/studio/releases',
+    '/studio/broadcast',
+    '/studio/fans',
+    '/studio/stats',
+    '/studio/profile',
+  ]) {
+    await expect(main.locator(`a[href="${href}"]`).first()).toBeVisible();
   }
-  await expect(main.getByRole('link', { name: /^Go live/ })).toBeVisible();
-  await expect(main.getByRole('link', { name: /^Upload/ })).toBeVisible();
-  await expect(main.getByRole('link', { name: /^Releases/ })).toBeVisible();
+  await expect(
+    main.getByRole('heading', { name: 'Audience & channel' }),
+  ).toHaveCount(0);
   await main.getByRole('link', { name: /^Stats Plays/ }).click();
   await expect(page).toHaveURL(/\/studio\/stats$/);
 });
@@ -229,8 +238,11 @@ test('collections combine albums, EPs, DJ sets, and playlists', async ({
 
   await page.goto('/studio/collections/midnight-archive');
   await page.getByRole('button', { name: 'Edit details' }).click();
+  await page.getByRole('tab', { name: 'Details' }).click();
+  await expect(page).toHaveURL(/tab=details/);
   await expect(page.getByLabel('Release date')).toBeVisible();
   await expect(page.getByLabel('Genres')).toBeVisible();
+  await page.getByRole('tab', { name: 'Sharing' }).click();
   await expect(page.getByLabel('Visibility')).toBeVisible();
 
   await page.goto('/studio/collections');
@@ -527,15 +539,21 @@ test('help center documents artist gallery upload and reorder', async ({
   await expect(page.getByText(/no separate Add images button/)).toBeVisible();
 });
 
-test('the Channel Radio section keeps Stream, 24/7, Tahti Radio and Multicast as tabs', async ({
+test('the Channel Radio section keeps Stream, Pinned and Multicast as tabs', async ({
   page,
 }) => {
   await signIn(page);
   await page.goto('/studio/channel?tab=radio');
   await expect(page).toHaveURL(/\/studio\/channel#radio$/);
   await expect(
-    page.getByRole('heading', { name: 'Radio', level: 2 }),
+    page.getByRole('heading', { name: 'Radio', exact: true, level: 2 }),
   ).toBeVisible();
+  for (const tab of ['Stream', 'Pinned', 'Multicast']) {
+    await expect(
+      page.getByRole('tab', { name: tab, exact: true }),
+    ).toBeVisible();
+  }
+  await expect(page.getByRole('tab', { name: 'Tahti Radio' })).toHaveCount(0);
   await expect(
     page
       .getByRole('navigation', { name: 'Broadcast pages' })

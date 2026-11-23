@@ -45,7 +45,9 @@ test('artist: a Fans page links back to the Fans hub', async ({ page }) => {
     .getByRole('link', { name: /Earnings/ })
     .click();
   await expect(page).toHaveURL(/\/studio\/audience$/);
-  await expect(page.getByRole('heading', { name: 'Earnings' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Earnings', level: 1 }),
+  ).toBeVisible();
   await page.getByTestId('studio-fans-back').click();
   await expect(page).toHaveURL(/\/studio\/fans$/);
 });

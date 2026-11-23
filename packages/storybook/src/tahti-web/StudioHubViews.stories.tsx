@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { StudioBroadcastView } from '@tahti-web/views/studio/StudioBroadcastView';
+import { StudioChatView } from '@tahti-web/views/studio/StudioChatView';
 import { StudioFansView } from '@tahti-web/views/studio/StudioFansView';
 import { StudioProfileView } from '@tahti-web/views/studio/StudioProfileView';
 import { expect, userEvent, within } from 'storybook/test';
@@ -18,7 +19,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, channel manager, one agenda of shows, events and parties, and tool cards), **Fans** (Tools hub cards; Chat tab for live chat settings) and **Profile** (artist profile and channel page settings). Each card opens a focused page.',
+          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, channel manager, one agenda of shows, events and parties, and tool cards), **Fans** (hub cards, including Chat, which opens its own page at `/studio/chat`) and **Profile** (artist profile and channel page settings). Each card opens a focused page.',
       },
     },
   },
@@ -36,18 +37,14 @@ export const Fans: Story = {
     await expect(
       await canvas.findByRole('heading', { name: /^Fans$|^Fanit$/ }),
     ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole('tab', { name: /^Tools$|^Työkalut$/ }),
-    ).toHaveAttribute('aria-selected', 'true');
-    await expect(
-      canvas.getByRole('tab', { name: /^Chat$/ }),
-    ).toBeInTheDocument();
+    await expect(canvas.queryByRole('tab')).toBeNull();
     const links = within(
       canvas.getByRole('list', { name: /^Fans tools$|^Fanityökalut$/ }),
     ).getAllByRole('link');
     await expect(links.map((link) => link.getAttribute('href'))).toEqual([
       '/studio/updates',
       '/studio/updates?tab=newsletter',
+      '/studio/chat',
       '/studio/audience?tab=tiers',
       '/studio/audience?tab=store',
       '/studio/audience',
@@ -57,8 +54,17 @@ export const Fans: Story = {
         name: /^Recent messages$|^Viimeisimmät viestit$/,
       }),
     ).toBeNull();
+  },
+};
 
-    await userEvent.click(canvas.getByRole('tab', { name: /^Chat$/ }));
+export const Chat: Story = {
+  decorators: [withTahtiRouter('/studio/chat')],
+  render: () => <StudioChatView />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('heading', { name: /^Chat$/ }),
+    ).toBeInTheDocument();
     await expect(
       await canvas.findByRole('tab', { name: /^Messages$|^Viestit$/ }),
     ).toHaveAttribute('aria-selected', 'true');
@@ -71,7 +77,7 @@ export const Fans: Story = {
       canvas.getByRole('tab', { name: /^Moderators$|^Moderaattorit$/ }),
     );
     await expect(
-      canvas.getByRole('heading', {
+      await canvas.findByRole('heading', {
         name: /^Channel moderators$|^Kanavan moderaattorit$/,
       }),
     ).toBeInTheDocument();
@@ -104,17 +110,9 @@ export const Profile: Story = {
       'href',
       '/studio/profile/appearance',
     );
-    const chat = channel.find((link) => /Chat/.test(link.textContent ?? ''));
-    const moderators = channel.find((link) =>
-      /Moderators/.test(link.textContent ?? ''),
-    );
-    await expect(chat).toBeDefined();
-    await expect(moderators).toBeDefined();
-    await expect(chat).toHaveAttribute('href', '/studio/fans?tab=chat');
-    await expect(moderators).toHaveAttribute(
-      'href',
-      '/studio/fans?tab=chat&section=moderators',
-    );
+    await expect(
+      channel.some((link) => /Chat|Moderators/.test(link.textContent ?? '')),
+    ).toBe(false);
   },
 };
 

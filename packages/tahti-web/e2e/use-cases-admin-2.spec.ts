@@ -121,9 +121,10 @@ test('admin: Co-op governance hub cards open grants and the AGM', async ({
 
 test('admin: add-ons filter to the ones that need review', async ({ page }) => {
   await open(page, '/admin/addons');
-  const review = main(page).getByRole('radio', { name: /^Needs review/ });
+  const review = main(page).getByRole('tab', { name: /^Needs review/ });
   await review.click();
-  await expect(review).toHaveAttribute('aria-checked', 'true');
+  await expect(review).toHaveAttribute('aria-selected', 'true');
+  await expect(page).toHaveURL(/\/admin\/addons\?tab=review$/);
   await expect(page.getByText('Something went wrong')).toHaveCount(0);
 });
 

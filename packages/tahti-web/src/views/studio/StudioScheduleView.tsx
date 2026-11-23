@@ -1,4 +1,4 @@
-import { useNavigate, useSearch } from '@tanstack/react-router';
+import { useLocation, useNavigate, useSearch } from '@tanstack/react-router';
 import { PlusIcon } from 'lucide-react';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
@@ -39,8 +39,14 @@ export type ScheduleTab = 'slots' | 'programme';
 export const scheduleShow = (value: unknown): ScheduleShow =>
   value === 'events' || value === 'parties' ? value : 'broadcasts';
 
-export const scheduleTab = (value: unknown): ScheduleTab =>
-  value === 'programme' ? 'programme' : 'slots';
+/** Programme panels live on the second tab, so links that only carry their
+ * anchor (`#channel-programme`, `#channel-clips`) open that tab too. */
+export const scheduleTab = (value: unknown, hash = ''): ScheduleTab =>
+  value === 'programme' ||
+  hash === 'channel-programme' ||
+  hash === 'channel-clips'
+    ? 'programme'
+    : 'slots';
 
 function showFilters(t: TFunction<'web'>) {
   return [
@@ -68,7 +74,8 @@ export function StudioScheduleView() {
     tab?: string;
   };
   const show = scheduleShow(search.show);
-  const tab = scheduleTab(search.tab);
+  const hash = useLocation({ select: (location) => location.hash });
+  const tab = scheduleTab(search.tab, hash);
   const form = useScheduleForm();
 
   return (

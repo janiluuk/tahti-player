@@ -83,12 +83,16 @@ test('artist: old Events, Listening parties and Radio addresses redirect', async
   await expect(
     page.getByRole('radio', { name: 'Events', checked: true }),
   ).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Invites' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
   await page.goto('/studio/listening-parties');
   await expect(page).toHaveURL(/\/studio\/schedule\?show=parties$/);
   await page.goto('/studio/channel?tab=radio');
   await expect(page).toHaveURL(/\/studio\/channel#radio$/);
   await expect(
-    page.getByRole('heading', { name: 'Radio', level: 2 }),
+    page.getByRole('heading', { name: 'Radio', exact: true, level: 2 }),
   ).toBeVisible();
 });
 

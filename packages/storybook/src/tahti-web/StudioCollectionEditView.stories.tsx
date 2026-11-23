@@ -15,7 +15,7 @@ const meta: Meta<typeof StudioCollectionEditView> = {
     docs: {
       description: {
         component:
-          'Library → Collections → one album, EP or series. Opens read-only: the header with cover, Play and queue, and the tracklist. The pencil icon button (Edit details) shows the details form, text layer, imports, Save and track reordering; `?edit=true` opens it straight in edit mode.',
+          'Library → Collections → one album, EP or series. Opens read-only: the header with cover, Play and queue, and the tracklist. The pencil icon button (Edit details) switches to edit mode with Tracks (imports, reordering), Details, Artwork (text layer) and Sharing tabs (`?tab=`) plus Save; `?edit=true` opens it straight in edit mode.',
       },
     },
   },
@@ -54,8 +54,13 @@ export const Editing: Story = {
       await canvas.findByRole('button', { name: 'Done editing' }),
     ).toHaveAttribute('aria-pressed', 'true');
     await expect(canvas.getByRole('button', { name: 'Save' })).toBeVisible();
+    await expect(canvas.getByRole('tab', { name: 'Tracks' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await userEvent.click(canvas.getByRole('tab', { name: 'Artwork' }));
     await expect(
-      canvas.getByRole('heading', { name: 'Text layer' }),
+      await canvas.findByRole('heading', { name: 'Text layer' }),
     ).toBeVisible();
   },
 };

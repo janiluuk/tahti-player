@@ -134,7 +134,6 @@ export function designLayout(): ChannelPageItem[] {
         },
       ],
     },
-    { id: 'chat', type: 'chat', visible: false },
   ];
 }
 

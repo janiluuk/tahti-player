@@ -10,6 +10,12 @@ import {
   movedSettingsSection,
   type MovedSettingsSection,
 } from '../lib/movedSettingsSections';
+import {
+  isScheduleEventTab,
+  isScheduleSearchTab,
+  type ScheduleEventTab,
+  type ScheduleSearchTab,
+} from '../lib/scheduleTabs';
 import { isStudioProfileSection } from '../lib/studioProfileSections';
 import { parseStudioSoundsSearch } from '../lib/studioSoundsSearch';
 import { editSearch } from '../lib/useEditMode';
@@ -277,11 +283,11 @@ export const studioScheduleRoute = createRoute({
   path: '/studio/schedule',
   validateSearch: (
     search: Record<string, unknown>,
-  ): { show?: 'events' | 'parties'; tab?: 'programme' } => ({
+  ): { show?: 'events' | 'parties'; tab?: ScheduleSearchTab } => ({
     ...(search.show === 'events' || search.show === 'parties'
       ? { show: search.show }
       : {}),
-    ...(search.tab === 'programme' ? { tab: 'programme' as const } : {}),
+    ...(isScheduleSearchTab(search.tab) ? { tab: search.tab } : {}),
   }),
   component: StudioScheduleView,
 });
@@ -606,8 +612,10 @@ export const studioVenuesRoute = createRoute({
 export const studioEventsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/events',
-  validateSearch: (search: Record<string, unknown>): { tab?: string } =>
-    typeof search.tab === 'string' ? { tab: search.tab } : {},
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: ScheduleEventTab } =>
+    isScheduleEventTab(search.tab) ? { tab: search.tab } : {},
   beforeLoad: ({ search }) => {
     throw redirect({
       to: '/studio/schedule',

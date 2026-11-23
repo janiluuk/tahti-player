@@ -1,3 +1,9 @@
+## 2026-11-23 - Master CI fixes after the design-audit PRs (0.0.447)
+
+Schedule keeps Events tabs (route search), programme anchors open the
+Programme tab, Channel shows Tahti Radio once, `/studio/chat` section label.
+Tests, stories and e2e follow the new tabs; 11 Finnish strings.
+
 ## 2026-11-23 - Collection edit + Distribution tabs (0.0.446)
 
 Collection edit: Tracks · Details · Artwork · Sharing. Distribution: Status ·

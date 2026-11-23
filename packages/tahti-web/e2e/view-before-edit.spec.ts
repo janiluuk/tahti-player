@@ -15,6 +15,7 @@ test('a collection opens read-only and Edit details reveals the form', async ({
   await expect(page.getByRole('button', { name: 'Save' })).toHaveCount(0);
   await page.getByRole('button', { name: 'Edit details' }).click();
   await expect(page).toHaveURL(/edit=true/);
+  await page.getByRole('tab', { name: 'Details' }).click();
   await expect(page.getByLabel('Release date')).toBeVisible();
   await page.getByRole('button', { name: 'Done editing' }).click();
   await expect(page.getByLabel('Release date')).toHaveCount(0);

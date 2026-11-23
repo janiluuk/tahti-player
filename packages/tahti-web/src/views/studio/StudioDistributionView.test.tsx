@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as distribution from '../../api/distribution';
@@ -66,7 +66,9 @@ describe('StudioDistributionView', () => {
         data: [],
         meta: { source: 'api', reason: 'Revelator is unavailable' },
       } as never);
-    await renderWithRouter(<StudioDistributionView />);
+    await renderWithRouter(<StudioDistributionView />, {
+      at: '/?tab=royalties',
+    });
     expect(
       await screen.findByText('Could not load your royalty reports.'),
     ).toBeTruthy();
@@ -77,10 +79,12 @@ describe('StudioDistributionView', () => {
       meta: { source: 'api' },
     } as never);
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-    expect(await screen.findByText('No releases yet')).toBeTruthy();
-    expect(
-      screen.queryByText('Could not load your royalty reports.'),
-    ).toBeNull();
+    await waitFor(() =>
+      expect(
+        screen.queryByText('Could not load your royalty reports.'),
+      ).toBeNull(),
+    );
+    expect(screen.getByText('All royalty reports')).toBeTruthy();
   });
 
   it('shows the last loaded royalty reports at once and keeps them when a refresh fails', async () => {
@@ -102,7 +106,9 @@ describe('StudioDistributionView', () => {
     const royalties = vi
       .spyOn(distribution, 'fetchAllRoyalties')
       .mockResolvedValue({ data: [row], meta: { source: 'api' } } as never);
-    const first = await renderWithRouter(<StudioDistributionView />);
+    const first = await renderWithRouter(<StudioDistributionView />, {
+      at: '/?tab=royalties',
+    });
     expect(await screen.findByText('Night Drive')).toBeTruthy();
     first.unmount();
 
@@ -116,7 +122,9 @@ describe('StudioDistributionView', () => {
           } as never);
       }),
     );
-    await renderWithRouter(<StudioDistributionView />);
+    await renderWithRouter(<StudioDistributionView />, {
+      at: '/?tab=royalties',
+    });
     expect(screen.getByText('Night Drive')).toBeTruthy();
     expect(screen.queryByText('Loading…')).toBeNull();
 
