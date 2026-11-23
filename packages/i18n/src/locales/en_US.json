@@ -7974,8 +7974,8 @@
     "multistreamPanel": {
       "addMultistreamDestination": "Add multistream destination",
       "chooseAPlatformToConfigure": "Choose a platform to configure.",
-      "multistream": "Multistream",
-      "destinationsForThisSessionAdd": "Destinations for this session. Add or edit targets here; Studio → Broadcast → Channel → Multicast shows the same list.",
+      "multistream": "Destinations",
+      "destinationsForThisSessionAdd": "Destinations for this session. Add or edit targets here; saved destinations live under Studio → Channel.",
       "addDestination": "Add destination",
       "removeDestination": "Remove destination",
       "openSettings": "Saved destinations"
@@ -12803,7 +12803,7 @@
         "open": "How broadcasting works",
         "connect": "Connect OBS, Streamlabs, Traktor, Mixxx or another Icecast-compatible app with the server and stream key (or mount and password) under Stream credentials. Pick your app there to see the matching fields.",
         "obs": "Using OBS? The \"Ready-made OBS setup\" download under Stream credentials bundles a scene preset with this channel's current credentials already filled in.",
-        "multistream": "Destinations mirror your broadcast to other platforms. Recording defaults live on the Recordings page and green room defaults in Studio → Broadcast → Channel; this page is for the session in progress."
+        "multistream": "Destinations mirror your broadcast to other platforms. Reuse saved destinations from Studio → Channel, or add one for this session only."
       },
       "share": {
         "copy": "Copy channel link",
@@ -12896,7 +12896,8 @@
         "reconnectingTitle": "Encoder signal lost",
         "reconnectBy": "Your encoder dropped. Reconnect it by {{time}} to keep the broadcast going.",
         "reconnectSoon": "Your encoder dropped. Reconnect it soon to keep the broadcast going."
-      }
+      },
+      "moreActions": "More Go live actions"
     },
     "batch51": {
       "mcpCouldNotStart": "The MCP server could not start",

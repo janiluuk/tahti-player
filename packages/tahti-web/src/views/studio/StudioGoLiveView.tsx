@@ -250,9 +250,13 @@ export function StudioGoLiveView() {
   };
 
   const captionFor = (step: GoLiveStepId): string | undefined => {
+    const isCurrent = step === selected;
     switch (step) {
       case 'show-info':
-        return preflight?.title?.trim() || t('goLivePage.caption.required');
+        if (progress.showNameSaved) {
+          return isCurrent ? preflight?.title?.trim() || undefined : undefined;
+        }
+        return t('goLivePage.caption.required');
       case 'credentials':
         return progress.settingsFailed
           ? t('goLivePage.caption.couldNotLoad')
@@ -261,21 +265,24 @@ export function StudioGoLiveView() {
         if (reconnecting) {
           return t('goLivePage.caption.reconnecting');
         }
-        return progress.signalOk
-          ? t('goLivePage.caption.connected')
-          : t('goLivePage.caption.required');
+        if (progress.signalOk) {
+          return isCurrent ? t('goLivePage.caption.connected') : undefined;
+        }
+        return t('goLivePage.caption.required');
       case 'recording':
-        return state.recordEnabled
-          ? t('goLivePage.caption.recordingOn')
-          : t('goLivePage.caption.recordingOff');
+        if (!isCurrent || !state.recordEnabled) {
+          return undefined;
+        }
+        return t('goLivePage.caption.recordingOn');
       case 'destinations':
-        return state.targets.length > 0
-          ? t('goLivePage.caption.destinations', {
-              count: state.targets.length,
-            })
-          : t('goLivePage.caption.optional');
+        if (!isCurrent || state.targets.length === 0) {
+          return undefined;
+        }
+        return t('goLivePage.caption.destinations', {
+          count: state.targets.length,
+        });
       default:
-        return t('goLivePage.caption.optional');
+        return undefined;
     }
   };
 
@@ -331,7 +338,7 @@ export function StudioGoLiveView() {
             {!loaded ? (
               <GoLiveSkeleton />
             ) : (
-              <div className="grid w-full gap-6 md:grid-cols-[16rem_minmax(0,1fr)]">
+              <div className="grid w-full gap-6 md:grid-cols-[12rem_minmax(0,1fr)]">
                 <Stepper
                   steps={steps}
                   aria-label={t('goLivePage.stepper.label')}

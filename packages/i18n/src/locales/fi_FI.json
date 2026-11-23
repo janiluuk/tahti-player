@@ -7970,8 +7970,8 @@
     "multistreamPanel": {
       "addMultistreamDestination": "Lisää monilähetyksen kohde",
       "chooseAPlatformToConfigure": "Valitse määritettävä alusta.",
-      "multistream": "Monilähetys",
-      "destinationsForThisSessionAdd": "Tämän istunnon kohteet. Lisää ja muokkaa kohteita täällä; Studio → Lähetys → Kanava → Monilähetys näyttää saman listan.",
+      "multistream": "Kohteet",
+      "destinationsForThisSessionAdd": "Tämän lähetyksen kohteet. Lisää tai muokkaa niitä täällä; tallennetut kohteet ovat Studiossa → Kanava.",
       "addDestination": "Lisää kohde",
       "removeDestination": "Poista kohde",
       "openSettings": "Tallennetut kohteet"
@@ -12799,7 +12799,7 @@
         "open": "Miten lähettäminen toimii",
         "connect": "Yhdistä OBS, Streamlabs, Traktor, Mixxx tai muu Icecast-yhteensopiva sovellus Lähetystunnukset-kohdan palvelimella ja striimiavaimella (tai mountilla ja salasanalla). Valitse sovelluksesi sieltä nähdäksesi sitä vastaavat kentät.",
         "obs": "Käytätkö OBS:ää? Lähetystunnukset-kohdan \"Valmis OBS-asetus\" -lataus sisältää näkymäpohjan, johon tämän kanavan nykyiset tunnukset on jo täytetty.",
-        "multistream": "Kohteet välittävät lähetyksesi muille alustoille. Tallennuksen oletukset ovat Nauhoitukset-sivulla ja green roomin oletukset kohdassa Studio → Lähetys → Kanava; tämä sivu koskee käynnissä olevaa lähetystä."
+        "multistream": "Kohteet peilaavat lähetyksen muille alustoille. Käytä tallennettuja kohteita Studiossa → Kanava, tai lisää vain tätä istuntoa varten."
       },
       "share": {
         "copy": "Kopioi kanavan linkki",
@@ -12892,7 +12892,8 @@
         "reconnectingTitle": "Enkooderin signaali katkesi",
         "reconnectBy": "Enkooderi katkesi. Yhdistä se uudelleen klo {{time}} mennessä, jotta lähetys jatkuu.",
         "reconnectSoon": "Enkooderi katkesi. Yhdistä se pian uudelleen, jotta lähetys jatkuu."
-      }
+      },
+      "moreActions": "Lisää Go live -toimintoja"
     },
     "batch51": {
       "mcpCouldNotStart": "MCP-palvelin ei käynnistynyt",
