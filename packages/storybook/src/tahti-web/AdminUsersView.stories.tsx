@@ -28,6 +28,7 @@ export const Default: Story = {
         canvas.getByRole('heading', { name: 'DJ Moonlight' }),
       ).toBeVisible(),
     );
+    await userEvent.click(canvas.getByRole('tab', { name: 'Account' }));
     await expect(
       canvas.getByRole('heading', { name: 'Account details' }),
     ).toBeVisible();

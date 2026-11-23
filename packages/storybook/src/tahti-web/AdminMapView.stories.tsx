@@ -24,18 +24,21 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByRole('heading', { level: 1, name: 'Tahti map' }),
+      canvas.getByRole('heading', { level: 1, name: 'Map' }),
     ).toBeVisible();
     for (const section of ['Anonymous', 'Auth', 'Flows', 'Features']) {
       await expect(canvas.getByRole('link', { name: section })).toBeVisible();
     }
+    await expect(
+      canvas.getByRole('tablist', { name: 'Admin sections' }),
+    ).toBeVisible();
     await expect(canvas.getByRole('tab', { name: 'Platform' })).toHaveAttribute(
       'aria-selected',
       'true',
     );
     await expect(canvas.getByTestId('admin-hub-back')).toHaveAttribute(
       'href',
-      '/admin/hubs/platform',
+      '/admin/diagnostics',
     );
   },
 };
