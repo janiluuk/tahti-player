@@ -7119,7 +7119,9 @@
     },
     "adminStreamsView": {
       "admin": "Admin",
-      "streams": "Streams"
+      "streams": "Streams",
+      "liveNow": "Live now",
+      "ingestSettings": "Ingest settings"
     },
     "adminStorageView": {
       "admin": "Admin",
@@ -8159,7 +8161,9 @@
       "addOnReviewStatus": "Add-on review status",
       "intro": "Covers the sandboxed widget-bundle store behind two of the 13 Settings → Add-ons categories: Discovery (Listen page) and Channel (artist page). The other 11 are fixed code registries or private per-user connections with nothing to moderate here.",
       "needsReview": "Needs review",
-      "needsReviewCount": "Needs review ({{count}})"
+      "needsReviewCount": "Needs review ({{count}})",
+      "review": "Review",
+      "catalogue": "Catalogue"
     },
     "manageDialog": {
       "enabledByDefault": "Enabled by default",

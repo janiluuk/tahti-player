@@ -54,8 +54,8 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   // Tahti Radio opt-in and submissions (incl. board rejection notes) live on
   // the Tahti Radio tab of the channel's Radio section, not the royalties
   // Distribution page.
-  'settings/distribution': '/studio/channel?radio=tahti-radio#radio',
-  'settings/moderators': '/studio/fans?tab=chat&section=moderators',
+  'settings/distribution': '/studio/channel#radio',
+  'settings/moderators': '/studio/chat?section=moderators',
   'settings/multistream': '/studio/channel?radio=multicast#radio',
   'upload/from-broadcast': '/studio/recordings',
 };
@@ -106,7 +106,7 @@ export function resolveDashboardRedirect(rest: string | undefined): string {
     return '/studio/stats';
   }
   if (first === 'moderate') {
-    return '/studio/fans?tab=chat';
+    return '/studio/chat';
   }
   if (DASHBOARD_REDIRECTS[first]) {
     return DASHBOARD_REDIRECTS[first];

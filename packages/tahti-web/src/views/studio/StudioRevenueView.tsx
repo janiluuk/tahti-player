@@ -1,18 +1,11 @@
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { BookOpenIcon, CircleHelpIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import {
-  Alert,
-  Button,
-  ButtonLink,
-  OverflowMenu,
-  ViewShell,
-} from '@tahti-player/ui';
+import { ButtonLink, OverflowMenu, ViewShell } from '@tahti-player/ui';
 
 import { fetchAllRoyalties } from '../../api/distribution';
-import { fetchMyFanTiers } from '../../api/fan-tiers';
 import {
   fanSubscriberExportUrl,
   fetchFanConnectStatus,
@@ -25,20 +18,14 @@ import {
   type GrantRow,
 } from '../../api/revenue';
 import { ChannelStoreEditor } from '../../components/ChannelStoreEditor';
-import { FanSubOrderBreakdown } from '../../components/FanSubOrderBreakdown';
 import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
 import { FanTiersEditor } from '../../components/FanTiersEditor';
-import { PageEmpty, PageError } from '../../components/PageStates';
+import { PageEmpty } from '../../components/PageStates';
 import { PurchaseOrdersList } from '../../components/PurchaseOrdersList';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
-import {
-  movedSettingsSection,
-  movedSettingsSectionLabel,
-} from '../../lib/movedSettingsSections';
 import { mergeRevenueOrders } from '../../lib/revenueOrders';
-import { SLOT, withSlot } from '../../lib/slotText';
 import { useTourStore } from '../../stores/tourStore';
 
 function euros(cents: number | string): string {
@@ -55,7 +42,6 @@ export function StudioRevenueView() {
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as {
     tab?: string;
-    movedFrom?: unknown;
   };
   const showTiers = search.tab === 'tiers';
   const showStore = search.tab === 'store';
@@ -64,12 +50,8 @@ export function StudioRevenueView() {
     : showStore
       ? t('studioRevenueViewStates.store')
       : t('studioRevenueViewStates.earnings');
-  const movedFrom = movedSettingsSection(search.movedFrom);
   const [connect, setConnect] = useState<FanConnectStatus | null>(null);
   const [fanPayouts, setFanPayouts] = useState<FanPayoutStats | null>(null);
-  const [hasFanTiers, setHasFanTiers] = useState<boolean | null>(null);
-  const [tiersError, setTiersError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
   const [grants, setGrants] = useState<GrantRow[]>([]);
   const [estimate, setEstimate] = useState<GrantEstimate | null>(null);
   const [mergedOrders, setMergedOrders] = useState(mergeRevenueOrders([], []));
@@ -78,7 +60,6 @@ export function StudioRevenueView() {
     void Promise.all([
       fetchFanConnectStatus(),
       fetchFanPayoutStats(),
-      fetchMyFanTiers(),
       fetchAllRoyalties(),
       fetchMyGrants(),
       fetchGrantEstimate(),
@@ -86,23 +67,12 @@ export function StudioRevenueView() {
       ([
         connectResult,
         payoutsResult,
-        tiersResult,
         royaltiesResult,
         grantsResult,
         estimateResult,
       ]) => {
         setConnect(connectResult.data);
         setFanPayouts(payoutsResult.data);
-        const tiersReason =
-          tiersResult.meta.source === 'api'
-            ? (tiersResult.meta.reason ?? null)
-            : null;
-        setTiersError(tiersReason);
-        setHasFanTiers(
-          tiersReason && tiersResult.data.length === 0
-            ? null
-            : tiersResult.data.length > 0,
-        );
         setMergedOrders(
           mergeRevenueOrders(payoutsResult.data.recent, royaltiesResult.data),
         );
@@ -110,32 +80,7 @@ export function StudioRevenueView() {
         setEstimate(estimateResult.data);
       },
     );
-  }, [attempt]);
-
-  const showConnectWarning = useMemo(
-    () =>
-      hasFanTiers === true &&
-      connect != null &&
-      connect.stripeConfigured &&
-      !connect.paymentsReady,
-    [connect, hasFanTiers],
-  );
-
-  const openTiers = () => {
-    void navigate({ to: '/studio/audience', search: { tab: 'tiers' } });
-  };
-
-  const dismissMovedNotice = () => {
-    void navigate({
-      to: '/studio/audience',
-      search: showTiers
-        ? { tab: 'tiers' as const }
-        : showStore
-          ? { tab: 'store' as const }
-          : {},
-      replace: true,
-    });
-  };
+  }, []);
 
   return (
     <StudioGate requireChannel={false}>
@@ -171,30 +116,6 @@ export function StudioRevenueView() {
             ) : undefined
           }
         >
-          {movedFrom ? (
-            <Alert
-              tone="info"
-              title={t('studioRevenue2.thisPageHasMoved')}
-              data-testid="settings-moved-notice"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span>
-                  {t('studioMoneyText.movedNotice', {
-                    from: movedSettingsSectionLabel(movedFrom),
-                    page: pageTitle,
-                  })}
-                </span>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={dismissMovedNotice}
-                >
-                  {t('studioRevenue2.dismiss')}
-                </Button>
-              </div>
-            </Alert>
-          ) : null}
-
           {showTiers ? (
             <div className="flex flex-col gap-4">
               <StudioPanel
@@ -219,83 +140,59 @@ export function StudioRevenueView() {
                 <PurchaseOrdersList />
               </StudioPanel>
             </div>
-          ) : connect && !connect.stripeConfigured ? (
-            <StudioPanel title={t('studioRevenue2.payments')}>
-              <PageEmpty
-                data-testid="revenue-stripe-disconnected"
-                title={t('empties.stripeIsNotConnected')}
-                description={t(
-                  'empties.connectStripeBeforeFanSubscriptionsTrack',
-                )}
-                action={
-                  <ButtonLink to="/studio/stripe">
-                    {t('studioRevenue2.openStripeSetup')}
-                  </ButtonLink>
-                }
-              />
-            </StudioPanel>
-          ) : tiersError && hasFanTiers === null ? (
-            <StudioPanel title={t('studioRevenue2.fanSubscriptions')}>
-              <PageError
-                title={t('loadErrors.couldNotLoadYourFanTiers')}
-                description={tiersError}
-                onRetry={() => setAttempt((n) => n + 1)}
-              />
-            </StudioPanel>
-          ) : hasFanTiers === false ? (
-            <StudioPanel title={t('studioRevenue.fanSubsTitle')}>
-              <PageEmpty
-                data-testid="fan-subs-empty-state"
-                title={t('studioRevenue.emptyFanSubsTitle')}
-                description={t('studioRevenue.emptyFanSubsDescription')}
-                action={
-                  <Button variant="secondary" onClick={openTiers}>
-                    {t('studioRevenue.openTiers')}
-                  </Button>
-                }
-              />
-            </StudioPanel>
           ) : (
             <>
-              {showConnectWarning ? (
-                <Alert
-                  tone="error"
-                  role="status"
-                  data-testid="fan-subs-connect-warning"
-                >
-                  {withSlot(
-                    t('studioRevenue2.connectWarning', { link: SLOT }),
-                    <Link
-                      to="/studio/stripe"
-                      className="font-semibold underline-offset-2 hover:underline"
-                    >
-                      {t('studioRevenue2.stripeDashboard')}
-                    </Link>,
-                  )}
-                </Alert>
+              <StudioPanel title={t('studioRevenueViewStates.earnings')}>
+                <div className="flex flex-wrap gap-2">
+                  <ButtonLink
+                    to="/studio/audience"
+                    search={{ tab: 'tiers' }}
+                    size="sm"
+                    variant="secondary"
+                  >
+                    {t('studioRevenue.openTiers')}
+                  </ButtonLink>
+                  <ButtonLink
+                    to="/studio/audience"
+                    search={{ tab: 'store' }}
+                    size="sm"
+                    variant="secondary"
+                  >
+                    {t('studioRevenueViewStates.store')}
+                  </ButtonLink>
+                </div>
+              </StudioPanel>
+
+              {connect && !connect.stripeConfigured ? (
+                <StudioPanel title={t('studioRevenue2.payments')}>
+                  <PageEmpty
+                    data-testid="revenue-stripe-disconnected"
+                    title={t('empties.stripeIsNotConnected')}
+                    description={t(
+                      'empties.connectStripeBeforeFanSubscriptionsTrack',
+                    )}
+                    action={
+                      <ButtonLink to="/studio/stripe">
+                        {t('studioRevenue2.openStripeSetup')}
+                      </ButtonLink>
+                    }
+                  />
+                </StudioPanel>
               ) : null}
 
               {fanPayouts ? (
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(16rem,1fr)]">
-                  <StudioPanel
-                    title={t('studioRevenue2.orderManagement')}
-                    description={t(
-                      'studioRevenue2.subscribersNetRevenuePayoutHealth',
-                    )}
-                  >
-                    <FanSubscriptionStats
-                      stats={fanPayouts}
-                      orders={mergedOrders}
-                      exportUrl={fanSubscriberExportUrl()}
-                    />
-                  </StudioPanel>
-                  <StudioPanel
-                    title={t('studioRevenue2.orderFlow')}
-                    description={t('studioRevenue2.whatHappensToATypical')}
-                  >
-                    <FanSubOrderBreakdown />
-                  </StudioPanel>
-                </div>
+                <StudioPanel
+                  title={t('studioRevenue2.orderManagement')}
+                  description={t(
+                    'studioRevenue2.subscribersNetRevenuePayoutHealth',
+                  )}
+                >
+                  <FanSubscriptionStats
+                    stats={fanPayouts}
+                    orders={mergedOrders}
+                    exportUrl={fanSubscriberExportUrl()}
+                  />
+                </StudioPanel>
               ) : null}
 
               {connect?.stripeConfigured ? (
@@ -317,7 +214,7 @@ export function StudioRevenueView() {
                 </StudioPanel>
               ) : null}
 
-              {estimate && (
+              {estimate ? (
                 <StudioPanel
                   title={t('studioRevenueViewLabels.grantEstimateYear', {
                     year: estimate.year,
@@ -333,7 +230,7 @@ export function StudioRevenueView() {
                       : ', not yet eligible (need more units)'}
                   </p>
                 </StudioPanel>
-              )}
+              ) : null}
 
               <StudioPanel title={t('studioRevenue2.pastGrants')}>
                 {grants.length === 0 ? (

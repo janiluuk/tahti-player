@@ -31,10 +31,13 @@ const CHAT_TABS: ChatTab[] = ['access', 'messages', 'moderators', 'bans'];
 export function ChannelChatSettings({
   headingId = 'fans-chat',
   initialTab = 'messages',
+  onTabChange,
+  hideHeading = false,
 }: {
   headingId?: string;
-  /** Which moderation sub-tab to open (e.g. Profile → Moderators). */
   initialTab?: ChatTab;
+  onTabChange?: (tab: ChatTab) => void;
+  hideHeading?: boolean;
 }) {
   const { t } = useTranslation('web');
   const [profile, setProfile] = useState<ProfileFields | null>(null);
@@ -96,10 +99,14 @@ export function ChannelChatSettings({
       aria-labelledby={headingId}
       data-testid="fans-chat-settings"
     >
-      <SectionTitle id={headingId} title={t('channelChatSettings.chat')} />
-      <p className="text-foreground-secondary -mt-2 text-sm">
-        {t('channelChatSettings.turnChatOnForYour')}
-      </p>
+      {hideHeading ? null : (
+        <>
+          <SectionTitle id={headingId} title={t('channelChatSettings.chat')} />
+          <p className="text-foreground-secondary -mt-2 text-sm">
+            {t('channelChatSettings.turnChatOnForYour')}
+          </p>
+        </>
+      )}
 
       {!profile ? (
         loadError ? (
@@ -144,7 +151,11 @@ export function ChannelChatSettings({
         <Tabs
           variant="underline"
           selectedIndex={CHAT_TABS.indexOf(tab)}
-          onChange={(index) => setTab(CHAT_TABS[index] ?? 'messages')}
+          onChange={(index) => {
+            const next = CHAT_TABS[index] ?? 'messages';
+            setTab(next);
+            onTabChange?.(next);
+          }}
           listClassName="border-border border-b"
           panelClassName="pt-3"
           items={[

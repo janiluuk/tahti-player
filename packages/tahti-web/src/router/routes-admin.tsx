@@ -175,6 +175,9 @@ export const adminSelectsRoute = createRoute({
 export const adminStreamsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/streams',
+  validateSearch: (search: Record<string, unknown>): { tab?: 'ingest' } => ({
+    ...(search.tab === 'ingest' ? { tab: 'ingest' as const } : {}),
+  }),
   component: AdminStreamsView,
 });
 
@@ -391,6 +394,9 @@ export const adminVenuesRoute = createRoute({
 export const adminAddonsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/addons',
+  validateSearch: (search: Record<string, unknown>): { tab?: 'review' } => ({
+    ...(search.tab === 'review' ? { tab: 'review' as const } : {}),
+  }),
   component: AdminAddonsView,
 });
 

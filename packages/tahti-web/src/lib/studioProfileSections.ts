@@ -62,10 +62,10 @@ export function movedProfileSettingsPath(
     return '/library/following';
   }
   if (tab === 'chat') {
-    return '/studio/fans?tab=chat';
+    return '/studio/chat';
   }
   if (tab === 'moderators') {
-    return '/studio/fans?tab=chat&section=moderators';
+    return '/studio/chat?section=moderators';
   }
   if (isStudioProfileSection(tab)) {
     return studioProfilePath(tab);

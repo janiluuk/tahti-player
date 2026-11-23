@@ -1,3 +1,8 @@
+## 2026-11-23 - Design audit slices 1, 3–6, 10, 12 (0.0.445)
+
+`/studio/chat` home; Channel radio-only tabs; Schedule programme tab;
+Earnings links; Home five tiles; Admin Streams/Add-ons tabs.
+
 ## 2026-11-23 - Drop channel layout chat block (0.0.444)
 
 Removed the Designer `chat` layout item; chat stays on the page tab and

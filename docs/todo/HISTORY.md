@@ -1,3 +1,10 @@
+## 2026-11-23 — Design audit slices 1, 3–6, 10, 12
+
+Studio chat home `/studio/chat`; Channel Stream·Pinned·Multicast; Schedule
+slots/programme tabs; Earnings trimmed + Memberships/Store links; Home one
+tile per Studio tab (no Governance); Admin Streams/Add-ons tabs; Collections/
+Branding dual-row check OK. Slice 11 still open. tahti-web 0.0.445.
+
 ## 2026-11-23 — Drop channel layout chat block
 
 Removed the unused `chat` Channel Designer layout item (always off in

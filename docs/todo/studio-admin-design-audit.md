@@ -135,18 +135,18 @@ shows at once. Components imported from `src/components/` are not counted.
 
 | # | Slice | Files | Size |
 | --- | --- | --- | --- |
-| 1 | Chat home: `/studio/chat` sectioned page from `ChannelChatSettings` (side list, no tab row), Fans hub card, redirects from `/studio/fans?tab=chat…`, drop Profile Chat/Moderators cards, green room links point there | `StudioFansView.tsx`, `moderation/ChannelChatSettings.tsx`, `StudioProfileView.tsx`, `lib/studioProfileSections.ts`, `routes-studio.tsx`, `StudioChannelView.tsx`, `go-live/GreenRoomSessionPanel.tsx`, stories, e2e redirects | M |
+| 1 | Chat home: `/studio/chat` sectioned page from `ChannelChatSettings` (side list, no tab row), Fans hub card, redirects from `/studio/fans?tab=chat…`, drop Profile Chat/Moderators cards, green room links point there | Shipped → HISTORY (0.0.445) | done |
 | 2 | Drop the channel layout "chat" block (migration keeps saved layouts valid) | Shipped → HISTORY (0.0.444) | done |
-| 3 | Studio Channel = 24/7 radio only; statistics, multistream, green room, programme become links | `StudioChannelView.tsx` + test, story | S |
-| 4 | Schedule tabs `?tab=slots|programme` | `StudioScheduleView.tsx`, `schedule/`, route search, story | S |
-| 5 | Earnings trimmed to payouts, sales ledger (with grant disbursements), Stripe; links to Memberships and Store | `StudioRevenueView.tsx` + test, story | S |
-| 6 | Studio Home: no Governance panel; one tile per Studio tab | `home/`, `StudioHomeView` story | S |
+| 3 | Studio Channel = 24/7 radio only; statistics, multistream, green room, programme become links | Shipped → HISTORY (0.0.445) | done |
+| 4 | Schedule tabs `?tab=slots|programme` | Shipped → HISTORY (0.0.445) | done |
+| 5 | Earnings trimmed to payouts, sales ledger (with grant disbursements), Stripe; links to Memberships and Store | Shipped → HISTORY (0.0.445) | done |
+| 6 | Studio Home: no Governance panel; one tile per Studio tab | Shipped → HISTORY (0.0.445) | done |
 | 7 | Stats tabs `Overview · Plays · Audience · Top lists` | Shipped in `studio-stats-tabs.md` → HISTORY (0.0.438) | done |
 | 8 | Admin Overview tabs `health / activity`; Finance YTD to Financial; Chat and mail to a People → Community card | Shipped → HISTORY (0.0.439) | M |
 | 9 | Delete orphan `AdminStatusView` and `AdminMonitoringView` (keep their panels), lazy exports, mapScreens rows, stories | Shipped → HISTORY (0.0.443) | done |
-| 10 | Admin Streams tabs `Live now · Ingest settings`; Add-ons tabs `Review · Catalogue`; Storage one `FilterBar` per tab | `AdminStreamsView.tsx`, `AdminAddonsView.tsx`, `AdminStorageView.tsx` + folders | M |
+| 10 | Admin Streams tabs `Live now · Ingest settings`; Add-ons tabs `Review · Catalogue`; Storage one `FilterBar` per tab | Shipped → HISTORY (0.0.445) | done |
 | 11 | Collection edit detail tabs (max 4) and Distribution tabs | `StudioCollectionEditView.tsx` + `collection-edit/`, `StudioDistributionView.tsx` + `distribution/` | M |
-| 12 | Check-only: Music → Collections and the Branding panel for two visible tab rows; fix with chips / Profile sections if confirmed | `StudioCollectionsView.tsx`, `StudioBrandingView.tsx` + `branding/` | S |
+| 12 | Check-only: Music → Collections and the Branding panel for two visible tab rows; fix with chips / Profile sections if confirmed | Shipped → HISTORY (0.0.445) — no dual rows | done |
 
 ### Not verified
 

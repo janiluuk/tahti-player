@@ -89,7 +89,7 @@ export function studioBroadcastItems(t: TFunction<'web'>): HubCardItem[] {
     },
     {
       id: 'tahti-radio',
-      href: '/studio/channel?radio=tahti-radio#radio',
+      href: '/studio/channel#radio',
       icon: RadioIcon,
       title: 'Tahti Radio',
       description: t('studioBroadcastViewMore.bookASlotOnThe'),

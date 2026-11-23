@@ -7,6 +7,7 @@ import {
   ButtonLink,
   FilterChips,
   ImageReveal,
+  Tabs,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -33,9 +34,13 @@ import { StudioEventsSection } from './StudioEventsSection';
 import { StudioListeningPartiesSection } from './StudioListeningPartiesSection';
 
 export type ScheduleShow = 'broadcasts' | 'events' | 'parties';
+export type ScheduleTab = 'slots' | 'programme';
 
 export const scheduleShow = (value: unknown): ScheduleShow =>
   value === 'events' || value === 'parties' ? value : 'broadcasts';
+
+export const scheduleTab = (value: unknown): ScheduleTab =>
+  value === 'programme' ? 'programme' : 'slots';
 
 function showFilters(t: TFunction<'web'>) {
   return [
@@ -54,12 +59,16 @@ const CREATE_LINKS = {
 } as const;
 
 /** Broadcasts, events and listening parties on one page, one filter at a
- * time (`?show=events|parties`). */
+ * time (`?show=events|parties`). Broadcasts use `?tab=slots|programme`. */
 export function StudioScheduleView() {
   const { t } = useTranslation('web');
   const navigate = useNavigate();
-  const search = useSearch({ strict: false }) as { show?: string };
+  const search = useSearch({ strict: false }) as {
+    show?: string;
+    tab?: string;
+  };
   const show = scheduleShow(search.show);
+  const tab = scheduleTab(search.tab);
   const form = useScheduleForm();
 
   return (
@@ -116,7 +125,7 @@ export function StudioScheduleView() {
           ) : show === 'parties' ? (
             <StudioListeningPartiesSection />
           ) : (
-            <ScheduleBroadcasts form={form} />
+            <ScheduleBroadcasts form={form} tab={tab} />
           )}
         </ViewShell>
       </div>
@@ -126,10 +135,13 @@ export function StudioScheduleView() {
 
 function ScheduleBroadcasts({
   form,
+  tab,
 }: {
   form: ReturnType<typeof useScheduleForm>;
+  tab: ScheduleTab;
 }) {
   const { t } = useTranslation('web');
+  const navigate = useNavigate();
   const channelSlug = useAuthStore((state) => state.user?.channel?.slug);
   const {
     shows,
@@ -142,7 +154,7 @@ function ScheduleBroadcasts({
     setEditorOpen,
   } = form;
 
-  return (
+  const slots = (
     <>
       <RestrictionNotice type="LIVE_SHOW_BOOKING" />
       <ScheduledTimes
@@ -228,7 +240,12 @@ function ScheduleBroadcasts({
       />
 
       <ScheduleAnalytics />
+      <ScheduleEditorDialog form={form} />
+    </>
+  );
 
+  const programme = (
+    <>
       <StudioPanel
         id="channel-programme"
         title={t('studioScheduleView.channelProgramme')}
@@ -240,8 +257,33 @@ function ScheduleBroadcasts({
       {channelSlug ? <RotationSourcePicker slug={channelSlug} /> : null}
       <ChannelRadioPlaylistPanel />
       <ChannelAnnouncementsPanel />
-
-      <ScheduleEditorDialog form={form} />
     </>
+  );
+
+  return (
+    <Tabs
+      selectedIndex={tab === 'programme' ? 1 : 0}
+      onChange={(index) => {
+        void navigate({
+          to: '/studio/schedule',
+          search: index === 1 ? { tab: 'programme' } : {},
+          replace: true,
+        });
+      }}
+      listClassName="flex-wrap"
+      panelClassName="pt-2"
+      items={[
+        {
+          id: 'slots',
+          label: t('studioScheduleView.filterBroadcasts'),
+          content: slots,
+        },
+        {
+          id: 'programme',
+          label: t('studioScheduleView.channelProgramme'),
+          content: programme,
+        },
+      ]}
+    />
   );
 }

@@ -5,10 +5,8 @@ import { Badge, Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { PageEmpty, PageError } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { useStripeConfigured } from '../../hooks/useStripeConfigured';
 import { accountRoleLabel, getAccountRole } from '../../lib/accountRoles';
 import { EmptyDiscographyPrompt } from './home/EmptyDiscographyPrompt';
-import { GovernanceSection } from './home/GovernanceSection';
 import { Group, HomeTileStagger } from './home/HomeTiles';
 import { MusicAudienceGrids } from './home/MusicAudienceGrids';
 import { RecentActivitySection } from './home/RecentActivitySection';
@@ -18,7 +16,6 @@ import { useStudioHome } from './home/useStudioHome';
 
 export function StudioHomeView() {
   const { t } = useTranslation('web');
-  const stripeConfigured = useStripeConfigured();
   const state = useStudioHome();
   const {
     user,
@@ -73,10 +70,7 @@ export function StudioHomeView() {
 
           {!channel ? null : (
             <HomeTileStagger>
-              <MusicAudienceGrids
-                state={state}
-                stripeConfigured={stripeConfigured}
-              />
+              <MusicAudienceGrids />
               <EmptyDiscographyPrompt state={state} />
               <RecentActivitySection />
               {showBroadcasts ? (
@@ -121,7 +115,6 @@ export function StudioHomeView() {
                 </Group>
               ) : null}
               <UpcomingShowsSection state={state} />
-              <GovernanceSection state={state} />
             </HomeTileStagger>
           )}
         </ViewShell>

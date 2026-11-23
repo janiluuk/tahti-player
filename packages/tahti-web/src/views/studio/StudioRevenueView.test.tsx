@@ -1,9 +1,8 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as distribution from '../../api/distribution';
-import * as fanTiers from '../../api/fan-tiers';
 import * as revenue from '../../api/revenue';
 import { useAuthStore } from '../../stores/authStore';
 import { renderWithRouter } from '../../test/renderWithRouter';
@@ -33,7 +32,15 @@ describe('StudioRevenueView', () => {
       meta,
     } as never);
     vi.spyOn(revenue, 'fetchFanPayoutStats').mockResolvedValue({
-      data: { recent: [] },
+      data: {
+        activeSubscribers: 0,
+        thisMonthNetCents: 0,
+        paidYtdNetCents: 0,
+        pending: 0,
+        failed: 0,
+        paidLast30Days: 0,
+        recent: [],
+      },
       meta,
     } as never);
     vi.spyOn(revenue, 'fetchMyGrants').mockResolvedValue({
@@ -55,50 +62,20 @@ describe('StudioRevenueView', () => {
     useAuthStore.setState({ user: null, hydrated: true, loading: false });
   });
 
-  it('says the fan tiers failed to load instead of "No fan subscriptions yet"', async () => {
-    const fetch = vi.spyOn(fanTiers, 'fetchMyFanTiers').mockResolvedValue({
-      data: [],
-      meta: { source: 'api', reason: 'HTTP 502' },
-    });
+  it('links Memberships and Store from Earnings instead of embedding tiers', async () => {
     await renderWithRouter(<StudioRevenueView />);
     expect(
-      await screen.findByText('Could not load your fan tiers'),
+      await screen.findByRole('link', { name: /membership|tier|open tiers/i }),
     ).toBeTruthy();
-    expect(screen.queryByText('No fan subscriptions yet')).toBeNull();
-
-    fetch.mockResolvedValue({ data: [], meta });
-    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-    expect(await screen.findByText('No fan subscriptions yet')).toBeTruthy();
-  });
-
-  it('tells a Settings bookmark visitor that the page moved, until dismissed', async () => {
-    vi.spyOn(fanTiers, 'fetchMyFanTiers').mockResolvedValue({
-      data: [],
-      meta,
-    });
-    const { router } = await renderWithRouter(<StudioRevenueView />, {
-      at: '/?movedFrom=money',
-      paths: ['/studio/audience'],
-    });
-    const notice = await screen.findByTestId('settings-moved-notice');
-    expect(notice.textContent).toContain('This page has moved');
-    expect(notice.textContent).toContain('Settings › Money is now');
-    expect(notice.textContent).toContain('Studio › Fans › Earnings');
-
-    fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
-    await vi.waitFor(() =>
-      expect(router.state.location.pathname).toBe('/studio/audience'),
-    );
-    expect(router.state.location.search).toEqual({});
-  });
-
-  it('shows no moved notice on a normal visit', async () => {
-    vi.spyOn(fanTiers, 'fetchMyFanTiers').mockResolvedValue({
-      data: [],
-      meta,
-    });
-    await renderWithRouter(<StudioRevenueView />);
-    expect(await screen.findByText('No fan subscriptions yet')).toBeTruthy();
+    expect(screen.getByRole('link', { name: /store/i })).toBeTruthy();
     expect(screen.queryByTestId('settings-moved-notice')).toBeNull();
+    expect(screen.queryByTestId('fan-subs-empty-state')).toBeNull();
+  });
+
+  it('keeps Stripe when Connect is ready', async () => {
+    await renderWithRouter(<StudioRevenueView />);
+    expect(
+      await screen.findByRole('link', { name: /stripe dashboard/i }),
+    ).toBeTruthy();
   });
 });

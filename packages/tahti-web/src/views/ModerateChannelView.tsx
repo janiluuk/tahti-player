@@ -146,12 +146,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
                 {t('actions.openChannel')}
               </ButtonLink>
               {channel.isOwner && (
-                <ButtonLink
-                  to="/studio/fans"
-                  search={{ tab: 'chat' }}
-                  size="sm"
-                  variant="text"
-                >
+                <ButtonLink to="/studio/chat" size="sm" variant="text">
                   {t('moderateChannelView.chatSettings')}
                 </ButtonLink>
               )}

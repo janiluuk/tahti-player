@@ -1,6 +1,5 @@
-import { useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { CloudIcon, HardDriveIcon } from 'lucide-react';
-import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -19,10 +18,9 @@ import { StorageOverviewTab } from './storage/StorageOverviewTab';
 
 export function AdminStorageView() {
   const { t } = useTranslation('web');
+  const navigate = useNavigate();
   const search = useSearch({ strict: false }) as { tab?: string };
-  const [tab, setTab] = useState<'storage' | 'files'>(
-    search.tab === 'files' ? 'files' : 'storage',
-  );
+  const tab = search.tab === 'files' ? 'files' : 'storage';
 
   return (
     <AdminGate>
@@ -55,7 +53,13 @@ export function AdminStorageView() {
             >
               <Tabs
                 selectedIndex={tab === 'storage' ? 0 : 1}
-                onChange={(index) => setTab(index === 0 ? 'storage' : 'files')}
+                onChange={(index) => {
+                  void navigate({
+                    to: '/admin/storage',
+                    search: index === 1 ? { tab: 'files' } : {},
+                    replace: true,
+                  });
+                }}
                 listClassName="border-border border-b pb-3"
                 panelClassName="pt-2"
                 items={[

@@ -237,6 +237,10 @@ export const StudioFansView = lazyRouteComponent(
   () => import('../views/studio/StudioFansView'),
   'StudioFansView',
 );
+export const StudioChatView = lazyRouteComponent(
+  () => import('../views/studio/StudioChatView'),
+  'StudioChatView',
+);
 export const StudioProfileView = lazyRouteComponent(
   () => import('../views/studio/StudioProfileView'),
   'StudioProfileView',

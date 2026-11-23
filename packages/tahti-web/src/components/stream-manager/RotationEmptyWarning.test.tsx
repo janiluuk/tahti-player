@@ -64,15 +64,13 @@ async function renderWarning(slug: string) {
 }
 
 describe('RotationEmptyWarning', () => {
-  it('warns the owner and links to the 24/7 tab of the Channel Radio section', async () => {
+  it('warns the owner and links to Schedule programme', async () => {
     signInAs('artist');
     await renderWarning('artist');
 
     expect(screen.getByText('The 24/7 rotation is empty')).toBeTruthy();
     const link = screen.getByRole('link', { name: 'Manage 24/7 rotation' });
-    expect(link.getAttribute('href')).toBe(
-      '/studio/channel?radio=rotation#radio',
-    );
+    expect(link.getAttribute('href')).toBe('/studio/schedule?tab=programme');
   });
 
   it("warns without a studio link on someone else's channel", async () => {
