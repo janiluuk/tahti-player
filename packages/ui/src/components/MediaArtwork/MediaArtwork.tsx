@@ -37,6 +37,13 @@ const MediaArtworkDefaultContext = createContext<MediaArtworkDefaultSrc | null>(
 
 export const MediaArtworkDefaultProvider = MediaArtworkDefaultContext.Provider;
 
+/** The default artwork URL `MediaArtwork` would show for `seed`, or null
+ * without a provider. For effects built from the artwork, e.g. a glow. */
+export function useMediaArtworkDefaultSrc(seed: string): string | null {
+  const defaultSrcFor = useContext(MediaArtworkDefaultContext);
+  return defaultSrcFor ? defaultSrcFor(seed) : null;
+}
+
 export type MediaArtworkProps = {
   src?: string | null;
   alt?: string;

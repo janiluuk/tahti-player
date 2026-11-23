@@ -14945,6 +14945,10 @@
       "noMatch": "Mikään tapahtumapaikka ei vastaa hakua ”{{query}}”"
     },
     "discoverEvents": {
+      "previousEvent": "Edellinen tapahtuma",
+      "nextEvent": "Seuraava tapahtuma",
+      "eventPosition": "Tapahtuma {{current}}/{{total}}",
+      "carouselLabel": "Tulevat tapahtumat, selaa nuolinäppäimillä",
       "tab": "Tapahtumat",
       "post": "Lisää tapahtuma",
       "signInToPost": "Kirjaudu sisään lisätäksesi tapahtuman.",

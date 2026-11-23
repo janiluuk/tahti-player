@@ -7048,3 +7048,10 @@ The API now tells an artist when the daily pattern-fraud scan flags their channe
 Prepared locally: creation actions at the top, next show ahead of recent work, and neutral navigation shortcuts beside the activity column on wide screens. Studio header buttons pair page backgrounds with the page foreground; shortcut icons use theme foreground tokens. Shared button hover feedback now works with flat themes and dark text/ghost controls. Automatically derived theme button text uses WCAG contrast, fixing Gruvbox's low-contrast primary label while preserving explicit theme overrides.
 
 Validated with affected Storybook plays, UI/theme/unit tests, type-check/lint, and Chromium at phone and desktop widths across seven light/dark palettes. Not deployed.
+
+## 2026-11-23 - Upcoming events poster carousel (0.0.455)
+
+- `UpcomingEventsStrip` (Discover `upcoming-events` widget) renders `UpcomingEventsCarousel` instead of a horizontal card strip.
+- Glow: blurred event image behind the poster plus a box shadow in its dominant colour (`useDominantColor`); events without a banner glow from the default artwork via the new `useMediaArtworkDefaultSrc`.
+- Browse: arrow buttons, pointer drag/swipe (40 px threshold, suppresses the open click), ArrowLeft/ArrowRight on the focused carousel, Enter opens; index wraps at both ends.
+- `UpcomingEventCard` start time uses `hourCycle: 'h23'` and gains calendar / user / map-pin icons (Coming up, Next events).

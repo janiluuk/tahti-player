@@ -1,4 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
+import { CalendarDaysIcon, MapPinIcon, UserIcon } from 'lucide-react';
 
 import { toBcp47 } from '@tahti-player/i18n';
 import { Card, MediaArtwork } from '@tahti-player/ui';
@@ -6,13 +7,17 @@ import { Card, MediaArtwork } from '@tahti-player/ui';
 import type { UpcomingEvent } from '../../api/upcoming-events';
 import { currentLocale } from '../../lib/locale';
 
-function formatEventStart(value: string, timeZone?: string | null): string {
+export function formatEventStart(
+  value: string,
+  timeZone?: string | null,
+): string {
   const options: Intl.DateTimeFormatOptions = {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
+    hourCycle: 'h23',
   };
   const locale = toBcp47(currentLocale());
   try {
@@ -61,24 +66,33 @@ export function UpcomingEventCard({ event }: { event: UpcomingEvent }) {
         </span>
       }
       subtitle={
-        <span className="flex flex-col">
-          <time
-            dateTime={event.startAt}
-            className="truncate font-semibold"
-            data-testid="event-card-start"
-          >
-            {formatEventStart(event.startAt, event.timezone)}
-          </time>
-          <span className="truncate" title={event.artistDisplayName}>
-            {event.artistDisplayName}
+        <span className="flex flex-col gap-0.5">
+          <span className="flex min-w-0 items-center gap-1">
+            <CalendarDaysIcon size={12} className="shrink-0" aria-hidden />
+            <time
+              dateTime={event.startAt}
+              className="truncate font-semibold"
+              data-testid="event-card-start"
+            >
+              {formatEventStart(event.startAt, event.timezone)}
+            </time>
+          </span>
+          <span className="flex min-w-0 items-center gap-1">
+            <UserIcon size={12} className="shrink-0" aria-hidden />
+            <span className="truncate" title={event.artistDisplayName}>
+              {event.artistDisplayName}
+            </span>
           </span>
           {place ? (
-            <span
-              data-testid="event-card-venue"
-              className="line-clamp-2 whitespace-normal"
-              title={place}
-            >
-              {place}
+            <span className="flex min-w-0 items-start gap-1">
+              <MapPinIcon size={12} className="mt-0.5 shrink-0" aria-hidden />
+              <span
+                data-testid="event-card-venue"
+                className="line-clamp-2 whitespace-normal"
+                title={place}
+              >
+                {place}
+              </span>
             </span>
           ) : null}
         </span>

@@ -6616,3 +6616,12 @@ Pairs with tahti-org#1143 (`Channel.artistBlockVisibilityJson`, `artistBlockVisi
 Studio 0.0.454 puts Upload / Create release / Go live first, upcoming shows before recent work, and neutral shortcuts beside activity on wide screens. Fixed mismatched text colors on Studio detail buttons and shortcut icons; shared buttons gain subtle hover feedback in flat/dark themes. Automatic primary text for imported themes now uses WCAG contrast with inherited tokens and black/white fallback, preserving explicit overrides. The theme engine changed; no marketplace theme or plugin manifest changed.
 
 Updated the three stale admin stories behind PR #2141's failures. Validation: 28 affected story plays, 643 UI tests, 770 theme tests, Studio/notification/theme-store tests, web type-check/lint and theme type-check; Chromium checks across six built-in themes plus Gruvbox in light/dark at 390 and 1440 pixels. View catalog cross-checked: no routes, navigation items, or story exports added/removed. No deploy requested.
+
+## 2026-11-23 - Upcoming events poster carousel (0.0.455)
+
+Discover "Upcoming events" widget shows one poster at a time
+(`UpcomingEventsCarousel`): ambient glow from the event image (or default
+artwork), prev/next buttons, mouse drag / touch swipe, arrow keys, wraps at
+both ends, slide animation (off under reduced motion). Event cards and the
+poster show the start on a 24-hour clock with calendar / host / place icons.
+`useMediaArtworkDefaultSrc` exported from `@tahti-player/ui`.

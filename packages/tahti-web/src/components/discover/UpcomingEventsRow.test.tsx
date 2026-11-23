@@ -56,32 +56,24 @@ afterEach(() => {
 });
 
 describe('UpcomingEventsStrip', () => {
-  it('shows each event as a card with title, place and the default artwork when there is no banner', async () => {
-    const { container, router } = await renderWithRouter(
+  it('shows one event poster at a time and opens it, with a way to all events', async () => {
+    const { router } = await renderWithRouter(
       withDefaultArtwork(
         <UpcomingEventsStrip events={[withBanner, noBanner]} />,
       ),
       { paths: ['/events/$eventId', '/discover'] },
     );
 
-    const row = screen.getByTestId('upcoming-events');
-    expect(within(row).getAllByRole('listitem')).toHaveLength(2);
-    expect(screen.getByText('Album release show')).toBeVisible();
-    expect(screen.getByText('Kuudes Linja, Helsinki')).toBeVisible();
-    expect(screen.getByText('Kaiku, Helsinki')).toBeVisible();
-    const images = [...container.querySelectorAll('img')].map((img) =>
-      img.getAttribute('src'),
-    );
-    expect(images).toEqual([
-      'https://media.example/banner.jpg',
-      '/artwork/evt-2.webp',
-    ]);
+    const carousel = screen.getByTestId('upcoming-events');
+    expect(within(carousel).getByText('Album release show')).toBeVisible();
+    expect(within(carousel).getByText('Kuudes Linja, Helsinki')).toBeVisible();
+    expect(within(carousel).queryByText('Boathouse session')).toBeNull();
     expect(
       screen.getByRole('link', { name: 'See all events' }),
     ).toHaveAttribute('href', '/discover?tab=events');
 
-    fireEvent.click(screen.getByText('Boathouse session'));
-    expect(router.state.location.pathname).toBe('/events/evt-2');
+    fireEvent.click(screen.getByText('Album release show'));
+    expect(router.state.location.pathname).toBe('/events/evt-1');
   });
 
   it('is the body of the upcoming-events Discover widget', async () => {
