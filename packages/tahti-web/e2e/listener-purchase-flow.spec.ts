@@ -107,7 +107,9 @@ async function uploadPublicPurchasableTrack(
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await expect(page.getByText(/saved/i)).toBeVisible();
 
-  const soundId = /\/studio\/sounds\/([^/]+)$/.exec(page.url())?.[1];
+  const soundId = /\/studio\/sounds\/([^/]+)$/.exec(
+    new URL(page.url()).pathname,
+  )?.[1];
   if (!soundId) {
     throw new Error(`Could not extract sound id from ${page.url()}`);
   }

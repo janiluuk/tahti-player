@@ -2,7 +2,7 @@
 
 **Status:** partial
 
-Shipped 2026-11-22: upcoming events first on Discover → Events (`DiscoverNextEvents`), the `upcoming-events` Discover widget (`UpcomingEventsStrip`, default layout, store v4), `UpcomingEventCard` shared with Listen's Coming up, mock events with banners. Left: item 1 (production seed events) and the e2e step.
+Shipped 2026-11-22: upcoming events first on Discover → Events (`DiscoverNextEvents`), the `upcoming-events` Discover widget (`UpcomingEventsStrip`, default layout, store v4), `UpcomingEventCard` shared with Listen's Coming up, mock events with banners. E2e step shipped 2026-11-23 (`e2e/use-cases-discover-events.spec.ts`: next events first and soonest first, the widget's cards, a card opens the event page). Left: item 1 (production seed events).
 
 Requested 2026-11-22. Builds on [discover-events-tab.md](discover-events-tab.md).
 

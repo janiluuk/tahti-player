@@ -1,5 +1,12 @@
 import { expect, test } from '@playwright/test';
 
+function isLoopback(baseURL: string | undefined): boolean {
+  if (!baseURL) {
+    return false;
+  }
+  return ['localhost', '127.0.0.1'].includes(new URL(baseURL).hostname);
+}
+
 test.afterEach(async ({ page }) => {
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
@@ -9,7 +16,13 @@ for (const mobile of [false, true]) {
     page,
     baseURL,
   }) => {
-    test.skip(!baseURL?.includes('127.0.0.1'), 'Requires the local mock app');
+    // artist-demo.tahti.live is served from baseURL through page.route and
+    // relies on the mock app's sessionStorage channel visual, so it needs
+    // the local mock dev server, not a deployed host.
+    test.skip(
+      !isLoopback(baseURL),
+      'Requires the local mock app on localhost or 127.0.0.1',
+    );
     await page.setViewportSize(
       mobile ? { width: 390, height: 844 } : { width: 1440, height: 1000 },
     );

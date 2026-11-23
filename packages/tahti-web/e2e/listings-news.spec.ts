@@ -24,9 +24,22 @@ test('large and medium music rows fit a phone and render real waveforms', async 
     expect(await row.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(
       true,
     );
-    const waveform = await row.locator('[data-waveform]').boundingBox();
-    const bounds = await row.boundingBox();
-    expect(waveform!.width).toBeGreaterThan(bounds!.width * 0.85);
+    // Under 768px the row is a two-column grid: the artwork spans the title
+    // and waveform rows, the actions take the full width below. The
+    // waveform must fill its column, from past the artwork to the right
+    // edge shared with the full-width actions row.
+    const waveform = (await row.locator('[data-waveform]').boundingBox())!;
+    const artwork = (await row
+      .getByTestId('ambient-track-row-artwork')
+      .boundingBox())!;
+    const actions = (await row
+      .getByTestId('ambient-track-row-actions')
+      .boundingBox())!;
+    expect(waveform.x).toBeGreaterThanOrEqual(artwork.x + artwork.width);
+    expect(
+      Math.abs(waveform.x + waveform.width - (actions.x + actions.width)),
+    ).toBeLessThanOrEqual(1);
+    expect(actions.x).toBeLessThanOrEqual(artwork.x + 1);
   }
   await page.screenshot({
     path: test.info().outputPath('listings-mobile.png'),

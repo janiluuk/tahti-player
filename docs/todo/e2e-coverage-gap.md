@@ -7,9 +7,9 @@ user manual (`packages/docs/user-manual/`) and the Studio / Admin / Library
 navigation. Roles: **Anonymous** (signed out), **Listener** (account, no
 channel), **Artist** (channel owner), **Admin** (board).
 
-How the suite runs: the `e2e-mock` job in `ci.yml` runs `roles-*`,
-`use-cases-*`, `routes-uncovered`, `view-before-edit` and `batch-fixes*`
-against the mock app on **master pushes and manual `workflow_dispatch`**
+How the suite runs: the `e2e-mock` job in `ci.yml` runs every spec in
+`packages/tahti-web/e2e/` (new journeys go in a `use-cases-*` file, which the
+glob picks up) against the mock app on **master pushes and manual `workflow_dispatch`**
 (not on pull requests; not a required check). Locally:
 `VITE_FORCE_MOCK=1 pnpm exec vite --port 5196 --strictPort` in
 `packages/tahti-web`, then `PLAYWRIGHT_BASE_URL=http://localhost:5196 pnpm
@@ -30,8 +30,8 @@ Re-checked 2026-11-09 against the specs (several cells had gone stale).
 | Front page (Listen), sections, order | ✅ (plays a release card) | ✅ (hide a section, Reset widgets, adds a Spotify artist row) | ◐ | — |
 | Latest News carousel, Sources | ✅ (news post dialog) | ✅ (add / remove a source) | ❌ | — |
 | Radio, schedule, radio show | ✅ (favorite a station) | ✅ (filter, play / pause a station, schedule weeks) | ◐ | — |
-| Discover, search, tags | ✅ (search opens a track) | ✅ (Artists genre filter opens the artist, Venues on a phone) | ✅ (widget order sticks) | — |
-| Channel and artist pages, follow | ◐ | ✅ (follow, channel comment) | ◐ (designer parity) | — |
+| Discover, search, tags | ✅ (search opens a track; next events and Upcoming events open an event) | ✅ (Artists genre filter opens the artist, Venues on a phone) | ✅ (widget order sticks) | — |
+| Channel and artist pages, follow | ✅ (artist subdomain chrome) | ✅ (follow, channel comment) | ✅ (designer parity) | — |
 | Player: play, pause, seek, fullscreen | ✅ (play, pause) | ✅ (seek, full screen skip / pause / minimize) | ✅ (minimize, queue) | — |
 | Queue | ❌ | ✅ | ✅ | — |
 | Favorites | — | ✅ | ✅ (like a listed track) | — |
@@ -41,7 +41,7 @@ Re-checked 2026-11-09 against the specs (several cells had gone stale).
 | Comments, chat, messages | ✅ (comment asks to log in) | ✅ | ✅ (moderation) | — |
 | Jam (listen together) | ✅ (invite asks to log in) | ✅ | ✅ (own playlist, host, end) | — |
 | Listening parties (attend / schedule) | ✅ (link asks to log in, stays on the party) | ✅ (join live, scheduled) | ✅ (schedule, cancel) | — |
-| Support an artist: fan sub, track purchase | ✅ (guest email sub) | ✅ (buy, subscribe, cancel; stale) | ✅ (sees orders) | ✅ (audit log) |
+| Support an artist: fan sub, track purchase | ✅ (guest email sub) | ✅ (buy, subscribe, cancel) | ✅ (sees orders) | ✅ (audit log) |
 | Public reader: release, track, embeds, legal | ✅ | — | — | — |
 | Sign up, log in, verify, reset password | ✅ (register, Enter submits) | ✅ (listener sign-up) | ✅ | — |
 | Notifications, account menu dots | — | ✅ (unread announced, named quick view) | ✅ (filter, mark read) | ✅ (mark read) |
@@ -131,11 +131,11 @@ before each seek.
 
 The CI `e2e-mock` glob (`.github/workflows/ci.yml`) now also runs the routes, library, nav/layout, release-detail chrome, a11y play controls, event calendar, cutover-vital, real-user journeys, plugin store, radio cover, channel designer, clips, full-screen minimize, mastering and stash specs: 285 tests, passing twice in a row with `--retries=0` locally. New: `use-cases-channel-row-hover.spec.ts`, `use-cases-radio-add-by-url.spec.ts`. Deleted: `routes-listen.spec.ts` (redirects live in `routes-library`).
 
-Still outside CI:
-- [ ] `listings-news`: phone row waveform width assertion predates the phone track-list grid (0.0.435); update to the new layout.
-- [ ] `channel-designer-parity`: the mock disagrees with itself (`api/studio-extras/profile.ts:66` "Demo Artist" vs `mock-session.ts:264` "artist").
-- [ ] `listener-purchase-flow` (buy) and `fan-sub-and-track-purchase`: setting purchase access by importing `api/purchase-tiers.ts` in the page leaves `tahti-mock-uploaded-sounds` on FREE; drive it through the Studio UI (`PurchaseAccessSection`) instead.
-- [ ] `artist-site-chrome`: skips unless the base URL contains 127.0.0.1 (CI uses localhost).
+Still outside CI (all in the `e2e-mock` glob since 2026-11-23, passing twice in a row with `--retries=0`):
+- [x] `listings-news`: phone row waveform width assertion predates the phone track-list grid (0.0.435); now asserts the waveform fills its grid column (past the artwork, right edge shared with the full-width actions row).
+- [x] `channel-designer-parity`: the mock disagreed with itself (`api/studio-extras/profile.ts` "Demo Artist" vs `mock-session.ts` "artist"); the mock Studio profile now takes id, username and display name from the mock session user.
+- [x] `listener-purchase-flow` (buy) and `fan-sub-and-track-purchase`: the upload lands on `/studio/sounds/<id>?edit=true` and the specs read `<id>?edit=true` as the sound id, so `setSoundAccess` patched nothing. Now parsed from the pathname (also in `stash-and-subscriber-access`). fan-sub also needed the named Download button (`Download <title>`) and the uploaded file's title instead of "riff" for the bundled WAV fallback.
+- [x] `artist-site-chrome`: the guard now accepts localhost too (it routes `artist-demo.tahti.live` to the local mock app). It was also red on the app since 0.0.433: the subdomain root opens `/u/<label>`, which never published the channel chrome (no header text, colours or sidebar / bottom bar toggles), and the AppShell `/` → `/u/<label>` redirect ignored `?home=1`. Both fixed in 0.0.441.
 
 App findings (product calls, not fixed):
 - Radio show pages (`/radio/show/$channelSlug`) are only linked from `RadioBookingCalendar.tsx`; the Radio Shows tab is gone. Link them from Radio or Schedule?
@@ -165,21 +165,21 @@ All 176 tests passed on the first full run except `use-cases-coverage-gap-3` "mo
 | Spec | In CI? | Status | Action |
 | --- | --- | --- | --- |
 | `a11y-play-controls.spec.ts` | no | current | add to CI |
-| `artist-site-chrome.spec.ts` | no | current | keep out of CI: it skips unless the base URL contains `127.0.0.1`, and CI uses `localhost` |
+| `artist-site-chrome.spec.ts` | yes (2026-11-23) | fixed | guard accepts localhost; the subdomain artist page publishes the channel chrome again (0.0.441) |
 | `channel-clips.spec.ts` | no | current | add to CI |
 | `channel-designer-artist-look.spec.ts` | no | current | add to CI |
 | `channel-designer-elements.spec.ts` | no | stale | fixed: shared `signIn`, `acknowledgeGuidelines` instead of a hard Acknowledge click; add to CI |
-| `channel-designer-parity.spec.ts` | no | current, red on mock | keep out of CI: mock data mismatch (designer shows the Studio profile mock "Demo Artist", `/channel/artist` shows "artist") |
+| `channel-designer-parity.spec.ts` | yes (2026-11-23) | fixed | mock Studio profile follows the mock session user |
 | `cutover-vital.spec.ts` | no | stale | fixed: track Playlists tab is an inline Sets picker (no "Choose playlists" dialog); hearthis opens the import wizard (choose, review, finish); `/listen/feed` redirects to Discover → Feed. Add to CI |
 | `event-calendar.spec.ts` | no | current | add to CI |
-| `fan-sub-and-track-purchase.spec.ts` | no | stale | fixed the post-signup login and added the bundled WAV fixture as a fallback for `riff.wav`; still red (see purchase setup below). Manual only |
+| `fan-sub-and-track-purchase.spec.ts` | yes (2026-11-23) | fixed | sound id from the pathname, named Download button, order title from the uploaded file |
 | `fullscreen-player-minimize.spec.ts` | no | current | add to CI |
 | `layout-stability.spec.ts` | no | current | add to CI |
 | `library-playlists.spec.ts` | no | current | add to CI |
 | `library-sounds-bulk.spec.ts` | no | stale | fixed: List view is Track size → List; dialogs asserted by heading. Add to CI |
 | `library-sounds-embeds.spec.ts` | no | current | add to CI |
-| `listener-purchase-flow.spec.ts` | no | stale | fixed the post-signup login (subscribe test passes); the buy test is red (see purchase setup below). Manual only |
-| `listings-news.spec.ts` | no | stale | deleted the homepage article test (the `article-card` testid is gone and `use-cases-anonymous` covers the news dialog). The phone row waveform test is red while the mobile track list layout is being reworked (`mobile-track-list-layout`); revisit after that ships |
+| `listener-purchase-flow.spec.ts` | yes (2026-11-23) | fixed | sound id from the pathname |
+| `listings-news.spec.ts` | yes (2026-11-23) | fixed | phone row waveform asserted against the two-column phone grid |
 | `mastering.spec.ts` | no | current | add to CI |
 | `nav-chrome.spec.ts` | no | current | add to CI |
 | `plugin-store.spec.ts` | no | stale | fixed: Channel → Multicast now only links to Go live destinations; the Radio Browser card's button is "Configure Radio Browser directory". Add to CI |
@@ -201,15 +201,11 @@ All 176 tests passed on the first full run except `use-cases-coverage-gap-3` "mo
 ### Findings
 
 - **Radio show pages have no entry point from Radio.** The Shows tab is gone; `/radio/show/$channelSlug` is only linked from `RadioBookingCalendar.tsx:581`. Product call: link shows from the Radio page or the Schedule.
-- **Purchase setup in the commerce specs does not stick on the mock.** `listener-purchase-flow` and `fan-sub-and-track-purchase` set PURCHASE access via `page.evaluate(() => import('/src/api/purchase-tiers.ts'))`. `setSoundAccess` returns `{ ok: true }`, yet `tahti-mock-uploaded-sounds` in localStorage still says `FREE` straight after, so the track page shows Download and no Buy button. Cause not pinned down. Suggested: drive access through the Studio UI (`PurchaseAccessSection`) instead of importing app modules.
-- **Mock data mismatch for the designer parity spec.** `api/studio-extras/profile.ts:66` hard-codes `displayName: 'Demo Artist'`, while `mock-session.ts:264` and `mockChannel('artist')` give "artist". The real API returns one name, so this is mock-only.
+- **Purchase setup in the commerce specs did not stick on the mock (fixed 2026-11-23).** Not a mock bug: the specs took `<id>?edit=true` from the post-upload URL as the sound id, and `patchMockUploadedSound` ignores unknown ids while `setSoundAccess` still returns `{ ok: true }`.
+- **Mock data mismatch for the designer parity spec (fixed 2026-11-23).** The mock Studio profile hard-coded "Demo Artist"; it now follows the mock session user like `mockChannel`.
 - **Mock artist has no Studio events.** `/studio/schedule?show=events` shows "No events listed yet" for `artist@tahti.live`, while `/studio/events/evt-mock-1/edit` opens. Check whether that's intended.
 
 ### Proposed CI glob
 
-```
-e2e/roles-*.spec.ts e2e/use-cases-*.spec.ts e2e/routes-*.spec.ts e2e/view-before-edit.spec.ts e2e/batch-fixes*.spec.ts e2e/nav-chrome.spec.ts e2e/layout-stability.spec.ts e2e/studio-release-detail-chrome.spec.ts e2e/library-*.spec.ts e2e/viewport-studio-sounds.spec.ts e2e/a11y-play-controls.spec.ts e2e/event-calendar.spec.ts e2e/cutover-vital.spec.ts e2e/real-user-journeys.spec.ts e2e/plugin-store.spec.ts e2e/radio-cover.spec.ts e2e/channel-designer-elements.spec.ts e2e/channel-designer-artist-look.spec.ts e2e/channel-clips.spec.ts e2e/fullscreen-player-minimize.spec.ts e2e/mastering.spec.ts e2e/stash-and-subscriber-access.spec.ts
-```
-
-Kept out: `artist-site-chrome`, `channel-designer-parity`, `fan-sub-and-track-purchase`, `listener-purchase-flow`, `listings-news`.
+Shipped; on 2026-11-23 the glob also gained `listings-news`, `channel-designer-parity`, `listener-purchase-flow`, `fan-sub-and-track-purchase` and `artist-site-chrome`, and `use-cases-discover-events.spec.ts` (Discover → Events next events, the Upcoming events widget) joined via `use-cases-*`. No spec in `e2e/` is kept out of the mock run any more.
 

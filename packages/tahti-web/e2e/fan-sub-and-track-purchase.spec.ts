@@ -165,6 +165,7 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
 
   const riffPath = resolveRiffWav();
   const original = wavIdentity(fs.readFileSync(riffPath));
+  const trackTitle = path.basename(riffPath, path.extname(riffPath));
   expect(original.looksLikeWav).toBe(true);
 
   const artistEmail = process.env.TAHTI_E2E_EMAIL ?? 'artist@tahti.live';
@@ -199,7 +200,9 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await expect(page.getByText(/saved/i)).toBeVisible();
 
-  const soundId = /\/studio\/sounds\/([^/]+)$/.exec(page.url())?.[1];
+  const soundId = /\/studio\/sounds\/([^/]+)$/.exec(
+    new URL(page.url()).pathname,
+  )?.[1];
   if (!soundId) {
     throw new Error(`Could not extract sound id from ${page.url()}`);
   }
@@ -254,7 +257,7 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
   });
   await page.goto(trackUrl);
   const subscriberFile = wavIdentity(
-    await captureDownload(page, /^Download$/, soundId),
+    await captureDownload(page, /^Download /, soundId),
   );
 
   await signOut(page);
@@ -288,7 +291,7 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
   const orders = page.getByTestId('fan-order-list');
   await expect(orders.getByText(/Fan-sub — Supporter/i).first()).toBeVisible();
   await expect(
-    orders.getByText(/Track purchase — riff/i).first(),
+    orders.getByText(`Track purchase — ${trackTitle}`).first(),
   ).toBeVisible();
 
   await grantBoardView(page);
@@ -296,5 +299,7 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
   await expect(page.getByRole('heading', { name: 'Logs' })).toBeVisible();
   await page.getByRole('tab', { name: /Audit events/i }).click();
   await expect(page.getByText(/subscribed/i).first()).toBeVisible();
-  await expect(page.getByText(/ledger entry|riff/i).first()).toBeVisible();
+  await expect(
+    page.getByText(new RegExp(`ledger entry|${trackTitle}`, 'i')).first(),
+  ).toBeVisible();
 });

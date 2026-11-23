@@ -203,7 +203,9 @@ export function AppShell() {
     if (!label) {
       return;
     }
-    if (pathname === '/' || pathname === '') {
+    const home =
+      new URLSearchParams(window.location.search).get('home') === '1';
+    if (!home && (pathname === '/' || pathname === '')) {
       void navigate({
         to: '/u/$username',
         params: { username: label },

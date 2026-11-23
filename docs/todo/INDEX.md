@@ -38,7 +38,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| partial | [discover-events-widget.md](discover-events-widget.md) | Upcoming events first on Discover → Events, events widget, mock events with artwork shipped; left: production seed events (admin session) and an e2e step |
+| partial | [discover-events-widget.md](discover-events-widget.md) | Upcoming events first on Discover → Events, events widget, mock events with artwork, e2e step shipped; left: production seed events (admin session) |
 | partial | [yaniho-hearthis-albums.md](yaniho-hearthis-albums.md) | Album track numbers, dense order, owner + board reorder shipped (tahti-org#1128, web); left: clean existing "artist - album - NN - title" names on production, 1:1 check against hearthis.at |
 | partial | [studio-admin-design-audit.md](studio-admin-design-audit.md) | Findings written (per-view table, 15 chat surfaces, proposed slices); Stats tabs shipped; remaining slices await OK |
 | partial | [more-3d-visualizers.md](more-3d-visualizers.md) | Visualizers follow the artwork colour; left: 3-4 new 3D presets (user picks the list) |
@@ -61,7 +61,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [google-facebook-login.md](google-facebook-login.md) | Google/Facebook sign-in built (web + tahti-org#1124, #1125); left: provider apps, server secrets, deploy, live check |
 | partial | [navigation-performance.md](navigation-performance.md) | Snapshots/GET cache/shell cuts done; remount assert in `useSnapshotFetch.test`; left: real-browser check vs live API |
 | open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | Many-file Chromium drop; CI ~50-file shards; 406 tahti-web stories; no single-file culprit yet |
-| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | 285-test mock CI set (audit 2026-11-22); left: 4 specs outside CI (listings-news, designer parity, purchase flows, artist-site-chrome), collection player placement, 2 product findings |
+| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Every mock spec in the CI glob (2026-11-23); left: collection player placement, 2 product findings |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: cross-section trail on phones (design call) |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/; storybook surfaces + close-external-issue wrapped; desktop shims deprecated toward `tahti-ops desktop` |

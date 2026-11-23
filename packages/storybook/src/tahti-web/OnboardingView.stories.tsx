@@ -40,7 +40,7 @@ export const Profile: Story = {
     ).toBeVisible();
     await expect(
       await canvas.findByRole('textbox', { name: 'Display name' }),
-    ).toHaveValue('Demo Artist');
+    ).toHaveValue(MOCK_USERS.listener.displayName);
     await expect(canvas.getByRole('tab', { name: 'Profile' })).toHaveAttribute(
       'aria-selected',
       'true',
