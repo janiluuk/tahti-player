@@ -743,7 +743,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Password and email',
         body: [
-          'Change your password in Settings → Account → Password & email. You need the current one; every other device is signed out, and any password-reset link sent earlier stops working.',
+          'Change your password in Settings → Security. You need the current one; every other device is signed out, and any password-reset link sent earlier stops working.',
           'To change your email, enter the new address and your password. We send a link to the new address and nothing changes until it is opened (within 24 hours). Your current address is told straight away, and you can cancel a waiting change in the same place.',
           'Passwords need at least 10 characters, with a lowercase letter, an uppercase letter and a number.',
         ],

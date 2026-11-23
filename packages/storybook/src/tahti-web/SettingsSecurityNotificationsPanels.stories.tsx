@@ -21,7 +21,7 @@ const meta: Meta<typeof SecurityPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Security (password & email, devices, two-factor, API tokens) and Settings → Notifications (notifications & visibility, mentions), each one tab row.',
+          'Settings → Security (overview with password and email rows that open dialogs, two-factor with a banner while it is off, linked logins; devices; API tokens) and Settings → Notifications (notifications & visibility, mentions), each one tab row.',
       },
     },
   },
@@ -50,14 +50,53 @@ export const SecurityDevices: Story = {
   },
 };
 
-/** Password & email lists linked Google/Facebook logins; Disconnect asks
+/** The Security overview: password and email rows with edit buttons that
+ * open their forms in dialogs, and a banner recommending two-factor while it
+ * is off (mock: off). */
+export const SecurityOverview: Story = {
+  decorators: [withTahtiRouter('/settings/security')],
+  render: () => <SecurityPanel />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = within(canvasElement.ownerDocument.body);
+    const banner = await canvas.findByTestId(
+      'security-2fa-banner',
+      {},
+      { timeout: 5000 },
+    );
+    await expect(banner).toHaveTextContent('Add a second lock to your account');
+    await expectVisible(canvas.getByRole('heading', { name: 'Sign-in' }));
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Change password' }),
+    );
+    const dialog = within(await body.findByRole('dialog'));
+    await userEvent.type(
+      dialog.getByLabelText('Current password'),
+      'Abc12345678',
+    );
+    await userEvent.type(dialog.getByLabelText('New password'), 'Abc12345678');
+    await expectVisible(
+      dialog.getByText('Choose a password different from your current one.'),
+    );
+    await userEvent.keyboard('{Escape}');
+    await waitFor(() => expect(body.queryByRole('dialog')).toBeNull());
+    await userEvent.click(canvas.getByRole('button', { name: 'Change email' }));
+    const emailDialog = within(await body.findByRole('dialog'));
+    const field = emailDialog.getByLabelText('New email');
+    await userEvent.type(field, 'not-an-email');
+    await userEvent.tab();
+    await expectVisible(emailDialog.getByText(/Enter a valid email address/));
+  },
+};
+
+/** Security lists linked Google/Facebook logins; Disconnect asks
  * first, and Facebook offers Link (mock: Google is linked). */
 export const LinkedLogins: Story = {
   decorators: [withTahtiRouter('/settings/security')],
   render: () => <SecurityPanel />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await selectTab(canvas, 'Password & email');
+    await selectTab(canvas, 'Security');
     await expectVisible(
       await canvas.findByRole('heading', { name: 'Linked logins' }),
     );
@@ -79,10 +118,10 @@ export const LinkedLogins: Story = {
   },
 };
 
-/** An account created with Google/Facebook has no password: Password &
- * email offers "Set a password" instead of the change form, and the only
- * linked login carries a hint next to Disconnect. Setting one swaps in the
- * change form. */
+/** An account created with Google/Facebook has no password: the password
+ * row offers Set password, which opens the set form in a dialog, and the only
+ * linked login carries a hint next to Disconnect. Setting one turns the row
+ * into Change password. */
 export const NoPasswordAccount: Story = {
   decorators: [
     withTahtiRouter('/settings/security'),
@@ -91,33 +130,33 @@ export const NoPasswordAccount: Story = {
   render: () => <SecurityPanel />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await selectTab(canvas, 'Password & email');
-    await expectVisible(
-      await canvas.findByRole('heading', { name: 'Set a password' }),
-    );
-    await expect(canvas.queryByLabelText('Current password')).toBeNull();
+    const body = within(canvasElement.ownerDocument.body);
+    await selectTab(canvas, 'Security');
     await expectVisible(
       await canvas.findByText(
         'Set a password first to disconnect your only way to sign in.',
       ),
     );
-    await userEvent.type(
-      canvas.getByLabelText('New password'),
-      'NewPassword123',
-    );
-    await userEvent.type(
-      canvas.getByLabelText('Confirm new password'),
-      'NewPassword123',
-    );
     await userEvent.click(canvas.getByRole('button', { name: 'Set password' }));
-    const body = within(canvasElement.ownerDocument.body);
+    const dialog = within(await body.findByRole('dialog'));
+    await expect(dialog.queryByLabelText('Current password')).toBeNull();
+    await userEvent.type(
+      dialog.getByLabelText('New password'),
+      'NewPassword123',
+    );
+    await userEvent.type(
+      dialog.getByLabelText('Confirm new password'),
+      'NewPassword123',
+    );
+    await userEvent.click(dialog.getByRole('button', { name: 'Set password' }));
     await expectVisible(
       await body.findByText(
         'Password set. You can now also sign in with your email.',
       ),
     );
+    await userEvent.keyboard('{Escape}');
     await expectVisible(
-      await canvas.findByRole('heading', { name: 'Change password' }),
+      await canvas.findByRole('button', { name: 'Change password' }),
     );
     await waitFor(() =>
       expect(

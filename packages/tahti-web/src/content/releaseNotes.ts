@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.455',
+    version: '0.0.456',
     sections: [
       {
         id: 'listen',
@@ -60,6 +60,13 @@ export const RELEASE_NOTES: ReleaseNote[] = [
           'Studio → Channel shows the Tahti Radio panel once, with its own description, instead of a doubled panel.',
           'Sections you hide on your artist page (bio, gallery, feed and the rest) now stay hidden for every visitor and on your other devices, not just in the browser you hid them in.',
           'If the board’s daily check sees unusual download activity on your channel, you get a notification saying so, in Finnish or English, before anything about your units changes.',
+        ],
+      },
+      {
+        id: 'settings',
+        label: 'Settings',
+        highlights: [
+          'Settings → Security is one page: change your password or email from a small edit button that opens the form in a window, with clear messages when an address looks wrong or the new password matches the old one. Two-factor authentication sits on the same page, and while it is off a friendly note suggests turning it on.',
         ],
       },
       {

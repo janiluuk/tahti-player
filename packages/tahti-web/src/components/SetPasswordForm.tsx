@@ -26,7 +26,8 @@ async function refreshWithPassword(): Promise<void> {
 
 /** Settings → Security for an account created with Google/Facebook that has
  * no password yet. */
-export function SetPasswordForm() {
+/** `embedded` drops the heading when a dialog already titles the form. */
+export function SetPasswordForm({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation('web');
   const headingId = useId();
   const [next, setNext] = useState('');
@@ -60,10 +61,16 @@ export function SetPasswordForm() {
   };
 
   return (
-    <section aria-labelledby={headingId} className="flex flex-col gap-3">
-      <h3 id={headingId} className="font-semibold">
-        {t('oauthSetPassword.heading')}
-      </h3>
+    <section
+      aria-labelledby={embedded ? undefined : headingId}
+      aria-label={embedded ? t('oauthSetPassword.heading') : undefined}
+      className="flex flex-col gap-3"
+    >
+      {embedded ? null : (
+        <h3 id={headingId} className="font-semibold">
+          {t('oauthSetPassword.heading')}
+        </h3>
+      )}
       <p className="text-foreground-secondary text-sm">
         {t('oauthSetPassword.description')}
       </p>

@@ -11,10 +11,30 @@ import {
 } from '../api/account-credentials';
 import { dateLocaleTag } from '../lib/locale';
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+/** Why `value` can't be the new address, or null when it can. */
+export function newEmailProblem(
+  value: string,
+  currentEmail: string | null,
+): 'invalidEmail' | 'emailSameAsCurrent' | null {
+  const email = value.trim();
+  if (!EMAIL_PATTERN.test(email)) {
+    return 'invalidEmail';
+  }
+  if (currentEmail && email.toLowerCase() === currentEmail.toLowerCase()) {
+    return 'emailSameAsCurrent';
+  }
+  return null;
+}
+
+/** `embedded` drops the heading when a dialog already titles the form. */
 export function ChangeEmailForm({
   currentEmail,
+  embedded = false,
 }: {
   currentEmail: string | null;
+  embedded?: boolean;
 }) {
   const { t } = useTranslation('web');
   const headingId = useId();
@@ -48,7 +68,12 @@ export function ChangeEmailForm({
     });
   };
 
-  const canSubmit = !saving && newEmail.includes('@') && password.length > 0;
+  const [emailTouched, setEmailTouched] = useState(false);
+  const emailProblem = newEmailProblem(newEmail, currentEmail);
+  const showEmailProblem =
+    emailProblem === 'emailSameAsCurrent' ||
+    (emailProblem === 'invalidEmail' && emailTouched);
+  const canSubmit = !saving && emailProblem === null && password.length > 0;
 
   const submit = () => {
     if (!canSubmit) {
@@ -79,10 +104,16 @@ export function ChangeEmailForm({
     : '';
 
   return (
-    <section aria-labelledby={headingId} className="flex flex-col gap-3">
-      <h3 id={headingId} className="font-semibold">
-        {t('settingsBody.account.changeEmail')}
-      </h3>
+    <section
+      aria-labelledby={embedded ? undefined : headingId}
+      aria-label={embedded ? t('settingsBody.account.changeEmail') : undefined}
+      className="flex flex-col gap-3"
+    >
+      {embedded ? null : (
+        <h3 id={headingId} className="font-semibold">
+          {t('settingsBody.account.changeEmail')}
+        </h3>
+      )}
       {pending ? (
         <div className="flex flex-wrap items-center gap-2 text-sm">
           <span>
@@ -123,8 +154,13 @@ export function ChangeEmailForm({
           spellCheck={false}
           value={newEmail}
           onChange={(event) => setNewEmail(event.target.value)}
+          onBlur={() => setEmailTouched(newEmail.trim().length > 0)}
           autoComplete="email"
+          aria-invalid={showEmailProblem || undefined}
         />
+        {showEmailProblem && emailProblem ? (
+          <InlineError>{t(`settingsBody.account.${emailProblem}`)}</InlineError>
+        ) : null}
         <Input
           label={t('settingsBody.account.password')}
           variant="password"

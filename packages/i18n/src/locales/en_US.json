@@ -2605,7 +2605,20 @@
         "currentPassword": "Current password",
         "newPassword": "New password",
         "confirmNewPassword": "Confirm new password",
-        "passwordsMismatch": "Passwords don't match.",
+        "passwordSameAsCurrent": "Choose a password different from your current one.",
+      "invalidEmail": "Enter a valid email address, like name@example.com.",
+      "emailSameAsCurrent": "That is already your email address.",
+      "passwordRowNote": "Use a long password you don't use anywhere else.",
+      "noPasswordRowNote": "You sign in with a linked account. Set a password to sign in with email too.",
+      "setPasswordAction": "Set password",
+      "emailRowMissing": "No email address",
+      "twoFactorBannerTitle": "Add a second lock to your account",
+      "twoFactorBannerBody": "With two-factor authentication, signing in also needs a code from your phone, so a leaked password alone can't open your account. It takes about a minute.",
+      "twoFactorBannerAction": "Turn on two-factor",
+      "signInSection": "Sign-in",
+      "tabSecurityOverview": "Security",
+      "emailRowNote": "Sign-in links and notices go here. A change is confirmed from the new address.",
+      "passwordsMismatch": "Passwords don't match.",
         "emailConfirmNote": "We emailed you to confirm the change.",
         "changing": "Changing…",
         "changePasswordAction": "Change password",
@@ -14738,7 +14751,7 @@
     },
     "emailChangeViewBatch33": {
       "noToken": "This link has no token. Open the link from the email again.",
-      "linksExpire": "Links work once and expire after 24 hours. Ask for a new one in Settings → Account → Password & email."
+      "linksExpire": "Links work once and expire after 24 hours. Ask for a new one in Settings → Security."
     },
     "messagesViewBatch33": {
       "noAccountFound": "No account found for \"{{query}}\".",

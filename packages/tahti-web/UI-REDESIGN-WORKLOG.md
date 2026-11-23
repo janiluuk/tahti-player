@@ -7055,3 +7055,10 @@ Validated with affected Storybook plays, UI/theme/unit tests, type-check/lint, a
 - Glow: blurred event image behind the poster plus a box shadow in its dominant colour (`useDominantColor`); events without a banner glow from the default artwork via the new `useMediaArtworkDefaultSrc`.
 - Browse: arrow buttons, pointer drag/swipe (40 px threshold, suppresses the open click), ArrowLeft/ArrowRight on the focused carousel, Enter opens; index wraps at both ends.
 - `UpcomingEventCard` start time uses `hourCycle: 'h23'` and gains calendar / user / map-pin icons (Coming up, Next events).
+
+## 2026-11-24 - Security settings dialogs and 2FA banner (0.0.456)
+
+- `SecurityPanel`: tabs Security · Devices · API tokens. The Security tab is `SecurityOverview` (2FA banner, Sign-in rows, `SecurityTotpPanel`, `LinkedLoginsSection`).
+- Password and email edits open in `Dialog`; forms take `embedded` to drop their own heading.
+- `newEmailProblem` (format, same as current) and a same-as-current password check; errors via `InlineError`.
+- Help and the email-link expiry text now point to Settings → Security.

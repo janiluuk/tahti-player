@@ -8,7 +8,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../api/account-credentials';
-import { ChangeEmailForm } from './ChangeEmailForm';
+import { ChangeEmailForm, newEmailProblem } from './ChangeEmailForm';
 
 describe('ChangeEmailForm', () => {
   afterEach(() => {
@@ -83,5 +83,42 @@ describe('ChangeEmailForm', () => {
     });
     expect(cancel).toHaveBeenCalled();
     expect(screen.queryByText(/Waiting for confirmation/)).toBeNull();
+  });
+
+  it('flags a malformed address once the field is left', () => {
+    render(<ChangeEmailForm currentEmail="old@example.com" />);
+    const field = screen.getByLabelText('New email');
+    fireEvent.change(field, { target: { value: 'not-an-email' } });
+    expect(screen.queryByText(/Enter a valid email address/)).toBeNull();
+    fireEvent.blur(field);
+    expect(screen.getByText(/Enter a valid email address/)).toBeTruthy();
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'secret' },
+    });
+    expect(
+      screen.getByRole('button', { name: 'Send confirmation link' }),
+    ).toBeDisabled();
+  });
+
+  it('says when the new address is the current one', () => {
+    render(<ChangeEmailForm currentEmail="old@example.com" />);
+    fireEvent.change(screen.getByLabelText('New email'), {
+      target: { value: ' OLD@example.com ' },
+    });
+    expect(
+      screen.getByText('That is already your email address.'),
+    ).toBeTruthy();
+  });
+});
+
+describe('newEmailProblem', () => {
+  it.each([
+    ['name@example.com', null],
+    ['name@example', 'invalidEmail'],
+    ['@example.com', 'invalidEmail'],
+    ['na me@example.com', 'invalidEmail'],
+    ['Old@Example.com', 'emailSameAsCurrent'],
+  ])('%s -> %s', (value, problem) => {
+    expect(newEmailProblem(value, 'old@example.com')).toBe(problem);
   });
 });

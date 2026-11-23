@@ -10,6 +10,7 @@ export function resetSettingsModal(): void {
     pluginCategory: null,
     artistSection: null,
     accountSection: null,
+    securitySection: null,
     openedToSection: false,
   });
 }
