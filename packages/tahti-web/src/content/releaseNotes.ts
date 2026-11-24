@@ -40,12 +40,14 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.472',
+    version: '0.0.473',
     sections: [
       {
         id: 'listen',
         label: 'Listen',
         highlights: [
+          'On phones, pages use more of the screen width and Studio lists show fewer buttons per row: secondary actions sit in the ⋯ menu.',
+          'Track lists on phones no longer show a checkbox on every row. Tap Select when you want to pick several tracks, and Done when you are finished.',
           'New tracks on Listen is a card of its own: search sits on the same row as sort and size, track titles get more room, and the duration column is narrow.',
           'Shared links to tahti.live show a proper preview image, and old app.tahti.live links forward to tahti.live.',
           'The full-screen player can turn the visualizer off: under Visualizer → Ambience, “Off” fills the screen with a soft glow from the cover art, and “Water landscape” turns the cover into a slowly drifting landscape over its own rippling reflection.',
