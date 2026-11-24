@@ -112,7 +112,7 @@ describe('SecurityPanel two-factor', () => {
     expect(
       await screen.findByLabelText('Authenticator setup QR code'),
     ).toBeVisible();
-    expect(screen.queryByTestId('security-2fa-banner')).toBeNull();
+    expect(screen.getByTestId('security-2fa-banner')).toBeVisible();
   });
 
   it('shows 2FA on the main page without a banner once it is on', async () => {
