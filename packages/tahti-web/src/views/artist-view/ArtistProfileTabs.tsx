@@ -9,7 +9,8 @@ import type { PublicPressKitImage } from '../../api/artist-settings';
 import { ArtistGalleryAddIcon } from '../../components/ArtistGalleryPanel';
 import { ChannelDesigner } from '../../components/ChannelDesigner';
 
-export type ArtistProfileTab = 'stage' | 'gallery' | 'design';
+export type ArtistProfileTab =
+  'stage' | 'albums' | 'dj-sets' | 'gallery' | 'design';
 
 export type ArtistProfileTabItem = {
   id: ArtistProfileTab;

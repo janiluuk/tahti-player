@@ -6676,3 +6676,11 @@ avatar as one huge blurred image over `tahti.live/u/<name>`. Frame is now
 
 `DiscoverPartiesRow` renders after the filters and widget grid on the
 Discover tab instead of above them; ordering test in `DiscoverView.test.tsx`.
+
+## 2026-11-24 - Albums and DJ sets tabs on the artist page (0.0.462)
+
+`collectionKind` (lib) sorts profile collections: album (type ALBUM or style
+ALBUM/EP/SINGLE), DJ set (type MIX_SERIES or style DJ_SET_SERIES), other.
+`ArtistProfilePage` adds Albums / DJ sets tabs when it has such collections;
+the playlists grid shows only the rest. Collections stored as CUSTOM/PLAYLIST
+(all of yaniho's today) stay in the grid until their style is set.

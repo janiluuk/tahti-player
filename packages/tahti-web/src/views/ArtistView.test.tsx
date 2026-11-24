@@ -96,6 +96,79 @@ describe('ArtistView', () => {
     expect(header?.textContent).toContain('Downloads');
   });
 
+  it('groups album and DJ set collections into their own tabs', async () => {
+    const original = client.fetchProfile;
+    vi.spyOn(client, 'fetchProfile').mockImplementation(async (name) => {
+      const result = await original(name);
+      return {
+        ...result,
+        data: {
+          ...result.data,
+          collections: [
+            {
+              slug: 'mute8',
+              name: 'Mute8 LP',
+              type: 'CUSTOM',
+              style: 'ALBUM',
+              description: null,
+              coverUrl: null,
+              isFeatured: false,
+              itemCount: 3,
+              url: '/u/northern-lights/c/mute8',
+              rssUrl: '',
+            },
+            {
+              slug: 'sets-2026',
+              name: '2026 sets',
+              type: 'CUSTOM',
+              style: 'DJ_SET_SERIES',
+              description: null,
+              coverUrl: null,
+              isFeatured: false,
+              itemCount: 3,
+              url: '/u/northern-lights/c/sets-2026',
+              rssUrl: '',
+            },
+            {
+              slug: 'faves',
+              name: 'Favourites',
+              type: 'CUSTOM',
+              style: 'PLAYLIST',
+              description: null,
+              coverUrl: null,
+              isFeatured: false,
+              itemCount: 3,
+              url: '/u/northern-lights/c/faves',
+              rssUrl: '',
+            },
+          ],
+        },
+      };
+    });
+    const { container } = await renderArtist('northern-lights');
+    const tabNamed = (label: string) =>
+      [...container.querySelectorAll<HTMLElement>('[role="tab"]')].find(
+        (node) => node.textContent?.trim() === label,
+      );
+    expect(tabNamed('Albums')).toBeDefined();
+    expect(tabNamed('DJ sets')).toBeDefined();
+
+    await act(async () => {
+      tabNamed('Albums')!.click();
+    });
+    const albums = container.querySelector('[data-testid="artist-albums-tab"]');
+    expect(albums?.textContent).toContain('Mute8 LP');
+    expect(albums?.textContent).not.toContain('2026 sets');
+
+    await act(async () => {
+      tabNamed('DJ sets')!.click();
+    });
+    const sets = container.querySelector('[data-testid="artist-dj-sets-tab"]');
+    expect(sets?.textContent).toContain('2026 sets');
+
+    expect(container.textContent).toContain('Favourites');
+  });
+
   it('shows the nameplate pill next to the display name', async () => {
     const original = client.fetchProfile;
     vi.spyOn(client, 'fetchProfile').mockImplementation(async (name) => {
