@@ -28,7 +28,7 @@ export function StudioPanel({
   return (
     <section
       id={id}
-      className={`border-border bg-background-secondary/40 rounded-xl border shadow-sm ${compact ? 'p-4' : 'p-5 sm:p-6'} ${className}`}
+      className={`border-border bg-background-secondary/40 rounded-xl border shadow-sm ${compact ? 'p-3 sm:p-4' : 'p-3 sm:p-6'} ${className}`}
     >
       {(title || action) && (
         <div

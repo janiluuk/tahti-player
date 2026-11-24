@@ -1,9 +1,18 @@
-import { FilterIcon, PlayIcon, PlusIcon, Trash2, XIcon } from 'lucide-react';
+import {
+  CheckIcon,
+  FilterIcon,
+  ListChecksIcon,
+  PlayIcon,
+  PlusIcon,
+  Trash2,
+  XIcon,
+} from 'lucide-react';
 
 import { cn } from '../../utils';
 import { Button } from '../Button';
 import { Input } from '../Input';
 import { Tooltip } from '../Tooltip';
+import { useUiLabels } from '../UiLabels';
 import { useTrackTableContext } from './TrackTableContext';
 
 type ToolbarProps = {
@@ -11,14 +20,53 @@ type ToolbarProps = {
   onFilterChange: (value: string) => void;
   selectedIds: string[];
   onClearSelection: () => void;
+  selection?: {
+    onDemand: boolean;
+    selecting: boolean;
+    start: () => void;
+    stop: () => void;
+  };
   className?: string;
 };
+
+function SelectionToggle({
+  selection,
+}: {
+  selection: NonNullable<ToolbarProps['selection']>;
+}) {
+  const uiLabels = useUiLabels();
+  if (!selection.onDemand) {
+    return null;
+  }
+  return selection.selecting ? (
+    <Button
+      variant="text"
+      size="sm"
+      onClick={selection.stop}
+      data-testid="done-selecting-button"
+    >
+      <CheckIcon size={14} className="mr-1" aria-hidden />
+      {uiLabels.doneSelecting}
+    </Button>
+  ) : (
+    <Button
+      variant="text"
+      size="sm"
+      onClick={selection.start}
+      data-testid="start-selecting-button"
+    >
+      <ListChecksIcon size={14} className="mr-1" aria-hidden />
+      {uiLabels.startSelecting}
+    </Button>
+  );
+}
 
 export function Toolbar({
   filterValue,
   onFilterChange,
   selectedIds,
   onClearSelection,
+  selection,
   className,
 }: ToolbarProps) {
   const { features, actions, labels } = useTrackTableContext();
@@ -67,12 +115,19 @@ export function Toolbar({
               {labels.removeSelected ?? 'Remove'}
             </Button>
           )}
+          {selection ? <SelectionToggle selection={selection} /> : null}
         </div>
       </div>
     );
   }
 
-  if (!features.playAll && !features.addAllToQueue && !features.filterable) {
+  const showToggle = Boolean(selection?.onDemand);
+  if (
+    !features.playAll &&
+    !features.addAllToQueue &&
+    !features.filterable &&
+    !showToggle
+  ) {
     return null;
   }
 
@@ -121,6 +176,11 @@ export function Toolbar({
           />
         </div>
       )}
+      {selection && showToggle ? (
+        <div className={cn(!features.filterable && 'ml-auto')}>
+          <SelectionToggle selection={selection} />
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -168,6 +168,46 @@ export function StudioReleasesView() {
     reload();
   };
 
+  const secondaryActions = (r: (typeof filteredReleases)[number]) => (
+    <>
+      <Tooltip content={t('studioReleases.stats')} side="top">
+        <ButtonLink
+          to="/studio/releases/$id"
+          params={{ id: r.id }}
+          search={{ tab: 'stats' }}
+          size="icon-sm"
+          variant="text"
+          aria-label={t('studioReleases.statsFor', {
+            title: r.title,
+          })}
+        >
+          <BarChart3Icon size={16} aria-hidden />
+        </ButtonLink>
+      </Tooltip>
+      <CopyButton
+        text={`${window.location.origin}/r/${r.smartLinkSlug}`}
+        size="icon-sm"
+        variant="text"
+        aria-label={t('studioReleases.copySmartlink', {
+          title: r.title,
+        })}
+      />
+      {r.smartLinkTargets?.bandcamp ? (
+        <Tooltip content={t('studioReleases.openBandcamp')} side="top">
+          <ExternalLink
+            href={r.smartLinkTargets.bandcamp}
+            className="border-border size-8 justify-center overflow-hidden rounded border no-underline"
+            aria-label={t('studioReleases.openBandcampItem', {
+              title: r.title,
+            })}
+          >
+            <SourceServiceIcon id="bandcamp" size="detail" />
+          </ExternalLink>
+        </Tooltip>
+      ) : null}
+    </>
+  );
+
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
@@ -365,44 +405,10 @@ export function StudioReleasesView() {
                             title: r.title,
                           })}
                         />
-                        <Tooltip content={t('studioReleases.stats')} side="top">
-                          <ButtonLink
-                            to="/studio/releases/$id"
-                            params={{ id: r.id }}
-                            search={{ tab: 'stats' }}
-                            size="icon-sm"
-                            variant="text"
-                            aria-label={t('studioReleases.statsFor', {
-                              title: r.title,
-                            })}
-                          >
-                            <BarChart3Icon size={16} aria-hidden />
-                          </ButtonLink>
-                        </Tooltip>
-                        <CopyButton
-                          text={`${window.location.origin}/r/${r.smartLinkSlug}`}
-                          size="icon-sm"
-                          variant="text"
-                          aria-label={t('studioReleases.copySmartlink', {
-                            title: r.title,
-                          })}
-                        />
-                        {r.smartLinkTargets?.bandcamp ? (
-                          <Tooltip
-                            content={t('studioReleases.openBandcamp')}
-                            side="top"
-                          >
-                            <ExternalLink
-                              href={r.smartLinkTargets.bandcamp}
-                              className="border-border size-8 justify-center overflow-hidden rounded border no-underline"
-                              aria-label={t('studioReleases.openBandcampItem', {
-                                title: r.title,
-                              })}
-                            >
-                              <SourceServiceIcon id="bandcamp" size="detail" />
-                            </ExternalLink>
-                          </Tooltip>
-                        ) : null}
+                        {/* Phones keep the row to edit + more; these move into the more row. */}
+                        <span className="hidden sm:contents">
+                          {secondaryActions(r)}
+                        </span>
                         <Tooltip
                           content={
                             openMoreId === r.id
@@ -430,6 +436,9 @@ export function StudioReleasesView() {
                         </Tooltip>
                         {openMoreId === r.id && (
                           <div className="flex w-full flex-wrap gap-2 pt-1">
+                            <span className="contents sm:hidden">
+                              {secondaryActions(r)}
+                            </span>
                             <ReleasePinButton
                               release={r}
                               onChange={(pinnedAt) =>

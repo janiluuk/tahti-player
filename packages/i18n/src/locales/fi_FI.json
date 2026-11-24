@@ -12408,6 +12408,8 @@
       "deselectRow": "Poista valinta: {{name}}",
       "selectAllRows": "Valitse kaikki rivit",
       "deselectAllRows": "Poista kaikkien rivien valinta",
+      "startSelecting": "Valitse",
+      "doneSelecting": "Valmis",
       "editTrack": "Muokkaa kappaletta",
       "openTrack": "Avaa kappale",
       "notifications": "Ilmoitukset",

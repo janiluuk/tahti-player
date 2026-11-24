@@ -2,6 +2,7 @@ import { CellContext } from '@tanstack/react-table';
 
 import { Track } from '@tahti-player/model';
 
+import { Checkbox } from '../../Checkbox';
 import { useUiLabels } from '../../UiLabels';
 import { useTrackTableContext } from '../TrackTableContext';
 
@@ -23,14 +24,9 @@ export const SelectCell = <T extends Track>({
 
   return (
     <td className="w-10 text-center">
-      <input
-        type="checkbox"
-        className="accent-primary h-4 w-4 cursor-pointer align-middle"
+      <Checkbox
         checked={selected}
-        onChange={(e) => {
-          e.stopPropagation();
-          meta.onToggleRowSelected(id);
-        }}
+        onChange={() => meta.onToggleRowSelected(id)}
         onClick={(e) => e.stopPropagation()}
         aria-label={
           selected

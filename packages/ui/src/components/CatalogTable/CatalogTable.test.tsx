@@ -8,6 +8,7 @@ import {
 import { useState } from 'react';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 
+import { stubPhoneViewport } from '../../test/phoneViewport';
 import { CatalogTable } from './CatalogTable';
 import type { CatalogLayoutsApi } from './CatalogTableSettingsDialog';
 import {
@@ -110,6 +111,22 @@ beforeAll(() => {
 });
 
 describe('CatalogTable', () => {
+  it('hides row checkboxes on phones until Select is pressed', () => {
+    const restore = stubPhoneViewport();
+    try {
+      render(<Harness />);
+      expect(screen.queryByRole('checkbox')).toBeNull();
+      fireEvent.click(screen.getByTestId('start-selecting-button'));
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Select Alpha' }));
+      expect(screen.getByText('1 selected')).toBeTruthy();
+      fireEvent.click(screen.getByTestId('done-selecting-button'));
+      expect(screen.queryByRole('checkbox')).toBeNull();
+      expect(screen.getByText('3 tracks')).toBeTruthy();
+    } finally {
+      restore();
+    }
+  });
+
   it('renders visible columns only and rows from the data', () => {
     render(<Harness />);
     expect(screen.getByRole('columnheader', { name: /Title/ })).toBeTruthy();

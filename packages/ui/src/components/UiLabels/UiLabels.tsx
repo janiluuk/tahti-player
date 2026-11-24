@@ -43,6 +43,9 @@ export type UiLabels = {
   deselectRow: (name: string) => string;
   selectAllRows: string;
   deselectAllRows: string;
+  /** Phone-width toggle that reveals a list's row checkboxes. */
+  startSelecting: string;
+  doneSelecting: string;
   editTrack: string;
   openTrack: string;
   /** Play control hint when Shift+click queues instead. */
@@ -96,6 +99,8 @@ export const defaultUiLabels: UiLabels = {
   deselectRow: (name) => `Deselect ${name}`,
   selectAllRows: 'Select all rows',
   deselectAllRows: 'Deselect all rows',
+  startSelecting: 'Select',
+  doneSelecting: 'Done',
   editTrack: 'Edit track',
   openTrack: 'Open track',
   playOrShiftQueue: (playLabel) => `${playLabel} · Shift+click to queue`,

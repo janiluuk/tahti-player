@@ -6,3 +6,7 @@ export {
   useSkipEnterMotion,
 } from './useSkipEnterMotion';
 export { usePrefersReducedMotion } from './usePrefersReducedMotion';
+export {
+  PHONE_SELECTION_QUERY,
+  useOnDemandSelection,
+} from './useOnDemandSelection';
