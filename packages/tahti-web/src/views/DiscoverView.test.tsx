@@ -143,6 +143,28 @@ describe('DiscoverView', () => {
     expect(container.textContent).not.toContain('haven’t heard');
   });
 
+  it('puts listening parties at the bottom, after the filters and widgets', async () => {
+    const { container } = await renderDiscover('/discover');
+    const parties = container.querySelector(
+      '[data-testid="discover-parties-row"]',
+    );
+    const filters = container.querySelector('[data-testid="discover-filters"]');
+    expect(parties).not.toBeNull();
+    expect(filters).not.toBeNull();
+    expect(
+      filters!.compareDocumentPosition(parties!) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    const widgetTitle = [...container.querySelectorAll('h2, h3')].find((node) =>
+      node.textContent?.includes('This week: most played'),
+    );
+    expect(widgetTitle).toBeDefined();
+    expect(
+      widgetTitle!.compareDocumentPosition(parties!) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
   it('does not render the hero tile', async () => {
     const { container } = await renderDiscover('/discover');
 
