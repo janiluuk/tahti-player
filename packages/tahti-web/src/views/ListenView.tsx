@@ -472,7 +472,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       </Tabs.Root>
       <ViewShell
         title={tab === 'history' ? t('listen.history') : t('nav.listen')}
-        classes={{ root: 'px-0 pt-0' }}
+        // The Listen / History tabs above already name the page.
+        classes={{ root: 'px-0 pt-0', title: 'max-sm:sr-only' }}
         actions={
           tab === 'listen' ? (
             <>

@@ -49,16 +49,11 @@ Items marked **verify** were never confirmed done; check before closing them.
 - [ ] **Apex vs marketing site.** The apex serves the SPA, but
   `tahti-org/website/` still exists and `deploy-production.yml` still
   deploys it. Decide whether to retire `website/` or put it back on the apex.
-  `index.html` canonical is `https://app.tahti.live/`; confirm the canonical
-  host once this is decided.
+  The SPA's canonical host is `https://tahti.live` since 0.0.472 (`app.tahti.live`
+  301s there).
 - [ ] **`beta.tahti.live` fate.** NPM #61 points at the same container. The
   2026-08-17 plan was to sunset beta after a soak; decide alias, redirect or
   remove.
-- [ ] **SEO crawler QA (verify).** Client-side metadata and the bot OG proxy
-  (`deploy/nginx.conf` → `GET /api/og/*` in tahti-org) are built. Fetch
-  `/c`, `/u`, `/r`, `/t`, `/v` and `/u/:user/c/:slug` with a bot user agent
-  on the production hosts and confirm the tags. Notes:
-  [`SEO-OG-NOTES.md`](../../packages/tahti-web/SEO-OG-NOTES.md).
 - [ ] **Rollback (verify).** With Next gone, rollback means redeploying an
   earlier tahti-player commit's build. Never rehearsed.
 - [ ] **Post-switch regression (verify).** The no-drop ledger (the archived

@@ -7,6 +7,7 @@ import { ScrollableArea } from '../ScrollableArea';
 
 type ViewShellClasses = {
   root?: string;
+  title?: string;
   scrollableArea?: string;
   content?: string;
 };
@@ -53,7 +54,7 @@ export const ViewShell: FC<ViewShellProps> = ({
           >
             {title && (
               <h1
-                className="text-2xl font-bold sm:text-3xl"
+                className={cn('text-2xl font-bold sm:text-3xl', classes?.title)}
                 data-testid="title"
               >
                 {title}
@@ -80,6 +81,7 @@ export const ViewShell: FC<ViewShellProps> = ({
                 'flex w-full flex-0 flex-row text-2xl font-bold sm:text-3xl',
                 subtitle ? 'mb-1' : 'mb-6',
                 corner ? 'pl-14' : 'text-left',
+                classes?.title,
               )}
               data-testid="title"
             >

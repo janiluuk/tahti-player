@@ -541,10 +541,15 @@ function useAdminNavParts(
     (item) => item.id === section?.id,
   );
   const tabs = (
-    <div className="w-fit max-w-full overflow-x-auto" data-admin-section-tabs>
+    <div
+      // On phones the six sections scroll in one row; the fade shows there
+      // are more past the edge.
+      className="tahti-hide-scrollbar w-fit max-w-full overflow-x-auto max-sm:[mask-image:linear-gradient(to_right,#000_calc(100%-2rem),transparent)]"
+      data-admin-section-tabs
+    >
       <Tabs.Root
         variant="segmented"
-        className="w-fit max-w-full gap-0"
+        className="w-fit max-w-full gap-0 max-sm:max-w-none"
         selectedIndex={Math.max(0, selectedSectionIndex)}
         onChange={(index) => {
           const target = ADMIN_SECTIONS[index];
@@ -559,7 +564,10 @@ function useAdminNavParts(
             : undefined
         }
       >
-        <Tabs.List aria-label={t('adminNav.sections')} className="w-fit">
+        <Tabs.List
+          aria-label={t('adminNav.sections')}
+          className="w-fit max-sm:max-w-none max-sm:flex-nowrap max-sm:[&>*]:shrink-0"
+        >
           {ADMIN_SECTIONS.map((item) => (
             <Tabs.Tab key={item.id}>
               <TabLabel icon={item.items[0]?.icon}>

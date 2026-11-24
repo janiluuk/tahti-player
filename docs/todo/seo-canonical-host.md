@@ -24,5 +24,15 @@
 ## Left
 
 - [ ] Commit/merge `../tahti-org` `infra/docker-stack.yml` APP_URL so the next stack deploy does not revert to `app.tahti.live`
-- [ ] Full crawler QA checklist in `final-season-hardening.md` (venues/collections remaining)
-- [ ] Prefer raster (not SVG) for channel OG images that bots reject
+- [ ] tahti-org `/api/og/collection/*` puts a presigned CDN URL (`X-Amz-Expires=3600`) in `og:image`; link previews cached by Facebook/Slack/X go blank after an hour. Use a stable public URL or an image proxy route.
+- [ ] tahti-org `/api/og/release/*`: SVG covers need a raster rendition (or `og-image.png`) for `og:image`.
+- [ ] tahti-org `/api/og/channel|profile|track/*` uses the avatar `.webp` as `og:image`; some crawlers (LinkedIn, older Slack/iMessage) skip WebP. Prefer a JPEG/PNG rendition, with the channel banner or `og-image.png` as fallback.
+
+## Crawler QA (2026-11-24, bot user agents against production)
+
+- `/channel/yaniho`, `/c/yaniho`, `/u/yaniho`: bot OG proxy answers with channel title, `og:url` on the artist subdomain and avatar image.
+- `/u/yaniho/c/<slug>` collections: title, canonical and `og:url` correct; image is the presigned URL above.
+- `/r/<slug>` releases: title and `og:url` correct; image is a presigned **SVG** cover (`cover.svg?X-Amz-…`), which most crawlers reject and which also expires.
+- `/t/<id>` tracks: title and `og:url` correct; image is a WebP artwork preset (`/artwork-presets/artwork-14.webp`).
+- `/v/<slug>`: no venue URLs in any sitemap yet, nothing to check.
+- Static SPA routes (`/venues`, `/governance/guide`, …) served `canonical` and `og:url` of the home page to non-JS crawlers. Fixed in nginx (0.0.474): `location = /index.html` rewrites both to `https://tahti.live<path>` (query dropped) via the `$tahti_page_url` map; verified against `nginx:1.27-alpine`.
