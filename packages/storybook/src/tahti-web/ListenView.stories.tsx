@@ -15,7 +15,7 @@ const meta: Meta<typeof ListenView> = {
     docs: {
       description: {
         component:
-          'The home Listen page (`/`) with its Listen / Feed / History section tabs. Listen shows Tahti Radio, recently played beside Tahti Selects, playable releases with type pills, internet radio, On air channels, new tracks, listener widgets and the disco widgets; signed-in listeners also get the widget store. The Order toggle in the header shows a drag handle on every section and widget; a widget added from the store goes to the top.',
+          'The home Listen page (`/`) with its Listen / Feed / History section tabs. Listen shows Tahti Radio, Tahti Selects, playable releases with type pills, internet radio, On air channels, new tracks, listener widgets and the disco widgets; signed-in listeners also get the widget store. The Order toggle in the header shows a drag handle on every section and widget; a widget added from the store goes to the top.',
       },
     },
   },
@@ -99,7 +99,7 @@ const resetListenOrder = () => {
 };
 
 /** A listener who has played something, so Listen leads with Tahti Radio
- * and Recently played rather than the radio channels. */
+ * rather than the radio channels. */
 const withListenHistory = () => {
   const saved = useLibraryStore.getState().history;
   useLibraryStore.setState({
@@ -149,20 +149,20 @@ export const OrderSections: Story = {
     await canvas.findByTestId('listen-dashboard');
     await expect(
       canvas.queryByRole('button', {
-        name: 'Move Recently played and Tahti Selects',
+        name: 'Move Tahti Selects',
       }),
     ).toBeNull();
     const toggle = canvas.getByRole('button', { name: 'Order sections' });
     await userEvent.click(toggle);
     await expect(toggle).toHaveAttribute('aria-pressed', 'true');
     const handle = canvas.getByRole('button', {
-      name: 'Move Recently played and Tahti Selects',
+      name: 'Move Tahti Selects',
     });
     await keyboardMoveDown(handle);
     await waitFor(() =>
       expect(dashboardBlockIds(canvasElement).slice(0, 2)).toEqual([
         'new-releases',
-        'recently-played',
+        'selects',
       ]),
     );
     await expect(useListenerWidgetsStore.getState().listenOrder[0]).toBe(
@@ -171,15 +171,14 @@ export const OrderSections: Story = {
     await userEvent.click(toggle);
     await expect(
       canvas.queryByRole('button', {
-        name: 'Move Recently played and Tahti Selects',
+        name: 'Move Tahti Selects',
       }),
     ).toBeNull();
   },
 };
 
 /** Someone who hasn't played anything yet (or is signed out) starts on the
- * radio channels; once they have history, Tahti Radio and Recently played
- * lead again. */
+ * radio channels; once they have history, Tahti Radio leads again. */
 export const NewListenerRadioFirst: Story = {
   name: 'New listener starts on radio',
   decorators: [withMockAuth(MOCK_USERS.listener), withTahtiRouter('/')],

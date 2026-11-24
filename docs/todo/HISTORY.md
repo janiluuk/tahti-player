@@ -1,3 +1,10 @@
+## 2026-11-24 — Recently played moves to History (0.0.481)
+
+Listen no longer carries the Recently played block; its cards now sit above
+the Stats / Listening history tabs on Listen → History and Library → History.
+Saved Listen layouts that named `recently-played` are folded into the
+Tahti Selects block by a v6 store migration. Folded `recently-played-to-history.md`.
+
 ## 2026-11-23 — Event page comments
 
 Chat-alike comment thread on `EventView` for signed-in users (sign-in CTA

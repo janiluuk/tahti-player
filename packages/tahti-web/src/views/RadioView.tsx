@@ -76,6 +76,7 @@ import { StationUnavailableNotice } from '../components/StationUnavailableNotice
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
 import { usePolling } from '../hooks/usePolling';
+import { hasAccountRole } from '../lib/accountRoles';
 import { dateLocaleTag } from '../lib/locale';
 import { RADIO_TABS, radioTabFromSearch } from '../lib/radioTabs';
 import { useAuthStore } from '../stores/authStore';
@@ -129,6 +130,7 @@ export function RadioView() {
 
   const user = useAuthStore((s) => s.user);
   const signedIn = Boolean(user);
+  const canEditPlaylist = hasAccountRole(user, 'BOARD');
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
   const currentId = usePlayerStore((s) => s.currentId);
@@ -570,6 +572,9 @@ export function RadioView() {
                 }
                 channelSlug={TAHTI_RADIO_SLUG}
                 openChannelLabel={t('actions.openChannel')}
+                editPlaylistLabel={
+                  canEditPlaylist ? t('radio.editPlaylist') : undefined
+                }
               />
             }
             notice={

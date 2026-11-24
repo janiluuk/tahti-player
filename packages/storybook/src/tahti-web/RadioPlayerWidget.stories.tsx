@@ -76,10 +76,12 @@ function DemoWidget({
   online = true,
   playing = false,
   expanded = true,
+  canEditPlaylist = false,
 }: {
   online?: boolean;
   playing?: boolean;
   expanded?: boolean;
+  canEditPlaylist?: boolean;
 }) {
   const [tab, setTab] = useState(0);
   const [isPlaying, setIsPlaying] = useState(playing);
@@ -129,6 +131,7 @@ function DemoWidget({
             onToggleFavorite={() => setFavorited((v) => !v)}
             channelSlug={TAHTI_RADIO_SLUG}
             openChannelLabel="Open channel"
+            editPlaylistLabel={canEditPlaylist ? 'Edit playlist' : undefined}
           />
         }
         selectedTabIndex={tab}
@@ -289,6 +292,53 @@ export const FavoriteToggle: Story = {
     await expect(
       canvas.getByRole('link', { name: 'Open channel' }),
     ).toHaveAttribute('href', expect.stringContaining('view=channel'));
+  },
+};
+
+export const ExpandedControls: Story = {
+  name: 'Expanded controls along the bottom',
+  render: () => <DemoWidget />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const controls = canvas.getByTestId('radio-hero-controls');
+    const play = within(controls).getByRole('button', { name: 'Play Radio' });
+    await expect(play).toBeVisible();
+    const favorite = within(controls).getByRole('button', {
+      name: 'Add to favorites',
+    });
+    await expect(favorite).toBeVisible();
+    await expect(play.getBoundingClientRect().left).toBeLessThan(
+      favorite.getBoundingClientRect().left,
+    );
+    const hero = canvas.getByTestId('radio-visualizer-hero');
+    await expect(play.getBoundingClientRect().bottom).toBeGreaterThan(
+      hero.getBoundingClientRect().bottom - 80,
+    );
+  },
+};
+
+export const BoardEditPlaylist: Story = {
+  name: 'Board: edit playlist shortcut',
+  render: () => <DemoWidget canEditPlaylist />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('link', { name: 'Edit playlist' }),
+    ).toHaveAttribute('href', expect.stringContaining('/admin/radio'));
+    await expect(
+      canvas.getByRole('link', { name: 'Edit playlist' }),
+    ).toHaveAttribute('href', expect.stringContaining('tab=playlist'));
+  },
+};
+
+export const ListenerHasNoEditPlaylist: Story = {
+  name: 'Listener: no edit playlist shortcut',
+  render: () => <DemoWidget />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.queryByRole('link', { name: 'Edit playlist' }),
+    ).toBeNull();
   },
 };
 

@@ -23,6 +23,7 @@ export function RadioVisualizerHero({
   liveChannel = null,
   info,
   actions,
+  playControl,
   embedded = false,
   compact = false,
 }: {
@@ -32,6 +33,9 @@ export function RadioVisualizerHero({
   liveChannel?: RadioHeroLiveChannel | null;
   info: ReactNode;
   actions: ReactNode;
+  /** Rendered in the bottom-left corner of the expanded hero; the compact
+   * strip leaves it to the parent. */
+  playControl?: ReactNode;
   embedded?: boolean;
   /** Short strip with a small logo, for the minimized player widget. */
   compact?: boolean;
@@ -41,7 +45,7 @@ export function RadioVisualizerHero({
     'bg-surface-secondary rounded-xl shadow-lg ring-1 ring-white/15';
   const sizeClass = compact
     ? 'size-14 min-w-14 text-lg'
-    : 'size-20 min-w-20 text-2xl sm:size-28 sm:min-w-28';
+    : 'size-28 min-w-28 text-3xl sm:size-44 sm:min-w-44 sm:text-5xl';
   const body = (
     <>
       <div className="absolute inset-0">
@@ -62,46 +66,70 @@ export function RadioVisualizerHero({
           'relative z-10 flex flex-1 p-4',
           compact
             ? 'items-end gap-4 pr-32'
-            : 'flex-col justify-between gap-6 sm:p-6',
+            : 'flex-col justify-end gap-5 sm:p-6',
         )}
       >
         <div
-          data-testid="radio-station-logo"
-          className={cn('shrink-0', compact ? 'self-end' : 'self-start')}
+          className={cn(
+            'flex min-w-0',
+            compact ? 'contents' : 'items-end gap-4 sm:gap-6',
+          )}
         >
-          {liveChannel ? (
-            <Link
-              to="/channel/$slug"
-              params={{ slug: liveChannel.slug }}
-              aria-label={t('radio.openLiveChannel', {
-                name: liveChannel.name,
-              })}
-              className="block"
-            >
+          <div data-testid="radio-station-logo" className="shrink-0 self-end">
+            {liveChannel ? (
+              <Link
+                to="/channel/$slug"
+                params={{ slug: liveChannel.slug }}
+                aria-label={t('radio.openLiveChannel', {
+                  name: liveChannel.name,
+                })}
+                className="block"
+              >
+                <MediaArtwork
+                  size="md"
+                  src={artworkUrl}
+                  alt=""
+                  seed={liveChannel.slug}
+                  fit="cover"
+                  className={cn(thumbClass, sizeClass)}
+                />
+              </Link>
+            ) : (
               <MediaArtwork
                 size="md"
-                src={artworkUrl}
-                alt=""
-                seed={liveChannel.slug}
-                fit="cover"
-                className={cn(thumbClass, sizeClass)}
+                src={artworkUrl || logoUrl}
+                alt={artworkUrl ? '' : 'Tahti Radio'}
+                fit={artworkUrl ? 'cover' : 'contain'}
+                className={cn(
+                  thumbClass,
+                  'font-bold tracking-tight',
+                  sizeClass,
+                )}
+                placeholder="TR"
               />
-            </Link>
-          ) : (
-            <MediaArtwork
-              size="md"
-              src={artworkUrl || logoUrl}
-              alt={artworkUrl ? '' : 'Tahti Radio'}
-              fit={artworkUrl ? 'cover' : 'contain'}
-              className={cn(thumbClass, 'font-bold tracking-tight', sizeClass)}
-              placeholder="TR"
-            />
-          )}
+            )}
+          </div>
+          <div
+            className={cn(
+              'flex min-w-0 flex-1 flex-col gap-4',
+              compact ? '' : 'self-end',
+            )}
+          >
+            {info}
+            {compact ? (
+              <div className="flex flex-wrap items-center gap-3">{actions}</div>
+            ) : null}
+          </div>
         </div>
-        <div className="flex min-w-0 flex-1 flex-col gap-4">
-          {info}
-          <div className="flex flex-wrap items-center gap-3">{actions}</div>
-        </div>
+        {compact ? null : (
+          <div
+            className="flex flex-wrap items-center gap-3"
+            data-testid="radio-hero-controls"
+          >
+            {playControl}
+            {actions}
+          </div>
+        )}
       </div>
     </>
   );

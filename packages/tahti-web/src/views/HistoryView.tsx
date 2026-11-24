@@ -7,6 +7,7 @@ import { Tabs, ViewShell } from '@tahti-player/ui';
 import { AcrossDevicesPanel } from '../components/history/AcrossDevicesPanel';
 import { HistoryListSection } from '../components/history/HistoryListSection';
 import { HistoryStatsSection } from '../components/history/HistoryStatsSection';
+import { RecentlyPlayedRow } from '../components/history/RecentlyPlayedRow';
 import { useLibraryStore } from '../stores/libraryStore';
 
 /** Ported from Nuclear desktop's History view — same two-tab layout
@@ -26,33 +27,36 @@ export function HistoryView({ embedded = false }: { embedded?: boolean }) {
   const [hasAccountListening, setHasAccountListening] = useState(false);
 
   const tabs = (
-    <Tabs
-      className="flex flex-col"
-      panelClassName="flex flex-col"
-      tabClassName="data-[selected]:bg-accent-yellow data-[selected]:text-accent-foreground"
-      items={[
-        {
-          id: 'stats',
-          label: t('library.history.tabStats'),
-          icon: <BarChart3Icon size={14} />,
-          content: (
-            <div className="flex flex-col gap-6">
-              <AcrossDevicesPanel onHasListening={setHasAccountListening} />
-              <HistoryStatsSection
-                history={history}
-                hideEmpty={hasAccountListening}
-              />
-            </div>
-          ),
-        },
-        {
-          id: 'listening-history',
-          label: t('library.history.tabListening'),
-          icon: <HistoryIcon size={14} />,
-          content: <HistoryListSection history={history} />,
-        },
-      ]}
-    />
+    <div className="flex min-w-0 flex-col gap-6">
+      <RecentlyPlayedRow />
+      <Tabs
+        className="flex flex-col"
+        panelClassName="flex flex-col"
+        tabClassName="data-[selected]:bg-accent-yellow data-[selected]:text-accent-foreground"
+        items={[
+          {
+            id: 'stats',
+            label: t('library.history.tabStats'),
+            icon: <BarChart3Icon size={14} />,
+            content: (
+              <div className="flex flex-col gap-6">
+                <AcrossDevicesPanel onHasListening={setHasAccountListening} />
+                <HistoryStatsSection
+                  history={history}
+                  hideEmpty={hasAccountListening}
+                />
+              </div>
+            ),
+          },
+          {
+            id: 'listening-history',
+            label: t('library.history.tabListening'),
+            icon: <HistoryIcon size={14} />,
+            content: <HistoryListSection history={history} />,
+          },
+        ]}
+      />
+    </div>
   );
 
   if (embedded) {

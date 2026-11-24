@@ -1394,7 +1394,6 @@
       "doneOrdering": "Järjestys valmis",
       "filterPlaceholder": "Suodata…",
       "nothingFound": "Suodattimella ei löytynyt mitään.",
-      "recentlyPlayedAndSelects": "Viimeksi kuunnellut ja Tahti Selects",
       "filterTracks": "Suodata kappaleita…",
       "filterChannels": "Suodata kanavia…",
       "liveBadge": "Live",
@@ -2196,7 +2195,8 @@
       "bookASlot": "Varaa aika",
       "fullSchedule": "Koko aikataulu",
       "openLiveChannel": "Avaa {{name}}",
-      "about": "Tietoa: {{name}}"
+      "about": "Tietoa: {{name}}",
+      "editPlaylist": "Muokkaa soittolistaa"
     },
     "messagesPopover": {
       "title": "Viestit",
@@ -9036,7 +9036,13 @@
       "adding": "Lisätään…",
       "removeTrackTitle": "Poistetaanko rotaatiosta?",
       "removeTrackDescription": "Poista “{{title}}” Tahti Radion soittolistasta.",
-      "removeTrackConfirm": "Poista"
+      "removeTrackConfirm": "Poista",
+      "selectAllShown": "Valitse kaikki näkyvät",
+      "selectedCount_one": "{{count}} valittu",
+      "selectedCount_other": "{{count}} valittua",
+      "addedTracks_one": "{{count}} kappale lisätty kiertoon.",
+      "addedTracks_other": "{{count}} kappaletta lisätty kiertoon.",
+      "addedSome": "Lisättiin {{added}} / {{total}} kappaletta. {{error}}"
     },
     "tahtiRadioPlaylistPanelLabels": {
       "currentRotationLength": "Soittolista ({{length}})"

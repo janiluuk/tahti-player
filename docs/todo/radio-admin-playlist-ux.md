@@ -1,9 +1,11 @@
 # Radio playlist manager access and UX
 
-**Status:** open
+**Status:** partial
 
-Requested 2026-11-24.
+Requested 2026-11-24. Shipped in tahti-web 0.0.481: board members get an edit-playlist pencil on the Tahti Radio widget (`/admin/radio?tab=playlist`, same `BOARD` gate as `AdminGate`); the Add tracks picker keeps tracks picked under an earlier search, forgets the selection on cancel, has Select all shown with a live count, reports partial failures (keeps only the failed tracks selected) and confirms what was added.
 
-- Add an admin-only edit-playlist icon to the Tahti Radio widget, linking to the existing `/admin/radio?tab=playlist` manager. Match the existing authorization gate.
-- Sweep the playlist manager for usability and simplicity: clear primary actions, understandable ordering/current-track state, efficient adding/removing/reordering, concise labels, accessible controls and phone layouts.
-- Reuse existing contracts and shared UI; verify permissions and navigation in tests and Storybook.
+## Left
+
+- [ ] Ordering and current-track state in the rotation list (the on-air match is by title only).
+- [ ] Phone layout of the manager (list actions, picker dialog).
+- [ ] Concise labels pass on the Playlist tab.

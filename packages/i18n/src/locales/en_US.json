@@ -1394,7 +1394,6 @@
       "doneOrdering": "Done ordering",
       "filterPlaceholder": "Filter…",
       "nothingFound": "Nothing matches that filter.",
-      "recentlyPlayedAndSelects": "Recently played and Tahti Selects",
       "filterTracks": "Filter tracks…",
       "filterChannels": "Filter channels…",
       "liveBadge": "Live",
@@ -2196,7 +2195,8 @@
       "bookASlot": "Book a slot",
       "fullSchedule": "Full schedule",
       "openLiveChannel": "Open {{name}}",
-      "about": "About {{name}}"
+      "about": "About {{name}}",
+      "editPlaylist": "Edit playlist"
     },
     "messagesPopover": {
       "title": "Messages",
@@ -9040,7 +9040,13 @@
       "adding": "Adding…",
       "removeTrackTitle": "Remove from rotation?",
       "removeTrackDescription": "Remove “{{title}}” from the Tahti Radio playlist.",
-      "removeTrackConfirm": "Remove"
+      "removeTrackConfirm": "Remove",
+      "selectAllShown": "Select all shown",
+      "selectedCount_one": "{{count}} selected",
+      "selectedCount_other": "{{count}} selected",
+      "addedTracks_one": "Added {{count}} track to the rotation.",
+      "addedTracks_other": "Added {{count}} tracks to the rotation.",
+      "addedSome": "Added {{added}} of {{total}} tracks. {{error}}"
     },
     "tahtiRadioPlaylistPanelLabels": {
       "currentRotationLength": "Playlist ({{length}})"

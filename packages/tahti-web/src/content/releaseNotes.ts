@@ -40,12 +40,14 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.478',
+    version: '0.0.481',
     sections: [
       {
         id: 'listen',
         label: 'Listen',
         highlights: [
+          'Recently played now lives under History, above your listening stats, so Listen stays about what is new; on phones Order and Add sit in the Listen tab row instead of taking a row of their own.',
+          'Tahti Radio’s expanded player shows bigger artwork with what is playing beside it, and the play, favourite and channel buttons along the bottom with play in the left corner.',
           'Listening parties on Discover are now a tile in the widget grid with the others, instead of a wide panel under it.',
           'Refreshing the page no longer loses your spot: the player comes back with the same track, paused where you left it, and pressing play carries on from there.',
           'The account menu at the top no longer has a tahti.live link; you are already on Tahti.',
@@ -102,6 +104,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
           'Every admin page opens the same way: its title, one line on what it is for, and a single back link, without a breadcrumb trail on top.',
           'A user in Admin → Users opens on Overview, Account and Tracks tabs. Tracks lists everything they uploaded, so you can play a track, make it public or private, or delete it without leaving the account.',
           'Admin → Platform → Encoding queue shows upload transcode jobs by state and refreshes itself every few seconds. Retry or remove a job, pause the queue, see how long a job has been running, and re-queue stuck uploads in one place.',
+          'Adding tracks to Tahti Radio’s playlist no longer loses the ones you picked when you search again: tick tracks across searches, use Select all shown, and see exactly how many were added if one fails. Board members also get an edit-playlist pencil on the radio player.',
         ],
       },
     ],

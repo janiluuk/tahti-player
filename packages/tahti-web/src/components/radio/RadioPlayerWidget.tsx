@@ -69,7 +69,7 @@ export function RadioPlayerWidget({
         data-expanded={expanded}
         style={{ '--radio-ambient': ambient } as CSSProperties}
       >
-        {online ? (
+        {online && !expanded ? (
           <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
             {playControl}
           </div>
@@ -82,6 +82,7 @@ export function RadioPlayerWidget({
             liveChannel={liveChannel}
             info={info}
             actions={actions}
+            playControl={playControl}
             embedded
             compact={!expanded}
           />

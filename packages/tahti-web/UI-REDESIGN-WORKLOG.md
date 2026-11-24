@@ -7102,3 +7102,7 @@ Up next and Just played use the shared striped TrackTable flush to the widget ed
 ## 2026-11-24 — Settings, Profile and Listen loading (0.0.480)
 
 Recovered the interrupted Settings/Profile sweep and Listen loading changes. Account shows profile and account-management shortcuts; security has one 2FA section with persistent off-state guidance and status badges. Profile forms have section tabs and field help icons. Listen placeholders reserve more accurate space, ready content fades without sliding, and remembered guidelines notices are scoped to the signed-in account. Cold-cache CLS measurement remains in the loading todo.
+
+## 2026-11-24 — Radio expanded layout, edit-playlist shortcut, Recently played in History (0.0.481)
+
+Expanded Tahti Radio shows larger artwork with the now-playing text beside it, the controls along the bottom and the play button in the left corner; the compact strip is unchanged. Board members get an edit-playlist pencil on the widget (`/admin/radio?tab=playlist`). The playlist picker keeps tracks picked under an earlier search, clears on cancel, has Select all shown and reports partial failures. Recently played moved from Listen to History (saved layouts migrate to Tahti Selects); on phones the Listen Order/Add buttons sit in the tab row.

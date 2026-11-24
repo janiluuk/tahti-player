@@ -269,6 +269,20 @@ describe('listener widgets store', () => {
     expect(upgraded.hiddenListenBlockIds).toEqual(['radio']);
   });
 
+  it('folds the retired Recently played block into Tahti Selects in saved layouts', () => {
+    const migrate = useListenerWidgetsStore.persist.getOptions().migrate;
+    const upgraded = migrate?.(
+      {
+        enabledStationIds: ['x'],
+        listenOrder: ['radio', 'recently-played', 'trending', 'selects'],
+        hiddenListenBlockIds: ['recently-played'],
+      },
+      5,
+    ) as { listenOrder: string[]; hiddenListenBlockIds: string[] };
+    expect(upgraded.listenOrder).toEqual(['radio', 'selects', 'trending']);
+    expect(upgraded.hiddenListenBlockIds).toEqual(['selects']);
+  });
+
   it('moves saved Discover news feeds to Feed when upgrading', () => {
     const migrate = useListenerWidgetsStore.persist.getOptions().migrate;
     const upgraded = migrate?.(

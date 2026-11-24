@@ -1,8 +1,8 @@
-import { CheckIcon, PlayIcon, PlusIcon, RadioTowerIcon } from 'lucide-react';
+import { PlayIcon, PlusIcon, RadioTowerIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, Dialog, FilterBar, Tooltip } from '@tahti-player/ui';
+import { Button, Checkbox, Dialog, FilterBar, Tooltip } from '@tahti-player/ui';
 
 import {
   addToRadioRotation,
@@ -42,7 +42,9 @@ export function TahtiRadioPlaylistPanel() {
   const [browseError, setBrowseError] = useState<string | null>(null);
   const [browseAttempt, setBrowseAttempt] = useState(0);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Map<string, AdminRadioBrowseItem>>(
+    new Map(),
+  );
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -91,6 +93,76 @@ export function TahtiRadioPlaylistPanel() {
   }, [pickerOpen, query, browseAttempt]);
 
   const inRotationIds = new Set(items.map((i) => i.soundId));
+  const selectable = browse.filter((item) => !inRotationIds.has(item.id));
+  const allShownSelected =
+    selectable.length > 0 && selectable.every((item) => selected.has(item.id));
+
+  const closePicker = () => {
+    if (adding) {
+      return;
+    }
+    setPickerOpen(false);
+    setSelected(new Map());
+    setQuery('');
+  };
+
+  const toggleSelected = (item: AdminRadioBrowseItem) =>
+    setSelected((current) => {
+      const next = new Map(current);
+      if (next.has(item.id)) {
+        next.delete(item.id);
+      } else {
+        next.set(item.id, item);
+      }
+      return next;
+    });
+
+  const toggleAllShown = () =>
+    setSelected((current) => {
+      const next = new Map(current);
+      for (const item of selectable) {
+        if (allShownSelected) {
+          next.delete(item.id);
+        } else {
+          next.set(item.id, item);
+        }
+      }
+      return next;
+    });
+
+  const addSelected = () => {
+    const chosen = [...selected.values()];
+    setAdding(true);
+    setMsg(null);
+    void Promise.all(
+      chosen.map((item) =>
+        addToRadioRotation(item).then((result) => ({ item, result })),
+      ),
+    ).then((outcomes) => {
+      setAdding(false);
+      const failed = outcomes.filter((outcome) => !outcome.result.ok);
+      const added = outcomes.length - failed.length;
+      if (added > 0) {
+        reload();
+      }
+      if (failed.length > 0) {
+        const first = failed[0]?.result;
+        setSelected(new Map(failed.map(({ item }) => [item.id, item])));
+        setMsg(
+          t('tahtiRadioPlaylistPanel.addedSome', {
+            added,
+            total: outcomes.length,
+            error: first && !first.ok ? first.error : '',
+          }),
+        );
+        return;
+      }
+      setPickerOpen(false);
+      setSelected(new Map());
+      setQuery('');
+      setMsg(t('tahtiRadioPlaylistPanel.addedTracks', { count: added }));
+    });
+  };
   const nowPlayingId =
     nowPlayingTitle == null
       ? null
@@ -122,7 +194,10 @@ export function TahtiRadioPlaylistPanel() {
         action={
           <Button
             size="sm"
-            onClick={() => setPickerOpen(true)}
+            onClick={() => {
+              setMsg(null);
+              setPickerOpen(true);
+            }}
             disabled={busy || adding}
           >
             <PlusIcon size={16} aria-hidden className="mr-1.5" />
@@ -227,12 +302,7 @@ export function TahtiRadioPlaylistPanel() {
 
       <Dialog.Root
         isOpen={pickerOpen}
-        onClose={() => {
-          if (!adding) {
-            setPickerOpen(false);
-            setSelectedIds(new Set());
-          }
-        }}
+        onClose={closePicker}
         className="max-w-4xl"
       >
         <Dialog.Title>
@@ -264,6 +334,20 @@ export function TahtiRadioPlaylistPanel() {
                 'tahtiRadioPlaylistPanel.searchTracksByTitle',
               )}
             />
+            {selectable.length > 0 ? (
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <Checkbox
+                  label={t('tahtiRadioPlaylistPanel.selectAllShown')}
+                  checked={allShownSelected}
+                  onChange={toggleAllShown}
+                />
+                <span className="text-foreground-secondary" role="status">
+                  {t('tahtiRadioPlaylistPanel.selectedCount', {
+                    count: selected.size,
+                  })}
+                </span>
+              </div>
+            ) : null}
             <div className="border-border min-h-0 overflow-auto rounded-md border">
               {browseError ? (
                 <PageError
@@ -288,19 +372,16 @@ export function TahtiRadioPlaylistPanel() {
                 >
                   {browse.map((item, index) => {
                     const already = inRotationIds.has(item.id);
-                    const selected = selectedIds.has(item.id);
                     return (
                       <li
                         key={item.id}
                         className={`flex items-center gap-3 px-3 py-2.5 text-sm ${index % 2 === 1 ? 'bg-background-secondary/40' : 'bg-background'}`}
                       >
-                        <Button
-                          variant="plain"
-                          size="flexible"
-                          type="button"
+                        <Checkbox
+                          checked={already || selected.has(item.id)}
                           disabled={already}
                           aria-label={
-                            selected
+                            selected.has(item.id)
                               ? t('selectsTabStates.deselectItem', {
                                   title: item.title,
                                 })
@@ -308,22 +389,8 @@ export function TahtiRadioPlaylistPanel() {
                                   title: item.title,
                                 })
                           }
-                          aria-pressed={selected}
-                          onClick={() => {
-                            setSelectedIds((current) => {
-                              const next = new Set(current);
-                              if (next.has(item.id)) {
-                                next.delete(item.id);
-                              } else {
-                                next.add(item.id);
-                              }
-                              return next;
-                            });
-                          }}
-                          className={`border-border flex size-5 shrink-0 items-center justify-center rounded border whitespace-normal active:scale-100 ${selected ? 'bg-primary text-primary-foreground' : 'bg-background'} disabled:opacity-40`}
-                        >
-                          {selected && <CheckIcon size={13} aria-hidden />}
-                        </Button>
+                          onChange={() => toggleSelected(item)}
+                        />
                         <div className="min-w-0 flex-1">
                           <div className="truncate font-medium">
                             {item.title}
@@ -365,7 +432,7 @@ export function TahtiRadioPlaylistPanel() {
                         <span className="text-foreground-secondary w-20 text-right text-xs">
                           {already
                             ? t('selectsTabLeftovers.inRotation')
-                            : selected
+                            : selected.has(item.id)
                               ? t('selectsTabLeftovers.selected')
                               : ''}
                         </span>
@@ -378,39 +445,17 @@ export function TahtiRadioPlaylistPanel() {
           </div>
         </div>
         <Dialog.Actions>
-          <Button
-            variant="secondary"
-            disabled={adding}
-            onClick={() => setPickerOpen(false)}
-          >
+          <Button variant="secondary" disabled={adding} onClick={closePicker}>
             {t('selectsTab.cancel')}
           </Button>
           <Button
-            disabled={selectedIds.size === 0 || adding}
-            onClick={() => {
-              const selected = browse.filter((item) =>
-                selectedIds.has(item.id),
-              );
-              setAdding(true);
-              void Promise.all(
-                selected.map((item) => addToRadioRotation(item)),
-              ).then((results) => {
-                const failed = results.find((result) => !result.ok);
-                setAdding(false);
-                if (failed && !failed.ok) {
-                  setMsg(failed.error);
-                  return;
-                }
-                setPickerOpen(false);
-                setSelectedIds(new Set());
-                void reload();
-              });
-            }}
+            disabled={selected.size === 0 || adding}
+            onClick={addSelected}
           >
             {adding
               ? t('tahtiRadioPlaylistPanel.adding')
               : webT()('a11yNamed.addNToRotation', {
-                  n: selectedIds.size || '',
+                  n: selected.size || '',
                 })}
           </Button>
         </Dialog.Actions>
