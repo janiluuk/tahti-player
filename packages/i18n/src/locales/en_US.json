@@ -1488,6 +1488,7 @@
     "library": {
       "allTypesTab": "All",
       "statusPrivate": "Private",
+      "importWizardUsesLinked": "Uses {{profile}}",
       "sections": "Library sections",
       "trackCount_one": "{{formattedCount}} track",
       "trackCount_other": "{{formattedCount}} tracks",

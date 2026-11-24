@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
-import { useSettingsModalStore } from '../stores/settingsModalStore';
+import { ImportWizard } from '../views/studio/upload/ImportWizard';
 import { UploadTrackDialog } from './UploadTrackDialog';
 
 type Props = {
@@ -17,7 +17,7 @@ type Props = {
 };
 
 /** Upload + Import — entry points for adding tracks to the Music archive.
- * "Import" opens Settings → Add-ons → Import (see PluginStorePanel). */
+ * "Import" opens the import wizard on its choose-a-service step. */
 export function AddToMusicActions({
   size = 'sm',
   align = 'start',
@@ -26,6 +26,7 @@ export function AddToMusicActions({
 }: Props) {
   const { t } = useTranslation('web');
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
 
   return (
     <>
@@ -56,14 +57,19 @@ export function AddToMusicActions({
         <Button
           size={size}
           variant="secondary"
-          onClick={() =>
-            useSettingsModalStore.getState().open('plugin-store', 'import')
-          }
+          onClick={() => setImportOpen(true)}
         >
           <BlocksIcon size={16} aria-hidden className="mr-1.5" />
           {t('addToMusicActions.import')}
         </Button>
       </div>
+      <ImportWizard
+        start={importOpen ? 'pick' : null}
+        onClose={() => {
+          setImportOpen(false);
+          onUploaded?.();
+        }}
+      />
       {uploadTo ? null : (
         <UploadTrackDialog
           isOpen={uploadOpen}

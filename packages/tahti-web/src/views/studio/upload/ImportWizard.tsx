@@ -69,6 +69,9 @@ export function ImportWizard({
   const [collectionId, setCollectionId] = useState<string | null>(null);
   const [done, setDone] = useState(0);
   const [total, setTotal] = useState(0);
+  const [linked, setLinked] = useState<Partial<Record<WizardService, string>>>(
+    {},
+  );
 
   const begin = async (next: WizardService) => {
     setService(next);
@@ -112,6 +115,15 @@ export function ImportWizard({
         opened.current = 'pick';
         setStep('source');
         setService(null);
+        void loadSocial()
+          .then((social) =>
+            setLinked(
+              Object.fromEntries(
+                WIZARD_SERVICES.map((id) => [id, savedProfile(id, social)]),
+              ),
+            ),
+          )
+          .catch(() => setLinked({}));
       }
       return;
     }
@@ -319,16 +331,27 @@ export function ImportWizard({
         {error ? <InlineError>{error}</InlineError> : null}
         {step === 'source' ? (
           <div className="flex flex-col gap-2">
-            {WIZARD_SERVICES.map((id) => (
-              <Button
-                key={id}
-                variant="secondary"
-                className="justify-start"
-                onClick={() => void begin(id)}
-              >
-                {SERVICE_NAME[id]}
-              </Button>
-            ))}
+            {[...WIZARD_SERVICES]
+              .sort((a, b) => Number(!linked[a]) - Number(!linked[b]))
+              .map((id) => (
+                <Button
+                  key={id}
+                  variant="secondary"
+                  size="flexible"
+                  className="flex-col items-start gap-0.5 px-4 py-2.5 text-left"
+                  data-testid={`import-wizard-source-${id}`}
+                  onClick={() => void begin(id)}
+                >
+                  <span className="font-semibold">{SERVICE_NAME[id]}</span>
+                  {linked[id] ? (
+                    <span className="text-foreground-secondary text-xs font-normal">
+                      {t('library.importWizardUsesLinked', {
+                        profile: linked[id],
+                      })}
+                    </span>
+                  ) : null}
+                </Button>
+              ))}
           </div>
         ) : null}
         {step === 'account' && service ? (
