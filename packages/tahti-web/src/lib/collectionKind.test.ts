@@ -26,4 +26,25 @@ describe('collectionKind', () => {
       'c',
     ]);
   });
+
+  it.each([
+    ['Sets', 'dj-set'],
+    ['Set of Schranz from 00 era', 'dj-set'],
+    ['sets 2026', 'dj-set'],
+    ['Revitalize LP', 'album'],
+    ['Uncanny Alley EP', 'album'],
+    ['Yani & Ho - Mute8 (2026)', 'other'],
+    ['Tracks', 'other'],
+    ['Settings test', 'other'],
+  ])('a generic playlist named %s is %s', (name, kind) => {
+    expect(collectionKind({ type: 'CUSTOM', style: 'PLAYLIST', name })).toBe(
+      kind,
+    );
+  });
+
+  it('lets an explicit style win over the name', () => {
+    expect(
+      collectionKind({ type: 'CUSTOM', style: 'ALBUM', name: 'Sets' }),
+    ).toBe('album');
+  });
 });

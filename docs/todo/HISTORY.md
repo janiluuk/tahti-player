@@ -6723,3 +6723,9 @@ Studio passes `SoundStatusPill` (processing yellow / failed red / public green
 channel state was LIVE, which the 24/7 rotation also sets. New
 `isHumanLive` (lib/channelLive: state LIVE and `goneLiveAt` set, the API
 listing's rule) drives it; Go Live's show-info card uses `isBroadcastLive`.
+
+## 2026-11-24 - DJ sets / Albums by collection name (0.0.468)
+
+`collectionKind` falls back to the name for a generic playlist: `^sets?\b` →
+DJ set, `LP` / `EP` / `album` → album; an explicit type or style still wins.
+yaniho's "Sets" and LPs/EP now get their tabs without editing each collection.

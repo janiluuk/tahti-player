@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.467',
+    version: '0.0.468',
     sections: [
       {
         id: 'listen',
@@ -54,6 +54,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
           'An artist’s own site (name.tahti.live) no longer has a tahti.live link in its top bar, so the header is just the artist.',
           'Tracks in your queue, favourites or history keep playing after a long break: when a saved link to the audio has expired, the player fetches a fresh one and carries on from the same spot.',
           'Cards stay put when you hover them: a soft outline shows instead of the card jumping sideways, so the edge of a row no longer gets cut off.',
+          'Collections whose name starts with “Set” land under DJ sets on the artist page, and ones naming an LP, EP or album under Albums, even when they were saved as plain playlists.',
           'Upcoming events now live only on Discover, where you go to find things to do, so Home stays about music you can play right away.',
           'Upcoming events on Discover is now one event poster at a time, glowing in the colours of its picture. Flip through with the arrows, a swipe or drag, or the arrow keys, and it loops back to the start. Start times use the 24-hour clock, with small icons for time, host and place.',
         ],
