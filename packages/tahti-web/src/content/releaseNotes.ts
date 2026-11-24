@@ -40,12 +40,13 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.470',
+    version: '0.0.471',
     sections: [
       {
         id: 'listen',
         label: 'Listen',
         highlights: [
+          'The full-screen player can turn the visualizer off: under Visualizer → Ambience, “Off” fills the screen with a soft glow from the cover art, and “Water landscape” turns the cover into a slowly drifting landscape over its own rippling reflection.',
           'An artist’s own site (name.tahti.live) shows their header, colours and menu choices again, so it looks the way they designed it.',
           'The full-screen player is calmer: Add to playlist moved into the ⋯ menu with the other track actions, leaving the artwork and controls in focus.',
           'An artist’s short link page (tahti.live/u/name) shows their round profile picture again, instead of one large blurry picture covering the page.',

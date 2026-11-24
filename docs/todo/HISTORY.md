@@ -6747,3 +6747,12 @@ opens the existing `ImportWizard` on its service step (and reloads the list
 on close). The source step loads the saved social links, lists linked
 services first with "Uses <link>", and `begin()` already skips the account
 step for them.
+
+## 2026-11-24 - Visualizer off: cover-art ambience and water landscape (0.0.471)
+
+Full-screen player Visualizer menu gains an Ambience section: `ambient-glow`
+(visualizer off; blurred cover with drifting colour light) and `ambient-water`
+(cover's upper part as a panning landscape over its flipped, SVG-turbulence
+rippled reflection). `CoverAmbience` (components/visuals) renders both; the
+scene is saved per channel with the visualizer mode (`PlayerScene`). Motion
+stops under reduced motion (`usePrefersReducedMotion`, now exported from ui).

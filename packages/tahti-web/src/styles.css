@@ -228,3 +228,22 @@ body,
     animation: none;
   }
 }
+
+@keyframes tahti-cover-pan {
+  from {
+    background-position: 42% 35%;
+  }
+  to {
+    background-position: 58% 38%;
+  }
+}
+
+.tahti-cover-pan {
+  animation: tahti-cover-pan 60s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tahti-cover-pan {
+    animation: none;
+  }
+}

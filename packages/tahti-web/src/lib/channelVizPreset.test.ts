@@ -24,4 +24,16 @@ describe('channelVizPreset', () => {
     localStorage.setItem(channelVizStorageKey('x'), 'not-a-mode');
     expect(loadChannelVizMode('x', 'radial')).toBe('radial');
   });
+
+  it('remembers the cover-art scenes too', () => {
+    saveChannelVizMode('artist', 'ambient-water');
+    expect(loadChannelVizMode('artist')).toBe('ambient-water');
+    saveChannelVizMode('artist', 'ambient-glow');
+    expect(loadChannelVizMode('artist')).toBe('ambient-glow');
+  });
+
+  it('ignores an unknown stored value', () => {
+    localStorage.setItem(channelVizStorageKey('artist'), 'nonsense');
+    expect(loadChannelVizMode('artist', 'orb')).toBe('orb');
+  });
 });

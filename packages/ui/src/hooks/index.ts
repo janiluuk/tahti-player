@@ -5,3 +5,4 @@ export {
   SKIP_ENTER_MOTION_ATTRIBUTE,
   useSkipEnterMotion,
 } from './useSkipEnterMotion';
+export { usePrefersReducedMotion } from './usePrefersReducedMotion';

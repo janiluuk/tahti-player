@@ -18,7 +18,6 @@ import {
   PlayerBar,
   Tooltip,
 } from '@tahti-player/ui';
-import type { VisualizerMode } from '@tahti-player/visualizer';
 
 import { useHorizontalSwipe } from '../hooks/useHorizontalSwipe';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -26,8 +25,10 @@ import { useScreenWakeLock } from '../hooks/useScreenWakeLock';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { useTrackLikes } from '../hooks/useTrackLikes';
 import {
+  isAmbientScene,
   loadChannelVizMode,
   saveChannelVizMode,
+  type PlayerScene,
 } from '../lib/channelVizPreset';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useDominantColor } from '../lib/useDominantColor';
@@ -40,6 +41,7 @@ import { NowPlayingActionSheet } from './NowPlayingActionSheet';
 import { ConnectedSeekBar, PlayerLiveIndicator } from './PlayerSeekBar';
 import { EmbedSlot } from './PlayingEmbedDock';
 import { VisualizerModeMenu } from './VisualizerModeMenu';
+import { CoverAmbience } from './visuals/CoverAmbience';
 
 const ANIMATION_MS = 280;
 
@@ -251,14 +253,14 @@ export function FullScreenPlayer() {
   const soundId = soundIdFromPlayableId(playable?.id ?? currentId);
   const channelKey =
     playable?.channelSlug?.trim() || soundId || currentId || 'default';
-  const [engineMode, setEngineMode] = useState<VisualizerMode>(() =>
+  const [engineMode, setEngineMode] = useState<PlayerScene>(() =>
     loadChannelVizMode(channelKey),
   );
   useEffect(() => {
     setEngineMode(loadChannelVizMode(channelKey));
   }, [channelKey]);
   const onEngineModeChange = useMemo(
-    () => (mode: VisualizerMode) => {
+    () => (mode: PlayerScene) => {
       setEngineMode(mode);
       saveChannelVizMode(channelKey, mode);
     },
@@ -308,13 +310,21 @@ export function FullScreenPlayer() {
     >
       {embed ? null : (
         <div className="bg-background/35 absolute inset-0 backdrop-blur-md">
-          <ChannelVisualizer
-            className="h-full w-full"
-            artworkUrl={coverUrl}
-            followArtworkColor
-            engineMode={engineMode}
-            showModeButtons={false}
-          />
+          {isAmbientScene(engineMode) ? (
+            <CoverAmbience
+              coverUrl={coverUrl}
+              rgb={rgb}
+              variant={engineMode === 'ambient-water' ? 'water' : 'glow'}
+            />
+          ) : (
+            <ChannelVisualizer
+              className="h-full w-full"
+              artworkUrl={coverUrl}
+              followArtworkColor
+              engineMode={engineMode}
+              showModeButtons={false}
+            />
+          )}
         </div>
       )}
 

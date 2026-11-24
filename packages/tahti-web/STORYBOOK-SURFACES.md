@@ -160,6 +160,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Layout/ConnectedStatusBar` | `tahti-web/ConnectedStatusBar.stories.tsx` |
 | `Tahti/Admin/ContentReportsTab` | `tahti-web/ContentReportsTab.stories.tsx` |
 | `Tahti/Components/Controls and notices` | `tahti-web/ControlsAndNotices.stories.tsx` |
+| `Tahti/Player/CoverAmbience` | `tahti-web/CoverAmbience.stories.tsx` |
 | `Tahti/Studio/CoverArtGenerator` | `tahti-web/CoverArtGenerator.stories.tsx` |
 | `Tahti/Media/CoverArtPickerDialog` | `tahti-web/CoverArtPickerDialog.stories.tsx` |
 | `Tahti/Studio/Distribution/CreditsEditor` | `tahti-web/CreditsEditor.stories.tsx` |

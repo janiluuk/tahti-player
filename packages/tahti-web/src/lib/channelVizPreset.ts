@@ -5,6 +5,17 @@ import {
 
 const PREFIX = 'tahti.viz.channel.';
 
+/** Full-screen backgrounds made from the cover art instead of a visualizer:
+ * `ambient-glow` is the visualizer switched off, `ambient-water` the
+ * landscape-over-water scene. */
+export const AMBIENT_SCENES = ['ambient-glow', 'ambient-water'] as const;
+export type AmbientScene = (typeof AMBIENT_SCENES)[number];
+export type PlayerScene = VisualizerMode | AmbientScene;
+
+export function isAmbientScene(value: string): value is AmbientScene {
+  return (AMBIENT_SCENES as readonly string[]).includes(value);
+}
+
 function isVisualizerMode(value: string): value is VisualizerMode {
   return (ALL_VISUALIZER_MODES as readonly string[]).includes(value);
 }
@@ -15,14 +26,14 @@ export function channelVizStorageKey(channelKey: string): string {
 
 export function loadChannelVizMode(
   channelKey: string | null | undefined,
-  fallback: VisualizerMode = 'spectrum',
-): VisualizerMode {
+  fallback: PlayerScene = 'spectrum',
+): PlayerScene {
   if (!channelKey || typeof localStorage === 'undefined') {
     return fallback;
   }
   try {
     const raw = localStorage.getItem(channelVizStorageKey(channelKey));
-    if (raw && isVisualizerMode(raw)) {
+    if (raw && (isVisualizerMode(raw) || isAmbientScene(raw))) {
       return raw;
     }
   } catch {
@@ -33,7 +44,7 @@ export function loadChannelVizMode(
 
 export function saveChannelVizMode(
   channelKey: string | null | undefined,
-  mode: VisualizerMode,
+  mode: PlayerScene,
 ): void {
   if (!channelKey || typeof localStorage === 'undefined') {
     return;
