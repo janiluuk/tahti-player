@@ -6707,3 +6707,12 @@ first stream candidate) and resumes at the same position.
 inset `ring-primary/45` appears over 150 ms (off under reduced motion).
 `CardsRow` scroller gets `pr-1` so the resting shadow of the last card shows;
 `GlowMediaTile` drops its 4px lift and keeps the glow.
+
+## 2026-11-24 - Studio Tracks: tracks first, status pills, type tabs (0.0.466)
+
+Music tab and sub-nav lead with Tracks (`/studio/sounds`; top-level Music
+active state keyed on it). `SoundFilters` type `Select` became a
+`SegmentedControl` row with counts. `AmbientTrackRow` gains `statusBadge`;
+Studio passes `SoundStatusPill` (processing yellow / failed red / public green
+/ private grey). Dense rows: 144 px artwork, 14 px titles, 12 px meta (was
+64 px / 12 / 10).

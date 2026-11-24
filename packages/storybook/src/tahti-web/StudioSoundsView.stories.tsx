@@ -91,7 +91,10 @@ export const FilterRow: Story = {
     const row = search.closest('div.flex-wrap');
     await expect(row).not.toBeNull();
     const inRow = within(row as HTMLElement);
-    await expect(inRow.getByRole('button', { name: 'Type' })).toBeVisible();
+    await expect(
+      canvas.getByRole('radiogroup', { name: 'Type' }),
+    ).toBeVisible();
+    await expect(inRow.queryByRole('button', { name: 'Type' })).toBeNull();
     await expect(inRow.getByRole('button', { name: /^Sort by/ })).toBeVisible();
     await expect(
       inRow.getByRole('button', { name: /^Sort order/ }),
@@ -226,11 +229,15 @@ export const ProcessingFailed: Story = {
     await canvas.findByRole('link', { name: FAILED_SOUND.title });
 
     const failed = row(canvasElement, FAILED_SOUND.title);
-    await expect(failed.getByText(/^Processing failed/)).toBeVisible();
+    await expect(failed.getAllByText(/^Processing failed/)[0]).toBeVisible();
+    await expect(failed.getByTestId('sound-status-pill')).toHaveAttribute(
+      'data-status',
+      'failed',
+    );
     await expect(failed.getByText(FAILED_SOUND.processingError!)).toBeVisible();
 
     const legacy = row(canvasElement, FAILED_LEGACY_SOUND.title);
-    await expect(legacy.getByText(/^Processing failed/)).toBeVisible();
+    await expect(legacy.getAllByText(/^Processing failed/)[0]).toBeVisible();
     await expect(legacy.queryByRole('button', { name: /^Retry/ })).toBeNull();
 
     await expect(

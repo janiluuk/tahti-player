@@ -151,8 +151,8 @@ export const MusicCatalogChips: Story = {
         .getAllByRole('link')
         .map((link) => link.textContent),
     ).toEqual([
-      'Releases',
       'Tracks',
+      'Releases',
       'Collections',
       'Distribution',
       'Editor',

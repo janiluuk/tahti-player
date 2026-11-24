@@ -1486,6 +1486,8 @@
       "openNamed": "Avaa julkaisun {{title}} kuuntelubileet"
     },
     "library": {
+      "allTypesTab": "Kaikki",
+      "statusPrivate": "Yksityinen",
       "sections": "Kirjaston osiot",
       "trackCount_one": "{{formattedCount}} kappale",
       "trackCount_other": "{{formattedCount}} kappaletta",

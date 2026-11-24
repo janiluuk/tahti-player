@@ -62,7 +62,7 @@ describe('StudioNav section coverage', () => {
       ]),
     );
     expect(destinations).toEqual(
-      expect.arrayContaining(['/studio/releases', '/studio/broadcast']),
+      expect.arrayContaining(['/studio/sounds', '/studio/broadcast']),
     );
     expect(destinations).not.toEqual(
       expect.arrayContaining(['/studio/distribution', '/studio/editor']),
@@ -78,10 +78,10 @@ describe('StudioNav section coverage', () => {
       ['/studio', '/studio'],
       ['/studio/stats', '/studio/stats'],
       ['/studio/insights', '/studio/stats'],
-      ['/studio/editor', '/studio/releases'],
-      ['/studio/mastering/arch-1', '/studio/releases'],
-      ['/studio/releases', '/studio/releases'],
-      ['/studio/distribution', '/studio/releases'],
+      ['/studio/editor', '/studio/sounds'],
+      ['/studio/mastering/arch-1', '/studio/sounds'],
+      ['/studio/releases', '/studio/sounds'],
+      ['/studio/distribution', '/studio/sounds'],
       ['/studio/broadcast', '/studio/broadcast'],
       ['/studio/go-live', '/studio/broadcast'],
       ['/studio/info', '/studio/broadcast'],
@@ -232,7 +232,7 @@ describe('StudioNav section coverage', () => {
     ]) {
       expect(getStudioPrimaryRoute(location), location).toBe('/studio');
       expect(litStudioSubmenuDestinations(location), location).toEqual([
-        '/studio/releases',
+        '/studio/sounds',
       ]);
       expect(hasStudioNestedNav(location), location).toBe(true);
     }
