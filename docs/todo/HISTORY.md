@@ -6699,3 +6699,11 @@ CDN URL, which expires after an hour, so a saved track failed with a 403.
 carries `X-Amz-Signature`, fetches `fetchTrackDetail(id).audioUrl` once per
 failing URL, swaps it in via `setQueueSources` (which now also updates the
 first stream candidate) and resumes at the same position.
+
+## 2026-11-24 - Card hover stays in place (0.0.465)
+
+`Card` and `AmbientCard` no longer translate by the shadow offset on hover
+(which pushed the edge out of `CardsRow`'s scroll clip): the shadow drops and an
+inset `ring-primary/45` appears over 150 ms (off under reduced motion).
+`CardsRow` scroller gets `pr-1` so the resting shadow of the last card shows;
+`GlowMediaTile` drops its 4px lift and keeps the glow.

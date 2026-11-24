@@ -473,7 +473,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
       ) : (
         <div
           ref={scrollContainerRef}
-          className="scrollbar-hide flex gap-2 overflow-x-auto overflow-y-visible [scroll-behavior:smooth] pb-2"
+          className="scrollbar-hide flex gap-2 overflow-x-auto overflow-y-visible [scroll-behavior:smooth] pr-1 pb-2"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           <AnimatePresence
