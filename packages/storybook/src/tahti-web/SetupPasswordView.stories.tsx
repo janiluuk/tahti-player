@@ -106,8 +106,11 @@ export const ExpiredInvite: Story = {
       expect(canvas.getByText('This invite link has expired.')).toBeVisible(),
     );
     await expect(
-      canvas.getByText(/Ask whoever invited you for a fresh link/),
+      canvas.getByText('This setup link no longer works'),
     ).toBeVisible();
+    await expect(
+      canvas.getByRole('link', { name: /Send me a new link/ }),
+    ).toHaveAttribute('href', '/forgot-password');
     await expect(canvas.queryByLabelText('Password')).toBeNull();
   },
 };

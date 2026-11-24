@@ -6729,3 +6729,13 @@ listing's rule) drives it; Go Live's show-info card uses `isBroadcastLive`.
 `collectionKind` falls back to the name for a generic playlist: `^sets?\b` →
 DJ set, `LP` / `EP` / `album` → album; an explicit type or style still wins.
 yaniho's "Sets" and LPs/EP now get their tabs without editing each collection.
+
+## 2026-11-24 - Setup password: no false "expired" error, clear dead-link banner (0.0.469)
+
+`SetupPasswordView` re-fetched the link info when `t` changed (the new
+session's language loading after a successful setup), so the single-use token
+came back invalid and the page showed an error over a success. The lookup now
+runs once per token. A used link while signed in says "You are signed in"
+with Go to Studio; a dead link shows an error `Alert` with the server reason,
+what to do (log in / new link via Forgot password / ask for a fresh invite)
+and buttons for Log in and Send me a new link.
