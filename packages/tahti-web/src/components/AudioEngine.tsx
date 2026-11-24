@@ -20,6 +20,7 @@ import {
 import { mediaSessionArtwork } from '../lib/mediaSessionArtwork';
 import { getNativeLibrary } from '../lib/nativeLibrary';
 import { normalizationFor } from '../lib/replayGain';
+import { freshSoundStreamUrl, isSignedStorageUrl } from '../lib/signedAudioUrl';
 import {
   failureFromHlsError,
   failureFromMediaError,
@@ -35,6 +36,10 @@ import { useStationHealthStore } from '../stores/stationHealthStore';
 const LISTEN_EVENT_AFTER_SEC = 15;
 
 const streamsWithoutCors = new Set<string>();
+// A signed URL that failed gets one fresh URL from the API; keyed by the
+// failing URL so a fresh one that fails too is not refreshed in a loop, while
+// the same track can refresh again after its next expiry.
+const refreshedStreamUrls = new Set<string>();
 
 /** Forgets which stream URLs failed to load with CORS this session. */
 export function clearStreamsWithoutCors() {
@@ -488,6 +493,26 @@ export function AudioEngine() {
         return;
       }
       const code = audio.error?.code;
+      const soundId = listenSoundId(playable);
+      if (soundId && isSignedStorageUrl(url) && !refreshedStreamUrls.has(url)) {
+        refreshedStreamUrls.add(url);
+        const resumeAt = audio.currentTime;
+        void freshSoundStreamUrl(soundId).then((fresh) => {
+          if (disposed) {
+            return;
+          }
+          if (!fresh || fresh === url) {
+            failStream(failureFromMediaError(code));
+            return;
+          }
+          const store = usePlayerStore.getState();
+          store.setQueueSources({ [playable.id]: fresh });
+          if (resumeAt > 1) {
+            store.seekTo(resumeAt);
+          }
+        });
+        return;
+      }
       failStream(failureFromMediaError(code));
       if (isStation && code === MEDIA_ERR_SRC_NOT_SUPPORTED) {
         void probeRadioStream(url).then((probe) => {
