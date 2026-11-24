@@ -6739,3 +6739,11 @@ runs once per token. A used link while signed in says "You are signed in"
 with Go to Studio; a dead link shows an error `Alert` with the server reason,
 what to do (log in / new link via Forgot password / ask for a fresh invite)
 and buttons for Log in and Send me a new link.
+
+## 2026-11-24 - Sounds "Import" opens the import wizard (0.0.470)
+
+`AddToMusicActions` Import used to open Settings → Add-ons → Import; it now
+opens the existing `ImportWizard` on its service step (and reloads the list
+on close). The source step loads the saved social links, lists linked
+services first with "Uses <link>", and `begin()` already skips the account
+step for them.

@@ -96,4 +96,29 @@ describe('ImportWizard', () => {
       { trackId: 'sc-1', title: 'Polar Nights' },
     ]);
   });
+
+  it('lists services with a saved link first and says which link it will use', async () => {
+    vi.spyOn(socialApi, 'fetchSocialConnections').mockResolvedValue({
+      data: {
+        ...social,
+        soundcloud: '',
+        hearthisAt: 'https://hearthis.at/yaniho',
+      },
+      meta: { source: 'mock' },
+    });
+
+    await renderWithRouter(
+      <ImportWizard start="pick" onClose={() => undefined} />,
+    );
+
+    const hearthis = await screen.findByTestId('import-wizard-source-hearthis');
+    expect(
+      await screen.findByText('Uses https://hearthis.at/yaniho'),
+    ).toBeTruthy();
+    const order = screen
+      .getAllByTestId(/^import-wizard-source-/)
+      .map((node) => node.getAttribute('data-testid'));
+    expect(order[0]).toBe('import-wizard-source-hearthis');
+    expect(hearthis).toBeTruthy();
+  });
 });

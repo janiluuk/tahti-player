@@ -1488,6 +1488,7 @@
     "library": {
       "allTypesTab": "Kaikki",
       "statusPrivate": "Yksityinen",
+      "importWizardUsesLinked": "Käyttää osoitetta {{profile}}",
       "sections": "Kirjaston osiot",
       "trackCount_one": "{{formattedCount}} kappale",
       "trackCount_other": "{{formattedCount}} kappaletta",
