@@ -58,85 +58,95 @@ export function ChannelPageBackdrop({
   const heroVisualizerSettings = heroVisualizerSettingsFor(channel);
 
   return (
-    <>
-      {backgroundVisualPreset ? (
-        <ChannelVisualizer
-          className="pointer-events-none absolute inset-0 z-0 size-full opacity-25"
-          preset={resolvePublicVisualizerPreset(backgroundVisualPreset)}
-          colorScheme={pageScheme}
-          artworkUrl={channel.user.avatarUrl}
-        />
-      ) : null}
-      {!heroVisible &&
-        !backgroundVisualPreset &&
-        (showHeaderVideo ? (
-          youtubeEmbedUrl(channel.videoBackgroundUrl, channelVideoMuted) ? (
-            <iframe
-              title={t('channelPageBackdropText.channelVideoBackdrop')}
-              src={
-                youtubeEmbedUrl(
-                  channel.videoBackgroundUrl,
-                  channelVideoMuted,
-                ) ?? undefined
-              }
-              className={`pointer-events-none absolute inset-0 z-0 h-full w-full ${
-                live ? 'opacity-[0.32]' : 'opacity-[0.55]'
-              }`}
-              allow="autoplay; encrypted-media"
-              aria-hidden="true"
+    <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+      {/* The page can be many screens tall. A viewport-sized sticky layer
+          keeps the WebGL canvas or video at one screen of pixels instead of
+          the full page height; it needs the page body to clip, not scroll. */}
+      <div
+        className="sticky top-0 h-dvh max-h-full w-full"
+        data-channel-page-backdrop
+      >
+        {backgroundVisualPreset ? (
+          <ChannelVisualizer
+            className="pointer-events-none absolute inset-0 z-0 size-full opacity-25"
+            preset={resolvePublicVisualizerPreset(backgroundVisualPreset)}
+            colorScheme={pageScheme}
+            artworkUrl={channel.user.avatarUrl}
+            backdrop
+          />
+        ) : null}
+        {!heroVisible &&
+          !backgroundVisualPreset &&
+          (showHeaderVideo ? (
+            youtubeEmbedUrl(channel.videoBackgroundUrl, channelVideoMuted) ? (
+              <iframe
+                title={t('channelPageBackdropText.channelVideoBackdrop')}
+                src={
+                  youtubeEmbedUrl(
+                    channel.videoBackgroundUrl,
+                    channelVideoMuted,
+                  ) ?? undefined
+                }
+                className={`pointer-events-none absolute inset-0 z-0 h-full w-full ${
+                  live ? 'opacity-[0.32]' : 'opacity-[0.55]'
+                }`}
+                allow="autoplay; encrypted-media"
+                aria-hidden="true"
+              />
+            ) : headerBackdropIsImage ? (
+              <img
+                className={`pointer-events-none absolute inset-0 z-0 h-full w-full object-cover ${
+                  live ? 'opacity-[0.32]' : 'opacity-[0.55]'
+                }`}
+                src={channel.videoBackgroundUrl ?? undefined}
+                alt=""
+              />
+            ) : (
+              <video
+                className={`pointer-events-none absolute inset-0 z-0 h-full w-full object-cover ${
+                  live ? 'opacity-[0.32]' : 'opacity-[0.55]'
+                }`}
+                src={channel.videoBackgroundUrl ?? undefined}
+                autoPlay
+                loop
+                muted={channelVideoMuted}
+                playsInline
+                aria-hidden="true"
+              />
+            )
+          ) : showSolidHeader ? (
+            <div
+              className="pointer-events-none absolute inset-0 z-0"
+              style={{ backgroundColor: headerBackground }}
+              aria-hidden
             />
-          ) : headerBackdropIsImage ? (
-            <img
-              className={`pointer-events-none absolute inset-0 z-0 h-full w-full object-cover ${
-                live ? 'opacity-[0.32]' : 'opacity-[0.55]'
-              }`}
-              src={channel.videoBackgroundUrl ?? undefined}
-              alt=""
+          ) : channel.headerStyle === 'GRADIENT' ? (
+            <div
+              className="pointer-events-none absolute inset-0 z-0"
+              style={{
+                backgroundImage: `linear-gradient(135deg, ${headerBackground}, ${headerAccent} 55%, ${headerHighlight})`,
+              }}
+              aria-hidden
             />
           ) : (
-            <video
-              className={`pointer-events-none absolute inset-0 z-0 h-full w-full object-cover ${
+            <ChannelVisualizer
+              className={`pointer-events-none absolute inset-0 z-0 ${
                 live ? 'opacity-[0.32]' : 'opacity-[0.55]'
               }`}
-              src={channel.videoBackgroundUrl ?? undefined}
-              autoPlay
-              loop
-              muted={channelVideoMuted}
-              playsInline
-              aria-hidden="true"
+              preset={resolvePublicVisualizerPreset(channel.visualPreset)}
+              channelKey={channel.slug}
+              colorScheme={pageScheme}
+              colorSchemeJson={channel.colorSchemeJson}
+              visualSettingsJson={channel.visualSettingsJson}
+              settings={heroVisualizerSettings}
+              artworkUrl={
+                channel.nowPlaying?.artworkUrl ?? channel.user.avatarUrl
+              }
+              followArtworkColor={Boolean(channel.nowPlaying?.artworkUrl)}
+              backdrop
             />
-          )
-        ) : showSolidHeader ? (
-          <div
-            className="pointer-events-none absolute inset-0 z-0"
-            style={{ backgroundColor: headerBackground }}
-            aria-hidden
-          />
-        ) : channel.headerStyle === 'GRADIENT' ? (
-          <div
-            className="pointer-events-none absolute inset-0 z-0"
-            style={{
-              backgroundImage: `linear-gradient(135deg, ${headerBackground}, ${headerAccent} 55%, ${headerHighlight})`,
-            }}
-            aria-hidden
-          />
-        ) : (
-          <ChannelVisualizer
-            className={`pointer-events-none absolute inset-0 z-0 ${
-              live ? 'opacity-[0.32]' : 'opacity-[0.55]'
-            }`}
-            preset={resolvePublicVisualizerPreset(channel.visualPreset)}
-            channelKey={channel.slug}
-            colorScheme={pageScheme}
-            colorSchemeJson={channel.colorSchemeJson}
-            visualSettingsJson={channel.visualSettingsJson}
-            settings={heroVisualizerSettings}
-            artworkUrl={
-              channel.nowPlaying?.artworkUrl ?? channel.user.avatarUrl
-            }
-            followArtworkColor={Boolean(channel.nowPlaying?.artworkUrl)}
-          />
-        ))}
-    </>
+          ))}
+      </div>
+    </div>
   );
 }

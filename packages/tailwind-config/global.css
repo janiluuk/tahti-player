@@ -199,8 +199,11 @@
   }
 }
 
+/* Small static previews only, never a live visualizer canvas: an endless
+   filter animation there redraws the whole canvas through the filter on every
+   display frame, past the canvas's own fps cap, which software rendering
+   cannot afford. */
 @media (prefers-reduced-motion: no-preference) {
-  [data-tone-drift] canvas,
   .tone-drift-target {
     animation: tahti-tone-drift 28s ease-in-out infinite;
     will-change: filter;

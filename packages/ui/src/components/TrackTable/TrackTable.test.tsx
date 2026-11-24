@@ -215,6 +215,24 @@ describe('TrackTable', () => {
     expect(queuedButton).toBeDisabled();
     expect(queuedButton).toHaveAttribute('aria-label', 'In queue');
     expect(queuedButton).toHaveAttribute('aria-pressed', 'true');
+    expect(queuedButton.className).toContain('animate-pulse');
+  });
+
+  it('marks an already queued row without an endless pulse', () => {
+    const track = makeTracks(1)[0]!;
+    render(
+      <TrackTable
+        tracks={[track]}
+        labels={labels}
+        display={{ displayQueueControls: true, displayThumbnail: false }}
+        actions={{ onAddToQueue: () => undefined }}
+        meta={{ isTrackQueued: () => true }}
+      />,
+    );
+
+    const queuedButton = screen.getByTestId('add-to-queue-button');
+    expect(queuedButton).toHaveAttribute('aria-pressed', 'true');
+    expect(queuedButton.className).not.toContain('animate-pulse');
   });
 
   it('updates the active row and play button from playback state', async () => {

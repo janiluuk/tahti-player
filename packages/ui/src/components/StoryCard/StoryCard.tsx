@@ -100,7 +100,7 @@ export const StoryCard: FC<StoryCardProps> = ({
       data-testid={testId}
       className={cn(
         'group flex min-w-0 flex-col gap-2',
-        'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-3 motion-safe:fill-mode-both motion-safe:duration-500',
+        'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-3 motion-safe:fill-mode-backwards motion-safe:duration-500',
         className,
       )}
       style={{

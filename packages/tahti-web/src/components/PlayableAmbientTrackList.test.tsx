@@ -8,8 +8,16 @@ import { usePlayerStore } from '../stores/playerStore';
 import { renderWithRouter } from '../test/renderWithRouter';
 import { PlayableAmbientTrackList } from './PlayableAmbientTrackList';
 
-const { seekbarRenders } = vi.hoisted(() => ({
+const { seekbarRenders, tableRenders } = vi.hoisted(() => ({
   seekbarRenders: [] as { title: string; progress: number }[],
+  tableRenders: { count: 0 },
+}));
+
+vi.mock('./PlayableTrackTable', () => ({
+  PlayableTrackTable: () => {
+    tableRenders.count += 1;
+    return <div data-testid="track-table" />;
+  },
 }));
 
 vi.mock('@tahti-player/ui', async (importOriginal) => ({
@@ -68,6 +76,21 @@ describe('PlayableAmbientTrackList during playback', () => {
     act(() => usePlayerStore.getState().setProgress(11, 200));
 
     expect(seekbarRenders).toEqual([{ title: 'Track 3', progress: 11 / 200 }]);
+  });
+
+  it('leaves the table view alone on a progress tick', async () => {
+    usePlayerStore.getState().play(items[3]!);
+    await renderWithRouter(
+      <PlayableAmbientTrackList items={items} initialView="list" />,
+    );
+    await screen.findByTestId('track-table');
+    act(() => usePlayerStore.getState().setProgress(10, 200));
+    tableRenders.count = 0;
+
+    act(() => usePlayerStore.getState().setProgress(11, 200));
+    act(() => usePlayerStore.getState().setProgress(12, 200));
+
+    expect(tableRenders.count).toBe(0);
   });
 
   it('seeks the playing row and leaves the others at the start', async () => {

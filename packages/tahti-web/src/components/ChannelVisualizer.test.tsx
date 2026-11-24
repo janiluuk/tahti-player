@@ -4,7 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { VisualizerScheme } from '../plugins/visualizers/types';
 import { ChannelVisualizer } from './ChannelVisualizer';
 
-vi.mock('../lib/webgl', () => ({ supportsWebGL: () => true }));
+const webgl = vi.hoisted(() => ({ software: false }));
+vi.mock('../lib/webgl', () => ({
+  supportsWebGL: () => true,
+  hasSoftwareWebGL: () => webgl.software,
+}));
 vi.mock('../lib/useDominantColor', () => ({
   useDominantColor: (url: string | null | undefined) =>
     url ? [0, 0, 255] : null,
@@ -36,6 +40,24 @@ describe('ChannelVisualizer', () => {
 
   afterEach(() => {
     vi.unstubAllGlobals();
+    webgl.software = false;
+  });
+
+  it('keeps a software-rendered backdrop still and animates a stage', async () => {
+    webgl.software = true;
+    const { container, unmount } = render(
+      <ChannelVisualizer
+        preset="AURORA"
+        colorScheme={CHANNEL_SCHEME}
+        backdrop
+      />,
+    );
+    expect(screen.queryByTestId('three-visualizer')).not.toBeInTheDocument();
+    expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');
+    unmount();
+
+    render(<ChannelVisualizer preset="AURORA" colorScheme={CHANNEL_SCHEME} />);
+    expect(await screen.findByTestId('three-visualizer')).toBeInTheDocument();
   });
 
   it('takes accent and highlight from the track artwork when asked', async () => {

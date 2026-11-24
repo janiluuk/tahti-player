@@ -309,7 +309,7 @@ export function FullScreenPlayer() {
       data-testid="full-screen-player"
     >
       {embed ? null : (
-        <div className="bg-background/35 absolute inset-0 backdrop-blur-md">
+        <div className="bg-background/35 absolute inset-0">
           {isAmbientScene(engineMode) ? (
             <CoverAmbience
               coverUrl={coverUrl}

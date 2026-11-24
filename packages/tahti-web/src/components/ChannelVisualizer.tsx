@@ -15,7 +15,7 @@ import {
 } from '../lib/channelVizPacks';
 import { radioVisualizerPreset } from '../lib/radioVisualizer';
 import { useDominantColor } from '../lib/useDominantColor';
-import { supportsWebGL } from '../lib/webgl';
+import { hasSoftwareWebGL, supportsWebGL } from '../lib/webgl';
 import type { ThreeVisualizerProps } from './visuals/ThreeVisualizer';
 
 export type VisualColorScheme = {
@@ -47,7 +47,8 @@ type Props = {
    * under other content and cannot be clicked. */
   showModeButtons?: boolean;
   onEngineModeChange?: (mode: VisualizerMode) => void;
-  /** Cheap full-window ambient path (lower DPR / FPS, no antialias). */
+  /** Cheap full-window ambient path (lower DPR / FPS, no antialias; a still
+   * gradient when WebGL is software-rendered). */
   backdrop?: boolean;
 };
 
@@ -242,8 +243,16 @@ export const ChannelVisualizer = ({
     const reducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches;
-    setCanAnimate(!reducedMotion && mode !== 'MINIMAL' && supportsWebGL());
-  }, [mode]);
+    setCanAnimate(
+      !reducedMotion &&
+        mode !== 'MINIMAL' &&
+        supportsWebGL() &&
+        // A backdrop sits under the whole page; on a CPU-rendered context it
+        // costs more than everything in front of it, so it stays a still
+        // gradient. Stages and the full-screen player keep animating.
+        !(backdrop && hasSoftwareWebGL()),
+    );
+  }, [mode, backdrop]);
 
   useEffect(() => {
     const el = hostRef.current;
@@ -278,7 +287,7 @@ export const ChannelVisualizer = ({
 
   if (portedMode) {
     return (
-      <div ref={hostRef} className={className} data-tone-drift>
+      <div ref={hostRef} className={className}>
         <VisualizerHost
           mode={portedMode}
           showModePicker={false}
