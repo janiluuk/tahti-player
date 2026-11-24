@@ -1,6 +1,8 @@
-import { useId, type CSSProperties } from 'react';
+import { useId, useState, type CSSProperties } from 'react';
 
 import { cn, usePrefersReducedMotion } from '@tahti-player/ui';
+
+import { hasSoftwareWebGL } from '../../lib/webgl';
 
 export type CoverAmbienceVariant = 'glow' | 'water';
 
@@ -22,11 +24,15 @@ function rgba(rgb: [number, number, number] | null | undefined, alpha: number) {
  * Background built only from the cover art, for when the visualizer is off.
  * `glow`: the blurred cover with slowly drifting colour light. `water`: the
  * cover's upper part as a slowly panning landscape over its own reflection,
- * which ripples. Motion stops under prefers-reduced-motion.
+ * which ripples. Motion stops under prefers-reduced-motion and when the
+ * browser renders without a GPU.
  */
 export function CoverAmbience({ coverUrl, rgb, variant, className }: Props) {
   const filterId = `cover-ripple-${useId().replace(/:/g, '')}`;
-  const still = usePrefersReducedMotion();
+  const reducedMotion = usePrefersReducedMotion();
+  // Without a GPU every drift step re-blurs or re-filters the whole screen.
+  const [softwareRendering] = useState(hasSoftwareWebGL);
+  const still = reducedMotion || softwareRendering;
   const image = coverUrl ? `url("${coverUrl}")` : undefined;
 
   if (variant === 'glow') {
@@ -34,6 +40,7 @@ export function CoverAmbience({ coverUrl, rgb, variant, className }: Props) {
       <div
         data-testid="cover-ambience"
         data-variant="glow"
+        data-still={still || undefined}
         aria-hidden
         className={cn('absolute inset-0 overflow-hidden', className)}
       >
@@ -64,6 +71,7 @@ export function CoverAmbience({ coverUrl, rgb, variant, className }: Props) {
     <div
       data-testid="cover-ambience"
       data-variant="water"
+      data-still={still || undefined}
       aria-hidden
       className={cn('absolute inset-0 overflow-hidden bg-black', className)}
     >

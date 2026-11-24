@@ -38,7 +38,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | partial | [seo-canonical-host.md](seo-canonical-host.md) | Apex host, OG image, per-route canonical for crawlers (0.0.474); left (tahti-org): stack APP_URL, stable collection OG image URLs, raster channel OG images |
-| open    | [ui-performance-audit.md](ui-performance-audit.md) | UI feels sluggish, worst on non-accelerated Firefox: profile paint and re-renders, fix with before/after |
+| partial | [ui-performance-audit.md](ui-performance-audit.md) | Screen-sized backdrops, still mode without GPU, no per-tick table re-render (0.0.475, 10-13 → 60 fps in software mode); left: Firefox measurement, event banner, matchMedia per render |
 | partial | [ci-performance-audit.md](ci-performance-audit.md) | Journeys sharded (master CI ~9 min), migration baseline parallel in tahti-org; left: isolation-safe tahti-web tests (7x), journeys workflow call, turbo token |
 | partial | [mobile-less-crowded.md](mobile-less-crowded.md) | Full-width phones, on-demand checkboxes, quieter Studio rows, no repeated titles, swipeable filter/section rows (0.0.474); left: Listen action row, contrast-safe track cards |
 | partial | [yaniho-hearthis-albums.md](yaniho-hearthis-albums.md) | Album track numbers, dense order, owner + board reorder shipped (tahti-org#1128, web); left: clean existing "artist - album - NN - title" names on production, 1:1 check against hearthis.at |

@@ -4,6 +4,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { CoverAmbience } from './CoverAmbience';
 
+const webgl = vi.hoisted(() => ({ software: false }));
+vi.mock('../../lib/webgl', () => ({
+  hasSoftwareWebGL: () => webgl.software,
+}));
+
 function mockReducedMotion(reduce: boolean) {
   vi.stubGlobal('matchMedia', (query: string) => ({
     matches: reduce && query.includes('reduce'),
@@ -18,6 +23,7 @@ function mockReducedMotion(reduce: boolean) {
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  webgl.software = false;
 });
 
 describe('CoverAmbience', () => {
@@ -56,5 +62,32 @@ describe('CoverAmbience', () => {
       <CoverAmbience coverUrl="/cover.jpg" variant="water" />,
     );
     expect(container.querySelector('animate')).toBeNull();
+  });
+
+  it('holds both scenes still when the browser renders without a GPU', () => {
+    mockReducedMotion(false);
+    webgl.software = true;
+    const { container } = render(
+      <CoverAmbience coverUrl="/cover.jpg" variant="water" />,
+    );
+    expect(container.querySelector('animate')).toBeNull();
+    expect(screen.getByTestId('cover-ambience')).toHaveAttribute(
+      'data-still',
+      'true',
+    );
+    cleanup();
+    render(<CoverAmbience coverUrl="/cover.jpg" variant="glow" />);
+    expect(screen.getByTestId('cover-ambience')).toHaveAttribute(
+      'data-still',
+      'true',
+    );
+  });
+
+  it('animates on a GPU', () => {
+    mockReducedMotion(false);
+    render(<CoverAmbience coverUrl="/cover.jpg" variant="glow" />);
+    expect(screen.getByTestId('cover-ambience')).not.toHaveAttribute(
+      'data-still',
+    );
   });
 });

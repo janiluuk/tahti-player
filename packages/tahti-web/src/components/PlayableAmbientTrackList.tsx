@@ -103,8 +103,11 @@ export function PlayableAmbientTrackList({
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
-  const currentTime = usePlayerStore((s) => s.currentTime);
-  const duration = usePlayerStore((s) => s.duration);
+  // One value, not currentTime and duration: a live stream (no duration)
+  // then never re-renders the list on a progress tick.
+  const progress = usePlayerStore((s) =>
+    s.duration > 0 ? s.currentTime / s.duration : null,
+  );
   const seekTo = usePlayerStore((s) => s.seekTo);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const navigate = useNavigate();
@@ -348,18 +351,54 @@ export function PlayableAmbientTrackList({
 
   const listItems = useMemo(
     () =>
-      duration > 0
+      progress != null
         ? baseItems.map((item) =>
             item.id === currentId
               ? {
                   ...item,
-                  progress: currentTime / duration,
-                  onSeek: (fraction: number) => seekTo(fraction * duration),
+                  progress,
+                  onSeek: (fraction: number) =>
+                    seekTo(fraction * usePlayerStore.getState().duration),
                 }
               : item,
           )
         : baseItems,
-    [baseItems, currentId, currentTime, duration, seekTo],
+    [baseItems, currentId, progress, seekTo],
+  );
+
+  // One filter per list: the toolbar's when it has one, else the table's own.
+  const tableFilterable = !filterBox && !toolbarStart;
+  // The same element on every progress tick lets React skip the whole table.
+  const listView = useMemo(
+    () => (
+      <Suspense fallback={<PageLoading label={t('loading.loading')} />}>
+        <PlayableTrackTable
+          items={sorted}
+          emptyMessage={shownEmptyMessage}
+          filterable={tableFilterable}
+          playAll={playAll}
+          compactActions={compactActions}
+          getAnnotation={getAnnotation}
+          onEdit={onEdit}
+          onRemove={onRemove}
+          selectable={selectable}
+          onBulkRemove={onBulkRemove}
+        />
+      </Suspense>
+    ),
+    [
+      t,
+      sorted,
+      shownEmptyMessage,
+      tableFilterable,
+      playAll,
+      compactActions,
+      getAnnotation,
+      onEdit,
+      onRemove,
+      selectable,
+      onBulkRemove,
+    ],
   );
 
   return (
@@ -378,24 +417,7 @@ export function PlayableAmbientTrackList({
             <TrackSortButton value={sort} onChange={setSort} />
           ) : undefined
         }
-        renderList={() => (
-          <Suspense fallback={<PageLoading label={t('loading.loading')} />}>
-            <PlayableTrackTable
-              items={sorted}
-              emptyMessage={shownEmptyMessage}
-              // One filter per list: the toolbar's when it has one, else the
-              // table's own.
-              filterable={!filterBox && !toolbarStart}
-              playAll={playAll}
-              compactActions={compactActions}
-              getAnnotation={getAnnotation}
-              onEdit={onEdit}
-              onRemove={onRemove}
-              selectable={selectable}
-              onBulkRemove={onBulkRemove}
-            />
-          </Suspense>
-        )}
+        renderList={() => listView}
       />
       {playlistTarget ? (
         <AddToPlaylistPanel

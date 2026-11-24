@@ -49,7 +49,7 @@ type Story = StoryObj<typeof meta>;
 
 function backdropLayer(canvasElement: HTMLElement) {
   return canvasElement.querySelector<HTMLElement>(
-    '[data-testid="story-page"] > *',
+    '[data-testid="story-page"] [data-channel-page-backdrop] > *',
   );
 }
 

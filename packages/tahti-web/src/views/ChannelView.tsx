@@ -513,7 +513,7 @@ export function ChannelView({ slug }: { slug: string }) {
   const pageBody = (
     <div
       className={cn(
-        'relative isolate min-h-full overflow-hidden',
+        'relative isolate min-h-full overflow-clip',
         CHANNEL_SCHEME_TEXT_CLASS,
         // Cancel AppShell's MAIN_CONTENT_PADDING so the channel's own
         // background reaches the edges of the pane instead of leaving a

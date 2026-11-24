@@ -14,7 +14,7 @@ import { FULL_BLEED_TOP_CANCEL } from '../layout/contentPadding';
 import { cn } from '../lib/cn';
 
 const REVEAL =
-  'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-1 motion-safe:duration-300 motion-safe:fill-mode-both';
+  'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-1 motion-safe:duration-300 motion-safe:fill-mode-backwards';
 
 /** Fade/slide-in when ready content mounts. Skips motion when reduced. */
 export function ContentReveal({

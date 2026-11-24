@@ -83,6 +83,12 @@ body,
   }
 }
 
+[data-still] .tahti-event-backdrop-drift,
+[data-still] .tahti-cover-pan {
+  animation: none;
+  will-change: auto;
+}
+
 :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
 :root[data-custom-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
   background-color: var(--background);

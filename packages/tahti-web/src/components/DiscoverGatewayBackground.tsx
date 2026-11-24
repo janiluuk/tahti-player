@@ -14,18 +14,23 @@ export function DiscoverGatewayBackground() {
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 -z-10 overflow-hidden mix-blend-screen"
+      className="pointer-events-none absolute inset-0 -z-10 overflow-clip mix-blend-screen"
       style={{ opacity: 0.14 }}
       aria-hidden
       data-discover-gateway-background
     >
-      <ChannelVisualizer
-        preset="AURORA"
-        colorScheme={AMBIENT_SCHEME}
-        visualSettingsJson='{"AURORA":{"speed":0.1,"intensity":0.45}}'
-        audioReactive={false}
-        className="h-full w-full"
-      />
+      {/* One screen of canvas that stays in view, not one as tall as the
+          page; sticky needs the clip above instead of a scroll container. */}
+      <div className="sticky top-0 h-dvh max-h-full w-full">
+        <ChannelVisualizer
+          preset="AURORA"
+          colorScheme={AMBIENT_SCHEME}
+          visualSettingsJson='{"AURORA":{"speed":0.1,"intensity":0.45}}'
+          audioReactive={false}
+          className="h-full w-full"
+          backdrop
+        />
+      </div>
     </div>
   );
 }
