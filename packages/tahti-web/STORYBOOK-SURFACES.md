@@ -26,6 +26,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/AdminCronHistoryDialog` | `tahti-web/AdminCronHistoryDialog.stories.tsx` |
 | `Tahti/Admin/AdminDashboardView` | `tahti-web/AdminDashboardView.stories.tsx` |
 | `Tahti/Admin/AdminDiagnosticsView` | `tahti-web/AdminDiagnosticsView.stories.tsx` |
+| `Tahti/Admin/AdminEncodingQueueView` | `tahti-web/AdminEncodingQueueView.stories.tsx` |
 | `Tahti/Admin/AdminFinancialView` | `tahti-web/AdminFinancialView.stories.tsx` |
 | `Tahti/Admin/AdminGate` | `tahti-web/AdminGate.stories.tsx` |
 | `Tahti/Admin/AdminGovernanceView` | `tahti-web/AdminGovernanceView.stories.tsx` |

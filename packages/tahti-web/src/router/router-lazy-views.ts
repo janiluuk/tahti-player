@@ -165,6 +165,10 @@ export const AdminRadioView = lazyRouteComponent(
   () => import('../views/admin/AdminRadioView'),
   'AdminRadioView',
 );
+export const AdminEncodingQueueView = lazyRouteComponent(
+  () => import('../views/admin/AdminEncodingQueueView'),
+  'AdminEncodingQueueView',
+);
 export const AdminVendorsView = lazyRouteComponent(
   () => import('../views/admin/AdminVendorsView'),
   'AdminVendorsView',

@@ -11,8 +11,18 @@ const COLLAPSIBLE_COLUMN_IDS = new Set(['artist', 'album']);
  * their headers ("Duration", "Released") no longer fit. */
 const SECONDARY_COLUMN_IDS = new Set(['duration', 'releaseDate']);
 
+/** The table is `table-fixed`, so columns without a width split the row
+ * evenly; these keep short values narrow and leave the rest to the title. */
+const COLUMN_WIDTH_CLASS: Record<string, string> = {
+  artist: 'w-1/4',
+  album: 'w-1/5',
+  duration: 'w-20 tabular-nums',
+  releaseDate: 'w-28',
+};
+
 export const collapsibleColumnClass = (columnId: string) =>
   cn(
+    COLUMN_WIDTH_CLASS[columnId],
     COLLAPSIBLE_COLUMN_IDS.has(columnId) && '@max-md:hidden',
     SECONDARY_COLUMN_IDS.has(columnId) && '@max-xl:hidden',
   );

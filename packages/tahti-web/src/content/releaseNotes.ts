@@ -40,12 +40,14 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.471',
+    version: '0.0.472',
     sections: [
       {
         id: 'listen',
         label: 'Listen',
         highlights: [
+          'New tracks on Listen is a card of its own: search sits on the same row as sort and size, track titles get more room, and the duration column is narrow.',
+          'Shared links to tahti.live show a proper preview image, and old app.tahti.live links forward to tahti.live.',
           'The full-screen player can turn the visualizer off: under Visualizer → Ambience, “Off” fills the screen with a soft glow from the cover art, and “Water landscape” turns the cover into a slowly drifting landscape over its own rippling reflection.',
           'An artist’s own site (name.tahti.live) shows their header, colours and menu choices again, so it looks the way they designed it.',
           'The full-screen player is calmer: Add to playlist moved into the ⋯ menu with the other track actions, leaving the artwork and controls in focus.',
@@ -92,6 +94,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
           'Grafana opens inside Admin → Monitoring again, and when it cannot load there you get a clear Open Grafana button instead of a blank frame.',
           'Every admin page opens the same way: its title, one line on what it is for, and a single back link, without a breadcrumb trail on top.',
           'A user in Admin → Users opens on Overview, Account and Tracks tabs. Tracks lists everything they uploaded, so you can play a track, make it public or private, or delete it without leaving the account.',
+          'Admin → Platform → Encoding queue shows upload transcode jobs by state and refreshes itself every few seconds. Retry or remove a job, pause the queue, see how long a job has been running, and re-queue stuck uploads in one place.',
         ],
       },
     ],

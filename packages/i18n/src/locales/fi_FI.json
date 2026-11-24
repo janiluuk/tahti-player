@@ -1198,7 +1198,7 @@
       "sectionPlatform": "Alusta",
       "hubContentDescription": "Uutiset, tiedotteet, Selects, huippulistat, radio, esiintymispaikat, kansikuvien esiasetukset ja katalogi.",
       "hubCoopDescription": "Hallitus, yhtiökokous, apurahat, vuosikertomukset, asiakirjat ja talous.",
-      "hubPlatformDescription": "Lisäosat, kielet, toimittajat, tallennustila, streamit ja diagnostiikka."
+      "hubPlatformDescription": "Lisäosat, kielet, toimittajat, tallennustila, streamit, koodausjono ja diagnostiikka."
     },
     "adminPages": {
       "dashboard": "Koontinäyttö",
@@ -1246,6 +1246,8 @@
       "governanceDescription": "Jäsenten äänestykset, vuosikertomukset, apurahat ja vuosikokous — aluekorttien hubi.",
       "addonsDescription": "Rekisteröi ja hallinnoi kuuntelijan, artistin ja adminin lisäosia.",
       "vendorsDescription": "Seuraa toimittajia, integraatioita, julkaisutarkistuksia ja tietosuojasopimuksia.",
+      "encodingQueue": "Koodausjono",
+      "encodingQueueDescription": "Latausten koodaustyöt tiloittain, päivittyy jatkuvasti: yritä uudelleen, poista, keskeytä jono ja laita jumiin jääneet lataukset uudelleen jonoon.",
       "i18nDescription": "Lisää kieliä ja tuo käännös-CSV:itä.",
       "tahtiSelectsDescription": "Hallinnoi Tahti Selects -toimituksellista streamia ja rotaatiota.",
       "orphanPagesDescription": "Oikeat sivut ilman valikkokohtaa tai sovelluslinkkiä, kerätty tähän välilehdiksi.",
@@ -1253,7 +1255,7 @@
       "diagnosticsDescription": "Lokit, orvot sivut ja näyttöatlas.",
       "hubContentCardDescription": "Uutiset, tiedotteet, Selects, huippulistat, radio, esiintymispaikat, kansikuvien esiasetukset ja katalogi.",
       "hubCoopCardDescription": "Hallitus, yhtiökokous, apurahat, vuosikertomukset, asiakirjat ja talous.",
-      "hubPlatformCardDescription": "Lisäosat, kielet, toimittajat, tallennustila, streamit ja diagnostiikka.",
+      "hubPlatformCardDescription": "Lisäosat, kielet, toimittajat, tallennustila, streamit, koodausjono ja diagnostiikka.",
       "community": "Yhteisö",
       "communityDescription": "Chatin määrä ja postin toimitus viimeisen vuorokauden ajalta."
     },
@@ -2135,6 +2137,8 @@
       "profileDescription": "Tutustu artistin {{name}} musiikkiin, julkaisuihin, kokoelmiin ja livekanavaan Tahdissa.",
       "venueDescription": "{{name}} on vahvistettu tapahtumapaikka Tahdissa.",
       "releaseDescription": "Kuuntele julkaisua {{name}} ja löydä sen viralliset linkit Tahdissa.",
+      "trackTitle": "Kappale Tahdissa",
+      "trackDescription": "Kuuntele tätä kappaletta Tahdissa - itsenäistä musiikkia, livenä.",
       "subscribeTitle": "Tilaa {{name}} · Tahti",
       "subscribeDescription": "Tue artistia {{name}} fanitilauksella Tahdissa.",
       "moderateTitle": "{{name}}: chatin moderointi · Tahti",
@@ -8388,6 +8392,9 @@
       "stuckLoadError": "Jumissa olevia latauksia ei voitu ladata.",
       "requeue": "Laita jonoon",
       "requeueAll": "Laita kaikki {{count}} jonoon",
+      "liveUpdates": "Päivitä jatkuvasti",
+      "updatedAt": "Päivitetty {{time}}",
+      "runningFor": "käynnissä {{age}}",
       "states": {
         "waiting": "Odottavat",
         "active": "Käynnissä",

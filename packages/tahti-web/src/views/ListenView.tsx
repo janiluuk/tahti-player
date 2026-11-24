@@ -401,6 +401,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               items={sections.latestTracks.data}
               heading={t('listen.newTracks')}
               initialView="list"
+              filterable
+              className="border-border/40 bg-background-secondary/40 rounded-[var(--radius-card)] border p-2 sm:p-3"
               playAll
               getTrackMeta={latestTrackMeta}
             />

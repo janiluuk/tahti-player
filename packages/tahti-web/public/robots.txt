@@ -3,5 +3,10 @@ Allow: /
 Disallow: /admin/
 Disallow: /settings/
 Disallow: /studio/
+Disallow: /messages/
+Disallow: /notifications/
+Disallow: /library/
+Disallow: /moderate/
+Disallow: /jam/
 
-Sitemap: https://app.tahti.live/sitemap.xml
+Sitemap: https://tahti.live/sitemap.xml
