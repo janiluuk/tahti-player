@@ -6,9 +6,8 @@ import {
   ListMusicIcon,
 } from 'lucide-react';
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { toast } from 'sonner';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -25,7 +24,6 @@ import {
 
 import { fetchChannel } from '../api/client';
 import type { OnAirChannel } from '../api/listen';
-import type { TahtiPlayable } from '../api/types';
 import { AddListenWidgetDialog } from '../components/AddListenWidgetDialog';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
@@ -49,10 +47,9 @@ import {
   preloadPlayableTrackTable,
 } from '../components/PlayableAmbientTrackList';
 import { RemoveWidgetDialog } from '../components/RemoveWidgetDialog';
-import { radioStationIdForPlayable } from '../content/radioStations';
+import { usePhoneViewport } from '../hooks/usePhoneViewport';
 import { scheduleIdleRoutePrefetch } from '../lib/idleRoutePrefetch';
 import { prefetchListenCardIntent } from '../lib/intentRoutePrefetch';
-import { resolveLocalPlayableForReplay } from '../lib/nativeLibrary';
 import { activeListenTab } from '../lib/navigationActive';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { useAuthStore } from '../stores/authStore';
@@ -83,11 +80,7 @@ const LISTEN_SECTION_TABS = [
   },
 ];
 
-const RECENTLY_PLAYED_LIMIT = 20;
-
 type OnAirRowItem = { id: string; title: string; channel: OnAirChannel };
-
-type RecentRowItem = { id: string; title: string; playable: TahtiPlayable };
 
 /** The stored order first; blocks it doesn't know (new sections, widgets
  * added before ordering existed) keep their default neighbours. Until the
@@ -132,6 +125,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     select: (state) => state.location.pathname,
   });
   const tab = activeListenTab(pathname) ?? tabProp;
+  const phone = usePhoneViewport();
   const play = usePlayerStore((s) => s.play);
   const currentId = usePlayerStore((s) => s.currentId);
   const playbackStatus = usePlayerStore((s) => s.status);
@@ -176,23 +170,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     start();
   };
 
-  const replayFromHistory = (playable: TahtiPlayable) =>
-    togglePlayback(playable.id, () => {
-      resolveLocalPlayableForReplay(playable)
-        .then((resolved) => {
-          if (resolved) {
-            play(resolved);
-          } else {
-            toast.error(i18n.t('web:batch52.reimportToPlay'));
-          }
-        })
-        .catch((error: unknown) => {
-          toast.error(
-            error instanceof Error ? error.message : 'Track unavailable.',
-          );
-        });
-    });
-
   const onAirItems = useMemo<OnAirRowItem[]>(
     () =>
       sections.onAir.data.map((channel) => ({
@@ -207,16 +184,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     (item) => item.channel.state !== 'LIVE',
   );
   const onAirRowItems = [...liveItems, ...replayItems];
-
-  const recentItems = useMemo<RecentRowItem[]>(
-    () =>
-      history.slice(0, RECENTLY_PLAYED_LIMIT).map((entry) => ({
-        id: entry.playable.id,
-        title: entry.playable.title,
-        playable: entry.playable,
-      })),
-    [history],
-  );
 
   const renderOnAirItem = ({ channel }: OnAirRowItem) => {
     const playableId = `live:${channel.slug}`;
@@ -278,73 +245,13 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     );
   };
 
-  const renderRecentItem = ({ playable }: RecentRowItem) => {
-    // A radio station in the history opens its station page from the title,
-    // like the station cards in the Radio row.
-    const stationId = radioStationIdForPlayable(playable);
-    return (
-      <Card
-        surface="neutral"
-        title={
-          stationId ? (
-            <Link
-              to="/radio/station/$stationId"
-              params={{ stationId }}
-              className="hover:underline"
-            >
-              {playable.title}
-            </Link>
-          ) : (
-            playable.title
-          )
-        }
-        subtitle={playable.artist}
-        src={playable.coverUrl ?? placeholderArtworkUrl(playable.id)}
-        isPlaying={isActive(playable.id)}
-        onPlay={() => replayFromHistory(playable)}
-      />
-    );
-  };
-
   const dashboardBlocks: SortableBlock[] = [
     {
-      id: recentItems.length > 0 ? 'recently-played' : 'selects',
-      label:
-        recentItems.length > 0
-          ? t('listen.recentlyPlayedAndSelects')
-          : t('listen.tahtiSelects'),
+      id: 'selects',
+      label: t('listen.tahtiSelects'),
       content: (
-        <div className="@container min-w-0">
-          <div
-            data-testid="listen-history-selects"
-            className={
-              recentItems.length > 0
-                ? 'grid min-w-0 grid-cols-1 gap-6 @3xl:grid-cols-2'
-                : 'min-w-0'
-            }
-          >
-            {recentItems.length > 0 ? (
-              <div className="min-w-0">
-                <CardsRow
-                  defaultLayout="cards"
-                  data-testid="listen-recently-played"
-                  title={t('listen.recentlyPlayed')}
-                  badge={t('listen.history')}
-                  badgeColor="yellow"
-                  filterable={false}
-                  items={recentItems}
-                  labels={{
-                    ...rowLabels,
-                    filterPlaceholder: t('listen.filterTracks'),
-                  }}
-                  renderItem={renderRecentItem}
-                />
-              </div>
-            ) : null}
-            <div className="min-w-0">
-              <TahtiSelectsRow />
-            </div>
-          </div>
+        <div className="@container min-w-0" data-testid="listen-selects">
+          <TahtiSelectsRow />
         </div>
       ),
     },
@@ -446,6 +353,52 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   ).filter((block) => !hiddenListenBlockIds.includes(block.id));
   const orderedBlocks = orderListenBlocks(visibleBlocks, listenOrder);
 
+  const listenActions =
+    tab === 'listen' ? (
+      <>
+        <Tooltip
+          content={
+            reordering ? t('listen.doneOrdering') : t('listen.orderSections')
+          }
+          side="top"
+        >
+          <Button
+            size="icon"
+            variant={reordering ? 'default' : 'secondary'}
+            aria-pressed={reordering}
+            aria-label={t('listen.orderSections')}
+            onClick={() => setReordering((on) => !on)}
+            onPointerEnter={() => void preloadSortableBlocks()}
+            onFocus={() => void preloadSortableBlocks()}
+            data-testid="listen-order-toggle"
+            className="md:w-auto md:gap-2 md:px-4"
+          >
+            {reordering ? (
+              <CheckIcon size={17} aria-hidden />
+            ) : (
+              <ArrowUpDownIcon size={17} aria-hidden />
+            )}
+            <span aria-hidden className="hidden md:inline">
+              {reordering
+                ? t('listen.doneOrdering')
+                : t('listen.orderSections')}
+            </span>
+          </Button>
+        </Tooltip>
+        <AddListenWidgetDialog />
+        {reordering || hiddenListenBlockIds.length > 0 ? (
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setResetOpen(true)}
+            data-testid="listen-reset-widgets"
+          >
+            {t('listenLayout.reset')}
+          </Button>
+        ) : null}
+      </>
+    ) : undefined;
+
   return (
     <div className="relative flex w-full min-w-0 flex-col gap-6">
       {tab === 'listen' ? <DiscoverGatewayBackground /> : null}
@@ -461,71 +414,34 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           }
         }}
       >
-        <Tabs.List
-          aria-label={t('listen.sections')}
-          className="overflow-x-auto"
-        >
-          {LISTEN_SECTION_TABS.map((item) => (
-            <Tabs.Tab key={item.id}>
-              <TabLabel icon={<item.Icon size={14} />}>
-                {t(item.labelKey)}
-              </TabLabel>
-            </Tabs.Tab>
-          ))}
-        </Tabs.List>
+        <div className="flex min-w-0 items-center gap-2">
+          <Tabs.List
+            aria-label={t('listen.sections')}
+            className="min-w-0 flex-1 overflow-x-auto"
+          >
+            {LISTEN_SECTION_TABS.map((item) => (
+              <Tabs.Tab key={item.id}>
+                <TabLabel icon={<item.Icon size={14} />}>
+                  {t(item.labelKey)}
+                </TabLabel>
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
+          {phone && listenActions ? (
+            <div
+              className="flex shrink-0 items-center gap-2"
+              data-testid="listen-phone-actions"
+            >
+              {listenActions}
+            </div>
+          ) : null}
+        </div>
       </Tabs.Root>
       <ViewShell
         title={tab === 'history' ? t('listen.history') : t('nav.listen')}
         // The Listen / History tabs above already name the page.
         classes={{ root: 'px-0 pt-0', title: 'max-sm:sr-only' }}
-        actions={
-          tab === 'listen' ? (
-            <>
-              <Tooltip
-                content={
-                  reordering
-                    ? t('listen.doneOrdering')
-                    : t('listen.orderSections')
-                }
-                side="top"
-              >
-                <Button
-                  size="icon"
-                  variant={reordering ? 'default' : 'secondary'}
-                  aria-pressed={reordering}
-                  aria-label={t('listen.orderSections')}
-                  onClick={() => setReordering((on) => !on)}
-                  onPointerEnter={() => void preloadSortableBlocks()}
-                  onFocus={() => void preloadSortableBlocks()}
-                  data-testid="listen-order-toggle"
-                  className="md:w-auto md:gap-2 md:px-4"
-                >
-                  {reordering ? (
-                    <CheckIcon size={17} aria-hidden />
-                  ) : (
-                    <ArrowUpDownIcon size={17} aria-hidden />
-                  )}
-                  <span aria-hidden className="hidden md:inline">
-                    {reordering
-                      ? t('listen.doneOrdering')
-                      : t('listen.orderSections')}
-                  </span>
-                </Button>
-              </Tooltip>
-              <AddListenWidgetDialog />
-              {reordering || hiddenListenBlockIds.length > 0 ? (
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => setResetOpen(true)}
-                  data-testid="listen-reset-widgets"
-                >
-                  {t('listenLayout.reset')}
-                </Button>
-              ) : null}
-            </>
-          ) : undefined
-        }
+        actions={phone ? undefined : listenActions}
       >
         {tab === 'history' ? (
           <Suspense

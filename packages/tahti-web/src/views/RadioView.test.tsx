@@ -18,6 +18,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { StudioShowBooking } from '../api/shows';
 import { parseRadioSearch } from '../lib/radioTabs';
+import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { RadioView } from './RadioView';
@@ -190,6 +191,59 @@ describe('RadioView featured history', () => {
     const list = screen.getByTestId('radio-featured');
     const link = within(list).getByRole('link', { name: 'DJ Moon' });
     expect(link.getAttribute('href')).toBe('/channel/moon');
+  });
+});
+
+describe('RadioView edit playlist shortcut', () => {
+  beforeEach(() => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+  });
+
+  afterEach(() => {
+    cleanup();
+    useAuthStore.setState({ user: null });
+    vi.unstubAllEnvs();
+  });
+
+  const renderRadio = async () => {
+    const router = createRouter({
+      routeTree: createRootRoute({ component: RadioView }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+  };
+
+  const accountWith = (roles: Array<'BOARD' | 'ARTIST' | 'LISTENER'>) => ({
+    id: 'u1',
+    email: 'user@example.com',
+    username: 'user',
+    displayName: 'User',
+    role: roles[0],
+    roles,
+  });
+
+  it('links a board member to the playlist manager', async () => {
+    useAuthStore.setState({ user: accountWith(['BOARD']) });
+    await renderRadio();
+    const link = await screen.findByTestId('radio-edit-playlist');
+    expect(link.getAttribute('aria-label')).toBe('Edit playlist');
+    expect(link.getAttribute('href')).toBe('/admin/radio?tab=playlist');
+  });
+
+  it('hides the shortcut from listeners and artists', async () => {
+    useAuthStore.setState({ user: accountWith(['ARTIST']) });
+    await renderRadio();
+    await screen.findByTestId('radio-favorite-button');
+    expect(screen.queryByTestId('radio-edit-playlist')).toBeNull();
+  });
+
+  it('hides the shortcut when signed out', async () => {
+    useAuthStore.setState({ user: null });
+    await renderRadio();
+    await screen.findByTestId('radio-favorite-button');
+    expect(screen.queryByTestId('radio-edit-playlist')).toBeNull();
   });
 });
 

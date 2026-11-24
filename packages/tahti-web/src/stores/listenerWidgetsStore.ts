@@ -24,11 +24,12 @@ const RETIRED_BROWSER_STATIONS_BLOCK_ID = widgetBlockId('browser-stations');
 /** Upcoming events moved from Listen to Discover; the v5 migration strips
  * the old Listen block id. */
 const RETIRED_COMING_UP_BLOCK_ID = 'coming-up';
+const SELECTS_BLOCK_ID = 'selects';
+const RETIRED_RECENTLY_PLAYED_BLOCK_ID = 'recently-played';
 export const FAVORITES_BLOCK_ID = widgetBlockId('favorites');
 export const LATEST_NEWS_BLOCK_ID = widgetBlockId('latest-news');
 
 const LISTEN_BLOCK_LABEL_KEYS: Record<string, string> = {
-  'recently-played': 'listen.recentlyPlayedAndSelects',
   selects: 'listen.tahtiSelects',
   'new-releases': 'listen.newReleases',
   'on-air': 'listen.liveAndReplays',
@@ -313,9 +314,24 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
     }),
     {
       name: 'tahti-web-listener-widgets',
-      version: 5,
+      version: 6,
       migrate: (persisted, version) => {
         const state = (persisted ?? {}) as Partial<ListenerWidgetsState>;
+        if (version < 6) {
+          const swap = (ids: string[]) => [
+            ...new Set(
+              ids.map((id) =>
+                id === RETIRED_RECENTLY_PLAYED_BLOCK_ID ? SELECTS_BLOCK_ID : id,
+              ),
+            ),
+          ];
+          if (Array.isArray(state.listenOrder)) {
+            state.listenOrder = swap(state.listenOrder);
+          }
+          if (Array.isArray(state.hiddenListenBlockIds)) {
+            state.hiddenListenBlockIds = swap(state.hiddenListenBlockIds);
+          }
+        }
         if (version < 5) {
           const live = (id: string) => id !== RETIRED_COMING_UP_BLOCK_ID;
           if (Array.isArray(state.listenOrder)) {

@@ -84,9 +84,16 @@ export const SignedOutWithHistory: Story = {
     await expect(canvas.getByText('Top tracks')).toBeVisible();
     await expect(canvas.queryByText('Across your devices')).toBeNull();
 
+    const recent = within(canvas.getByTestId('history-recently-played'));
+    await expect(
+      recent.getByRole('heading', { name: 'Recently played' }),
+    ).toBeVisible();
+    await expect(recent.getByText('Midnight Drift')).toBeVisible();
+
     await selectTab(canvas, 'Listening history');
-    await expectVisible(await canvas.findByText('Midnight Drift'));
-    await expect(canvas.getByText('Glass Fields')).toBeVisible();
+    const list = within(await canvas.findByRole('tabpanel'));
+    await expectVisible(await list.findByText('Midnight Drift'));
+    await expect(list.getByText('Glass Fields')).toBeVisible();
   },
 };
 
@@ -96,6 +103,7 @@ export const SignedOutEmpty: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expectVisible(await canvas.findByText('Nothing to show yet'));
+    await expect(canvas.queryByTestId('history-recently-played')).toBeNull();
     await selectTab(canvas, 'Listening history');
     await expectVisible(await canvas.findByText('Nothing played yet'));
   },

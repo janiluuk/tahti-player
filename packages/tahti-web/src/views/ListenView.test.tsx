@@ -204,55 +204,6 @@ describe('ListenView sections', () => {
       text.indexOf(replaying.user.displayName),
     );
   });
-
-  it('links a recently played radio station to its station page', async () => {
-    useLibraryStore.setState({
-      history: [
-        {
-          playable: {
-            id: 'radio-widget:radio-helsinki',
-            kind: 'radio',
-            title: 'Radio Helsinki',
-            artist: 'Finnish · Talk / Variety',
-            streamUrl: 'https://example.test/stream',
-            protocol: 'https',
-          },
-          playedAt: '2026-10-04T10:00:00.000Z',
-        },
-        {
-          playable: {
-            id: 'sound:s1',
-            kind: 'sound',
-            title: 'Night Drive',
-            artist: 'Northern Lights',
-            streamUrl: 'https://example.test/s1.mp3',
-            protocol: 'https',
-          },
-          playedAt: '2026-10-04T09:00:00.000Z',
-        },
-      ],
-    });
-    await renderListen();
-
-    // The Radio row's own station card is one link; the history card is the
-    // second.
-    await waitFor(() =>
-      expect(
-        screen
-          .getAllByRole('link', { name: 'Radio Helsinki' })
-          .filter(
-            (link) =>
-              link.getAttribute('href') === '/radio/station/radio-helsinki',
-          ),
-      ).toHaveLength(2),
-    );
-    expect(
-      within(screen.getByTestId('listen-recently-played')).queryByRole('link', {
-        name: 'Night Drive',
-      }),
-    ).toBeNull();
-    useLibraryStore.setState({ history: [] });
-  });
 });
 
 describe('ListenView block order', () => {
@@ -318,20 +269,22 @@ describe('ListenView block order', () => {
     expect(blockIds()[0]).toBe('radio');
   });
 
-  it('leads with Recently played once they have listened', async () => {
+  it('leads with Tahti Selects once they have listened, with Recently played now under History', async () => {
     returningListener();
     await renderListen();
-    expect(blockIds()[0]).toBe('recently-played');
+    expect(blockIds()[0]).toBe('selects');
+    expect(blockIds()).not.toContain('recently-played');
     expect(blockIds()).not.toContain('tahti-radio');
     expect(blockIds()).not.toContain('news');
-    const paired = within(screen.getByTestId('listen-history-selects'));
+    expect(screen.queryByTestId('listen-recently-played')).toBeNull();
     expect(
-      paired.getByRole('heading', { name: 'Recently played' }),
-    ).toBeTruthy();
+      screen.queryByRole('heading', { name: 'Recently played' }),
+    ).toBeNull();
     expect(
-      await paired.findByRole('heading', { name: 'Tahti Selects' }),
+      await within(screen.getByTestId('listen-selects')).findByRole('heading', {
+        name: 'Tahti Selects',
+      }),
     ).toBeTruthy();
-    expect(blockIds()).not.toContain('selects');
   });
 
   it('leads with the news widget when there is no saved order', async () => {
@@ -350,7 +303,7 @@ describe('ListenView block order', () => {
     });
     await renderListen();
     expect(blockIds()[0]).toBe(LATEST_NEWS_BLOCK_ID);
-    expect(blockIds()[1]).toBe('recently-played');
+    expect(blockIds()[1]).toBe('selects');
   });
 
   it('keeps the news widget above the radio row for a new listener', async () => {
@@ -373,7 +326,7 @@ describe('ListenView block order', () => {
   it('lists a newly saved station in the radio row, not a block of its own', async () => {
     returningListener();
     await renderListen();
-    expect(blockIds()[0]).toBe('recently-played');
+    expect(blockIds()[0]).toBe('selects');
 
     act(() => {
       useListenerWidgetsStore.getState().addSavedBrowserStation({
@@ -384,13 +337,35 @@ describe('ListenView block order', () => {
     });
 
     expect(blockIds()).not.toContain('widget:browser-stations');
-    expect(blockIds()[0]).toBe('recently-played');
+    expect(blockIds()[0]).toBe('selects');
     const radioBlock = screen
       .getByTestId('listen-dashboard')
       .querySelector<HTMLElement>('[data-sortable-block="radio"]')!;
     expect(
       within(radioBlock).getByRole('button', { name: 'Play KEXP' }),
     ).toBeInTheDocument();
+  });
+
+  it('keeps Order and Add in the header on wide screens', async () => {
+    await renderListen();
+    expect(screen.queryByTestId('listen-phone-actions')).toBeNull();
+    expect(screen.getByTestId('listen-order-toggle')).toBeTruthy();
+  });
+
+  it('moves Order and Add into the tab row on phones', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation(
+      (query) =>
+        ({
+          matches: true,
+          media: query,
+          addEventListener: () => undefined,
+          removeEventListener: () => undefined,
+        }) as unknown as MediaQueryList,
+    );
+    await renderListen();
+    const row = within(screen.getByTestId('listen-phone-actions'));
+    expect(row.getByTestId('listen-order-toggle')).toBeTruthy();
+    expect(screen.getAllByTestId('listen-order-toggle')).toHaveLength(1);
   });
 
   it('shows drag handles only while the Order toggle is on', async () => {
@@ -410,15 +385,13 @@ describe('ListenView block order', () => {
   it('follows the stored order and keeps unknown sections by their neighbours', async () => {
     returningListener();
     useListenerWidgetsStore.setState({
-      listenOrder: ['radio', 'recently-played'],
+      listenOrder: ['radio', 'selects'],
     });
     await renderListen();
     const ids = blockIds();
     expect(ids[0]).toBe('radio');
     expect(ids[1]).toBe('disco-widgets');
-    expect(ids.indexOf('new-tracks')).toBeGreaterThan(
-      ids.indexOf('recently-played'),
-    );
+    expect(ids.indexOf('new-tracks')).toBeGreaterThan(ids.indexOf('selects'));
   });
 
   it('removes a section while ordering and restores it with Reset widgets', async () => {

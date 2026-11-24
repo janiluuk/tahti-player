@@ -39,14 +39,14 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | ------- | ---- | -------- |
 | partial | [seo-canonical-host.md](seo-canonical-host.md) | Apex host, OG image, per-route canonical for crawlers (0.0.474); left (tahti-org): stack APP_URL, stable collection OG image URLs, raster channel OG images |
 | open    | [main-container-corner-controls.md](main-container-corner-controls.md) | Reduce main-container spacing so corner buttons are not clipped |
-| open    | [radio-admin-playlist-ux.md](radio-admin-playlist-ux.md) | Admin edit-playlist shortcut and playlist-manager usability sweep |
-| open    | [radio-expanded-visualizer.md](radio-expanded-visualizer.md) | Expanded artwork/text layout, bottom controls and left play button |
+| open    | [studio-channel-tab-profile-tabs.md](studio-channel-tab-profile-tabs.md) | Studio: Channel as its own tab with sub-tabs, Profile sub-items as smart tabs, consistent design, active buttons only for key actions |
+| partial | [radio-admin-playlist-ux.md](radio-admin-playlist-ux.md) | Admin edit-playlist icon shipped, picker keeps selection and adds select-all; left: ordering/current-track state and phone layout of the manager |
+| partial | [radio-expanded-visualizer.md](radio-expanded-visualizer.md) | Expanded layout shipped (large artwork, bottom controls, play bottom-left); left: view it at phone widths |
 | open    | [artist-profile-elegant.md](artist-profile-elegant.md) | Contain the Yaniho banner and refine public artist-page hierarchy |
-| open    | [recently-played-to-history.md](recently-played-to-history.md) | Move Recently played from Listen to History (after the Listen loading PR) |
 | partial | [front-page-smooth-loading.md](front-page-smooth-loading.md) | Listen loads without layout jumps: reserved space, one calm reveal, CLS < 0.05 |
 | partial | [ui-performance-audit.md](ui-performance-audit.md) | Screen-sized backdrops, still mode without GPU, no per-tick table re-render (0.0.475, 10-13 → 60 fps in software mode); left: Firefox measurement, event banner, matchMedia per render |
 | partial | [ci-performance-audit.md](ci-performance-audit.md) | Journeys sharded (master CI ~9 min), migration baseline parallel in tahti-org; left: isolation-safe tahti-web tests (7x), journeys workflow call, turbo token |
-| partial | [mobile-less-crowded.md](mobile-less-crowded.md) | Full-width phones, on-demand checkboxes, quieter Studio rows, no repeated titles, swipeable filter/section rows (0.0.474); left: Listen action row, contrast-safe track cards |
+| partial | [mobile-less-crowded.md](mobile-less-crowded.md) | Full-width phones, on-demand checkboxes, quieter Studio rows, no repeated titles, swipeable filter/section rows (0.0.474); Listen action row in the tab row (0.0.481); left: contrast-safe track cards |
 | partial | [yaniho-hearthis-albums.md](yaniho-hearthis-albums.md) | Album track numbers, dense order, owner + board reorder shipped (tahti-org#1128, web); left: clean existing "artist - album - NN - title" names on production, 1:1 check against hearthis.at |
 | partial | [more-3d-visualizers.md](more-3d-visualizers.md) | Visualizers follow the artwork colour; left: 3-4 new 3D presets (user picks the list) |
 | partial | [discover-events-tab.md](discover-events-tab.md) | Events tab with range / past / city / venue / search filters and calendar view, posting, banner crop, event page backdrop built; left: live post check, event gallery API deploy (tahti-org#1122 merged) |

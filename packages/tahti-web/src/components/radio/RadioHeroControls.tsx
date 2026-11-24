@@ -1,6 +1,6 @@
 import { HeartIcon, PauseIcon, PlayIcon, RadioTowerIcon } from 'lucide-react';
 
-import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonLink, EditIconLink, Tooltip } from '@tahti-player/ui';
 
 /** The radio hero's play/pause: the same round white button as the track
  * page, so the glyph stays visible on any visualizer while playing. */
@@ -49,6 +49,7 @@ export function RadioStationActions({
   onToggleFavorite,
   channelSlug,
   openChannelLabel,
+  editPlaylistLabel,
 }: {
   favorited: boolean;
   favoriteLabel: string;
@@ -56,6 +57,7 @@ export function RadioStationActions({
   onToggleFavorite: () => void;
   channelSlug: string;
   openChannelLabel: string;
+  editPlaylistLabel?: string;
 }) {
   return (
     <div className="flex items-center gap-1.5">
@@ -91,6 +93,15 @@ export function RadioStationActions({
           <RadioTowerIcon size={15} aria-hidden />
         </ButtonLink>
       </Tooltip>
+      {editPlaylistLabel ? (
+        <EditIconLink
+          label={editPlaylistLabel}
+          to="/admin/radio"
+          search={{ tab: 'playlist' }}
+          className="size-9"
+          data-testid="radio-edit-playlist"
+        />
+      ) : null}
     </div>
   );
 }
