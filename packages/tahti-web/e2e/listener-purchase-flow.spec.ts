@@ -179,7 +179,7 @@ test('listener buys a track, sees it in Purchases, artist sees the order', async
   await expect(buyButton).toHaveCount(0);
 
   await openSettings(page);
-  await page.getByRole('tab', { name: 'Purchases' }).click();
+  await page.getByRole('tab', { name: 'Subs & purchases' }).click();
   // Scope to the settings panel, not just getByText: the underlying
   // TrackDetailView page is still mounted behind this overlay (Settings is
   // a modal, not a navigation) and repeats the same title in its own <h1>.
@@ -204,7 +204,7 @@ test('listener buys a track, sees it in Purchases, artist sees the order', async
   ).toBeVisible();
 });
 
-test('listener subscribes, sees it in Your subs, cancels it', async ({
+test('listener subscribes, sees it in Subs & purchases, cancels it', async ({
   page,
 }) => {
   test.setTimeout(90_000);
@@ -242,7 +242,7 @@ test('listener subscribes, sees it in Your subs, cancels it', async ({
   ).toBeVisible({ timeout: 15_000 });
 
   await openSettings(page);
-  await page.getByRole('tab', { name: 'Your subs' }).click();
+  await page.getByRole('tab', { name: 'Subs & purchases' }).click();
   // Target this artist's own row specifically — a seeded demo row for a
   // different artist ("northern-lights", also tierName "Supporter") already
   // ships in mock-session.ts, so matching on tier name alone would pass
