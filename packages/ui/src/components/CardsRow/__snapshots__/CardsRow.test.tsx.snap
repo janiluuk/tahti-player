@@ -229,7 +229,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
   >
     <div
       animate="[object Object]"
-      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      class="shrink-0 [contain-intrinsic-size:auto_11.5rem_auto_14.25rem] [content-visibility:auto] origin-center"
       data-cards-row-item="1"
       data-testid="cards-row-item-motion"
       exit="[object Object]"
@@ -321,7 +321,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
     </div>
     <div
       animate="[object Object]"
-      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      class="shrink-0 [contain-intrinsic-size:auto_11.5rem_auto_14.25rem] [content-visibility:auto] origin-center"
       data-cards-row-item="2"
       data-testid="cards-row-item-motion"
       exit="[object Object]"
@@ -413,7 +413,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
     </div>
     <div
       animate="[object Object]"
-      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      class="shrink-0 [contain-intrinsic-size:auto_11.5rem_auto_14.25rem] [content-visibility:auto] origin-center"
       data-cards-row-item="3"
       data-testid="cards-row-item-motion"
       exit="[object Object]"
@@ -505,7 +505,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
     </div>
     <div
       animate="[object Object]"
-      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      class="shrink-0 [contain-intrinsic-size:auto_11.5rem_auto_14.25rem] [content-visibility:auto] origin-center"
       data-cards-row-item="4"
       data-testid="cards-row-item-motion"
       exit="[object Object]"
@@ -597,7 +597,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
     </div>
     <div
       animate="[object Object]"
-      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      class="shrink-0 [contain-intrinsic-size:auto_11.5rem_auto_14.25rem] [content-visibility:auto] origin-center"
       data-cards-row-item="5"
       data-testid="cards-row-item-motion"
       exit="[object Object]"
@@ -689,7 +689,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
     </div>
     <div
       animate="[object Object]"
-      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      class="shrink-0 [contain-intrinsic-size:auto_11.5rem_auto_14.25rem] [content-visibility:auto] origin-center"
       data-cards-row-item="6"
       data-testid="cards-row-item-motion"
       exit="[object Object]"

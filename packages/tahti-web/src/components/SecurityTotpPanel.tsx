@@ -1,15 +1,23 @@
 import {
   CheckIcon,
-  KeyRoundIcon,
   ShieldCheckIcon,
+  ShieldHalfIcon,
   ShieldOffIcon,
   XIcon,
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, InlineError, Input, SectionShell } from '@tahti-player/ui';
+import {
+  Alert,
+  Badge,
+  Button,
+  HelpTip,
+  InlineError,
+  Input,
+  useUiLabels,
+} from '@tahti-player/ui';
 
 import {
   confirmTotp,
@@ -23,19 +31,11 @@ function formatSecret(secret: string): string {
   return secret.replace(/(.{4})/g, '$1 ').trim();
 }
 
-/** `onStatusChange` reports whether 2FA is on once known and after each change. */
-export function SecurityTotpPanel({
-  onStatusChange,
-}: {
-  onStatusChange?: (enabled: boolean) => void;
-} = {}) {
+export function SecurityTotpPanel() {
   const { t } = useTranslation('web');
+  const labels = useUiLabels();
+  const headingId = useId();
   const [enabled, setEnabled] = useState<boolean | null>(null);
-  useEffect(() => {
-    if (enabled !== null) {
-      onStatusChange?.(enabled);
-    }
-  }, [enabled, onStatusChange]);
   const [statusError, setStatusError] = useState<string | null>(null);
   const [statusAttempt, setStatusAttempt] = useState(0);
   const [setup, setSetup] = useState<{
@@ -73,9 +73,46 @@ export function SecurityTotpPanel({
     };
   }, [statusAttempt]);
 
+  const header = (
+    <div className="flex flex-wrap items-center gap-2">
+      <h3 id={headingId} className="font-semibold">
+        {t('settingsBody.account.totpTitle')}
+      </h3>
+      <HelpTip
+        label={labels.aboutNamed(t('settingsBody.account.totpTitle'))}
+        content={t('settingsBody.account.totpEmailNote')}
+      />
+      {enabled !== null ? (
+        <Badge
+          variant="pill"
+          color={enabled ? 'green' : 'secondary'}
+          data-testid="security-2fa-status"
+        >
+          {enabled
+            ? t('settingsBody.account.totpEnabled')
+            : t('settingsBody.account.totpDisabled')}
+        </Badge>
+      ) : null}
+    </div>
+  );
+
+  const startSetup = () => {
+    setPending(true);
+    setError(null);
+    void setupTotp().then((res) => {
+      setPending(false);
+      if (!res.ok) {
+        setError(res.error);
+        return;
+      }
+      setSetup({ secret: res.secret, otpauthUri: res.otpauthUri });
+    });
+  };
+
   if (enabled === null) {
     return (
-      <SectionShell title={t('settingsBody.account.totpTitle')}>
+      <section aria-labelledby={headingId} className="flex flex-col gap-3">
+        {header}
         {statusError ? (
           <PageError
             title={t('settingsBody.account.totpLoadError')}
@@ -85,24 +122,45 @@ export function SecurityTotpPanel({
         ) : (
           <PageLoading label={t('settingsBody.account.totpLoading')} />
         )}
-      </SectionShell>
+      </section>
     );
   }
 
   return (
-    <SectionShell title={t('settingsBody.account.totpTitle')}>
+    <section
+      aria-labelledby={headingId}
+      className="flex flex-col gap-3"
+      data-testid="security-2fa"
+    >
+      {header}
       <div className="flex flex-col gap-4">
-        <p className="text-foreground-secondary text-sm">
-          {t('settingsBody.account.totpEmailNote')}
-        </p>
-        <p className="text-sm">
-          {t('settingsBody.account.totpStatus')}{' '}
-          <span className="font-medium">
-            {enabled
-              ? t('settingsBody.account.totpEnabled')
-              : t('settingsBody.account.totpDisabled')}
-          </span>
-        </p>
+        {!enabled ? (
+          <Alert
+            tone="info"
+            data-testid="security-2fa-banner"
+            icon={<ShieldHalfIcon size={18} aria-hidden />}
+            title={t('settingsBody.account.twoFactorBannerTitle')}
+          >
+            <div className="flex flex-col items-start gap-2">
+              <p className="text-sm">
+                {t('settingsBody.account.twoFactorBannerBody')}
+              </p>
+              {!setup ? (
+                <Button
+                  size="sm"
+                  className="gap-1.5"
+                  disabled={pending}
+                  onClick={startSetup}
+                >
+                  <ShieldCheckIcon size={14} aria-hidden />
+                  {pending
+                    ? t('settingsBody.account.totpStarting')
+                    : t('settingsBody.account.twoFactorBannerAction')}
+                </Button>
+              ) : null}
+            </div>
+          </Alert>
+        ) : null}
 
         {backupCodes && (
           <div className="border-border rounded-lg border px-3 py-2">
@@ -127,30 +185,6 @@ export function SecurityTotpPanel({
               {t('settingsBody.account.totpDone')}
             </Button>
           </div>
-        )}
-
-        {!enabled && !setup && (
-          <Button
-            size="sm"
-            disabled={pending}
-            onClick={() => {
-              setPending(true);
-              setError(null);
-              void setupTotp().then((res) => {
-                setPending(false);
-                if (!res.ok) {
-                  setError(res.error);
-                  return;
-                }
-                setSetup({ secret: res.secret, otpauthUri: res.otpauthUri });
-              });
-            }}
-          >
-            <KeyRoundIcon size={15} aria-hidden className="mr-1.5" />
-            {pending
-              ? t('settingsBody.account.totpStarting')
-              : t('settingsBody.account.totpEnable')}
-          </Button>
         )}
 
         {setup && (
@@ -293,6 +327,6 @@ export function SecurityTotpPanel({
 
         {error && <InlineError>{error}</InlineError>}
       </div>
-    </SectionShell>
+    </section>
   );
 }

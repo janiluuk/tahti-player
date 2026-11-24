@@ -2,7 +2,7 @@ import { useCallback, useEffect, useId, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, InlineError } from '@tahti-player/ui';
+import { Badge, Button, InlineError } from '@tahti-player/ui';
 
 import { accountHasPassword } from '../api/account-credentials';
 import {
@@ -96,15 +96,20 @@ export function LinkedLoginsSection() {
               className="border-border flex flex-wrap items-center gap-3 rounded-md border p-3"
             >
               <OAuthProviderIcon provider={provider} size={20} />
-              <div className="flex min-w-0 flex-1 flex-col">
-                <span className="text-sm font-medium">{name}</span>
-                <span className="text-foreground-secondary truncate text-xs">
-                  {account
-                    ? account.email
-                      ? t('oauthLogin.statusLinked', { email: account.email })
-                      : t('oauthLogin.statusLinkedNoEmail')
-                    : t('oauthLogin.statusNotLinked')}
+              <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-medium">{name}</span>
+                  <Badge variant="pill" color={account ? 'green' : 'secondary'}>
+                    {account
+                      ? t('oauthLogin.statusLinkedNoEmail')
+                      : t('oauthLogin.statusNotLinked')}
+                  </Badge>
                 </span>
+                {account?.email ? (
+                  <span className="text-foreground-secondary truncate text-xs">
+                    {account.email}
+                  </span>
+                ) : null}
               </div>
               {account ? (
                 <Button

@@ -2588,10 +2588,8 @@
     "settingsBody": {
       "loading": "Ladataan…",
       "account": {
-        "visibilityMovedNote": "Profiilin näkyvyys (luvut, yhteydet, top-listat ja kommentit) on nyt kohdassa Studio → Profiili → Näkyvyys.",
-        "openVisibility": "Avaa näkyvyysasetukset",
         "signInPrompt": "Kirjaudu hallitaksesi jäsenyyttä ja tietoturvaa.",
-        "tabSession": "Istunto",
+        "tabSession": "Yleiskatsaus",
         "tabPasswordEmail": "Salasana ja sähköposti",
         "tabDevices": "Laitteet",
         "tabTwoFactor": "Kaksivaiheinen tunnistus",
@@ -2620,7 +2618,7 @@
         "cancelSubscriptionConfirm": "Peru tilaus",
         "cancelSubscriptionBusy": "Perutaan…",
         "keepSubscription": "Pidä tilaus",
-        "manage": "Hallitse",
+        "manage": "Hallinnoi",
         "loadingStorage": "Ladataan tallennustilaa…",
         "unlimited": "Rajoittamaton",
         "storageUsedAria": "Käytetty tallennustila",
@@ -2706,14 +2704,12 @@
         "totpLoadError": "Kaksivaiheista tunnistusta ei voitu ladata",
         "totpLoading": "Ladataan kaksivaiheista tunnistusta…",
         "totpEmailNote": "Lähetämme sähköpostia aina kun kaksivaiheinen kirjautuminen otetaan käyttöön tai pois.",
-        "totpStatus": "Tila:",
         "totpEnabled": "Käytössä",
         "totpDisabled": "Ei käytössä",
         "totpBackupTitle": "Tallenna nämä varakoodit",
         "totpBackupDescription": "Näytetään kerran. Säilytä ne turvallisessa paikassa.",
         "totpDone": "Valmis",
         "totpStarting": "Aloitetaan…",
-        "totpEnable": "Ota 2FA käyttöön",
         "totpScanHint": "Skannaa tämä QR-koodi tunnistussovelluksella ja syötä sen tuottama 6-numeroinen koodi.",
         "totpQrAria": "Tunnistuksen QR-koodi",
         "totpManualHint": "Jos et voi skannata, syötä tämä avain käsin:",
@@ -2826,7 +2822,17 @@
         "mentionSurfaceDiscussion": "keskustelu",
         "mentionSurfacePost": "julkaisu",
         "governanceMoved": "Aloitteet, kokoukset, asiakirjat ja äänesi ovat sivupalkin Osuuskunta-kohdassa.",
-        "openCoop": "Avaa Osuuskunta"
+        "openCoop": "Avaa Osuuskunta",
+        "editArtistProfile": "Muokkaa artistiprofiilia",
+        "editProfile": "Muokkaa profiilia",
+        "accountSettings": "Tilin asetukset",
+        "manageNamed": "Hallinnoi: {{name}}",
+        "signInAndSecurity": "Kirjautuminen ja turvallisuus",
+        "signInAndSecurityNote": "Salasana, kaksivaiheinen tunnistautuminen ja linkitetyt kirjautumiset.",
+        "devicesRowNote": "Näe, missä olet kirjautuneena, ja kirjaa muut laitteet ulos.",
+        "dataRowNote": "Lataa tietosi, hallitse estettyjä tilejä tai pyydä tilisi poistamista.",
+        "twoFactorOnBadge": "Kaksivaiheinen käytössä",
+        "twoFactorOffBadge": "Kaksivaiheinen ei käytössä"
       },
       "channel": {
         "loadError": "Kanavaprofiilia ei voitu ladata",
@@ -2856,15 +2862,16 @@
         "domainNotVerified": "Ei vielä vahvistettu. DNS-muutosten näkyminen voi kestää.",
         "setDomain": "Aseta domain",
         "domainTxtHint": "Lisää TXT {{host}} = {{record}}, sitten Vahvista.",
-        "domainCurrentVerified": "Nykyinen: {{domain}} (vahvistettu)",
-        "domainCurrentPending": "Nykyinen: {{domain}} (odottaa)",
         "domainRequiresMembership": "Vaatii jäsenyyden. Lisää DNS TXT ja vahvista.",
         "verifyDomain": "Vahvista",
         "signInHint": "Kirjaudu kanavalla muokataksesi ulkoasua ja löydettävyyttä.",
         "tabDesigner": "Kanavan suunnittelija",
         "tabDiscovery": "Löydettävyys",
         "tabModerators": "Moderaattorit",
-        "tabChat": "Chat"
+        "tabChat": "Chat",
+        "domainCurrent": "Nykyinen verkkotunnus: {{domain}}",
+        "domainVerifiedBadge": "Vahvistettu",
+        "domainPendingBadge": "Odottaa vahvistusta"
       },
       "broadcast": {
         "radioLoadError": "Radioasetuksia ei voitu ladata",
@@ -2953,7 +2960,8 @@
         "roleSoundEngineer": "Ääni-insinööri",
         "roleVisualArtist": "Visuaalinen artisti",
         "roleCurator": "Kuraattori / levy-yhtiö",
-        "signInHintSuffix": "muokataksesi artistiprofiilia."
+        "signInHintSuffix": "muokataksesi artistiprofiilia.",
+        "socialLinksTitle": "Somelinkit"
       }
     },
     "toggles": {
@@ -6016,7 +6024,6 @@
       "addATag": "Lisää tunniste"
     },
     "imagePurpose": {
-      "clickToChangeYourProfile": "Vaihda profiilikuva napsauttamalla",
       "addProfileImages": "Lisää profiilikuvia",
       "dropOneOrMoreImages": "Pudota tähän yksi tai useampi kuva. Valitset kunkin kuvan käyttötarkoituksen ennen kuin mitään ladataan.",
       "chooseWhatEachImageIs": "Valitse kunkin kuvan käyttötarkoitus",
@@ -6423,7 +6430,8 @@
       "channelPageSettings": "Kanavasivun asetukset",
       "livePreview": "Esikatselu",
       "livePreviewHint": "Päivittyy kun muokkaat. Tallenna lomake julkaistaksesi muutoksen.",
-      "livePreviewEmptyBio": "Lisää lyhyt bio, niin se näkyy tässä."
+      "livePreviewEmptyBio": "Lisää lyhyt bio, niin se näkyy tässä.",
+      "profileSections": "Profiilin osiot"
     },
     "soundDetailsTab": {
       "allowComments": "Salli kommentit",
@@ -12413,7 +12421,8 @@
       "editTrack": "Muokkaa kappaletta",
       "openTrack": "Avaa kappale",
       "notifications": "Ilmoitukset",
-      "playOrShiftQueue": "{{play}} · Vaihto+napsautus lisää jonoon"
+      "playOrShiftQueue": "{{play}} · Vaihto+napsautus lisää jonoon",
+      "aboutNamed": "Tietoa: {{name}}"
     },
     "broadcastPanel": {
       "defaultsHint": "Radion, vihreän huoneen ja monilähetyksen oletukset ovat täällä. Livelähetys hoidetaan kohdassa Studio › Lähetys.",
@@ -15610,7 +15619,6 @@
       "errorFailed": "Kirjautuminen epäonnistui. Yritä uudelleen.",
       "linkedLogins": "Linkitetyt kirjautumiset",
       "linkedLoginsDescription": "Kirjaudu Google- tai Facebook-tilillä salasanan lisäksi.",
-      "statusLinked": "Linkitetty · {{email}}",
       "statusLinkedNoEmail": "Linkitetty",
       "statusNotLinked": "Ei linkitetty",
       "link": "Linkitä",

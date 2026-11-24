@@ -52,8 +52,11 @@ export const Account: Story = {
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
     await expectSection(dialog, 'Account');
-    await expectSelectedTab(dialog, 'Session');
+    await expectSelectedTab(dialog, 'Overview');
     await expectVisible(dialog.getByText(/@northern-lights/));
+    await expect(
+      dialog.getByTestId('account-edit-artist-profile'),
+    ).toHaveAttribute('href', '/studio/profile');
   },
 };
 

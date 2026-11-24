@@ -88,7 +88,7 @@ describe('ListenView sections', () => {
     const tracks = await screen.findByTestId('listen-new-tracks');
     expect(tracks.getAttribute('data-status')).toBe('loading');
     expect(tracks.getAttribute('aria-label')).toBe('Loading new tracks…');
-    expect(within(tracks).getByTestId('track-list-skeleton')).toBeTruthy();
+    expect(within(tracks).getByTestId('track-table-skeleton')).toBeTruthy();
     await waitFor(() =>
       expect(screen.getByTestId('listen-on-air').textContent).toContain(
         'Northern Lights',

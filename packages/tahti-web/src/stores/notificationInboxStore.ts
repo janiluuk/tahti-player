@@ -17,6 +17,8 @@ type NotificationInboxState = {
   hasMore: boolean;
   loadingOlder: boolean;
   lastInboxError: string | null;
+
+  loaded: boolean;
   load: (opts?: { toastNew?: boolean }) => Promise<void>;
   loadOlder: () => Promise<void>;
   acknowledge: (id: string) => Promise<void>;
@@ -50,6 +52,7 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
     hasMore: false,
     loadingOlder: false,
     lastInboxError: null,
+    loaded: false,
 
     load: async (opts) => {
       const toastNew = opts?.toastNew ?? true;
@@ -85,6 +88,7 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
         unreadCount: result.unreadCount,
         hasMore: olderKept.length > 0 ? get().hasMore : result.hasMore,
         lastInboxError: null,
+        loaded: true,
       });
     },
 
@@ -153,6 +157,7 @@ export const useNotificationInboxStore = create<NotificationInboxState>(
         hasMore: false,
         loadingOlder: false,
         lastInboxError: null,
+        loaded: false,
       });
     },
   }),

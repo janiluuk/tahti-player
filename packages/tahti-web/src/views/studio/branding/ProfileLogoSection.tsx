@@ -84,7 +84,7 @@ export function ProfileLogoSection({
   return (
     <StudioPanel
       title={t('profileLogoSection.logo')}
-      description={t('profileLogoSection.aTransparentLogoDrawnOver')}
+      help={t('profileLogoSection.aTransparentLogoDrawnOver')}
     >
       <div className="flex flex-col gap-3">
         {logoUrl ? (

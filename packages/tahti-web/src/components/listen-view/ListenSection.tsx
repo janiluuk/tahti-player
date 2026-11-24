@@ -8,7 +8,7 @@ import {
   ContentReveal,
   PageEmpty,
   PageError,
-  TrackListSkeleton,
+  TrackTableSkeleton,
 } from '../PageStates';
 import type { ListenSectionStatus } from './useListenSections';
 
@@ -27,8 +27,7 @@ export type ListenSectionProps = {
   'data-testid'?: string;
   /** Section-level buttons beside the heading, shown in every state. */
   actions?: ReactNode;
-  /** Loading placeholder shape. `cards` matches CardsRow; `list` matches
-   * ambient track lists (e.g. New tracks). */
+
   skeleton?: ListenSectionSkeleton;
   /** Rendered once the section is ready and has content; usually a
    * `CardsRow` or table that brings its own heading and `data-testid`. */
@@ -57,6 +56,9 @@ export function ListenSection({
   if (status === 'ready' && !empty) {
     return <ContentReveal>{children}</ContentReveal>;
   }
+  const heading = (
+    <SectionTitle title={title} badge={badge} badgeColor={badgeColor} />
+  );
   return (
     <section
       className="flex flex-col gap-3"
@@ -69,18 +71,18 @@ export function ListenSection({
           : undefined
       }
     >
-      {actions ? (
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <SectionTitle title={title} badge={badge} badgeColor={badgeColor} />
-          <div className="flex items-center gap-2">{actions}</div>
-        </div>
+      {status === 'loading' && skeleton === 'list' ? (
+        <TrackTableSkeleton title={heading} />
       ) : (
-        <SectionTitle title={title} badge={badge} badgeColor={badgeColor} />
+        <div className="flex min-h-10 flex-wrap items-center justify-between gap-2">
+          {heading}
+          {actions ? (
+            <div className="flex items-center gap-2">{actions}</div>
+          ) : null}
+        </div>
       )}
       {status === 'loading' ? (
-        skeleton === 'list' ? (
-          <TrackListSkeleton chrome={false} rows={4} />
-        ) : (
+        skeleton === 'list' ? null : (
           <CardsRowSkeleton chrome={false} cards={5} />
         )
       ) : status === 'error' ? (

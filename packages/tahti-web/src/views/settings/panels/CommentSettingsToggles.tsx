@@ -81,7 +81,7 @@ export function CommentSettingsToggles() {
       {settings.channelCommentsEnabled !== null ? (
         <SettingsToggle
           label={t('toggles.comments.channelLabel')}
-          description={t('toggles.comments.channelDescription')}
+          help={t('toggles.comments.channelDescription')}
           value={settings.channelCommentsEnabled}
           onChange={(value) =>
             save('channelCommentsEnabled', value, setChannelCommentsEnabled)
@@ -92,7 +92,7 @@ export function CommentSettingsToggles() {
         // once a channel exists the live switch above replaces it.
         <SettingsToggle
           label={t('toggles.comments.newChannelLabel')}
-          description={t('toggles.comments.newChannelDescription')}
+          help={t('toggles.comments.newChannelDescription')}
           value={settings.newChannelCommentsEnabled}
           onChange={(value) =>
             save(
@@ -105,7 +105,7 @@ export function CommentSettingsToggles() {
       )}
       <SettingsToggle
         label={t('toggles.comments.uploadsLabel')}
-        description={t('toggles.comments.uploadsDescription')}
+        help={t('toggles.comments.uploadsDescription')}
         value={settings.newUploadCommentsEnabled}
         onChange={(value) =>
           save('newUploadCommentsEnabled', value, setNewUploadCommentsEnabled)

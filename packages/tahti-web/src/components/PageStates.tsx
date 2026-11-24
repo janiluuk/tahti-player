@@ -14,9 +14,8 @@ import { FULL_BLEED_TOP_CANCEL } from '../layout/contentPadding';
 import { cn } from '../lib/cn';
 
 const REVEAL =
-  'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-1 motion-safe:duration-300 motion-safe:fill-mode-backwards';
+  'motion-safe:animate-in motion-safe:fade-in-40 motion-safe:duration-300 motion-safe:ease-out motion-safe:fill-mode-backwards';
 
-/** Fade/slide-in when ready content mounts. Skips motion when reduced. */
 export function ContentReveal({
   children,
   className,
@@ -32,8 +31,6 @@ export function ContentReveal({
   );
 }
 
-/** Horizontal cards row placeholder — matches `CardsRow` cards layout height.
- * Pass `chrome={false}` when the parent already renders the section title. */
 export function CardsRowSkeleton({
   cards = 5,
   chrome = true,
@@ -57,10 +54,20 @@ export function CardsRowSkeleton({
       ) : null}
       <div className="flex gap-2 overflow-hidden pb-2">
         {Array.from({ length: cards }, (_, index) => (
-          <div key={index} className="flex w-46 shrink-0 flex-col gap-2 p-2">
+          <div
+            key={index}
+            data-testid="cards-row-skeleton-card"
+            className="border-border/40 bg-background-secondary/60 flex w-46 shrink-0 flex-col gap-2 rounded-md border-(length:--border-width) p-2"
+          >
             <Skeleton className="aspect-square w-full rounded-md" />
-            <Skeleton shape="line" className="h-3 w-4/5" />
-            <Skeleton shape="line" className="h-3 w-3/5" />
+            <div className="flex flex-col">
+              <div className="flex h-5 items-center">
+                <Skeleton shape="line" className="h-3 w-4/5" />
+              </div>
+              <div className="flex h-4 items-center">
+                <Skeleton shape="line" className="h-2.5 w-3/5" />
+              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -101,6 +108,51 @@ export function TrackListSkeleton({
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+const TRACK_TABLE_VISIBLE_ROWS = 9;
+
+export function TrackTableSkeleton({
+  title,
+  className,
+}: {
+  title?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      data-testid="track-table-skeleton"
+      className={cn(
+        'border-border/40 bg-background-secondary/40 flex w-full min-w-0 flex-col gap-3 rounded-[var(--radius-card)] border p-2 sm:p-3',
+        className,
+      )}
+    >
+      <div className="flex min-h-10 flex-wrap items-center gap-2">
+        <div className="shrink-0">{title}</div>
+        <Skeleton className="order-last h-10 min-w-0 flex-1 basis-full rounded-md sm:order-none sm:basis-0" />
+        <div className="ms-auto flex shrink-0 items-center gap-2">
+          <Skeleton className="size-8 rounded-md" />
+          <Skeleton className="size-8 rounded-md" />
+        </div>
+      </div>
+      <div className="flex flex-col">
+        <div className="mb-2 flex h-10 items-center gap-2">
+          <Skeleton className="size-10 rounded-md" />
+          <Skeleton className="size-10 rounded-md" />
+        </div>
+        <div className="border-border/40 border">
+          <Skeleton className="h-[26px] w-full rounded-none" />
+          {Array.from({ length: TRACK_TABLE_VISIBLE_ROWS }, (_, index) => (
+            <div key={index} className="flex h-[66px] items-center gap-3 px-2">
+              <Skeleton className="size-12 shrink-0 rounded-md" />
+              <Skeleton shape="line" className="h-3 w-1/4" />
+              <Skeleton shape="line" className="h-3 w-1/3" />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

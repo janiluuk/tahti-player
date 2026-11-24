@@ -6789,3 +6789,7 @@ The top-nav `UserMenu` drops its desktop-only external "tahti.live" item; the te
 ## 2026-11-24 — Radio widget track rows (0.0.479)
 
 Up next and Just played now use the shared striped TrackTable with edge-to-edge artwork, hover playback, current-track highlighting, adjacent queue/history tabs, and Replay status outside live relays. Upcoming tracks lack audio URLs in the current API and show disabled play controls. Verified with 25 web tests, 19 shared-table tests and 15 browser Storybook checks, including artwork alignment.
+
+## 2026-11-24 — Settings and Profile cleanup (0.0.480)
+
+Account now offers account-management shortcuts and an artist Profile edit link. Statuses use badges, security has one 2FA section with an off-state warning retained through enrollment, redundant Visibility navigation is removed, and Profile forms use section tabs and help icons. Validated with web/UI tests, 42 Storybook checks, and the member/artist/board governance navigation journey. Listen loading improvements are included; cold-cache CLS measurement remains in front-page-smooth-loading.md.

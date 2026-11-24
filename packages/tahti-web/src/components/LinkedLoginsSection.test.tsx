@@ -60,10 +60,9 @@ describe('LinkedLoginsSection', () => {
     expect(
       await screen.findByRole('heading', { name: 'Linked logins' }),
     ).toBeVisible();
-    expect(
-      await screen.findByText('Linked · liina@gmail.com'),
-    ).toBeInTheDocument();
-    expect(screen.getByText('Not linked')).toBeInTheDocument();
+    expect(await screen.findByText('liina@gmail.com')).toBeInTheDocument();
+    expect(screen.getByText('Not linked')).toHaveClass('rounded-full');
+    expect(screen.getByText('Linked')).toHaveClass('rounded-full');
     expect(
       screen.getByRole('button', { name: 'Disconnect Google' }),
     ).toBeVisible();
@@ -122,7 +121,7 @@ describe('LinkedLoginsSection', () => {
         'Set a password before disconnecting your only login.',
       ),
     ).toBeVisible();
-    expect(screen.getByText('Linked · liina@gmail.com')).toBeInTheDocument();
+    expect(screen.getByText('liina@gmail.com')).toBeInTheDocument();
   });
 
   it('renders nothing when no provider is configured or linked', async () => {
@@ -151,13 +150,13 @@ describe('LinkedLoginsSection', () => {
   it('shows no hint with a password, a missing hasPassword or two logins', async () => {
     useAuthStore.setState({ user: { ...user, hasPassword: true } });
     const { unmount } = render(<LinkedLoginsSection />);
-    await screen.findByText('Linked · liina@gmail.com');
+    await screen.findByText('liina@gmail.com');
     expect(screen.queryByText(HINT)).toBeNull();
     unmount();
 
     useAuthStore.setState({ user });
     const second = render(<LinkedLoginsSection />);
-    await screen.findByText('Linked · liina@gmail.com');
+    await screen.findByText('liina@gmail.com');
     expect(screen.queryByText(HINT)).toBeNull();
     second.unmount();
 

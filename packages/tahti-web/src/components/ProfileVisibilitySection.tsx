@@ -107,7 +107,7 @@ export function ProfileVisibilitySection() {
         <div className="flex flex-col gap-4">
           <StudioPanel
             title={t('settingsBody.account.visibilityProfileTitle')}
-            description={t('settingsBody.account.visibilityProfileDescription')}
+            help={t('settingsBody.account.visibilityProfileDescription')}
           >
             <div className="flex flex-col gap-5">
               <SettingsToggle
@@ -161,7 +161,7 @@ export function ProfileVisibilitySection() {
           </StudioPanel>
           <StudioPanel
             title={t('settingsBody.account.visibilityUploadsTitle')}
-            description={t('settingsBody.account.visibilityUploadsDescription')}
+            help={t('settingsBody.account.visibilityUploadsDescription')}
           >
             <div className="flex flex-col gap-5">
               <TopListsToggle />

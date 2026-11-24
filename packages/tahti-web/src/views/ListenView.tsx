@@ -44,7 +44,10 @@ import {
 import { WelcomeStrip } from '../components/listen-view/WelcomeStrip';
 import { useListenerWidgetBlocks } from '../components/ListenerWidgetsSection';
 import { PageEmpty, TrackListSkeleton } from '../components/PageStates';
-import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
+import {
+  PlayableAmbientTrackList,
+  preloadPlayableTrackTable,
+} from '../components/PlayableAmbientTrackList';
 import { RemoveWidgetDialog } from '../components/RemoveWidgetDialog';
 import { radioStationIdForPlayable } from '../content/radioStations';
 import { scheduleIdleRoutePrefetch } from '../lib/idleRoutePrefetch';
@@ -152,6 +155,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   } | null>(null);
   const [resetOpen, setResetOpen] = useState(false);
   useEffect(() => scheduleIdleRoutePrefetch(), []);
+  useEffect(() => preloadPlayableTrackTable(), []);
 
   const playNow = async (slug: string) => {
     const { playable } = await fetchChannel(slug);

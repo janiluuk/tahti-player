@@ -19,7 +19,7 @@ const meta: Meta<typeof StudioProfileSectionView> = {
     docs: {
       description: {
         component:
-          '`/studio/profile/$section`: one Studio → Profile form on its own page, with a back link to the Profile hub, the hub card title as the heading and no tab rows. Artist forms (identity, story, people, links, branding, gallery, press kit, release visuals) and channel forms (channel design, how fans find you, address and domain). `/settings/artist?tab=…` for an artist, `/settings/channel?tab=…` and `/studio/branding?tab=…` land here.',
+          '`/studio/profile/$section`: one Studio → Profile form on its own page, with a back link to the Profile hub, one sideways-scrolling tab row to every other profile form, and the hub card title as the heading. Section and field explanations sit behind help icons. Artist forms (identity, story, people, links, branding, gallery, press kit, release visuals) and channel forms (channel design, how fans find you, address and domain). `/settings/artist?tab=…` for an artist, `/settings/channel?tab=…` and `/studio/branding?tab=…` land here.',
       },
     },
   },
@@ -38,7 +38,10 @@ async function expectPage(canvasElement: HTMLElement, heading: string) {
     'href',
     '/studio/profile',
   );
-  await expect(canvas.queryByRole('tablist')).toBeNull();
+  const tabs = canvas.getByRole('tablist', { name: 'Profile sections' });
+  await expect(
+    within(tabs).getByRole('tab', { selected: true }),
+  ).toHaveTextContent(heading);
   return canvas;
 }
 
@@ -57,6 +60,12 @@ export const Identity: Story = {
     await expectVisible(
       await canvas.findByTestId('studio-profile-live-preview'),
     );
+    await expect(
+      canvas.getByRole('button', { name: 'About Nameplate' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.queryByText('Click to change your profile image'),
+    ).toBeNull();
   },
 };
 

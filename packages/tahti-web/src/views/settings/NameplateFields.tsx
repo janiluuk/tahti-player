@@ -32,7 +32,7 @@ export function NameplateFields({
     <div className="flex flex-col gap-3">
       <Input
         label={t('nameplate.nameplate')}
-        description={t('nameplate.aShortLabelShownAs')}
+        help={t('nameplate.aShortLabelShownAs')}
         placeholder="e.g. Resident DJ"
         maxLength={NAMEPLATE_MAX_LENGTH}
         value={profile.nameplateText ?? ''}
@@ -68,7 +68,7 @@ export function NameplateFields({
       />
       <SettingsToggle
         label={t('nameplate.showPageHero')}
-        description={t('nameplate.theHeaderCardWithYour')}
+        help={t('nameplate.theHeaderCardWithYour')}
         value={profile.showPageHero ?? true}
         onChange={(showPageHero) => setProfile({ ...profile, showPageHero })}
       />

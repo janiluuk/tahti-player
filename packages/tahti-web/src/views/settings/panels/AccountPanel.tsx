@@ -3,10 +3,8 @@ import {
   CreditCardIcon,
   Database,
   Download,
-  Keyboard,
   Landmark,
   LogInIcon,
-  LogOutIcon,
   Shield,
   Trash2,
   User,
@@ -19,7 +17,6 @@ import {
   Button,
   ButtonAnchor,
   ButtonLink,
-  MediaArtwork,
   Tabs,
   Textarea,
   type TabsItem,
@@ -37,13 +34,13 @@ import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint } from '../SettingsFields';
 import { AccountBillingPanel } from './AccountBillingPanel';
+import { AccountOverview } from './AccountOverview';
 import { AccountStoragePanel } from './AccountStoragePanel';
 import { ACCOUNT_TAB_IDS, accountTabIndex } from './accountTabGroups';
 
 export function AccountPanel() {
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
-  const logout = useAuthStore((s) => s.logout);
   const closeSettings = useSettingsModalStore((s) => s.close);
   const accountSection = useSettingsModalStore((s) => s.accountSection);
   const [membership, setMembership] = useState<MembershipStatus | null>(null);
@@ -83,51 +80,7 @@ export function AccountPanel() {
       id: 'session',
       label: t('settingsBody.account.tabSession'),
       icon: <User size={14} />,
-      content: (
-        <div className="flex flex-col gap-6">
-          <div
-            data-testid="account-profile-card"
-            className="border-border bg-background-secondary/35 flex items-center gap-4 rounded-lg border p-4"
-          >
-            <MediaArtwork
-              src={user.avatarUrl ?? undefined}
-              alt=""
-              seed={user.username}
-              size="thumb"
-              className="size-14 shrink-0 rounded-full"
-            />
-            <div className="flex min-w-0 flex-col">
-              <span className="truncate text-lg font-bold">
-                {user.displayName || user.username}
-              </span>
-              <span className="text-foreground-secondary truncate text-sm">
-                {t('settingsBody.account.signedInAs')} @{user.username}
-              </span>
-              {user.email ? (
-                <span className="text-foreground-secondary truncate text-sm">
-                  {user.email}
-                </span>
-              ) : null}
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <ButtonLink
-              to="/help/$slug"
-              params={{ slug: 'keyboard-shortcuts' }}
-              onClick={closeSettings}
-              size="sm"
-              variant="secondary"
-            >
-              <Keyboard size={15} aria-hidden className="mr-1.5" />
-              {t('settingsBody.account.keyboardShortcuts')}
-            </ButtonLink>
-            <Button size="sm" variant="text" onClick={() => void logout()}>
-              <LogOutIcon size={15} aria-hidden className="mr-1.5" />
-              {t('nav.logOut')}
-            </Button>
-          </div>
-        </div>
-      ),
+      content: <AccountOverview />,
     },
     {
       id: 'membership',

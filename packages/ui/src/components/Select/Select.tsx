@@ -1,6 +1,8 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { FC } from 'react';
 
+import { HelpTip } from '../HelpTip';
+import { useUiLabels } from '../UiLabels';
 import { SelectButton } from './SelectButton';
 import { SelectDescription } from './SelectDescription';
 import { SelectError } from './SelectError';
@@ -35,6 +37,8 @@ export type SelectProps = VariantProps<typeof selectVariants> & {
   disabled?: boolean;
   label?: string;
   description?: string;
+
+  help?: string;
   error?: string;
   placeholder?: string;
   options: SelectOption[];
@@ -60,6 +64,7 @@ const SelectImpl: FC<SelectProps> = ({
   id,
   label,
   description,
+  help,
   error,
   placeholder,
   options,
@@ -71,6 +76,7 @@ const SelectImpl: FC<SelectProps> = ({
   disabled,
   'aria-label': ariaLabel,
 }) => {
+  const labels = useUiLabels();
   return (
     <div className="relative flex w-full flex-col gap-2">
       <SelectRoot
@@ -87,7 +93,14 @@ const SelectImpl: FC<SelectProps> = ({
         className={className}
         disabled={disabled}
       >
-        <SelectLabel label={label} />
+        {label && help ? (
+          <div className="flex items-center gap-1">
+            <SelectLabel label={label} />
+            <HelpTip label={labels.aboutNamed(label)} content={help} />
+          </div>
+        ) : (
+          <SelectLabel label={label} />
+        )}
         <SelectButton aria-label={label ? undefined : ariaLabel} />
         <SelectOptions>
           {options.map((opt) => (

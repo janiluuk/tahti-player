@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ListenSection } from '@tahti-web/components/listen-view/ListenSection';
-import { fn } from 'storybook/test';
+import { expect, fn, waitFor, within } from 'storybook/test';
 
 import { CardsRow } from '@tahti-player/ui';
 
@@ -54,6 +54,29 @@ export const Ready: Story = {};
 
 export const Loading: Story = {
   args: { status: 'loading' },
+};
+
+export const LoadingKeepsReadyHeight: Story = {
+  render: (args) => (
+    <div className="flex flex-col gap-8">
+      <div data-testid="loading-slot">
+        <ListenSection {...args} status="loading" />
+      </div>
+      <div data-testid="ready-slot">
+        <ListenSection {...args} status="ready" />
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const loading = canvas.getByTestId('loading-slot');
+    const ready = canvas.getByTestId('ready-slot');
+    await waitFor(() =>
+      expect(Math.round(loading.getBoundingClientRect().height)).toBe(
+        Math.round(ready.getBoundingClientRect().height),
+      ),
+    );
+  },
 };
 
 export const LoadingList: Story = {

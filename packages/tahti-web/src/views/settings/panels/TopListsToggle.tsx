@@ -32,7 +32,7 @@ export function TopListsToggle() {
   return (
     <SettingsToggle
       label={t('toggles.topLists.label')}
-      description={t('toggles.topLists.description')}
+      help={t('toggles.topLists.description')}
       value={!optOut}
       onChange={(include) => {
         const previous = optOut;
