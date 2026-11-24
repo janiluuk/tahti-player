@@ -16,6 +16,7 @@ export const ThumbnailCell = <T extends Track>({
   const meta = table.options.meta as
     | {
         isTrackPlaying?: (candidate: T) => boolean;
+        canPlayTrack?: (track: T) => boolean;
         isCurrentTrack?: (candidate: T) => boolean;
       }
     | undefined;
@@ -38,7 +39,7 @@ export const ThumbnailCell = <T extends Track>({
               : undefined
           }
           onQueue={
-            actions.onAddToQueue
+            actions.onAddToQueue && meta?.canPlayTrack?.(track) !== false
               ? () => {
                   actions.onAddToQueue?.(track);
                 }
@@ -47,6 +48,7 @@ export const ThumbnailCell = <T extends Track>({
           queueLabel={`${labels.addToQueue} ${track.title}`}
           playLabel={`${labels.play} ${track.title}`}
           pauseLabel={`${labels.pause} ${track.title}`}
+          playDisabled={meta?.canPlayTrack?.(track) === false}
           isPlaying={isPlaying}
           isCurrent={isCurrent}
           hideActivePlay

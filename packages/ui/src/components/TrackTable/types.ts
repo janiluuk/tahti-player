@@ -107,6 +107,7 @@ export type TrackTableProps<T extends Track = Track> = {
     canFavoriteTrack?: (track: T) => boolean;
     isCurrentTrack?: (track: T) => boolean;
     isTrackPlaying?: (track: T) => boolean;
+    canPlayTrack?: (track: T) => boolean;
     isTrackQueued?: (track: T) => boolean;
     /** Per-row gate for actions.onEdit's icon -- absent/false hides it,
      * same as onToggleFavorite/onAddToQueue being absent hides theirs. */

@@ -119,6 +119,7 @@ export function TrackTable<T extends Track = Track>({
       canFavoriteTrack: meta?.canFavoriteTrack,
       isCurrentTrack: meta?.isCurrentTrack,
       isTrackPlaying: meta?.isTrackPlaying,
+      canPlayTrack: meta?.canPlayTrack,
       isTrackQueued: meta?.isTrackQueued,
       canEditTrack: meta?.canEditTrack,
       canOpenDetail: meta?.canOpenDetail,

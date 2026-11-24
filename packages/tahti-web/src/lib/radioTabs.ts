@@ -1,7 +1,7 @@
 export const RADIO_TABS = [
   'up-next',
-  'shows',
   'just-played',
+  'shows',
   'featured',
 ] as const;
 

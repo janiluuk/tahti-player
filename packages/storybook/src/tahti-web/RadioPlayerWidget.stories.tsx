@@ -149,12 +149,6 @@ function DemoWidget({
             ),
           },
           {
-            id: 'shows',
-            label: 'Shows',
-            icon: <CalendarDaysIcon size={14} />,
-            content: <RadioBookedShowsPanel bookings={[]} onRetry={fn()} />,
-          },
-          {
             id: 'just-played',
             label: 'Just played',
             icon: <HistoryIcon size={14} />,
@@ -174,6 +168,12 @@ function DemoWidget({
                 }}
               />
             ),
+          },
+          {
+            id: 'shows',
+            label: 'Shows',
+            icon: <CalendarDaysIcon size={14} />,
+            content: <RadioBookedShowsPanel bookings={[]} onRetry={fn()} />,
           },
           {
             id: 'featured',

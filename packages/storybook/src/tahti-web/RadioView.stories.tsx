@@ -71,7 +71,7 @@ export const JustPlayed: Story = {
     await expandPlayer(canvas);
     await selectTab(canvas, /Just played/);
     await userEvent.click(
-      await canvas.findByRole('button', { name: 'Track info for Route 550' }),
+      await canvas.findByRole('button', { name: 'Route 550' }),
     );
     const dialog = await findDialog(canvasElement, 'Track info');
     await expect(dialog.getByText('Route 550')).toBeVisible();
@@ -139,8 +139,23 @@ export const UpNextRotation: Story = {
     await expandPlayer(canvas);
     const rotation = await canvas.findByTestId('radio-up-next-rotation');
     await waitFor(() => expect(rotation).toBeVisible());
-    await expect(within(rotation).getByText('Aurora Drift')).toBeVisible();
-    await expect(within(rotation).getAllByRole('listitem')).toHaveLength(3);
+    await expect(
+      within(rotation).getAllByText('Aurora Drift')[0],
+    ).toBeVisible();
+    await expect(canvas.getByText('Replay')).toBeVisible();
+    await expect(canvas.queryByText('ON AIR')).toBeNull();
+    const current = within(rotation).getAllByTestId('track-row')[0]!;
+    await expect(current).toHaveAttribute('aria-current', 'true');
+    const artwork = within(current)
+      .getByTestId('media-artwork')
+      .getBoundingClientRect();
+    const row = current.getBoundingClientRect();
+    const widget = canvas
+      .getByTestId('radio-player-widget')
+      .getBoundingClientRect();
+    await expect(Math.abs(artwork.left - widget.left)).toBeLessThanOrEqual(4);
+    await expect(Math.abs(artwork.height - row.height)).toBeLessThanOrEqual(4);
+    await expect(within(rotation).getAllByTestId('track-row')).toHaveLength(4);
     const overlay = canvas.getByTestId('radio-now-playing-overlay');
     await expect(within(overlay).getByText('Now playing')).toBeVisible();
     await expect(

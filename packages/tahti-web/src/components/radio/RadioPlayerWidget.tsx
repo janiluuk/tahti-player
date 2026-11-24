@@ -92,10 +92,15 @@ export function RadioPlayerWidget({
         )}
         {notice}
         {expanded ? (
-          <div className="border-border border-t px-3 pt-1 pb-3 sm:px-4 sm:pb-4">
+          <div className="border-border border-t">
             <Tabs
-              listClassName="border-border border-b"
-              panelClassName="pt-3"
+              listClassName="border-border border-b px-3 pt-1 sm:px-4"
+              panelClassName={
+                tabs[selectedTabIndex]?.id === 'up-next' ||
+                tabs[selectedTabIndex]?.id === 'just-played'
+                  ? 'pt-0'
+                  : 'p-3 sm:p-4'
+              }
               selectedIndex={selectedTabIndex}
               onChange={onTabChange}
               items={tabs}
