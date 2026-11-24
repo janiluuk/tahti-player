@@ -6716,3 +6716,10 @@ active state keyed on it). `SoundFilters` type `Select` became a
 Studio passes `SoundStatusPill` (processing yellow / failed red / public green
 / private grey). Dense rows: 144 px artwork, 14 px titles, 12 px meta (was
 64 px / 12 / 10).
+
+## 2026-11-24 - Studio "On air" only when really live (0.0.467)
+
+`StudioBroadcastView` showed the red blinking "On air" banner whenever the
+channel state was LIVE, which the 24/7 rotation also sets. New
+`isHumanLive` (lib/channelLive: state LIVE and `goneLiveAt` set, the API
+listing's rule) drives it; Go Live's show-info card uses `isBroadcastLive`.

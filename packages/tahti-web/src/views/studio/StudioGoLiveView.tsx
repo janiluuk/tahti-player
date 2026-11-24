@@ -115,7 +115,7 @@ function StepPanel({
     return (
       <ShowInfoCard
         preflight={state.preflight}
-        isLive={state.channelState === 'LIVE'}
+        isLive={state.isBroadcastLive}
         onSaved={state.setPreflight}
         footer={footer}
       />

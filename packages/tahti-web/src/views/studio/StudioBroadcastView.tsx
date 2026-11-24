@@ -40,6 +40,7 @@ import {
   type AgendaItem,
   type AgendaKind,
 } from '../../lib/broadcastAgenda';
+import { isHumanLive } from '../../lib/channelLive';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
 import { useAuthStore } from '../../stores/authStore';
 
@@ -167,7 +168,7 @@ function AgendaRow({ item }: { item: AgendaItem }) {
 export function StudioBroadcastView() {
   const { t } = useTranslation('web');
   const channel = useAuthStore((state) => state.user?.channel);
-  const live = channel?.state === 'LIVE';
+  const live = isHumanLive(channel);
   const { isPlaying: listeningInPlayer, toggle: toggleListenInPlayer } =
     usePlayChannelInPlayer(channel?.slug);
   const [agenda, setAgenda] = useState<AgendaItem[] | null>(null);
