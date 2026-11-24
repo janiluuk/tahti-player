@@ -12,7 +12,6 @@ import {
 import { useAuthStore } from '../../stores/authStore';
 import { ListeningPartyList } from '../listening-party/ListeningPartyList';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
-import { StudioPanel } from '../StudioPanel';
 
 function apiReason(meta: FetchMeta): string | null {
   return meta.source === 'api' && meta.reason ? meta.reason : null;
@@ -85,26 +84,31 @@ export function DiscoverPartiesRow() {
   if (!parties || parties.length === 0) {
     return null;
   }
+  // Same tile shell as WidgetCard: it sits in the Discover widget masonry.
   return (
-    <StudioPanel
-      title={t('discoverParties.rowTitle')}
-      action={
+    <section
+      className="border-border bg-background-secondary shadow-float flex flex-col gap-2 rounded-md border-(length:--border-width) p-3 sm:gap-3 sm:p-4"
+      data-testid="discover-parties-widget"
+    >
+      <header className="flex items-start justify-between gap-2">
+        <h2 className="text-foreground line-clamp-2 min-w-0 text-lg leading-tight font-bold break-words">
+          {t('discoverParties.rowTitle')}
+        </h2>
         <ButtonLink
           to="/discover"
           search={{ tab: 'parties' }}
           size="sm"
           variant="text"
-          className="gap-1.5"
+          className="shrink-0 gap-1.5"
         >
           {t('discoverParties.seeAll')}
           <ArrowRightIcon size={14} aria-hidden />
         </ButtonLink>
-      }
-    >
+      </header>
       <ListeningPartyList
         parties={parties}
         data-testid="discover-parties-row"
       />
-    </StudioPanel>
+    </section>
   );
 }
