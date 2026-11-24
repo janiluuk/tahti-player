@@ -196,7 +196,6 @@ export const UserMenuArtist: Story = {
       'Studio',
       'My artist profile',
       'Settings',
-      'tahti.live (opens in a new tab)',
       'Log out',
     ]) {
       await expect(menu.getByRole('menuitem', { name: item })).toBeVisible();

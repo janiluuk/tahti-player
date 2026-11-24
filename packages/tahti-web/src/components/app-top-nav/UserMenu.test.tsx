@@ -71,16 +71,16 @@ describe('UserMenu on a phone', () => {
 });
 
 describe('UserMenu tahti.live link', () => {
-  it('is left out of the phone menu', async () => {
+  it('is not in the phone menu', async () => {
     renderMenu(navState());
     await screen.findByRole('menuitem', { name: /Notifications/ });
     expect(screen.queryByRole('menuitem', { name: /tahti\.live/ })).toBeNull();
   });
 
-  it('stays in the desktop menu', async () => {
+  it('is not in the desktop menu', async () => {
     renderMenu(navState({ isMobile: false }));
-    const link = await screen.findByRole('menuitem', { name: /tahti\.live/ });
-    expect(link.getAttribute('href')).toBe('https://tahti.live');
+    await screen.findByRole('menuitem', { name: /Notifications/ });
+    expect(screen.queryByRole('menuitem', { name: /tahti\.live/ })).toBeNull();
   });
 });
 
