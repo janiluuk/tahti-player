@@ -1,12 +1,21 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
+import { CircleAlertIcon, KeyRoundIcon, LogInIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Box, Button, InlineError, Input } from '@tahti-player/ui';
+import {
+  Alert,
+  Box,
+  Button,
+  ButtonLink,
+  InlineError,
+  Input,
+} from '@tahti-player/ui';
 
 import { fetchSetupPasswordInfo } from '../api/client';
 import { PageBackLink } from '../components/PageBackLink';
 import { passwordProblem, passwordRulesHint } from '../lib/passwordRules';
+import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
 
 function tokenFromSearch(): string {
@@ -23,6 +32,7 @@ export function SetupPasswordView() {
   const loading = useAuthStore((s) => s.loading);
   const error = useAuthStore((s) => s.error);
   const clearError = useAuthStore((s) => s.clearError);
+  const signedIn = useAuthStore((s) => Boolean(s.user));
 
   const [token] = useState(tokenFromSearch);
   const [info, setInfo] = useState<{
@@ -34,19 +44,29 @@ export function SetupPasswordView() {
   const [confirm, setConfirm] = useState('');
   const [done, setDone] = useState(false);
 
+  // Checked once per token: the link is single-use, so asking again after
+  // a successful setup (e.g. a re-render once the new session's language
+  // loads) would report the just-used link as invalid.
   useEffect(() => {
     if (!token) {
-      setInfoError(t('auth.setupMissingToken'));
+      setInfoError(webT()('auth.setupMissingToken'));
       return;
     }
+    let active = true;
     void fetchSetupPasswordInfo(token).then((r) => {
+      if (!active) {
+        return;
+      }
       if (r.ok) {
         setInfo({ email: r.email, displayName: r.displayName });
       } else {
         setInfoError(r.error);
       }
     });
-  }, [token, t]);
+    return () => {
+      active = false;
+    };
+  }, [token]);
 
   const mismatch = confirm.length > 0 && password !== confirm;
   const problem = password.length > 0 ? passwordProblem(password) : null;
@@ -104,17 +124,46 @@ export function SetupPasswordView() {
             {t('auth.setupSignedIn')}
           </p>
         </Box>
+      ) : infoError && signedIn ? (
+        <Alert
+          tone="success"
+          data-testid="setup-already-signed-in"
+          title={t('auth.setupAlreadySignedInTitle')}
+        >
+          <div className="flex flex-col items-start gap-3">
+            <p className="text-sm">{t('auth.setupAlreadySignedInBody')}</p>
+            <ButtonLink to="/studio" size="sm">
+              {t('auth.setupGoToStudio')}
+            </ButtonLink>
+          </div>
+        </Alert>
       ) : infoError ? (
-        <div className="flex flex-col gap-3">
-          <InlineError>{infoError}</InlineError>
-          <p className="text-foreground-secondary text-sm">
-            {t('auth.setupAskFresh')}{' '}
-            <Link to="/login" className="underline-offset-2 hover:underline">
-              {t('auth.logIn').toLowerCase()}
-            </Link>{' '}
-            {t('auth.setupIfHavePassword')}
-          </p>
-        </div>
+        <Alert
+          tone="error"
+          data-testid="setup-link-error"
+          icon={<CircleAlertIcon size={18} aria-hidden />}
+          title={t('auth.setupLinkInvalidTitle')}
+        >
+          <div className="flex flex-col items-start gap-3">
+            <p className="text-sm font-medium">{infoError}</p>
+            <p className="text-sm">{t('auth.setupLinkInvalidBody')}</p>
+            <ul className="list-disc pl-5 text-sm">
+              <li>{t('auth.setupLinkStepLogIn')}</li>
+              <li>{t('auth.setupLinkStepReset')}</li>
+              <li>{t('auth.setupLinkStepAsk')}</li>
+            </ul>
+            <div className="flex flex-wrap gap-2">
+              <ButtonLink to="/login" size="sm">
+                <LogInIcon size={15} aria-hidden className="mr-1.5" />
+                {t('auth.logIn')}
+              </ButtonLink>
+              <ButtonLink to="/forgot-password" size="sm" variant="secondary">
+                <KeyRoundIcon size={15} aria-hidden className="mr-1.5" />
+                {t('auth.setupSendNewLink')}
+              </ButtonLink>
+            </div>
+          </div>
+        </Alert>
       ) : (
         <form
           className="flex flex-col gap-3"

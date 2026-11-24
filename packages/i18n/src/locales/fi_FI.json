@@ -1943,6 +1943,15 @@
       "yearsAgo_other": "{{count}} vuotta sitten"
     },
     "auth": {
+      "setupLinkInvalidTitle": "Tämä asetuslinkki ei enää toimi",
+      "setupLinkInvalidBody": "Asetuslinkki toimii kerran ja vanhenee 7 päivässä. Jos asetit jo salasanan sillä, kaikki on valmista.",
+      "setupLinkStepLogIn": "Asetitko jo salasanan? Kirjaudu sähköpostilla tai käyttäjänimellä.",
+      "setupLinkStepReset": "Unohtuiko, tai jäikö kesken? Lähetä itsellesi uusi linkki kohdasta Unohtuiko salasana.",
+      "setupLinkStepAsk": "Saitko kutsun? Pyydä kutsujalta uusi kutsu.",
+      "setupSendNewLink": "Lähetä uusi linkki",
+      "setupAlreadySignedInTitle": "Olet kirjautunut sisään",
+      "setupAlreadySignedInBody": "Salasanasi on asetettu ja linkki on käytetty, joten täällä ei ole enää tehtävää.",
+      "setupGoToStudio": "Siirry Studioon",
       "logIn": "Kirjaudu",
       "join": "Liity",
       "twoFactorTitle": "Kaksivaiheinen koodi",

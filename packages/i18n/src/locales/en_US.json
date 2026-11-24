@@ -1943,6 +1943,15 @@
       "yearsAgo_other": "{{count}} years ago"
     },
     "auth": {
+      "setupLinkInvalidTitle": "This setup link no longer works",
+      "setupLinkInvalidBody": "Setup links work once and expire after 7 days. If you already set your password with it, you are all set.",
+      "setupLinkStepLogIn": "Already set a password? Log in with your email or username.",
+      "setupLinkStepReset": "Forgot it, or never finished? Send yourself a new link from Forgot password.",
+      "setupLinkStepAsk": "Invited by someone? Ask them to send a fresh invite.",
+      "setupSendNewLink": "Send me a new link",
+      "setupAlreadySignedInTitle": "You are signed in",
+      "setupAlreadySignedInBody": "Your password is set and this link has been used, so there is nothing more to do here.",
+      "setupGoToStudio": "Go to Studio",
       "logIn": "Log in",
       "join": "Join",
       "twoFactorTitle": "Two-factor code",
