@@ -37,6 +37,7 @@ import {
   type ProfileFields,
 } from '../../../api/studio-extras';
 import { ArtistImagePurposePicker } from '../../../components/ArtistImagePurposePicker';
+import { HelpTitle } from '../../../components/HelpTitle';
 import { MentionTextarea } from '../../../components/MentionTextarea';
 import { PageError } from '../../../components/PageStates';
 import { SocialLinkIcon } from '../../../components/SocialLinkIcon';
@@ -302,14 +303,11 @@ export function ArtistPanel({
           />
           <NameplateFields profile={profile} setProfile={setProfile} />
           <div className="flex flex-col gap-2">
-            <div>
-              <p className="text-foreground text-sm font-semibold">
-                {t('settingsBody.artist.whatDoYouDo')}
-              </p>
-              <p className="text-foreground-secondary mt-1 text-xs">
-                {t('settingsBody.artist.rolesDescription')}
-              </p>
-            </div>
+            <HelpTitle
+              as="span"
+              title={t('settingsBody.artist.whatDoYouDo')}
+              help={t('settingsBody.artist.rolesDescription')}
+            />
             <FilterChips
               multiple
               items={ARTIST_ROLE_IDS.map((id) => ({
@@ -363,7 +361,7 @@ export function ArtistPanel({
               onChange={(e) =>
                 setProfile({ ...profile, defaultLocation: e.target.value })
               }
-              description={t('settingsBody.artist.cityDescription')}
+              help={t('settingsBody.artist.cityDescription')}
             />
           )}
           <Input
@@ -436,12 +434,11 @@ export function ArtistPanel({
       content: (
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-1.5 text-sm">
-            <span className="text-foreground text-sm font-semibold" aria-hidden>
-              {t('settingsBody.artist.projectType')}
-            </span>
-            <span className="text-foreground-secondary text-xs">
-              {t('settingsBody.artist.projectTypeDescription')}
-            </span>
+            <HelpTitle
+              as="span"
+              title={t('settingsBody.artist.projectType')}
+              help={t('settingsBody.artist.projectTypeDescription')}
+            />
             <SelectableTiles
               aria-label={t('settingsBody.artist.projectType')}
               items={[
@@ -463,14 +460,10 @@ export function ArtistPanel({
             />
           </div>
           <div className="flex flex-col gap-3">
-            <div>
-              <h3 className="text-foreground text-sm font-semibold">
-                {t('settingsBody.artist.membersCredits')}
-              </h3>
-              <p className="text-foreground-secondary mt-1 text-xs">
-                {t('settingsBody.artist.membersCreditsDescription')}
-              </p>
-            </div>
+            <HelpTitle
+              title={t('settingsBody.artist.membersCredits')}
+              help={t('settingsBody.artist.membersCreditsDescription')}
+            />
             <ChannelMembersEditor members={members} onChange={setMembers} />
           </div>
           <div className="flex justify-end">
@@ -503,9 +496,6 @@ export function ArtistPanel({
         )
       ) : (
         <div className="flex flex-col gap-6">
-          <SettingsHint>
-            {t('settingsBody.artist.connectionsHint')}
-          </SettingsHint>
           <form
             className="flex flex-col gap-6"
             onSubmit={(event) => {
@@ -524,6 +514,10 @@ export function ArtistPanel({
               });
             }}
           >
+            <HelpTitle
+              title={t('settingsBody.artist.socialLinksTitle')}
+              help={t('settingsBody.artist.connectionsHint')}
+            />
             <div className="grid gap-4 sm:grid-cols-2">
               {(
                 [
@@ -668,9 +662,9 @@ export function ReleaseVisualDefaultsPanel() {
 
   return (
     <div className="flex flex-col gap-4">
-      <SettingsHint>{t('settingsBody.artist.brandingHint')}</SettingsHint>
       <Select
         label={t('settingsBody.artist.newReleaseBackground')}
+        help={t('settingsBody.artist.brandingHint')}
         value={preference.mode}
         onValueChange={(value) =>
           update({ mode: value as ReleaseVisualizerMode })
@@ -687,6 +681,7 @@ export function ReleaseVisualDefaultsPanel() {
       {preference.mode === 'specific' && (
         <Select
           label={t('settingsBody.artist.visualizer')}
+          help={t('artistPanelText.particleFieldIsSelectedBy')}
           value={preference.preset}
           onValueChange={(value) =>
             update({
@@ -702,9 +697,6 @@ export function ReleaseVisualDefaultsPanel() {
           }))}
         />
       )}
-      <p className="text-foreground-secondary text-xs">
-        {t('artistPanelText.particleFieldIsSelectedBy')}
-      </p>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 # Front page: calm loading, no layout jumps
 
-**Status:** open
+**Status:** partial
 
 Requested 2026-11-24: on load, things on Listen (`/`) wiggle around; the loading should feel smooth with no hectic movement.
 
@@ -10,3 +10,7 @@ Requested 2026-11-24: on load, things on Listen (`/`) wiggle around; the loading
 - [ ] Reserve space: skeletons with the final height per section, fixed artwork aspect ratios, banners that do not push content after first paint.
 - [ ] One calm reveal instead of per-section pops (no staggered slide-ins on first load; respect reduced motion).
 - [ ] Measure CLS before/after; target < 0.05.
+
+## Recovery — 2026-11-24
+
+Recovered skeleton sizing, fade-only reveals, track-table preload, and account-scoped cached guidelines notices. Unit checks pass; before/after cold-cache CLS measurement remains open.

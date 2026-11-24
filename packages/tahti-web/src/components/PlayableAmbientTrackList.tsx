@@ -36,11 +36,27 @@ import { TrackSortButton } from './TrackSortButton';
 
 // The table pulls @tanstack/table-core into whichever chunk imports it; lazy
 // here keeps it out of the app shell that Listen (the index route) lives in.
+type TableModule = {
+  default: typeof import('./PlayableTrackTable').PlayableTrackTable;
+};
+let loadedTable: TableModule | null = null;
+const loadPlayableTrackTable = () =>
+  import('./PlayableTrackTable').then((m) => {
+    loadedTable = { default: m.PlayableTrackTable };
+    return loadedTable;
+  });
+
 const PlayableTrackTable = lazy(() =>
-  import('./PlayableTrackTable').then((m) => ({
-    default: m.PlayableTrackTable,
-  })),
+  loadedTable
+    ? ({
+        then: (resolve: (module: TableModule) => void) => resolve(loadedTable!),
+      } as unknown as Promise<TableModule>)
+    : loadPlayableTrackTable(),
 );
+
+export function preloadPlayableTrackTable(): void {
+  void loadPlayableTrackTable().catch(() => undefined);
+}
 
 export function PlayableAmbientTrackList({
   items,

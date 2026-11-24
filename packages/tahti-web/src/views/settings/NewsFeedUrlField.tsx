@@ -5,7 +5,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Input, SaveButton } from '@tahti-player/ui';
 
 import { fetchMeProfile, patchMeProfile } from '../../api/studio-extras';
-import { SettingsHint } from './SettingsFields';
+import { HelpTitle } from '../../components/HelpTitle';
 
 export function NewsFeedUrlField() {
   const { t } = useTranslation('web');
@@ -46,12 +46,11 @@ export function NewsFeedUrlField() {
 
   return (
     <section className="flex flex-col gap-3">
-      <div>
-        <p className="text-foreground text-sm font-semibold">
-          {t('newsFeedUrlField.newsFeed')}
-        </p>
-        <SettingsHint>{t('newsFeedUrlField.anRssOrAtomFeed')}</SettingsHint>
-      </div>
+      <HelpTitle
+        as="span"
+        title={t('newsFeedUrlField.newsFeed')}
+        help={t('newsFeedUrlField.anRssOrAtomFeed')}
+      />
       <form
         className="flex flex-col gap-3"
         onSubmit={(event) => {

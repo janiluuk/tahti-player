@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
-import { Tooltip } from '@tahti-player/ui';
+import { HelpTip } from '@tahti-player/ui';
 
 import {
   AVATAR_UPLOAD_ACCEPT,
@@ -43,7 +43,7 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
   return (
     <StudioPanel
       title={t('profilePicture.profilePicture')}
-      description={t('profilePicture.useAClearSquarePortrait')}
+      help={t('profilePicture.useAClearSquarePortrait')}
     >
       <div className="flex flex-wrap items-center gap-5">
         <RoundImageUploadButton
@@ -75,23 +75,11 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
           )}
         />
         <div className="flex flex-col gap-2">
-          <Tooltip
+          <HelpTip
             side="bottom"
-            content={
-              <p className="max-w-64 text-xs leading-relaxed">
-                {t('profilePicture.jpegPngWebpOrGif')}
-              </p>
-            }
-          >
-            <span
-              tabIndex={0}
-              role="img"
-              aria-label={t('profilePicture.acceptedImageFormats')}
-              className="text-foreground-secondary hover:text-foreground inline-flex size-4 cursor-help items-center justify-center rounded-full border border-current"
-            >
-              <span className="text-[10px] leading-none font-bold">?</span>
-            </span>
-          </Tooltip>
+            label={t('profilePicture.acceptedImageFormats')}
+            content={t('profilePicture.jpegPngWebpOrGif')}
+          />
         </div>
       </div>
       {profile && avatarUrl ? (

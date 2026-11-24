@@ -3,6 +3,7 @@ import { MediaArtwork } from '@tahti-player/ui';
 
 import type { ProfileFields } from '../../api/studio-extras';
 import { countryName } from '../../lib/countries';
+import { HelpTitle } from '../HelpTitle';
 import { Nameplate } from '../Nameplate';
 
 /** Sticky public-page sketch beside Studio → Profile identity / story / people. */
@@ -25,9 +26,12 @@ export function ArtistProfileLivePreview({
       data-testid="studio-profile-live-preview"
       aria-label={t('studioProfile.livePreview')}
     >
-      <p className="text-primary-strong font-mono text-[0.65rem] font-semibold tracking-[0.18em] uppercase">
-        {t('studioProfile.livePreview')}
-      </p>
+      <HelpTitle
+        as="span"
+        titleClassName="text-primary-strong font-mono text-[0.65rem] font-semibold tracking-[0.18em] uppercase"
+        title={t('studioProfile.livePreview')}
+        help={t('studioProfile.livePreviewHint')}
+      />
       <div className="flex gap-3">
         <MediaArtwork
           src={profile.avatarUrl ?? undefined}
@@ -77,9 +81,6 @@ export function ArtistProfileLivePreview({
           {t('studioProfile.livePreviewEmptyBio')}
         </p>
       )}
-      <p className="text-foreground-secondary text-xs leading-relaxed">
-        {t('studioProfile.livePreviewHint')}
-      </p>
     </aside>
   );
 }

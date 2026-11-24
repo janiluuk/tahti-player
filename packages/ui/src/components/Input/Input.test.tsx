@@ -6,6 +6,21 @@ import '@tahti-player/tailwind-config';
 import { Input } from '.';
 
 describe('Input', () => {
+  it('puts help behind a help icon next to the label', () => {
+    render(
+      <Input
+        label="Nameplate"
+        help="A short label shown next to your name."
+        defaultValue=""
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'About Nameplate' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'Nameplate' })).toBeTruthy();
+    expect(screen.queryByRole('paragraph')).toBeNull();
+  });
+
   it('(Snapshot) renders text input with description', () => {
     const { container } = render(
       <Input

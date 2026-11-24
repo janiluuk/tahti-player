@@ -40,6 +40,7 @@ key alone (dead, harmless).
 | `tahti.channelPageLayout.{slug}`, `tahti.channelPageLayoutPreset.{slug}` | `channelPageLayout.ts` | Per-channel, per-viewer page-block layout and active preset id |
 | `tahti.artistLookBlocks.{slug}` | `channelLookElements.ts` | Owner's copy of the artist page block visibility; the channel's `artistBlockVisibilityJson` wins when set |
 | `tahti-web-onboarded:{userId}` | `OnboardingView.tsx` | Per-user "seen the onboarding tour" flag |
+| `tahti-web-sticky-notice` | `GuidelinesBanner.tsx` | The signed-in user's last unacknowledged sticky notice (id, title, body, url, user id), so the Listen banner is there from first paint after a reload |
 
 ## Cutover notes (historical; cutover done 2026-10-21)
 

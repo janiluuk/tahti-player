@@ -173,9 +173,13 @@ export function MembershipStatusPanel({
           })}
         </p>
       </div>
-      <p className="text-xs font-semibold tracking-wide uppercase">
+      <Badge
+        variant="pill"
+        color={lapsed ? 'red' : 'yellow'}
+        data-testid="membership-status"
+      >
         {membershipStatusLabel(membership)}
-      </p>
+      </Badge>
       {lapsed && (
         <InlineError announce={false}>
           {t('membershipStatus.yourMembershipLapsedRenewTo')}

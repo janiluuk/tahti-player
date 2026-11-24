@@ -62,8 +62,8 @@ export const Identity: Story = {
       within(avatar).getByRole('button', { name: 'Change profile image' }),
     ).toBeInTheDocument();
     await expect(
-      within(avatar).getByText('Click to change your profile image'),
-    ).toBeVisible();
+      within(avatar).queryByText('Click to change your profile image'),
+    ).toBeNull();
     const formChildren = [...(form?.children ?? [])] as HTMLElement[];
     await expect(formChildren[0]).toBe(avatar);
     await expect(

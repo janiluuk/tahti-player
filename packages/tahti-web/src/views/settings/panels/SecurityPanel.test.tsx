@@ -93,12 +93,26 @@ describe('SecurityPanel two-factor', () => {
   it('recommends turning 2FA on while it is off', async () => {
     mockTotp(false);
     useAuthStore.setState({ user: { ...user, hasPassword: true } });
+    vi.spyOn(security, 'setupTotp').mockResolvedValue({
+      ok: true,
+      secret: 'ABCDEFGHIJKLMNOP',
+      otpauthUri: 'otpauth://totp/Tahti:liina?secret=ABCDEFGHIJKLMNOP',
+    });
     render(<SecurityPanel />);
 
     const banner = await screen.findByTestId('security-2fa-banner');
     expect(banner).toHaveTextContent('Add a second lock to your account');
+    const section = screen.getByTestId('security-2fa');
+    expect(section).toContainElement(banner);
+    expect(screen.getByTestId('security-2fa-status')).toHaveTextContent(
+      'Disabled',
+    );
+    expect(screen.getAllByText('Two-factor authentication')).toHaveLength(1);
     fireEvent.click(screen.getByRole('button', { name: 'Turn on two-factor' }));
-    expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
+    expect(
+      await screen.findByLabelText('Authenticator setup QR code'),
+    ).toBeVisible();
+    expect(screen.getByTestId('security-2fa-banner')).toBeVisible();
   });
 
   it('shows 2FA on the main page without a banner once it is on', async () => {
@@ -110,6 +124,9 @@ describe('SecurityPanel two-factor', () => {
       await screen.findAllByText('Two-factor authentication'),
     ).not.toHaveLength(0);
     expect(screen.queryByTestId('security-2fa-banner')).toBeNull();
+    expect(await screen.findByTestId('security-2fa-status')).toHaveTextContent(
+      'Enabled',
+    );
     expect(
       screen.queryByRole('tab', { name: /Two-factor authentication/ }),
     ).toBeNull();

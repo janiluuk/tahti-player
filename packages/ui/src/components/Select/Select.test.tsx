@@ -13,6 +13,20 @@ const OPTIONS = [
 ];
 
 describe('Select', () => {
+  it('puts help behind a help icon next to the label', () => {
+    render(
+      <Select
+        label="Quality"
+        help="Higher uses more data."
+        options={OPTIONS}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'About Quality' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Higher uses more data.')).toHaveClass('sr-only');
+  });
+
   it('(Snapshot) renders basic with description', () => {
     const { container } = render(
       <Select

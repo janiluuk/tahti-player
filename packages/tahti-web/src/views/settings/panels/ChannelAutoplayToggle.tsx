@@ -34,7 +34,7 @@ export function ChannelAutoplayToggle() {
   return (
     <SettingsToggle
       label={t('toggles.channelAutoplay.label')}
-      description={t('toggles.channelAutoplay.description')}
+      help={t('toggles.channelAutoplay.description')}
       value={enabled}
       onChange={(value) => {
         const previous = enabled;

@@ -116,6 +116,9 @@ function usePrefersListOnMobile(): boolean {
   return prefersList;
 }
 
+const OFFSCREEN_CARD_CLASS =
+  'shrink-0 [contain-intrinsic-size:auto_11.5rem_auto_14.25rem] [content-visibility:auto]';
+
 export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   title: string;
   badge?: string;
@@ -490,7 +493,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
                 <CardsRowItemMotion
                   key={item.id}
                   itemId={item.id}
-                  className="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+                  className={OFFSCREEN_CARD_CLASS}
                 >
                   {renderItem(item)}
                 </CardsRowItemMotion>
@@ -498,7 +501,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
                 <CardsRowItemMotion
                   key={item.id}
                   itemId={item.id}
-                  className="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+                  className={OFFSCREEN_CARD_CLASS}
                 >
                   <Card
                     src={item.imageUrl}

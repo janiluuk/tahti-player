@@ -27,7 +27,7 @@ const meta: Meta<typeof AccountPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Account is one tab row: Session (profile card), Membership (with a link to Co-op), Subs & purchases (summary tiles, subscriptions with status pills, purchases), Storage (used vs free donut with tiles) and Privacy & data. Security and Notifications are their own Settings items. Signed out it only offers Log in.',
+          'Settings → Account is one tab row: Overview (profile card with Edit profile, or Edit artist profile → Studio → Profile for an artist; rows for email, sign-in and security with the two-factor status badge, devices, language and your data that open the section where each is changed), Membership (with a link to Co-op), Subs & purchases (summary tiles, subscriptions with status pills, purchases), Storage (used vs free donut with tiles) and Privacy & data. Security and Notifications are their own Settings items. Signed out it only offers Log in.',
       },
     },
   },
@@ -43,10 +43,10 @@ const meta: Meta<typeof AccountPanel> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Session: Story = {
+export const Overview: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole('tab', { name: 'Session' })).toHaveAttribute(
+    await expect(canvas.getByRole('tab', { name: 'Overview' })).toHaveAttribute(
       'aria-selected',
       'true',
     );
@@ -54,10 +54,53 @@ export const Session: Story = {
     await expect(canvas.queryByRole('tab', { name: 'Governance' })).toBeNull();
     await expectVisible(canvas.getByText(/@listener-liina/));
     await expectVisible(canvas.getByText('Liina'));
+    await expectVisible(canvas.getByTestId('account-edit-profile'));
+    await expect(
+      canvas.queryByTestId('account-edit-artist-profile'),
+    ).toBeNull();
+    const rows = within(canvas.getByRole('list', { name: 'Account settings' }));
+    await expectVisible(rows.getByText('listener@tahti.live'));
+    await expect(
+      await rows.findByTestId('account-2fa-status'),
+    ).toHaveTextContent(/Two-factor (on|off)/);
+    for (const name of [
+      'Manage Email',
+      'Manage Sign-in and security',
+      'Manage Devices',
+      'Manage Language',
+      'Manage Your data',
+    ]) {
+      await expectVisible(rows.getByRole('button', { name }));
+    }
     await expect(
       canvas.getByRole('link', { name: 'Keyboard shortcuts' }),
     ).toHaveAttribute('href', '/help/keyboard-shortcuts');
     await expectVisible(canvas.getByRole('button', { name: 'Log out' }));
+  },
+};
+
+export const OverviewForArtist: Story = {
+  decorators: [withMockAuth(MOCK_USERS.artist)],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByTestId('account-edit-artist-profile'),
+    ).toHaveAttribute('href', '/studio/profile');
+    await expect(canvas.queryByTestId('account-edit-profile')).toBeNull();
+  },
+};
+
+export const OverviewOpensPrivacy: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Manage Your data' }),
+    );
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('tab', { name: 'Privacy & data' }),
+      ).toHaveAttribute('aria-selected', 'true'),
+    );
   },
 };
 
@@ -126,9 +169,10 @@ export const NotificationsAndMentions: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await selectTab(canvas, 'Notifications');
-    await expectVisible(
-      await canvas.findByRole('link', { name: 'Open visibility settings' }),
-    );
+    await expectVisible(await canvas.findByText('Revenue moves'));
+    await expect(
+      canvas.queryByRole('link', { name: 'Open visibility settings' }),
+    ).toBeNull();
     await selectTab(canvas, 'Mentions');
     await expectVisible(
       await canvas.findByRole('switch', { name: 'Let artists mention me' }),

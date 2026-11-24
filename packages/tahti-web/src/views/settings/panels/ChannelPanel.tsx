@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, InlineLoader, Input } from '@tahti-player/ui';
+import { Badge, Button, InlineLoader, Input } from '@tahti-player/ui';
 
 import {
   checkSlugAvailable,
@@ -125,12 +125,12 @@ export function ChannelPanel({
         <div className="flex flex-col gap-4">
           <StudioPanel
             title={t('settingsBody.channel.pageTitle')}
-            description={t('settingsBody.channel.pageDescription')}
+            help={t('settingsBody.channel.pageDescription')}
           >
             <div className="flex flex-col gap-5">
               <SettingsToggle
                 label={t('settingsBody.channel.showShareLabel')}
-                description={t('settingsBody.channel.showShareDescription')}
+                help={t('settingsBody.channel.showShareDescription')}
                 value={channelProfile.showShareButton ?? true}
                 onChange={(value) =>
                   saveProfileSwitch(
@@ -145,9 +145,9 @@ export function ChannelPanel({
           </StudioPanel>
           <StudioPanel
             title={t('settingsBody.channel.genres')}
-            description={t('settingsBody.channel.genresDescription', {
+            help={`${t('settingsBody.channel.genresDescription', {
               max: MAX_GENRES,
-            })}
+            })} ${t('settingsBody.channel.directoryHint')}`}
           >
             <div className="flex flex-col gap-2">
               <GenrePicker
@@ -171,11 +171,6 @@ export function ChannelPanel({
                   });
                 }}
               />
-            </div>
-            <div className="mt-4">
-              <SettingsHint>
-                {t('settingsBody.channel.directoryHint')}
-              </SettingsHint>
             </div>
           </StudioPanel>
         </div>
@@ -278,21 +273,31 @@ export function ChannelPanel({
               autoCorrect="off"
               spellCheck={false}
               label={t('settingsBody.channel.customDomain')}
-              description={
-                channel?.customDomain
-                  ? channel.customDomainVerified
-                    ? t('settingsBody.channel.domainCurrentVerified', {
-                        domain: channel.customDomain,
-                      })
-                    : t('settingsBody.channel.domainCurrentPending', {
-                        domain: channel.customDomain,
-                      })
-                  : t('settingsBody.channel.domainRequiresMembership')
-              }
+              help={t('settingsBody.channel.domainRequiresMembership')}
               value={domain}
               onChange={(e) => setDomain(e.target.value)}
               placeholder="music.example.com"
             />
+            {channel?.customDomain ? (
+              <div
+                className="flex flex-wrap items-center gap-2 text-sm"
+                data-testid="custom-domain-status"
+              >
+                <span className="text-foreground-secondary">
+                  {t('settingsBody.channel.domainCurrent', {
+                    domain: channel.customDomain,
+                  })}
+                </span>
+                <Badge
+                  variant="pill"
+                  color={channel.customDomainVerified ? 'green' : 'yellow'}
+                >
+                  {channel.customDomainVerified
+                    ? t('settingsBody.channel.domainVerifiedBadge')
+                    : t('settingsBody.channel.domainPendingBadge')}
+                </Badge>
+              </div>
+            ) : null}
             <div className="flex flex-wrap gap-2">
               <Button size="sm" disabled={!domain.trim()} type="submit">
                 {t('settingsBody.channel.setDomain')}

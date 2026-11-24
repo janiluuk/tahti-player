@@ -91,22 +91,28 @@ test('governance navigation keeps member, artist, and board entries reachable an
   await signIn(page);
 
   const coop = page.locator('[data-tour-id="nav-coop"] a').first();
-  await page.goto('/');
-  await coop.click();
+  await page.goto('/settings/account');
+  await expect(coop).toBeVisible();
+  await page.getByRole('tab', { name: 'Membership', exact: true }).click();
+  await page.getByTestId('account-open-coop').click();
   await expect(page).toHaveURL(/\/governance$/);
+  await expect(coop).toBeVisible();
   await expect(coop).toHaveAttribute('aria-current', 'page');
 
   await page.goto('/studio/governance');
   await expect(page).toHaveURL(/\/governance$/);
+  await expect(coop).toBeVisible();
   await expect(coop).toHaveAttribute('aria-current', 'page');
   await page.goto('/studio/governance?tab=topics');
   await expect(page).toHaveURL(/\/governance\/feature-requests$/);
+  await expect(coop).toBeVisible();
   await expect(coop).toHaveAttribute('aria-current', 'page');
   await page.goto('/help/governance');
   await expect(page).toHaveURL(/\/governance\/guide$/);
   await expect(
     page.getByRole('heading', { level: 1, name: 'Governance guide' }),
   ).toBeVisible();
+  await expect(coop).toBeVisible();
   await expect(coop).toHaveAttribute('aria-current', 'page');
 
   await page.evaluate(() => {
@@ -121,6 +127,7 @@ test('governance navigation keeps member, artist, and board entries reachable an
   });
   await page.reload();
   await page.goto('/admin/governance');
+  await expect(page.getByRole('tab', { name: 'Co-op' })).toBeVisible();
   await expect(page.getByRole('tab', { name: 'Co-op' })).toHaveAttribute(
     'aria-selected',
     'true',
@@ -137,6 +144,7 @@ test('governance navigation keeps member, artist, and board entries reachable an
   // /admin/agm redirects to /admin/governance/agm.
   await page.goto('/admin/agm');
   await expect(page).toHaveURL(/\/admin\/governance\/agm$/);
+  await expect(page.getByRole('tab', { name: 'Co-op' })).toBeVisible();
   await expect(page.getByRole('tab', { name: 'Co-op' })).toHaveAttribute(
     'aria-selected',
     'true',

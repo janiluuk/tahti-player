@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 
 import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import {
+  Badge,
   Button,
   InlineError,
   Input,
@@ -105,13 +106,13 @@ export function SocialOAuthPlatform({
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-sm font-semibold">{copy.name}</h3>
-        <span className="text-foreground-secondary text-xs">
+        <Badge variant="pill" color={status.connected ? 'green' : 'secondary'}>
           {status.connected
             ? webT()('templateText.connectedAs', {
                 name: status.accountLabel ?? copy.name,
               })
             : t('socialOAuthPlatformBatch31.notConnected')}
-        </span>
+        </Badge>
       </div>
       <form
         className="contents"
@@ -136,21 +137,20 @@ export function SocialOAuthPlatform({
             </div>
             <Input
               label={t('socialOAuth.postText')}
-              value={template}
-              maxLength={copy.templateMax}
-              onChange={(event) => setTemplate(event.target.value)}
-            />
-            <SettingsHint>
-              {t('socialOAuthPlatformBatch31.templateFields', {
+              help={`${t('socialOAuthPlatformBatch31.templateFields', {
                 artist: '{artist}',
                 release: '{release}',
                 smartLink: '{smart_link}',
                 channelUrl: '{channel_url}',
-              })}
-              {platform === 'instagram'
-                ? ` ${t('socialOAuthPlatformBatch31.instagramImageHint')}`
-                : ''}
-            </SettingsHint>
+              })}${
+                platform === 'instagram'
+                  ? ` ${t('socialOAuthPlatformBatch31.instagramImageHint')}`
+                  : ''
+              }`}
+              value={template}
+              maxLength={copy.templateMax}
+              onChange={(event) => setTemplate(event.target.value)}
+            />
           </>
         ) : (
           <SettingsHint>{t(copy.connectHintKey)}</SettingsHint>

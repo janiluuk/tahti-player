@@ -1,14 +1,8 @@
-import {
-  KeyRound,
-  Mail,
-  MonitorSmartphone,
-  ShieldCheck,
-  ShieldHalf,
-} from 'lucide-react';
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { KeyRound, Mail, MonitorSmartphone, ShieldCheck } from 'lucide-react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Alert, Button, Dialog, EditIconButton, Tabs } from '@tahti-player/ui';
+import { Dialog, EditIconButton, Tabs } from '@tahti-player/ui';
 
 import { accountHasPassword } from '../../../api/account-credentials';
 import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
@@ -23,6 +17,7 @@ import {
   useSettingsModalStore,
   type SecuritySettingsSection,
 } from '../../../stores/settingsModalStore';
+import { SettingsRow } from '../SettingsFields';
 
 type TabId = 'overview' | 'devices' | 'api-tokens';
 
@@ -35,37 +30,6 @@ function tabForSection(section: SecuritySettingsSection | null): TabId {
   return 'overview';
 }
 
-function SignInRow({
-  icon,
-  label,
-  value,
-  note,
-  action,
-}: {
-  icon: ReactNode;
-  label: string;
-  value?: ReactNode;
-  note: string;
-  action: ReactNode;
-}) {
-  return (
-    <li className="flex items-center gap-3 px-4 py-3">
-      <span
-        aria-hidden
-        className="bg-background-secondary text-foreground flex size-9 shrink-0 items-center justify-center rounded-full"
-      >
-        {icon}
-      </span>
-      <div className="flex min-w-0 flex-1 flex-col">
-        <span className="text-sm font-semibold">{label}</span>
-        {value ? <span className="truncate text-sm">{value}</span> : null}
-        <span className="text-foreground-secondary text-xs">{note}</span>
-      </div>
-      {action}
-    </li>
-  );
-}
-
 function SecurityOverview() {
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
@@ -73,7 +37,6 @@ function SecurityOverview() {
   const email = user?.email ?? null;
   const signInHeadingId = useId();
   const [dialog, setDialog] = useState<'password' | 'email' | null>(null);
-  const [twoFactorOn, setTwoFactorOn] = useState<boolean | null>(null);
   const twoFactorRef = useRef<HTMLDivElement>(null);
   const focusTwoFactor = useSettingsModalStore(
     (s) => s.securitySection === 'two-factor',
@@ -98,24 +61,9 @@ function SecurityOverview() {
 
   return (
     <div className="flex flex-col gap-8">
-      {twoFactorOn === false ? (
-        <Alert
-          tone="info"
-          data-testid="security-2fa-banner"
-          icon={<ShieldHalf size={18} aria-hidden />}
-          title={t('settingsBody.account.twoFactorBannerTitle')}
-        >
-          <div className="flex flex-col items-start gap-2">
-            <p className="text-sm">
-              {t('settingsBody.account.twoFactorBannerBody')}
-            </p>
-            <Button size="sm" className="gap-1.5" onClick={showTwoFactor}>
-              <ShieldCheck size={14} aria-hidden />
-              {t('settingsBody.account.twoFactorBannerAction')}
-            </Button>
-          </div>
-        </Alert>
-      ) : null}
+      <div ref={twoFactorRef} className="scroll-mt-4">
+        <SecurityTotpPanel />
+      </div>
 
       <section
         aria-labelledby={signInHeadingId}
@@ -125,7 +73,7 @@ function SecurityOverview() {
           {t('settingsBody.account.signInSection')}
         </h3>
         <ul className="border-border divide-border divide-y rounded-lg border">
-          <SignInRow
+          <SettingsRow
             icon={<KeyRound size={16} />}
             label={t('settingsBody.account.password')}
             value={hasPassword ? '••••••••••' : undefined}
@@ -142,7 +90,7 @@ function SecurityOverview() {
               />
             }
           />
-          <SignInRow
+          <SettingsRow
             icon={<Mail size={16} />}
             label={t('settingsBody.account.email')}
             value={email ?? t('settingsBody.account.emailRowMissing')}
@@ -157,10 +105,6 @@ function SecurityOverview() {
           />
         </ul>
       </section>
-
-      <div ref={twoFactorRef} className="scroll-mt-4">
-        <SecurityTotpPanel onStatusChange={setTwoFactorOn} />
-      </div>
 
       <LinkedLoginsSection />
 

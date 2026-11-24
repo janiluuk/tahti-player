@@ -3,6 +3,7 @@ import { ViewShell } from '@tahti-player/ui';
 
 import { PageBackLink } from '../../components/PageBackLink';
 import { ProfileVisibilitySection } from '../../components/ProfileVisibilitySection';
+import { SectionTabs } from '../../components/SectionTabs';
 import { StudioGate } from '../../components/StudioGate';
 import {
   isStudioProfileChannelSection,
@@ -16,8 +17,6 @@ import {
   studioProfileChannelItems,
 } from './StudioProfileView';
 
-/** One Studio → Profile form on its own page: the hub card's title on top,
- * a link back to the hub, and the form that saves on its own. */
 export function StudioProfileSectionView({
   section,
 }: {
@@ -26,15 +25,26 @@ export function StudioProfileSectionView({
   const { t } = useTranslation('web');
   const channelForm =
     isStudioProfileChannelSection(section) && section !== 'visibility';
-  const card = [
+  const cards = [
     ...studioProfileArtistItems(t),
     ...studioProfileChannelItems(t),
-  ].find((item) => item.id === section);
+  ];
+  const card = cards.find((item) => item.id === section);
 
   return (
     <StudioGate requireChannel={channelForm}>
       <div className="studio-page-layout mx-auto flex max-w-6xl flex-col gap-4 px-1 py-2">
         <PageBackLink to="/studio/profile" label={t('studioProfile.profile')} />
+        <SectionTabs
+          aria-label={t('studioProfile.profileSections')}
+          items={cards.map(({ id, href, title, icon: Icon }) => ({
+            id,
+            to: href,
+            label: title,
+            icon: <Icon size={14} aria-hidden />,
+            active: id === section,
+          }))}
+        />
         <ViewShell
           title={card?.title ?? t('studioProfile.profile')}
           subtitle={card?.description}

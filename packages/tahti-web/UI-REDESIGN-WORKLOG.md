@@ -7098,3 +7098,7 @@ Validated with affected Storybook plays, UI/theme/unit tests, type-check/lint, a
 ## 2026-11-24 — Radio track rows and replay status (0.0.479)
 
 Up next and Just played use the shared striped TrackTable flush to the widget edges, with full-height artwork and hover playback. The current rotation track is highlighted above upcoming tracks. Just played follows Up next. The header says Replay for rotation and reserves On air for a live member relay. Upcoming entries have no playback URL in the API and keep their play control disabled. Expanded visualizer layout and main-container corner-control spacing are queued separately.
+
+## 2026-11-24 — Settings, Profile and Listen loading (0.0.480)
+
+Recovered the interrupted Settings/Profile sweep and Listen loading changes. Account shows profile and account-management shortcuts; security has one 2FA section with persistent off-state guidance and status badges. Profile forms have section tabs and field help icons. Listen placeholders reserve more accurate space, ready content fades without sliding, and remembered guidelines notices are scoped to the signed-in account. Cold-cache CLS measurement remains in the loading todo.

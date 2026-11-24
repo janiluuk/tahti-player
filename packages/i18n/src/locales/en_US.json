@@ -2588,10 +2588,8 @@
     "settingsBody": {
       "loading": "Loading…",
       "account": {
-        "visibilityMovedNote": "Profile visibility (counts, connections, top lists and comments) is now in Studio → Profile → Visibility.",
-        "openVisibility": "Open visibility settings",
         "signInPrompt": "Sign in to manage membership and security.",
-        "tabSession": "Session",
+        "tabSession": "Overview",
         "tabPasswordEmail": "Password & email",
         "tabDevices": "Devices",
         "tabTwoFactor": "Two-factor authentication",
@@ -2706,14 +2704,12 @@
         "totpLoadError": "Could not load two-factor authentication",
         "totpLoading": "Loading two-factor authentication…",
         "totpEmailNote": "We email you whenever two-step sign-in is turned on or off.",
-        "totpStatus": "Status:",
         "totpEnabled": "Enabled",
         "totpDisabled": "Disabled",
         "totpBackupTitle": "Save these backup codes",
         "totpBackupDescription": "Shown once. Store them somewhere safe.",
         "totpDone": "Done",
         "totpStarting": "Starting…",
-        "totpEnable": "Enable 2FA",
         "totpScanHint": "Scan this QR code with your authenticator app, then enter the 6-digit code it generates.",
         "totpQrAria": "Authenticator setup QR code",
         "totpManualHint": "If you cannot scan it, enter this setup key manually:",
@@ -2826,7 +2822,17 @@
         "mentionSurfaceDiscussion": "a discussion",
         "mentionSurfacePost": "a post",
         "governanceMoved": "Motions, meetings, documents and your votes live under Co-op in the sidebar.",
-        "openCoop": "Open Co-op"
+        "openCoop": "Open Co-op",
+        "editArtistProfile": "Edit artist profile",
+        "editProfile": "Edit profile",
+        "accountSettings": "Account settings",
+        "manageNamed": "Manage {{name}}",
+        "signInAndSecurity": "Sign-in and security",
+        "signInAndSecurityNote": "Password, two-factor authentication and linked logins.",
+        "devicesRowNote": "See where you're signed in and sign out other devices.",
+        "dataRowNote": "Download your data, manage blocked accounts or ask to delete your account.",
+        "twoFactorOnBadge": "Two-factor on",
+        "twoFactorOffBadge": "Two-factor off"
       },
       "channel": {
         "loadError": "Could not load your channel profile",
@@ -2856,15 +2862,16 @@
         "domainNotVerified": "Not verified yet. DNS changes can take a while to show.",
         "setDomain": "Set domain",
         "domainTxtHint": "Add TXT {{host}} = {{record}}, then Verify.",
-        "domainCurrentVerified": "Current: {{domain}} (verified)",
-        "domainCurrentPending": "Current: {{domain}} (pending)",
         "domainRequiresMembership": "Requires membership. Add DNS TXT then verify.",
         "verifyDomain": "Verify",
         "signInHint": "Sign in with a channel to edit design and discovery.",
         "tabDesigner": "Channel Designer",
         "tabDiscovery": "Discovery",
         "tabModerators": "Moderators",
-        "tabChat": "Chat"
+        "tabChat": "Chat",
+        "domainCurrent": "Current domain: {{domain}}",
+        "domainVerifiedBadge": "Verified",
+        "domainPendingBadge": "Pending verification"
       },
       "broadcast": {
         "radioLoadError": "Could not load your radio settings",
@@ -2953,7 +2960,8 @@
         "roleSoundEngineer": "Sound engineer",
         "roleVisualArtist": "Visual artist",
         "roleCurator": "Curator / label",
-        "signInHintSuffix": "to edit artist profile."
+        "signInHintSuffix": "to edit artist profile.",
+        "socialLinksTitle": "Social links"
       }
     },
     "toggles": {
@@ -6020,7 +6028,6 @@
       "addATag": "Add a tag"
     },
     "imagePurpose": {
-      "clickToChangeYourProfile": "Click to change your profile image",
       "addProfileImages": "Add profile images",
       "dropOneOrMoreImages": "Drop one or more images here. You’ll choose what each image is for before anything is uploaded.",
       "chooseWhatEachImageIs": "Choose what each image is for",
@@ -6427,7 +6434,8 @@
       "channelPageSettings": "Channel page settings",
       "livePreview": "Live preview",
       "livePreviewHint": "Updates as you edit. Save the form to publish the change.",
-      "livePreviewEmptyBio": "Add a short bio to show it here."
+      "livePreviewEmptyBio": "Add a short bio to show it here.",
+      "profileSections": "Profile sections"
     },
     "soundDetailsTab": {
       "allowComments": "Allow comments",
@@ -12417,7 +12425,8 @@
       "editTrack": "Edit track",
       "openTrack": "Open track",
       "notifications": "Notifications",
-      "playOrShiftQueue": "{{play}} · Shift+click to queue"
+      "playOrShiftQueue": "{{play}} · Shift+click to queue",
+      "aboutNamed": "About {{name}}"
     },
     "broadcastPanel": {
       "defaultsHint": "Defaults for radio, green room, and multistream live here. Run the live session from Studio › Broadcast.",
@@ -15614,7 +15623,6 @@
       "errorFailed": "Could not sign in. Try again.",
       "linkedLogins": "Linked logins",
       "linkedLoginsDescription": "Sign in with Google or Facebook as well as your password.",
-      "statusLinked": "Linked · {{email}}",
       "statusLinkedNoEmail": "Linked",
       "statusNotLinked": "Not linked",
       "link": "Link",

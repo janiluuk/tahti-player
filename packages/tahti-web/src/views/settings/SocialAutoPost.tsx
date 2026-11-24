@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 
 import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import {
+  Badge,
   Button,
   InlineError,
   Input,
@@ -20,9 +21,9 @@ import {
   type SocialPlatformStatus,
 } from '../../api/social-autopost';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { HelpTitle } from '../../components/HelpTitle';
 import { PageError } from '../../components/PageStates';
 import { webT } from '../../lib/webT';
-import { SettingsHint } from './SettingsFields';
 import { showOAuthPlatform, SocialOAuthPlatform } from './SocialOAuthPlatform';
 import { SocialPostNow } from './SocialPostNow';
 
@@ -132,13 +133,13 @@ function PlatformForm({
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-sm font-semibold">{copy.name}</h3>
-        <span className="text-foreground-secondary text-xs">
+        <Badge variant="pill" color={status.connected ? 'green' : 'secondary'}>
           {status.connected
             ? webT()('templateText.connectedAs', {
                 name: status.accountLabel ?? copy.name,
               })
             : t('socialAutoPostBatch30.notConnected')}
-        </span>
+        </Badge>
       </div>
       <form
         className="flex flex-col gap-3"
@@ -181,18 +182,17 @@ function PlatformForm({
         </div>
         <Input
           label={t('socialAutoPost.postText')}
+          help={`${t('socialAutoPostBatch30.fillsInPlaceholders')} ${
+            status.connected
+              ? t('socialAutoPostBatch30.notifyOnFailure', { name: copy.name })
+              : t('socialAutoPostBatch30.connectingPostsTest', {
+                  name: copy.name,
+                })
+          }`}
           value={template}
           maxLength={copy.templateMax}
           onChange={(event) => setTemplate(event.target.value)}
         />
-        <SettingsHint>
-          {t('socialAutoPostBatch30.fillsInPlaceholders')}{' '}
-          {status.connected
-            ? t('socialAutoPostBatch30.notifyOnFailure', { name: copy.name })
-            : t('socialAutoPostBatch30.connectingPostsTest', {
-                name: copy.name,
-              })}
-        </SettingsHint>
         {error ? <InlineError>{error}</InlineError> : null}
         <div className="flex flex-wrap justify-end gap-2">
           {status.connected ? (
@@ -272,12 +272,10 @@ export function SocialAutoPost() {
 
   return (
     <div className="flex flex-col gap-3" data-testid="social-autopost">
-      <div>
-        <h3 className="text-sm font-semibold">
-          {t('socialAutoPost.autoPost')}
-        </h3>
-        <SettingsHint>{t('socialAutoPost.postToYourOwnAccounts')}</SettingsHint>
-      </div>
+      <HelpTitle
+        title={t('socialAutoPost.autoPost')}
+        help={t('socialAutoPost.postToYourOwnAccounts')}
+      />
       {(['mastodon', 'bluesky'] as const).map((platform) => (
         <PlatformForm
           key={`${platform}-${version}`}
