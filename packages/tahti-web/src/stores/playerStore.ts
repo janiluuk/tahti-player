@@ -90,7 +90,8 @@ type PlayerState = {
   enqueue: (item: TahtiPlayable) => void;
   /** Installs a queue saved by an earlier session: paused, nothing loaded, no history entry. */
   hydrateQueue: (items: TahtiPlayable[], currentId: string | null) => void;
-  /** Fills in stream URLs for queued items once they are resolved (id -> URL). */
+  /** Fills in (or replaces) stream URLs for queued items once resolved
+   * (id -> URL); the first stream candidate follows so playback uses it. */
   setQueueSources: (sources: Record<string, string>) => void;
   /** Appends many at once (one update, one toast); skips ones already queued. */
   enqueueMany: (items: TahtiPlayable[]) => number;
@@ -409,12 +410,23 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set((s) => ({
       queue: s.queue.map((qi) => {
         const url = sources[qi.id];
-        return url
-          ? {
-              ...qi,
-              track: { ...qi.track, source: { ...qi.track.source, url } },
-            }
-          : qi;
+        if (!url) {
+          return qi;
+        }
+        const [first, ...restCandidates] = qi.track.streamCandidates ?? [];
+        return {
+          ...qi,
+          track: {
+            ...qi.track,
+            source: { ...qi.track.source, url },
+            streamCandidates: first?.stream
+              ? [
+                  { ...first, stream: { ...first.stream, url } },
+                  ...restCandidates,
+                ]
+              : qi.track.streamCandidates,
+          },
+        };
       }),
     })),
 

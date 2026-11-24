@@ -6690,3 +6690,12 @@ the playlists grid shows only the rest. Collections stored as CUSTOM/PLAYLIST
 `ArtistSiteHeader` drops the "tahti.live" main-site link; with the header
 hidden it renders only the menu button (or nothing). Unit test, story and the
 artist-site-chrome e2e assert the link is gone.
+
+## 2026-11-24 - Player refreshes expired signed audio URLs (0.0.464)
+
+Queue (`tahti-queue-v1`), favorites and history persist the sound's presigned
+CDN URL, which expires after an hour, so a saved track failed with a 403.
+`AudioEngine` now, on a final media error for a `sound:` playable whose URL
+carries `X-Amz-Signature`, fetches `fetchTrackDetail(id).audioUrl` once per
+failing URL, swaps it in via `setQueueSources` (which now also updates the
+first stream candidate) and resumes at the same position.
