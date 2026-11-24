@@ -202,7 +202,12 @@ export function LibraryView({
   return (
     <div className="studio-page-layout flex w-full flex-col gap-6">
       <LibrarySectionTabs active={tab} />
-      <ViewShell title={libraryTitle} classes={{ root: 'px-0 pt-0' }}>
+      {/* The active section tab already names the page; on phones the
+          repeated title only pushes the content down. */}
+      <ViewShell
+        title={libraryTitle}
+        classes={{ root: 'px-0 pt-0', title: 'max-sm:sr-only' }}
+      >
         {tab === 'favorites' ? (
           <div className="mt-2">
             <FavoritesView embedded />

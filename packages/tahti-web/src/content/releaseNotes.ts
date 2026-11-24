@@ -40,12 +40,13 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.473',
+    version: '0.0.474',
     sections: [
       {
         id: 'listen',
         label: 'Listen',
         highlights: [
+          'On phones, Listen and Library no longer repeat the page name under their tabs, the Studio Sounds type filter stays on one row you can swipe, and the Admin sections sit in one swipeable row.',
           'On phones, pages use more of the screen width and Studio lists show fewer buttons per row: secondary actions sit in the ⋯ menu.',
           'Track lists on phones no longer show a checkbox on every row. Tap Select when you want to pick several tracks, and Done when you are finished.',
           'New tracks on Listen is a card of its own: search sits on the same row as sort and size, track titles get more room, and the duration column is narrow.',

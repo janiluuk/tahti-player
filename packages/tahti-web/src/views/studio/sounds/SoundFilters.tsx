@@ -112,7 +112,7 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
       <div className="mb-3" data-testid="sound-type-tabs">
         <SegmentedControl
           aria-label={t('library.typeFilter')}
-          className="w-fit"
+          className="tahti-hide-scrollbar w-fit max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:[&>*]:shrink-0"
           value={contentTypeFilter}
           onChange={(value) => setContentTypeFilter(value)}
           options={contentTypeFilters(t).map((filterOption) => ({

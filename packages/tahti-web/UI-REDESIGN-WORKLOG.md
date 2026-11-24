@@ -1,3 +1,10 @@
+## 2026-11-24 - Crawler canonicals and phone leftovers (0.0.474)
+
+Crawlers that do not run JS now see each page's own canonical and `og:url`
+instead of the home page's. On phones, Listen and Library drop the title their
+tabs repeat, and the Sounds type filter and the Admin sections each sit in
+one swipeable row.
+
 ## 2026-11-24 - SEO apex host, New tracks widget, live encoding queue (0.0.472)
 
 Committed the SEO hot-patch (OG image, apex canonical/sitemaps/robots, the
