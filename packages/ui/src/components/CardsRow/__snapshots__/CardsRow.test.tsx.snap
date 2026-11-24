@@ -224,7 +224,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
     </div>
   </div>
   <div
-    class="scrollbar-hide flex gap-2 overflow-x-auto overflow-y-visible [scroll-behavior:smooth] pb-2"
+    class="scrollbar-hide flex gap-2 overflow-x-auto overflow-y-visible [scroll-behavior:smooth] pr-1 pb-2"
     style="scrollbar-width: none;"
   >
     <div

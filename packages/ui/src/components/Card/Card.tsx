@@ -198,7 +198,7 @@ export const Card: FC<CardProps> = ({
           : 'text-primary-foreground bg-primary',
         onClick &&
           !hasOverlays &&
-          'hover:translate-x-shadow-x hover:translate-y-shadow-y cursor-pointer hover:shadow-none',
+          'hover:ring-primary/45 cursor-pointer duration-150 ease-out hover:shadow-none hover:ring-2 hover:ring-inset motion-reduce:transition-none',
         isPlaying && 'ring-foreground/25 ring-2 ring-inset',
         className,
       )}

@@ -34,7 +34,7 @@ export function GlowMediaTile({
 }: GlowMediaTileProps) {
   return (
     <div
-      className="group/glow relative transition-transform duration-300 ease-out hover:-translate-y-1"
+      className="group/glow relative"
       style={
         { '--glow-color': glowColor ?? 'var(--color-primary)' } as CSSProperties
       }
