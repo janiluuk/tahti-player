@@ -3,7 +3,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import type { StudioSound } from '../../../api/studio-types';
-import { SoundStatusLine } from './SoundsAmbientList';
+import { SoundStatusLine, SoundStatusPill } from './SoundsAmbientList';
 
 function sound(overrides: Partial<StudioSound> = {}): StudioSound {
   return {
@@ -37,5 +37,22 @@ describe('SoundStatusLine', () => {
     );
     expect(container.textContent).toBe('1 h 2 min');
     expect(container.textContent).not.toMatch(/Uploaded|2026/);
+  });
+});
+
+describe('SoundStatusPill', () => {
+  afterEach(cleanup);
+
+  it.each([
+    [{ status: 'PROCESSING' }, 'processing', 'Processing'],
+    [{ status: 'PENDING' }, 'processing', 'Processing'],
+    [{ status: 'ERROR' }, 'failed', 'Processing failed'],
+    [{ status: 'READY', isPublic: true }, 'public', 'Public'],
+    [{ status: 'READY', isPublic: false }, 'private', 'Private'],
+  ] as const)('%o shows a %s pill', (overrides, status, text) => {
+    render(<SoundStatusPill item={sound(overrides as Partial<StudioSound>)} />);
+    const pill = screen.getByTestId('sound-status-pill');
+    expect(pill).toHaveAttribute('data-status', status);
+    expect(pill).toHaveTextContent(text);
   });
 });

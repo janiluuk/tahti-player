@@ -76,13 +76,13 @@ const DENSITY_LAYOUT: Record<
     wave: 'h-16',
   },
   dense: {
-    pad: 'gap-2 px-2 py-1.5',
-    gap: 'gap-0.5',
+    pad: 'gap-3 px-2 py-2',
+    gap: 'gap-1',
     phoneGap: 'max-md:gap-y-1',
-    art: 'size-24 sm:size-16',
-    artist: 'text-[10px]',
-    title: 'text-xs',
-    meta: 'text-[10px]',
+    art: 'size-24 sm:size-36',
+    artist: 'text-xs',
+    title: 'text-sm',
+    meta: 'text-xs',
     bars: 48,
     wave: 'h-9',
   },
@@ -239,6 +239,8 @@ export type AmbientTrackRowProps = {
   onSeek?: (fraction: number) => void;
   /** Listener-facing extras (like / add / download) — not Studio tooling. */
   actions?: ReactNode;
+  /** A status pill (e.g. Processing / Private) shown beside the title. */
+  statusBadge?: ReactNode;
   /**
    * Replaces the waveform (e.g. hearthis.at widget while that track is
    * current). Native seek UI stays hidden so the embed is not stacked on top.
@@ -250,6 +252,7 @@ export type AmbientTrackRowProps = {
 };
 
 function AmbientTrackRowView({
+  statusBadge,
   trackId,
   title,
   headingLevel = 3,
@@ -380,6 +383,9 @@ function AmbientTrackRowView({
               ) : null}
               {titleNode ?? title}
             </TitleHeading>
+            {statusBadge ? (
+              <div className="mt-1 flex flex-wrap gap-1">{statusBadge}</div>
+            ) : null}
           </div>
           {genreLabel || (durationLabel && density === 'dense') ? (
             <div

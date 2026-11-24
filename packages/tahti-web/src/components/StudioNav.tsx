@@ -23,7 +23,7 @@ const PRIMARY = [
 export const SUBMENUS = {
   '/studio': [
     { to: '/studio', labelKey: 'studio.home' },
-    { to: '/studio/releases', labelKey: 'studio.music' },
+    { to: '/studio/sounds', labelKey: 'studio.music' },
     { to: '/studio/broadcast', labelKey: 'studio.goLive' },
     { to: '/studio/fans', labelKey: 'studio.fans' },
     { to: '/studio/stats', labelKey: 'studio.stats' },
@@ -34,8 +34,8 @@ export const SUBMENUS = {
 /** The artist's catalog is one job (publish music). One Studio "Music" tab
  * stays lit; its pages live in `CatalogSubNav`. */
 export const CATALOG_SUBNAV_ITEMS = [
-  { to: '/studio/releases', labelKey: 'studio.releases' as const },
   { to: '/studio/sounds', labelKey: 'studio.tracks' as const },
+  { to: '/studio/releases', labelKey: 'studio.releases' as const },
   { to: '/studio/collections', labelKey: 'studio.collections' as const },
   { to: '/studio/distribution', labelKey: 'studio.distribution' as const },
   { to: '/studio/editor', labelKey: 'studio.editor' as const },
@@ -142,7 +142,7 @@ export const isSubmenuActive = (current: string | undefined, to: string) => {
       pathname?.startsWith('/studio/insights/') === true
     );
   }
-  if (to === '/studio/releases') {
+  if (to === '/studio/sounds') {
     return isStudioCatalogGroup(current);
   }
   return to.includes('?')

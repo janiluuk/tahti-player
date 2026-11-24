@@ -12,6 +12,7 @@ import {
   Button,
   FilterBar,
   Input,
+  SegmentedControl,
   Select,
   SortMenuButton,
   Tooltip,
@@ -25,7 +26,6 @@ import { useTrackListViewStore } from '../../../stores/trackListViewStore';
 import {
   contentTypeFilters,
   sortFields,
-  type ContentTypeFilter,
   type FallbackFilter,
   type PinnedFilter,
   type SortField,
@@ -109,6 +109,24 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
 
   return (
     <>
+      <div className="mb-3" data-testid="sound-type-tabs">
+        <SegmentedControl
+          aria-label={t('library.typeFilter')}
+          className="w-fit"
+          value={contentTypeFilter}
+          onChange={(value) => setContentTypeFilter(value)}
+          options={contentTypeFilters(t).map((filterOption) => ({
+            id: filterOption.id,
+            label:
+              filterOption.id === 'ALL'
+                ? t('library.allTypesTab')
+                : withCount(
+                    filterOption.label,
+                    facetCount('contentType', filterOption.id),
+                  ),
+          }))}
+        />
+      </div>
       <FilterBar
         className="mb-4"
         searchValue={query}
@@ -143,24 +161,6 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
             {t('library.clearFilters')}
           </Button>
         ) : null}
-        <Select
-          aria-label={t('library.typeFilter')}
-          value={contentTypeFilter}
-          onValueChange={(value) =>
-            setContentTypeFilter(value as ContentTypeFilter)
-          }
-          options={contentTypeFilters(t).map((filterOption) => ({
-            id: filterOption.id,
-            label:
-              filterOption.id === 'ALL'
-                ? filterOption.label
-                : withCount(
-                    filterOption.label,
-                    facetCount('contentType', filterOption.id),
-                  ),
-          }))}
-          className="min-w-36"
-        />
         <Tooltip
           content={
             filtersOpen

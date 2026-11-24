@@ -3,7 +3,13 @@ import { BarChart3Icon, DownloadIcon, RotateCcwIcon } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, EditIconButton, InlineError, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  EditIconButton,
+  InlineError,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
 import { AddToPlaylistButton } from '../../../components/AddToPlaylistButton';
@@ -82,6 +88,47 @@ function isProcessingSound(item: StudioSound): boolean {
   return (
     !item.embedProvider &&
     (item.status === 'PENDING' || item.status === 'PROCESSING')
+  );
+}
+
+/** Coloured pill for a track's state: processing, failed, or its visibility. */
+export function SoundStatusPill({ item }: { item: StudioSound }) {
+  const { t } = useTranslation('web');
+  if (isProcessingSound(item)) {
+    return (
+      <Badge
+        variant="pill"
+        color="yellow"
+        animated
+        data-testid="sound-status-pill"
+        data-status="processing"
+      >
+        {t('library.processing')}
+      </Badge>
+    );
+  }
+  if (item.status === 'ERROR') {
+    return (
+      <Badge
+        variant="pill"
+        color="red"
+        data-testid="sound-status-pill"
+        data-status="failed"
+      >
+        {t('library.processingFailed')}
+      </Badge>
+    );
+  }
+  const isPublic = item.isPublic ?? item.visibility === 'PUBLIC';
+  return (
+    <Badge
+      variant="pill"
+      color={isPublic ? 'green' : 'secondary'}
+      data-testid="sound-status-pill"
+      data-status={isPublic ? 'public' : 'private'}
+    >
+      {isPublic ? t('library.visibilityPublic') : t('library.statusPrivate')}
+    </Badge>
   );
 }
 
@@ -265,6 +312,7 @@ function toHostedListItem(
     title: item.title,
     titleNode,
     belowTitle,
+    statusBadge: <SoundStatusPill item={item} />,
     artist: item.artistName?.trim() || 'You',
     coverUrl: item.bannerUrl,
     genreLabel: item.genre ?? undefined,

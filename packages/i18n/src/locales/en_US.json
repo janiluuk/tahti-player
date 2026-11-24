@@ -1486,6 +1486,8 @@
       "openNamed": "Open the listening party for {{title}}"
     },
     "library": {
+      "allTypesTab": "All",
+      "statusPrivate": "Private",
       "sections": "Library sections",
       "trackCount_one": "{{formattedCount}} track",
       "trackCount_other": "{{formattedCount}} tracks",

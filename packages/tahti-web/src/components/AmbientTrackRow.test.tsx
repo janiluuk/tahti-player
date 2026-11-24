@@ -36,6 +36,35 @@ describe('AmbientTrackRow', () => {
     }
   });
 
+  it('gives the dense artwork a full-size square and keeps text readable', () => {
+    render(
+      <AmbientTrackRow
+        trackId="sound:d1"
+        title="Dense row"
+        artist="Aurora Keys"
+        density="dense"
+        ambientRgb={null}
+      />,
+    );
+    const artwork = screen.getByTestId('ambient-track-row-artwork');
+    expect(artwork.className).toContain('sm:size-36');
+    const row = screen.getByTestId('ambient-track-row');
+    expect(row.innerHTML).not.toContain('text-[10px]');
+  });
+
+  it('shows a status pill beside the title', () => {
+    render(
+      <AmbientTrackRow
+        trackId="sound:s2"
+        title="Night Drive"
+        artist="Aurora Keys"
+        ambientRgb={null}
+        statusBadge={<span data-testid="pill">Processing</span>}
+      />,
+    );
+    expect(screen.getByTestId('pill')).toHaveTextContent('Processing');
+  });
+
   it('opts the row into its artwork reveal by a named group, not a bare one', () => {
     render(
       <AmbientTrackRow
