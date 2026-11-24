@@ -1,9 +1,8 @@
-import { Eye } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { ButtonLink, InlineLoader, SectionTitle } from '@tahti-player/ui';
+import { InlineLoader, SectionTitle } from '@tahti-player/ui';
 
 import {
   fetchNotificationPrefs,
@@ -12,7 +11,6 @@ import {
 } from '../../../api/artist-settings';
 import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
-import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsToggle } from '../SettingsFields';
 
 export function NotificationsPanel() {
@@ -136,7 +134,6 @@ export function NotificationsPanel() {
 
 export function NotificationsVisibilityPanel() {
   const { t } = useTranslation('web');
-  const closeSettings = useSettingsModalStore((s) => s.close);
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -150,22 +147,6 @@ export function NotificationsVisibilityPanel() {
         </p>
       </div>
       <NotificationsPanel />
-      <div className="flex flex-col items-start gap-2">
-        <p className="text-foreground-secondary text-sm">
-          {t('settingsBody.account.visibilityMovedNote')}
-        </p>
-        <ButtonLink
-          to="/studio/profile/$section"
-          params={{ section: 'visibility' }}
-          onClick={closeSettings}
-          size="sm"
-          variant="secondary"
-          data-testid="notifications-open-visibility"
-        >
-          <Eye size={15} aria-hidden className="mr-1.5" />
-          {t('settingsBody.account.openVisibility')}
-        </ButtonLink>
-      </div>
     </div>
   );
 }

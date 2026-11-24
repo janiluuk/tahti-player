@@ -23,6 +23,7 @@ export function WebUiLabelsProvider({ children }: { children: ReactNode }) {
       next: t('uiLabels.next'),
       previousNamed: (name) => t('uiLabels.previousNamed', { name }),
       nextNamed: (name) => t('uiLabels.nextNamed', { name }),
+      aboutNamed: (name) => t('uiLabels.aboutNamed', { name }),
       play: t('uiLabels.play'),
       pause: t('uiLabels.pause'),
       shuffleOn: t('uiLabels.shuffleOn'),

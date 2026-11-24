@@ -6,6 +6,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import { patchMeProfile } from '../../../api/studio-extras';
+import { HelpTitle } from '../../../components/HelpTitle';
 import {
   AVATAR_THEME_PRESETS,
   avatarThemeCss,
@@ -43,12 +44,12 @@ export function AvatarThemePicker({
 
   return (
     <fieldset className="flex flex-col gap-2" data-testid="avatar-theme-picker">
-      <legend className="text-sm font-semibold">
-        {t('avatarThemePicker.avatarColour')}
-      </legend>
-      <p className="text-foreground-secondary text-xs">
-        {t('avatarThemePicker.fillsYourAvatarWhileYou')}
-      </p>
+      <legend className="sr-only">{t('avatarThemePicker.avatarColour')}</legend>
+      <HelpTitle
+        as="span"
+        title={t('avatarThemePicker.avatarColour')}
+        help={t('avatarThemePicker.fillsYourAvatarWhileYou')}
+      />
       <div className="flex flex-wrap items-center gap-2">
         {AVATAR_THEME_PRESETS.map((preset, index) => {
           const selected = sameAvatarTheme(preset, value);

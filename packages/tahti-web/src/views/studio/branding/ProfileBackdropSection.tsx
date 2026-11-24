@@ -50,7 +50,7 @@ export function ProfileBackdropSection({
   return (
     <StudioPanel
       title={t('profileBackdropSection.profileBackdrop')}
-      description={t('profileBackdropSection.aWideImageBehindYour')}
+      help={t('profileBackdropSection.aWideImageBehindYour')}
     >
       <div className="flex flex-col gap-3">
         {backdropUrl ? (

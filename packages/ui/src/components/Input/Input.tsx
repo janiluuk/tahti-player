@@ -13,6 +13,8 @@ import {
 } from 'react';
 
 import { cn } from '../../utils';
+import { HelpTip } from '../HelpTip';
+import { useUiLabels } from '../UiLabels';
 
 const inputVariants = cva(
   'border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
@@ -88,6 +90,9 @@ type InputProps = Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'size'> &
       | 'color';
     label?: string;
     description?: string;
+    /** Help shown behind a help icon next to the label instead of a
+     * paragraph under the field. Needs `label`. */
+    help?: string;
     error?: string;
     startAddon?: ReactNode;
     endAddon?: ReactNode;
@@ -111,6 +116,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     id,
     label,
     description,
+    help,
     error,
     variant,
     type,
@@ -127,6 +133,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   },
   ref,
 ) {
+  const labels = useUiLabels();
   const reactId = useId();
   const inputId = id ?? `input-${reactId}`;
   const labelId = `${inputId}-label`;
@@ -218,7 +225,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         rootClassName,
       )}
     >
-      {label && (
+      {label && help ? (
+        <div className="flex items-center gap-1">
+          <label
+            htmlFor={inputId}
+            id={labelId}
+            className="text-foreground text-sm font-semibold"
+          >
+            {label}
+          </label>
+          <HelpTip label={labels.aboutNamed(label)} content={help} />
+        </div>
+      ) : label ? (
         <label
           htmlFor={inputId}
           id={labelId}
@@ -226,7 +244,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         >
           {label}
         </label>
-      )}
+      ) : null}
       {hasAddon ? (
         <div className="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2">
           {startAddon ? (

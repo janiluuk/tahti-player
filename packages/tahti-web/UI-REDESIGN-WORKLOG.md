@@ -7098,3 +7098,9 @@ Validated with affected Storybook plays, UI/theme/unit tests, type-check/lint, a
 ## 2026-11-24 — Radio track rows and replay status (0.0.479)
 
 Up next and Just played use the shared striped TrackTable flush to the widget edges, with full-height artwork and hover playback. The current rotation track is highlighted above upcoming tracks. Just played follows Up next. The header says Replay for rotation and reserves On air for a live member relay. Upcoming entries have no playback URL in the API and keep their play control disabled. Expanded visualizer layout and main-container corner-control spacing are queued separately.
+
+## 2026-11-24 — Settings and profile anatomy sweep (0.0.480)
+
+- New `HelpTitle` in tahti-web + `help` props on ui `Input`/`Select` put explanations behind a help icon (`About <field>` accessible name) across settings, artist, channel, branding and link-page forms; `aboutNamed` added to `UiLabels` in both locales.
+- `AccountOverview` extracts the Session tab profile card; Security shows `SecurityTotpPanel` inline instead of the separate 2FA banner + scroll target, using shared `SettingsRow`. Custom domain status uses a `Badge` (Verified / Pending verification); notifications visibility note removed (lives in Studio → Profile).
+- `StudioProfileSectionView` gains `SectionTabs` across the profile forms; `StudioPanel` accepts `help`. Stories, tests and en/FI strings updated; Storybook surfaces regenerated.

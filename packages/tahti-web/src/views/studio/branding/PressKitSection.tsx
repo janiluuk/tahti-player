@@ -52,7 +52,7 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
     <>
       <StudioPanel
         title={t('pressKit.pressKitStory')}
-        description={t('pressKit.aConciseIntroductionForPromoters')}
+        help={t('pressKit.aConciseIntroductionForPromoters')}
       >
         {pressKitError ? (
           <PageError
@@ -107,7 +107,7 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
       </StudioPanel>
       <StudioPanel
         title={t('pressKit.photos')}
-        description={t('pressKit.dropInHighResolutionPromotional')}
+        help={t('pressKit.dropInHighResolutionPromotional')}
       >
         <FilePicker
           accept={ACCEPTED_IMAGES}
@@ -243,7 +243,7 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
       </StudioPanel>
       <StudioPanel
         title={t('pressKit.pressKitPreview')}
-        description={t('pressKit.whatAPromoterSeesWhen')}
+        help={t('pressKit.whatAPromoterSeesWhen')}
       >
         <PressKitPreview
           displayName={

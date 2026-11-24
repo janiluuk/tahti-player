@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.478',
+    version: '0.0.480',
     sections: [
       {
         id: 'listen',
@@ -91,6 +91,8 @@ export const RELEASE_NOTES: ReleaseNote[] = [
           'Settings → Security is one page: change your password or email from a small edit button that opens the form in a window, with clear messages when an address looks wrong or the new password matches the old one. Two-factor authentication sits on the same page, and while it is off a friendly note suggests turning it on.',
           'Settings → Appearance is quieter: explanations sit behind a small question-mark icon. What visitors see on your profile (counts, connections, top lists, comments) moved to Studio → Profile → Visibility, and sub-pages have a round back arrow instead of a text link.',
           'Settings → Account is easier to read at a glance: your subscriptions and purchases share one tab with totals on top, each subscription shows a coloured status, and Storage shows used and free space as a ring chart.',
+          'Settings and Studio forms are calmer: explanations sit behind a small question-mark icon next to the field or section heading instead of filling the space below it. Your Account overview shows your profile and sign-in details together, two-factor authentication sits directly on the Security page, and Studio → Profile has tabs to move between your profile forms.',
+          'A custom domain on Settings → Channel now shows its address and a clear Verified or Pending verification badge.',
         ],
       },
       {

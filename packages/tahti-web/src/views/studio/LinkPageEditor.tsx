@@ -30,6 +30,7 @@ import type { StudioCollection, StudioSound } from '../../api/studio-types';
 import { fetchStudioCollections } from '../../api/studio/studio-collections';
 import { fetchStudioSoundsPage } from '../../api/studio/studio-sounds-library';
 import type { PublicProfile } from '../../api/types';
+import { HelpTitle } from '../../components/HelpTitle';
 import { PageError } from '../../components/PageStates';
 import { socialLinksForPreview } from '../../lib/linkPageSocials';
 import { LinkPageView } from '../link-page/LinkPageView';
@@ -261,9 +262,12 @@ export function LinkPageEditor() {
     >
       <div className="flex flex-col gap-6">
         <section className="border-border flex flex-col gap-3 rounded-lg border p-4">
-          <h2 className="text-foreground text-base font-bold">
-            {t('linkPage.yourLinkPage')}
-          </h2>
+          <HelpTitle
+            as="h2"
+            titleClassName="text-foreground text-base font-bold"
+            title={t('linkPage.yourLinkPage')}
+            help={t('linkPage.storiesHint')}
+          />
           <div className="flex flex-wrap items-center gap-2">
             <Input
               readOnly
@@ -284,9 +288,6 @@ export function LinkPageEditor() {
               <CopyIcon size={16} />
             </Button>
           </div>
-          <p className="text-foreground-secondary text-sm">
-            {t('linkPage.storiesHint')}
-          </p>
           <div className="flex flex-wrap gap-2">
             <ButtonAnchor
               href={linkPageUrl}
@@ -306,12 +307,12 @@ export function LinkPageEditor() {
         </section>
 
         <section className="border-border flex flex-col gap-3 rounded-lg border p-4">
-          <h2 className="text-foreground text-base font-bold">
-            {t('linkPage.links')}
-          </h2>
-          <p className="text-foreground-secondary text-sm">
-            {t('linkPage.linksHint')}
-          </p>
+          <HelpTitle
+            as="h2"
+            titleClassName="text-foreground text-base font-bold"
+            title={t('linkPage.links')}
+            help={t('linkPage.linksHint')}
+          />
           <ul className="flex flex-col gap-2">
             {socialLinksForPreview(profile.socialLinks).map((link) => (
               <li
@@ -418,15 +419,12 @@ export function LinkPageEditor() {
         </section>
 
         <section className="border-border flex flex-col gap-3 rounded-lg border p-4">
-          <h2 className="text-foreground text-base font-bold">
-            {t('linkPage.sounds')}
-          </h2>
-          <p className="text-foreground-secondary text-sm">
-            {t('linkPage.soundsHint')}
-          </p>
-          <p className="text-foreground-secondary text-sm">
-            {t('linkPage.soundsDefault')}
-          </p>
+          <HelpTitle
+            as="h2"
+            titleClassName="text-foreground text-base font-bold"
+            title={t('linkPage.sounds')}
+            help={`${t('linkPage.soundsHint')} ${t('linkPage.soundsDefault')}`}
+          />
           <ul className="flex flex-col gap-2">
             {draft.soundIds.map((id, index) => {
               const sound = soundById.get(id);
@@ -530,15 +528,12 @@ export function LinkPageEditor() {
         </section>
 
         <section className="border-border flex flex-col gap-3 rounded-lg border p-4">
-          <h2 className="text-foreground text-base font-bold">
-            {t('linkPage.sets')}
-          </h2>
-          <p className="text-foreground-secondary text-sm">
-            {t('linkPage.setsHint')}
-          </p>
-          <p className="text-foreground-secondary text-sm">
-            {t('linkPage.setsDefault')}
-          </p>
+          <HelpTitle
+            as="h2"
+            titleClassName="text-foreground text-base font-bold"
+            title={t('linkPage.sets')}
+            help={`${t('linkPage.setsHint')} ${t('linkPage.setsDefault')}`}
+          />
           <ul className="flex flex-col gap-2">
             {draft.setIds.map((id, index) => {
               const collection = collectionById.get(id);
@@ -687,12 +682,12 @@ export function LinkPageEditor() {
 
       <aside className="border-border bg-background-secondary/40 sticky top-4 flex max-h-[80vh] flex-col overflow-hidden rounded-lg border">
         <div className="border-border flex items-center justify-between border-b px-3 py-2">
-          <span className="text-foreground text-sm font-bold">
-            {t('linkPage.preview')}
-          </span>
-          <span className="text-foreground-secondary text-xs">
-            {t('linkPage.previewHint')}
-          </span>
+          <HelpTitle
+            as="span"
+            titleClassName="text-foreground text-sm font-bold"
+            title={t('linkPage.preview')}
+            help={t('linkPage.previewHint')}
+          />
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto">
           <LinkPageView

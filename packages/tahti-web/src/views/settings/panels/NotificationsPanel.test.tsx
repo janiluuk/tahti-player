@@ -27,13 +27,6 @@ vi.mock('../../../api/artist-settings', () => ({
   patchNotificationPrefs: vi.fn(),
 }));
 
-vi.mock('@tahti-player/ui', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@tahti-player/ui')>()),
-  ButtonLink: ({ children }: { children: React.ReactNode }) => (
-    <a href="/studio/profile/visibility">{children}</a>
-  ),
-}));
-
 describe('NotificationsPanel', () => {
   afterEach(() => cleanup());
 
@@ -60,11 +53,11 @@ describe('NotificationsPanel', () => {
     expect(await screen.findByText('Revenue moves')).toBeTruthy();
   });
 
-  it('points to Studio for profile visibility instead of showing it here', async () => {
+  it('has no link to profile visibility, which lives in Studio → Profile', async () => {
     render(<NotificationsVisibilityPanel />);
-    expect(
-      await screen.findByText(/now in Studio → Profile → Visibility/),
-    ).toBeTruthy();
+    expect(await screen.findByText('Revenue moves')).toBeTruthy();
+    expect(screen.queryByText(/Visibility/)).toBeNull();
+    expect(screen.queryByRole('link')).toBeNull();
     expect(
       screen.queryByRole('switch', {
         name: 'Show tracks I like on my profile',

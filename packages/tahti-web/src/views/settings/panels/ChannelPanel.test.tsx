@@ -222,4 +222,30 @@ describe('ChannelPanel address and domain', () => {
         .disabled,
     ).toBe(true);
   });
+
+  it('shows the custom domain state as a badge, not plain text', async () => {
+    useAuthStore.setState({
+      user: {
+        id: 'u1',
+        username: 'artist',
+        channel: {
+          slug: 'artist',
+          customDomain: 'music.example.com',
+          customDomainVerified: false,
+        },
+      } as never,
+    });
+    await act(async () => {
+      render(<ChannelPanel section="domain" />);
+    });
+    const status = screen.getByTestId('custom-domain-status');
+    expect(status.textContent).toContain('music.example.com');
+    expect(screen.getByText('Pending verification').className).toContain(
+      'rounded-full',
+    );
+    expect(screen.queryByText(/\(pending\)/)).toBeNull();
+    expect(
+      screen.getByRole('button', { name: 'About Custom domain' }),
+    ).toBeTruthy();
+  });
 });

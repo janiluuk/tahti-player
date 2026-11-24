@@ -37,7 +37,11 @@ describe('SecurityTotpPanel', () => {
   it('enrolls an authenticator app with a QR code and reveals backup codes', async () => {
     render(<SecurityTotpPanel />);
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Enable 2FA' }));
+    expect(await screen.findByTestId('security-2fa-status')).toHaveTextContent(
+      'Disabled',
+    );
+    expect(screen.queryByText('Status:')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Turn on two-factor' }));
     expect(
       await screen.findByLabelText('Authenticator setup QR code'),
     ).toBeVisible();
@@ -51,6 +55,10 @@ describe('SecurityTotpPanel', () => {
     expect(await screen.findByText('Save these backup codes')).toBeVisible();
     expect(screen.getByText('ABCD-1111')).toBeVisible();
     expect(security.confirmTotp).toHaveBeenCalledWith('123456');
+    expect(screen.getByTestId('security-2fa-status')).toHaveTextContent(
+      'Enabled',
+    );
+    expect(screen.queryByTestId('security-2fa-banner')).toBeNull();
   });
 
   it('shows a retry state when status loading fails', async () => {

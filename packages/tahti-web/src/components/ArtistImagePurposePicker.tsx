@@ -195,9 +195,6 @@ export const ArtistImagePurposePicker: FC<Props> = ({
             </Button>
           </Tooltip>
         </div>
-        <p className="text-foreground-secondary text-center text-xs sm:text-left">
-          {t('imagePurpose.clickToChangeYourProfile')}
-        </p>
       </div>
 
       <Dialog.Root

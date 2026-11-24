@@ -52,6 +52,8 @@ export type UiLabels = {
   playOrShiftQueue: (playLabel: string) => string;
   /** Names the toast region. */
   notifications: string;
+  /** Names a field's help icon, e.g. "About Nameplate". */
+  aboutNamed: (name: string) => string;
 };
 
 const formatCount = (value: number) => value.toLocaleString('en-US');
@@ -70,6 +72,7 @@ export const defaultUiLabels: UiLabels = {
   next: 'Next',
   previousNamed: (name) => `Previous: ${name}`,
   nextNamed: (name) => `Next: ${name}`,
+  aboutNamed: (name) => `About ${name}`,
   play: 'Play',
   pause: 'Pause',
   shuffleOn: 'Shuffle on',

@@ -21,7 +21,7 @@ const meta: Meta<typeof SecurityPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Security (overview with password and email rows that open dialogs, two-factor with a banner while it is off, linked logins; devices; API tokens) and Settings → Notifications (notifications & visibility, mentions), each one tab row.',
+          'Settings → Security (overview with password and email rows that open dialogs, one two-factor section with a status badge and, while it is off, a banner whose button starts setup; linked logins with Linked / Not linked badges; devices; API tokens) and Settings → Notifications (notifications, mentions), each one tab row. Profile visibility lives in Studio → Profile, with no link here.',
       },
     },
   },
@@ -65,6 +65,15 @@ export const SecurityOverview: Story = {
       { timeout: 5000 },
     );
     await expect(banner).toHaveTextContent('Add a second lock to your account');
+    const twoFactor = within(canvas.getByTestId('security-2fa'));
+    await expect(
+      twoFactor.getByTestId('security-2fa-status'),
+    ).toHaveTextContent('Disabled');
+    await expect(twoFactor.getByTestId('security-2fa-banner')).toBe(banner);
+    await expect(
+      twoFactor.queryByRole('button', { name: 'Enable 2FA' }),
+    ).toBeNull();
+    await expect(canvas.queryByText('Status:')).toBeNull();
     await expectVisible(canvas.getByRole('heading', { name: 'Sign-in' }));
     await userEvent.click(
       canvas.getByRole('button', { name: 'Change password' }),
@@ -100,9 +109,9 @@ export const LinkedLogins: Story = {
     await expectVisible(
       await canvas.findByRole('heading', { name: 'Linked logins' }),
     );
-    await expectVisible(
-      await canvas.findByText('Linked · demo.listener@gmail.com'),
-    );
+    await expectVisible(await canvas.findByText('demo.listener@gmail.com'));
+    await expect(canvas.getAllByText('Linked')[0]).toHaveClass('rounded-full');
+    await expectVisible(canvas.getByText('Not linked'));
     await expectVisible(
       await canvas.findByRole('button', { name: 'Link Facebook' }),
     );
@@ -173,9 +182,10 @@ export const NotificationsAndMentions: Story = {
   render: () => <SettingsNotificationsPanel />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expectVisible(
-      await canvas.findByRole('link', { name: 'Open visibility settings' }),
-    );
+    await expectVisible(await canvas.findByText('Revenue moves'));
+    await expect(
+      canvas.queryByRole('link', { name: 'Open visibility settings' }),
+    ).toBeNull();
     await selectTab(canvas, 'Mentions');
     await expectVisible(
       await canvas.findByRole('switch', { name: 'Let artists mention me' }),

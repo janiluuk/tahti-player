@@ -23,7 +23,7 @@ export function GrantReportAttributionToggle({
   return (
     <SettingsToggle
       label={t('grantReportAttributionToggleBatch32.label')}
-      description={t(
+      help={t(
         'grantReportAttributionToggleText.tahtiPublishesWhoReceivedArtist',
       )}
       value={value}

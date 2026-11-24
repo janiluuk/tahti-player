@@ -9,6 +9,7 @@ import {
   saveMusicbrainzDefault,
   type MusicbrainzDefault,
 } from '../../../api/musicbrainz-default';
+import { HelpTitle } from '../../../components/HelpTitle';
 
 /** Re-enable the post-publish MusicBrainz registration prompt after
  * "Don't ask again" (legacy Settings → Connections had the same toggle). */
@@ -38,14 +39,12 @@ export function MusicBrainzOfferToggle() {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-sm font-semibold">
-            {t('toggles.musicbrainz.label')}
-          </p>
-          <p className="text-foreground-secondary text-xs">
-            {t('toggles.musicbrainz.description')}
-          </p>
-        </div>
+        <HelpTitle
+          as="span"
+          className="min-w-0"
+          title={t('toggles.musicbrainz.label')}
+          help={t('toggles.musicbrainz.description')}
+        />
         <Toggle
           label={t('toggles.musicbrainz.label')}
           checked={offered}

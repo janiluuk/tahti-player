@@ -135,6 +135,7 @@ export const StudioBrandingPanel: FC<{
             />
             <StudioPanel
               title={t('studioBrandingView.programmeTitle')}
+              help={t('studioBrandingView.programmeHint')}
               action={
                 <ButtonLink
                   to="/studio/schedule"
@@ -146,11 +147,7 @@ export const StudioBrandingPanel: FC<{
                   {t('studioBrandingView.openProgramme')}
                 </ButtonLink>
               }
-            >
-              <p className="text-foreground-secondary text-sm">
-                {t('studioBrandingView.programmeHint')}
-              </p>
-            </StudioPanel>
+            />
           </>
         ) : (
           <StudioPanel title={t('studioBrandingView.channelDesigner')}>
