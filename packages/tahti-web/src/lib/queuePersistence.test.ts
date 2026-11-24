@@ -4,8 +4,10 @@ import type { TahtiPlayable } from '../api/types';
 import { usePlayerStore } from '../stores/playerStore';
 import type { TahtiNativeLibrary } from './nativeLibrary';
 import {
+  parsePersistedPosition,
   parsePersistedQueue,
   restorePersistedQueue,
+  resumePointFor,
   serializeQueue,
   startQueuePersistence,
 } from './queuePersistence';
@@ -275,5 +277,99 @@ describe('startQueuePersistence', () => {
     store().play(cloud('1'));
     vi.advanceTimersByTime(600);
     expect(window.localStorage.getItem(KEY)).toBeNull();
+  });
+});
+
+describe('playback position across a reload', () => {
+  const POSITION_KEY = 'tahti-queue-position-v1';
+
+  it('saves the spot every few seconds, on pause and when the page closes', () => {
+    const stop = startQueuePersistence();
+    store().play(cloud('1'));
+    store().setStatus('playing');
+    store().setProgress(2, 120);
+    expect(window.localStorage.getItem(POSITION_KEY)).toContain('"at":0');
+    store().setProgress(6, 120);
+    expect(
+      parsePersistedPosition(window.localStorage.getItem(POSITION_KEY)),
+    ).toEqual({ id: 'sound:1', at: 6, duration: 120 });
+    store().setProgress(8, 120);
+    store().setStatus('paused');
+    expect(
+      parsePersistedPosition(window.localStorage.getItem(POSITION_KEY))?.at,
+    ).toBe(8);
+    store().setStatus('playing');
+    store().setProgress(9.5, 120);
+    window.dispatchEvent(new Event('pagehide'));
+    expect(
+      parsePersistedPosition(window.localStorage.getItem(POSITION_KEY))?.at,
+    ).toBe(9.5);
+    stop();
+  });
+
+  it('opens the current track paused at the saved spot, and the first play seeks there', () => {
+    window.localStorage.setItem(KEY, JSON.stringify(serializeQueue([], null)));
+    store().play(cloud('1'), { enqueueRest: [cloud('2')] });
+    window.localStorage.setItem(
+      KEY,
+      JSON.stringify(serializeQueue(store().queue, store().currentId)),
+    );
+    window.localStorage.setItem(
+      POSITION_KEY,
+      JSON.stringify({ id: 'sound:1', at: 42, duration: 120 }),
+    );
+    store().clearQueue();
+
+    expect(restorePersistedQueue()).toBe(true);
+    expect(store().currentId).toBe('sound:1');
+    expect(store().status).toBe('paused');
+    expect(store().restoredPending).toBe('sound:1');
+    expect(store().currentTime).toBe(42);
+    expect(store().duration).toBe(120);
+    expect(store().seekTarget).toBe(42);
+    expect(store().playerBarVisible).toBe(true);
+  });
+
+  it('keeps the saved spot while the restored track has not been played', () => {
+    window.localStorage.setItem(
+      POSITION_KEY,
+      JSON.stringify({ id: 'sound:1', at: 42, duration: 120 }),
+    );
+    store().hydrateQueue([cloud('1')], 'sound:1', { at: 42, duration: 120 });
+    const stop = startQueuePersistence();
+    store().clearSeekTarget();
+    store().setProgress(0, 0);
+    window.dispatchEvent(new Event('pagehide'));
+    expect(
+      parsePersistedPosition(window.localStorage.getItem(POSITION_KEY))?.at,
+    ).toBe(42);
+    stop();
+  });
+
+  it('starts from the top for a different track, a spot near the end, or under a second', () => {
+    expect(
+      resumePointFor({ id: 'sound:2', at: 42, duration: 120 }, 'sound:1'),
+    ).toBeNull();
+    expect(
+      resumePointFor({ id: 'sound:1', at: 118, duration: 120 }, 'sound:1'),
+    ).toBeNull();
+    expect(
+      resumePointFor({ id: 'sound:1', at: 0.4, duration: 120 }, 'sound:1'),
+    ).toBeNull();
+    expect(
+      resumePointFor({ id: 'sound:1', at: 42, duration: 0 }, 'sound:1'),
+    ).toEqual({ at: 42, duration: 0 });
+  });
+
+  it('never resumes a radio station at a position', () => {
+    store().hydrateQueue([radio], 'radio:x', { at: 42, duration: 0 });
+    expect(store().currentTime).toBe(0);
+    expect(store().seekTarget).toBeNull();
+  });
+
+  it('rejects a malformed saved position', () => {
+    expect(parsePersistedPosition('nope')).toBeNull();
+    expect(parsePersistedPosition('{"id":"sound:1","at":-3}')).toBeNull();
+    expect(parsePersistedPosition('{"at":3}')).toBeNull();
   });
 });
