@@ -38,6 +38,9 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | partial | [seo-canonical-host.md](seo-canonical-host.md) | Apex host, OG image, per-route canonical for crawlers (0.0.474); left (tahti-org): stack APP_URL, stable collection OG image URLs, raster channel OG images |
+| open    | [profile-settings-cleanup.md](profile-settings-cleanup.md) | Account links to profile edit; drop image help text; help icons instead of paragraphs; Profile sub-tabs |
+| open    | [settings-ux-sweep.md](settings-ux-sweep.md) | Settings: coloured status indicators, one 2FA section (keep the off warning), drop Visibility link, fill Account |
+| open    | [front-page-smooth-loading.md](front-page-smooth-loading.md) | Listen loads without layout jumps: reserved space, one calm reveal, CLS < 0.05 |
 | partial | [ui-performance-audit.md](ui-performance-audit.md) | Screen-sized backdrops, still mode without GPU, no per-tick table re-render (0.0.475, 10-13 → 60 fps in software mode); left: Firefox measurement, event banner, matchMedia per render |
 | partial | [ci-performance-audit.md](ci-performance-audit.md) | Journeys sharded (master CI ~9 min), migration baseline parallel in tahti-org; left: isolation-safe tahti-web tests (7x), journeys workflow call, turbo token |
 | partial | [mobile-less-crowded.md](mobile-less-crowded.md) | Full-width phones, on-demand checkboxes, quieter Studio rows, no repeated titles, swipeable filter/section rows (0.0.474); left: Listen action row, contrast-safe track cards |

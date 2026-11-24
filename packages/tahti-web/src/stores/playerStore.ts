@@ -89,7 +89,13 @@ type PlayerState = {
   fadeOverTo: (item: TahtiPlayable) => Promise<boolean>;
   enqueue: (item: TahtiPlayable) => void;
   /** Installs a queue saved by an earlier session: paused, nothing loaded, no history entry. */
-  hydrateQueue: (items: TahtiPlayable[], currentId: string | null) => void;
+  /** `resume` puts the restored current track back where it was, paused:
+   * the seekbar shows the spot and the first play starts from it. */
+  hydrateQueue: (
+    items: TahtiPlayable[],
+    currentId: string | null,
+    resume?: { at: number; duration: number } | null,
+  ) => void;
   /** Fills in (or replaces) stream URLs for queued items once resolved
    * (id -> URL); the first stream candidate follows so playback uses it. */
   setQueueSources: (sources: Record<string, string>) => void;
@@ -378,7 +384,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }
   },
 
-  hydrateQueue: (items, currentId) => {
+  hydrateQueue: (items, currentId, resume = null) => {
     const queue = items.map(toQueueItem);
     const current = queue.some((q) => q.id === currentId) ? currentId : null;
     const peaksById = items.reduce(
@@ -388,6 +394,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     const currentItem = items.find((item) => item.id === current);
     const restoredLive =
       currentItem?.kind === 'radio' || currentItem?.kind === 'live';
+    const resumeAt = current && !restoredLive && resume ? resume.at : null;
     set({
       peaksById,
       currentPeaks: current ? peaksFor(peaksById, current) : null,
@@ -399,9 +406,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       restoredPending: current,
       error: null,
       failure: null,
-      currentTime: 0,
-      duration: 0,
-      seekTarget: null,
+      currentTime: resumeAt ?? 0,
+      duration: resumeAt != null ? (resume?.duration ?? 0) : 0,
+      seekTarget: resumeAt,
       playerBarVisible: queue.length > 0,
     });
   },

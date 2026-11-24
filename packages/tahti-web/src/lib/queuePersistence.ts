@@ -7,6 +7,10 @@ import { streamUrlFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { getNativeLibrary } from './nativeLibrary';
 
 const KEY = 'tahti-queue-v1';
+const POSITION_KEY = 'tahti-queue-position-v1';
+const POSITION_SAVE_STEP_SEC = 5;
+/** A track this close to its end restarts from the top after a reload. */
+const POSITION_END_MARGIN_SEC = 3;
 const MAX_ITEMS = 5000;
 const RESOLVE_BATCH = 500;
 const SAVE_DELAY_MS = 500;
@@ -212,6 +216,74 @@ async function resolveRestoredLocalSources() {
   }
 }
 
+export type PersistedPosition = { id: string; at: number; duration: number };
+
+export function parsePersistedPosition(
+  raw: string | null,
+): PersistedPosition | null {
+  if (!raw) {
+    return null;
+  }
+  try {
+    const data = JSON.parse(raw) as Partial<PersistedPosition>;
+    if (
+      typeof data.id !== 'string' ||
+      typeof data.at !== 'number' ||
+      !Number.isFinite(data.at) ||
+      data.at < 0
+    ) {
+      return null;
+    }
+    const duration =
+      typeof data.duration === 'number' && Number.isFinite(data.duration)
+        ? data.duration
+        : 0;
+    return { id: data.id, at: data.at, duration };
+  } catch {
+    return null;
+  }
+}
+
+function readPosition(): PersistedPosition | null {
+  try {
+    return parsePersistedPosition(window.localStorage.getItem(POSITION_KEY));
+  } catch {
+    return null;
+  }
+}
+
+function writePosition(value: PersistedPosition | null) {
+  try {
+    if (value) {
+      window.localStorage.setItem(POSITION_KEY, JSON.stringify(value));
+    } else {
+      window.localStorage.removeItem(POSITION_KEY);
+    }
+  } catch {
+    // Storage blocked or full: the track restores from the start instead.
+  }
+}
+
+/** Where to pick the current track up again, or null to start it from 0. */
+export function resumePointFor(
+  position: PersistedPosition | null,
+  currentId: string | null,
+): { at: number; duration: number } | null {
+  if (!position || !currentId || position.id !== currentId) {
+    return null;
+  }
+  if (position.at < 1) {
+    return null;
+  }
+  if (
+    position.duration > 0 &&
+    position.at >= position.duration - POSITION_END_MARGIN_SEC
+  ) {
+    return null;
+  }
+  return { at: position.at, duration: position.duration };
+}
+
 /** Restores the queue saved by the last session, paused. Call once at startup. */
 export function restorePersistedQueue(): boolean {
   if (usePlayerStore.getState().queue.length > 0) {
@@ -229,7 +301,11 @@ export function restorePersistedQueue(): boolean {
   }
   usePlayerStore
     .getState()
-    .hydrateQueue(items.map(toPlayable), saved.currentId);
+    .hydrateQueue(
+      items.map(toPlayable),
+      saved.currentId,
+      resumePointFor(readPosition(), saved.currentId),
+    );
   void resolveRestoredLocalSources();
   return true;
 }
@@ -238,6 +314,47 @@ export function restorePersistedQueue(): boolean {
 export function startQueuePersistence(): () => void {
   let timer: number | undefined;
   let last = usePlayerStore.getState();
+  let savedPosition = readPosition();
+  const savePosition = (force: boolean) => {
+    const { currentId, currentTime, duration, isLive } =
+      usePlayerStore.getState();
+    if (!currentId || isLive || (!isSound(currentId) && !isLocal(currentId))) {
+      if (savedPosition) {
+        savedPosition = null;
+        writePosition(null);
+      }
+      return;
+    }
+    if (
+      !force &&
+      savedPosition?.id === currentId &&
+      Math.abs(currentTime - savedPosition.at) < POSITION_SAVE_STEP_SEC
+    ) {
+      return;
+    }
+    savedPosition = { id: currentId, at: currentTime, duration };
+    writePosition(savedPosition);
+  };
+  const unsubscribePosition = usePlayerStore.subscribe((state, prev) => {
+    if (state.restoredPending && state.restoredPending === state.currentId) {
+      // Still the untouched restored track: keep the saved spot as it is.
+      return;
+    }
+    if (state.currentId !== prev.currentId) {
+      savePosition(true);
+    } else if (state.status !== prev.status && state.status === 'paused') {
+      savePosition(true);
+    } else if (state.currentTime !== prev.currentTime) {
+      savePosition(false);
+    }
+  });
+  const onPageHide = () => {
+    const { restoredPending, currentId } = usePlayerStore.getState();
+    if (!restoredPending || restoredPending !== currentId) {
+      savePosition(true);
+    }
+  };
+  window.addEventListener('pagehide', onPageHide);
   const unsubscribe = usePlayerStore.subscribe((state) => {
     if (
       state.queue === last.queue &&
@@ -256,5 +373,7 @@ export function startQueuePersistence(): () => void {
   return () => {
     window.clearTimeout(timer);
     unsubscribe();
+    unsubscribePosition();
+    window.removeEventListener('pagehide', onPageHide);
   };
 }
