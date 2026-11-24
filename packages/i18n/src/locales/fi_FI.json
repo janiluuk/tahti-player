@@ -614,6 +614,11 @@
     }
   },
   "web": {
+    "visualizerModeMenu": {
+      "ambience": "Tunnelma",
+      "ambientGlow": "Pois (kansikuvan hehku)",
+      "ambientWater": "Vesimaisema"
+    },
     "nav": {
       "listen": "Kuuntele",
       "radio": "Radio",

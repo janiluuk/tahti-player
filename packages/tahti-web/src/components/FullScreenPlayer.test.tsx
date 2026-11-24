@@ -141,6 +141,8 @@ describe('FullScreenPlayer visualizer menu', () => {
     );
     const items = within(menu).getAllByRole('menuitemradio');
     expect(items.map((item) => item.textContent)).toEqual([
+      'Off (cover glow)',
+      'Water landscape',
       'Oscilloscope',
       'Spectrum',
       'Radial',
@@ -179,6 +181,24 @@ describe('FullScreenPlayer visualizer menu', () => {
       screen.getByTestId('visualizer-mode-trigger').getAttribute('aria-label'),
     ).toBe('Visualizer: Orb');
     expect(localStorage.getItem('tahti.viz.channel.abc')).toBe('orb');
+  });
+
+  it('turns the visualizer off for a cover-art water landscape and remembers it', async () => {
+    await open('playing');
+    fireEvent.click(screen.getByTestId('visualizer-mode-trigger'));
+    const menu = await screen.findByTestId('visualizer-mode-menu');
+
+    fireEvent.click(within(menu).getByTestId('visualizer-scene-ambient-water'));
+
+    expect(screen.queryByTestId('channel-visualizer')).toBeNull();
+    expect(screen.getByTestId('cover-ambience')).toHaveAttribute(
+      'data-variant',
+      'water',
+    );
+    expect(
+      screen.getByTestId('visualizer-mode-trigger').getAttribute('aria-label'),
+    ).toBe('Visualizer: Water landscape');
+    expect(localStorage.getItem('tahti.viz.channel.abc')).toBe('ambient-water');
   });
 });
 

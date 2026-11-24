@@ -614,6 +614,11 @@
     }
   },
   "web": {
+    "visualizerModeMenu": {
+      "ambience": "Ambience",
+      "ambientGlow": "Off (cover glow)",
+      "ambientWater": "Water landscape"
+    },
     "nav": {
       "listen": "Listen",
       "radio": "Radio",
