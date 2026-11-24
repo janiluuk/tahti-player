@@ -1,7 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import {
   BellIcon,
-  ExternalLinkIcon,
   LayoutDashboardIcon,
   LogOutIcon,
   MessageSquareIcon,
@@ -10,7 +9,7 @@ import {
 } from 'lucide-react';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
-import { Button, ExternalLink } from '@tahti-player/ui';
+import { Button } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { type TopNavState } from './useTopNavState';
@@ -243,17 +242,6 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
             <SettingsIcon size={14} />
             {t('nav.settings')}
           </Button>
-          {isMobile ? null : (
-            <ExternalLink
-              href="https://tahti.live"
-              className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2.5 py-2 text-xs no-underline"
-              role="menuitem"
-              onClick={() => setOpen(false)}
-            >
-              <ExternalLinkIcon size={14} />
-              tahti.live
-            </ExternalLink>
-          )}
 
           <div className="bg-border mx-1 my-0.5 h-px" role="separator" />
           <Button

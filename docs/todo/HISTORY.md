@@ -6772,3 +6772,8 @@ nginx `location = /index.html` rewrites the home-page `og:url` and `canonical` t
 ## 2026-11-24 - Smoother without a GPU (0.0.475)
 
 UI performance audit, measured in Chromium software mode (no GPU, SwiftShader, 4x CPU throttle). Channel and Listen/Discover backdrop visualizers drew page-tall WebGL canvases; they are now one screen-sized fixed canvas (idle 10-13 → 60 fps). Background visualizers fall back to a still gradient on software WebGL renderers; the hue-drift filter only runs on menu previews; section fade-ins use `fill-mode-backwards` so no `filter` stays on sections; the full-screen player drops a no-op blur and holds its glow/water ambience still without a GPU; queued rows pulse only as click feedback; the track table stays stable across progress ticks and ignores them for live streams. Numbers in `ui-performance-audit.md`, which stays partial for a Firefox run and smaller leftovers.
+
+## 2026-11-24 - No tahti.live link in the account menu (0.0.476)
+
+The top-nav `UserMenu` drops its desktop-only external "tahti.live" item; the test now asserts it is absent on phones and desktop, and the `AppTopNav/UserMenuArtist` play no longer expects it.
+
