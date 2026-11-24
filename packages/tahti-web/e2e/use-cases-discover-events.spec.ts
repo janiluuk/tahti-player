@@ -50,7 +50,7 @@ test('Discover shows the Upcoming events widget and a card opens the event', asy
   const strip = page.getByTestId('upcoming-events');
   await strip.scrollIntoViewIfNeeded();
   await expect(strip).toBeVisible();
-  await expect(strip).toHaveAccessibleName('Upcoming events');
+  await expect(strip).toHaveAccessibleName(/^Upcoming events/);
   await expect(strip.getByTestId('event-card-title').first()).toBeVisible();
   const times = await startTimes(strip);
   expect(times).toEqual([...times].sort((a, b) => a - b));

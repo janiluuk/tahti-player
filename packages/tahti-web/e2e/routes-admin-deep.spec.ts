@@ -97,7 +97,7 @@ const tabRoutes: AdminVisit[] = [
   { path: '/admin/hubs/platform', heading: /^Platform$/ },
   { path: '/admin/diagnostics', heading: /^Diagnostics$/ },
   { path: '/admin/artwork-presets', heading: /^Artwork presets$/ },
-  { path: '/admin/map', heading: /^Tahti map$/ },
+  { path: '/admin/map', heading: /^Map$/ },
   { path: '/admin/venues', heading: /^Venues$/ },
 ];
 

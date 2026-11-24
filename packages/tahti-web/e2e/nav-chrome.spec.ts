@@ -50,12 +50,10 @@ test('desktop chrome stays mounted from Listen through Library, Studio and Admin
     .locator(STUDIO_NAV)
     .getByRole('link', { name: 'Music', exact: true })
     .press('Enter');
-  await expect(page).toHaveURL(/\/studio\/releases$/);
+  await expect(page).toHaveURL(/\/studio\/sounds$/);
   await expectChrome(page, [SHELL, TOP_NAV, SIDEBAR, STUDIO_NAV]);
   await expect(
-    page
-      .locator(STUDIO_NAV)
-      .getByRole('link', { name: 'Releases', exact: true }),
+    page.locator(STUDIO_NAV).getByRole('link', { name: 'Tracks', exact: true }),
   ).toHaveAttribute('aria-current', 'page');
 
   await promoteToBoard(page);

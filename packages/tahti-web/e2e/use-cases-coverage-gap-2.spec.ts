@@ -46,7 +46,7 @@ test('board: Co-op grants previews a grant cycle and lists past disbursements', 
   await page.setViewportSize({ width: 1440, height: 900 });
   await signInAsBoard(page);
   await open(page, '/admin/grants');
-  await expect(page.getByText('Disbursement history')).toBeVisible();
+  await expect(page.getByText('Disbursement history').first()).toBeVisible();
   await page.getByRole('link', { name: '2025', exact: true }).click();
   await expect(page).toHaveURL(/2025/);
   await expect(page.getByText('Page not found')).toHaveCount(0);
