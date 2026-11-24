@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { StudioBroadcastView } from '@tahti-web/views/studio/StudioBroadcastView';
 import { StudioChatView } from '@tahti-web/views/studio/StudioChatView';
 import { StudioFansView } from '@tahti-web/views/studio/StudioFansView';
-import { StudioProfileView } from '@tahti-web/views/studio/StudioProfileView';
 import { expect, userEvent, within } from 'storybook/test';
 
 import {
@@ -19,7 +18,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, channel manager, one agenda of shows, events and parties, and tool cards), **Fans** (hub cards, including Chat, which opens its own page at `/studio/chat`) and **Profile** (artist profile and channel page settings). Each card opens a focused page.',
+          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, channel manager, one agenda of shows, events and parties, and tool cards) and **Fans** (hub cards, including Chat, which opens its own page at `/studio/chat`) Each card opens a focused page. Profile and Channel use a row of sub-tabs instead (see StudioProfileSectionView and StudioChannelView).',
       },
     },
   },
@@ -81,38 +80,6 @@ export const Chat: Story = {
         name: /^Channel moderators$|^Kanavan moderaattorit$/,
       }),
     ).toBeInTheDocument();
-  },
-};
-
-export const Profile: Story = {
-  decorators: [withTahtiRouter('/studio/profile')],
-  render: () => <StudioProfileView />,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByRole('heading', { name: 'Profile' }),
-    ).toBeInTheDocument();
-    const artist = within(
-      canvas.getByRole('list', { name: 'Artist profile settings' }),
-    ).getAllByRole('link');
-    await expect(artist).toHaveLength(9);
-    await expect(artist[0]).toHaveAttribute('href', '/studio/profile/identity');
-    await expect(
-      artist.some(
-        (link) => link.getAttribute('href') === '/studio/profile/link-page',
-      ),
-    ).toBe(true);
-    const channel = within(
-      canvas.getByRole('list', { name: 'Channel page settings' }),
-    ).getAllByRole('link');
-    await expect(channel[0]).toHaveTextContent('Channel design');
-    await expect(channel[0]).toHaveAttribute(
-      'href',
-      '/studio/profile/appearance',
-    );
-    await expect(
-      channel.some((link) => /Chat|Moderators/.test(link.textContent ?? '')),
-    ).toBe(false);
   },
 };
 

@@ -159,10 +159,10 @@ export const StudioDistribution: Story = {
 
 export const StudioChannel: Story = {
   parameters: {
-    docs: { description: { story: 'Lives on Studio → Broadcast → Channel.' } },
+    docs: { description: { story: 'Lives on Studio → Channel → Radio.' } },
   },
-  decorators: [withTahtiRouter('/studio/channel')],
-  render: () => <StudioChannelView />,
+  decorators: [withTahtiRouter('/studio/channel/radio')],
+  render: () => <StudioChannelView section="radio" />,
 };
 
 export const StudioBranding: Story = {
@@ -170,12 +170,12 @@ export const StudioBranding: Story = {
     docs: {
       description: {
         story:
-          'Lives on Settings → Artist (Branding / Gallery / Press kit / Channel Designer).',
+          'Lives on Studio → Profile → Branding; Gallery & press kit and Channel → Design reuse it with another section.',
       },
     },
   },
-  decorators: [withTahtiRouter('/settings/artist')],
-  render: () => <StudioBrandingPanel />,
+  decorators: [withTahtiRouter('/studio/profile/branding')],
+  render: () => <StudioBrandingPanel section="branding" />,
 };
 
 export const StudioEvents: Story = {

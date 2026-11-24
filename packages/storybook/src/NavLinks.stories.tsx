@@ -14,6 +14,7 @@ const STUDIO = [
     label: 'Broadcast',
     active: true,
   },
+  { id: 'channel', to: '/studio/channel', label: 'Channel' },
   { id: 'fans', to: '/studio/fans', label: 'Fans' },
   { id: 'stats', to: '/studio/stats', label: 'Stats' },
   { id: 'profile', to: '/studio/profile', label: 'Profile' },
@@ -23,7 +24,6 @@ const BROADCAST = [
   { id: 'go-live', to: '/studio/go-live', label: 'Go live' },
   { id: 'schedule', to: '/studio/schedule', label: 'Schedule', active: true },
   { id: 'shows', to: '/studio/shows', label: 'Shows' },
-  { id: 'channel', to: '/studio/channel', label: 'Channel' },
 ];
 
 const meta = {

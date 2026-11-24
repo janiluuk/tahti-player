@@ -13,10 +13,12 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
-  channelRadioRedirect,
-  channelTabRedirect,
+  channelLandingRedirect,
+  channelRadioPath,
   isChannelRadioTab,
+  type ChannelRadioTab,
 } from '../../lib/channelSections';
+import { isStudioChannelSection } from '../../lib/studioProfileSections';
 import { useAuthStore } from '../../stores/authStore';
 import { StudioChannelView } from './StudioChannelView';
 
@@ -28,6 +30,14 @@ vi.mock('../../components/StreamManagerPanel', () => ({
 }));
 vi.mock('../../components/StudioRadioSubmissionPanel', () => ({
   StudioRadioSubmissionPanel: () => null,
+}));
+vi.mock('../../components/ProfileVisibilitySection', () => ({
+  ProfileVisibilitySection: () => <div data-testid="profile-visibility" />,
+}));
+vi.mock('../settings/panels/ChannelPanel', () => ({
+  ChannelPanel: ({ section }: { section: string }) => (
+    <div data-testid={`channel-panel-${section}`} />
+  ),
 }));
 
 let container: HTMLDivElement;
@@ -46,15 +56,15 @@ afterEach(() => {
   useAuthStore.setState({ user: null, hydrated: true, loading: false });
 });
 
-async function renderChannel(url: string, withChannel = true, board = false) {
+async function renderChannel(url: string, withChannel = true) {
   useAuthStore.setState({
     user: {
       id: 'user-1',
       email: 'artist@tahti.live',
       username: 'artist',
       displayName: 'An Artist',
-      role: board ? 'BOARD' : 'ARTIST',
-      isBoard: board,
+      role: 'ARTIST',
+      isBoard: false,
       isMember: true,
       channel: withChannel ? { slug: 'artist', state: 'OFFLINE' } : null,
     },
@@ -63,22 +73,13 @@ async function renderChannel(url: string, withChannel = true, board = false) {
     profileLoaded: true,
   });
   const rootRoute = createRootRoute({ component: () => <Outlet /> });
-  const scheduleRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/studio/schedule',
-    validateSearch: (search: Record<string, unknown>) => ({
-      ...(typeof search.tab === 'string' ? { tab: search.tab } : {}),
-    }),
-    component: () => <div data-testid="schedule-stub" />,
-  });
-  const goLiveRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/studio/go-live',
-    validateSearch: (search: Record<string, unknown>) => ({
-      ...(typeof search.step === 'string' ? { step: search.step } : {}),
-    }),
-    component: () => <div data-testid="go-live-stub" />,
-  });
+  const stub = (path: string, testId: string) =>
+    createRoute({
+      getParentRoute: () => rootRoute,
+      path,
+      validateSearch: (search: Record<string, unknown>) => search,
+      component: () => <div data-testid={testId} />,
+    });
   const channelRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/studio/channel',
@@ -88,26 +89,40 @@ async function renderChannel(url: string, withChannel = true, board = false) {
       ...(typeof search.tab === 'string' ? { tab: search.tab } : {}),
       ...(typeof search.radio === 'string' ? { radio: search.radio } : {}),
     }),
-    beforeLoad: ({ search }) => {
-      const fromTab = channelTabRedirect(search.tab);
-      if (fromTab) {
-        throw redirect(fromTab as never);
-      }
-      const fromRadio = channelRadioRedirect(search.radio);
-      if (fromRadio) {
-        throw redirect(fromRadio as never);
-      }
-      if (search.radio && !isChannelRadioTab(search.radio)) {
-        throw redirect({ to: '/studio/channel', search: {}, replace: true });
-      }
+    beforeLoad: ({ search, location }) => {
+      throw redirect(
+        channelLandingRedirect({
+          tab: search.tab,
+          radio: search.radio,
+          hash: location.hash,
+        }) as never,
+      );
     },
-    component: StudioChannelView,
+  });
+  const sectionRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/studio/channel/$section',
+    validateSearch: (
+      search: Record<string, unknown>,
+    ): { tab?: ChannelRadioTab } =>
+      isChannelRadioTab(search.tab) && search.tab !== 'stream'
+        ? { tab: search.tab }
+        : {},
+    component: function Section() {
+      const { section } = sectionRoute.useParams();
+      return isStudioChannelSection(section) ? (
+        <StudioChannelView section={section} />
+      ) : null;
+    },
   });
   const router = createRouter({
     routeTree: rootRoute.addChildren([
       channelRoute,
-      scheduleRoute,
-      goLiveRoute,
+      sectionRoute,
+      stub('/studio/schedule', 'schedule-stub'),
+      stub('/studio/go-live', 'go-live-stub'),
+      stub('/studio/profile/$section', 'profile-stub'),
+      stub('/admin/tahti-selects', 'selects-stub'),
     ]),
     history: createMemoryHistory({ initialEntries: [url] }),
   });
@@ -122,92 +137,95 @@ const clickTab = (name: string) =>
   act(async () => fireEvent.click(screen.getByRole('tab', { name })));
 
 describe('StudioChannelView sections', () => {
-  it('shows Radio as Stream · Pinned · Multicast with home links', async () => {
-    await renderChannel('/studio/channel');
+  it('shows Radio as Stream · Pinned with links to the stream’s other homes', async () => {
+    await renderChannel('/studio/channel/radio');
 
-    expect(
-      Array.from(document.querySelectorAll('section[id]')).map((s) => s.id),
-    ).toEqual(['radio']);
-    expect(screen.getByRole('heading', { name: 'Radio' })).toBeInTheDocument();
+    expect(screen.getByTestId('studio-channel-section-radio')).toBeVisible();
     expect(screen.getByRole('tab', { name: 'Stream' })).toHaveAttribute(
       'aria-selected',
       'true',
     );
     expect(screen.getByRole('tab', { name: 'Pinned' })).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: 'Multicast' })).toBeInTheDocument();
-    expect(screen.queryByRole('tab', { name: '24/7' })).toBeNull();
-    expect(screen.queryByRole('tab', { name: 'Green room' })).toBeNull();
-  });
-
-  it('keeps Tahti Selects out of Studio, even for the board', async () => {
-    await renderChannel('/studio/channel', true, true);
+    expect(screen.queryByRole('tab', { name: 'Multicast' })).toBeNull();
     expect(screen.queryByRole('tab', { name: 'Tahti Selects' })).toBeNull();
+    expect(screen.getByRole('link', { name: 'Open Schedule' })).toHaveAttribute(
+      'href',
+      '/studio/schedule?tab=programme',
+    );
+    expect(
+      screen.getByRole('link', { name: 'Live destinations' }),
+    ).toHaveAttribute('href', '/studio/go-live?step=destinations');
   });
 
-  it.each([
-    ['design', '/studio/profile/$section'],
-    ['profile', '/studio/profile/$section'],
-    ['selects', '/admin/tahti-selects'],
-    ['rotation', '/studio/schedule'],
-    ['green-room', '/studio/go-live'],
-  ])('sends the old ?tab=%s to %s', (tab, path) => {
-    const target = channelTabRedirect(tab);
-    expect(target).not.toBeNull();
-    expect(target!.to).toBe(path);
-  });
-
-  it('offers channel setup while there is no channel', async () => {
-    await renderChannel('/studio/channel', false);
-    expect(document.body.textContent).toContain('Create artist.tahti.live');
-  });
-
-  it('keeps the Radio tab in ?radio= and the #radio anchor', async () => {
-    const { router } = await renderChannel('/studio/channel');
+  it('keeps the Radio tab in ?tab=', async () => {
+    const { router } = await renderChannel('/studio/channel/radio');
 
     await clickTab('Pinned');
-    expect(router.state.location.search).toEqual({ radio: 'pinned' });
-    expect(router.state.location.hash).toBe('radio');
+    expect(router.state.location.pathname).toBe('/studio/channel/radio');
+    expect(router.state.location.search).toEqual({ tab: 'pinned' });
 
     await clickTab('Stream');
     expect(router.state.location.search).toEqual({});
   });
 
+  it('offers channel setup on Radio while there is no channel', async () => {
+    await renderChannel('/studio/channel/radio', false);
+    expect(document.body.textContent).toContain('Create artist.tahti.live');
+  });
+
+  it('merges discovery and profile visibility into one Visibility page', async () => {
+    await renderChannel('/studio/channel/visibility');
+    expect(screen.getByTestId('channel-panel-visibility')).toBeInTheDocument();
+    expect(screen.getByTestId('profile-visibility')).toBeInTheDocument();
+  });
+
+  it.each(['design', 'address'])(
+    'shows the channel %s settings on their own page',
+    async (section) => {
+      await renderChannel(`/studio/channel/${section}`);
+      expect(
+        screen.getByTestId(`channel-panel-${section}`),
+      ).toBeInTheDocument();
+    },
+  );
+
   it.each([
-    ['/studio/channel?tab=radio', '/studio/channel', {}, 'radio'],
+    ['/studio/channel', '/studio/channel/design', {}],
+    ['/studio/channel?tab=design', '/studio/channel/design', {}],
+    ['/studio/channel?tab=radio', '/studio/channel/radio', {}],
+    ['/studio/channel#radio', '/studio/channel/radio', {}],
+    ['/studio/channel?tab=pinned', '/studio/channel/radio', { tab: 'pinned' }],
     [
-      '/studio/channel?tab=pinned',
-      '/studio/channel',
-      { radio: 'pinned' },
-      'radio',
+      '/studio/channel?radio=pinned',
+      '/studio/channel/radio',
+      { tab: 'pinned' },
     ],
-    [
-      '/studio/channel?tab=multicast',
-      '/studio/channel',
-      { radio: 'multicast' },
-      'radio',
-    ],
-    [
-      '/studio/channel?tab=rotation',
-      '/studio/schedule',
-      { tab: 'programme' },
-      '',
-    ],
+    ['/studio/channel?tab=profile', '/studio/profile/branding', {}],
+    ['/studio/channel?tab=rotation', '/studio/schedule', { tab: 'programme' }],
     [
       '/studio/channel?radio=rotation',
       '/studio/schedule',
       { tab: 'programme' },
-      '',
+    ],
+    [
+      '/studio/channel?tab=multicast',
+      '/studio/go-live',
+      { step: 'destinations' },
     ],
     [
       '/studio/channel?tab=green-room',
       '/studio/go-live',
       { step: 'green-room' },
-      '',
     ],
-  ])('redirects %s', async (url, path, search, hash) => {
+    ['/studio/channel?tab=selects', '/admin/tahti-selects', {}],
+  ])('redirects %s to %s', async (url, path, search) => {
     const { router } = await renderChannel(url);
     expect(router.state.location.pathname).toBe(path);
     expect(router.state.location.search).toEqual(search);
-    expect(router.state.location.hash).toBe(hash);
+  });
+
+  it('builds Radio tab links', () => {
+    expect(channelRadioPath()).toBe('/studio/channel/radio');
+    expect(channelRadioPath('pinned')).toBe('/studio/channel/radio?tab=pinned');
   });
 });

@@ -55,8 +55,6 @@ the current menus.
 | Old path | Goes to | What actually happens |
 | --- | --- | --- |
 | `/dashboard/settings/connections`, `/dashboard/settings/api` | `/settings/connections` | `connections` is not a Settings section, so the modal opens Account. Social links live in Settings → Artist → Connections (`/settings/artist?tab=connections`); API tokens in Account → Security. |
-| `/dashboard/settings/discovery`, `/dashboard/settings/internet-radio` | `/settings/widgets` | `widgets` is not a section either - opens Account. Discovery is Settings → Channel & design → Discovery. |
-| `/studio/channel?tab=design` / `?tab=profile` | `/settings/artist?tab=channel-designer` | `channel-designer` is not an Artist tab (`ARTIST_SECTIONS` in `SettingsView.tsx`), so Artist opens on its default tab. The Channel Designer is Settings → Channel & design, or `/studio/branding?tab=channel-designer` (which `/dashboard/channel/edit` already uses). |
 | `/studio/venues`, `/dashboard/venues` | `/admin/venues` | Board-only page. Artists hit the AdminGate "Board admin" message. |
 | `/dashboard/upload`, `/dashboard/settings/moderators` | `/studio/upload`, `/studio/moderation` | Two redirect hops (`/library/upload`, `/settings/channel`). Works, but the table could point at the final route. |
 

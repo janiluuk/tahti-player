@@ -45,10 +45,11 @@ export const GrowActive: Story = {
 };
 
 export const ManageActive: Story = {
-  args: { current: '/studio/channel', global: true },
+  args: { current: '/studio/channel/radio', global: true },
+  decorators: [withTahtiRouter('/studio/channel/radio')],
 };
 
-/** Broadcast pages get a second row: four quiet filled links, the current
+/** Broadcast pages get a second row: three quiet filled links, the current
  * one marked with `aria-current="page"`. */
 export const BroadcastSubNav: Story = {
   args: { current: '/studio/schedule?show=events', global: true },
@@ -63,7 +64,6 @@ export const BroadcastSubNav: Story = {
       'Go live',
       'Schedule',
       'Shows',
-      'Channel',
     ]);
     const schedule = within(broadcast).getByRole('link', { name: 'Schedule' });
     await expect(schedule).toHaveAttribute('aria-current', 'page');
@@ -74,6 +74,52 @@ export const BroadcastSubNav: Story = {
         canvas.getByRole('navigation', { name: 'Studio pages' }),
       ).getByRole('link', { name: 'Broadcast' }),
     ).toHaveAttribute('aria-current', 'page');
+  },
+};
+
+/** Channel is its own Studio tab; its pages share the same filled row. */
+export const ChannelSubNav: Story = {
+  args: { current: '/studio/channel/visibility', global: true },
+  decorators: [withTahtiRouter('/studio/channel/visibility')],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const channel = canvas.getByRole('navigation', { name: 'Channel pages' });
+    await expect(
+      within(channel)
+        .getAllByRole('link')
+        .map((link) => link.textContent),
+    ).toEqual(['Design', 'Radio', 'Visibility', 'Address']);
+    await expect(
+      within(channel).getByRole('link', { name: 'Visibility' }),
+    ).toHaveAttribute('aria-current', 'page');
+    await expect(
+      within(
+        canvas.getByRole('navigation', { name: 'Studio pages' }),
+      ).getByRole('link', { name: 'Channel' }),
+    ).toHaveAttribute('aria-current', 'page');
+  },
+};
+
+/** Profile pages: five tabs, mostly-empty forms merged into their
+ * neighbours. */
+export const ProfileSubNav: Story = {
+  args: { current: '/studio/profile/identity', global: true },
+  decorators: [withTahtiRouter('/studio/profile/identity')],
+  play: async ({ canvasElement }) => {
+    const profile = within(canvasElement).getByRole('navigation', {
+      name: 'Profile pages',
+    });
+    await expect(
+      within(profile)
+        .getAllByRole('link')
+        .map((link) => link.textContent),
+    ).toEqual([
+      'Identity',
+      'Links',
+      'Link page',
+      'Branding',
+      'Gallery & press kit',
+    ]);
   },
 };
 
@@ -97,7 +143,7 @@ export const NestedPerformRoute: Story = {
 };
 
 export const MobileOverflow: Story = {
-  args: { current: '/studio/channel', global: true },
+  args: { current: '/studio/channel/radio', global: true },
   parameters: { viewport: { defaultViewport: 'mobile1' } },
 };
 

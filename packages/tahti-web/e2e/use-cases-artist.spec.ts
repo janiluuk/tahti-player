@@ -90,9 +90,9 @@ test('artist: old Events, Listening parties and Radio addresses redirect', async
   await page.goto('/studio/listening-parties');
   await expect(page).toHaveURL(/\/studio\/schedule\?show=parties$/);
   await page.goto('/studio/channel?tab=radio');
-  await expect(page).toHaveURL(/\/studio\/channel#radio$/);
+  await expect(page).toHaveURL(/\/studio\/channel\/radio$/);
   await expect(
-    page.getByRole('heading', { name: 'Radio', exact: true, level: 2 }),
+    page.getByRole('heading', { name: 'Radio', exact: true, level: 1 }),
   ).toBeVisible();
 });
 

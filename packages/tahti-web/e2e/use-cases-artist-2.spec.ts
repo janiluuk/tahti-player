@@ -96,19 +96,17 @@ test('artist: a post with a future time is scheduled, not published', async ({
   await expect(row).toContainText(/2027|Scheduled/);
 });
 
-test('artist: Profile → Channel design opens the Channel design page', async ({
+test('artist: the Channel tab opens on the Channel design page', async ({
   page,
 }) => {
-  await open(page, '/studio/profile');
+  await open(page, '/studio');
   await page
-    .getByRole('list', { name: 'Channel page settings' })
-    .getByRole('link', { name: /Channel design/ })
+    .getByRole('navigation', { name: 'Studio pages' })
+    .getByRole('link', { name: 'Channel' })
     .click();
-  await expect(page).toHaveURL(/\/studio\/profile\/appearance$/);
+  await expect(page).toHaveURL(/\/studio\/channel\/design$/);
   await expect(
-    page
-      .getByRole('main')
-      .getByRole('heading', { level: 1, name: 'Channel design' }),
+    page.getByRole('main').getByRole('heading', { level: 1, name: 'Design' }),
   ).toBeVisible();
   await expect(
     page.getByTestId('channel-designer-programme-link'),

@@ -32,15 +32,20 @@ test('Studio Insights leads back to Stats, not to itself', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test('Studio Profile form pages lead back to Profile', async ({ page }) => {
+test('Studio Profile and Channel pages use a sub-tab row, not a back link', async ({
+  page,
+}) => {
   const errors = collectPageErrors(page);
   await signIn(page);
-  for (const from of [
-    '/studio/profile/identity',
-    '/studio/profile/gallery',
-    '/studio/profile/appearance',
-  ]) {
-    await back(page, from, 'Profile', /\/studio\/profile$/);
+  for (const [from, nav] of [
+    ['/studio/profile/identity', 'Profile pages'],
+    ['/studio/profile/gallery', 'Profile pages'],
+    ['/studio/channel/design', 'Channel pages'],
+  ] as const) {
+    await page.goto(from);
+    await acknowledgeGuidelines(page);
+    await expect(page.getByRole('navigation', { name: nav })).toBeVisible();
+    await expect(page.getByTestId('page-back-link')).toHaveCount(0);
   }
   expect(errors).toEqual([]);
 });

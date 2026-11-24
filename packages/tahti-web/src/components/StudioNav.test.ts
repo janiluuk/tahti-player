@@ -11,8 +11,10 @@ import {
   isBroadcastSubnavActive,
   isCatalogSubnavActive,
   isStudioBroadcastGroup,
+  isStudioChannelGroup,
   isStudioDetailRoute,
   isStudioFansGroup,
+  isStudioProfileGroup,
   isSubmenuActive,
   SUBMENUS,
 } from './StudioNav';
@@ -41,12 +43,11 @@ describe('StudioNav section coverage', () => {
     }
   }
 
-  it('has four Broadcast pages: Events, parties and radio are merged away', () => {
+  it('has three Broadcast pages now that Channel is its own tab', () => {
     expect(BROADCAST_SUBNAV_ITEMS.map((item) => item.to)).toEqual([
       '/studio/go-live',
       '/studio/schedule',
       '/studio/shows',
-      '/studio/channel',
     ]);
   });
 
@@ -90,8 +91,8 @@ describe('StudioNav section coverage', () => {
       ['/studio/events/new', '/studio/broadcast'],
       ['/studio/shows', '/studio/broadcast'],
       ['/studio/shows/abc', '/studio/broadcast'],
-      ['/studio/channel', '/studio/broadcast'],
-      ['/studio/channel?radio=rotation', '/studio/broadcast'],
+      ['/studio/channel/design', '/studio/channel'],
+      ['/studio/channel/radio?tab=pinned', '/studio/channel'],
       ['/studio/fans', '/studio/fans'],
       ['/studio/updates', '/studio/fans'],
       ['/studio/updates?tab=newsletter', '/studio/fans'],
@@ -101,6 +102,8 @@ describe('StudioNav section coverage', () => {
       ['/studio/stripe', '/studio/fans'],
       ['/studio/revenue', '/studio/fans'],
       ['/studio/profile', '/studio/profile'],
+      ['/studio/profile/identity', '/studio/profile'],
+      ['/studio/profile/gallery', '/studio/profile'],
     ];
     for (const [location, expected] of covered) {
       expect(litStudioSubmenuDestinations(location), location).toEqual([
@@ -121,8 +124,6 @@ describe('StudioNav section coverage', () => {
       ['/studio/listening-parties/new', '/studio/schedule'],
       ['/studio/shows', '/studio/shows'],
       ['/studio/shows/abc', '/studio/shows'],
-      ['/studio/channel', '/studio/channel'],
-      ['/studio/channel?radio=multicast', '/studio/channel'],
     ];
     for (const [location, expectedTo] of covered) {
       const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>
@@ -148,12 +149,37 @@ describe('StudioNav section coverage', () => {
     }
   });
 
-  it('keeps Go live unlit on the Channel green-room section', () => {
-    const location = '/studio/channel';
-    const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>
-      isBroadcastSubnavActive(location, item.to),
-    ).map((item) => item.to);
-    expect(lit).toEqual(['/studio/channel']);
+  it('keeps every Broadcast sub-tab unlit on Channel pages', () => {
+    for (const location of [
+      '/studio/channel/radio',
+      '/studio/channel/design',
+    ]) {
+      const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>
+        isBroadcastSubnavActive(location, item.to),
+      ).map((item) => item.to);
+      expect(lit, location).toEqual([]);
+      expect(isStudioBroadcastGroup(location), location).toBe(false);
+    }
+  });
+
+  it('gives Channel and Profile pages their own sub-tab row', () => {
+    for (const location of [
+      '/studio/channel/design',
+      '/studio/channel/radio?tab=pinned',
+    ]) {
+      expect(isStudioChannelGroup(location), location).toBe(true);
+      expect(isStudioProfileGroup(location), location).toBe(false);
+      expect(hasStudioNestedNav(location), location).toBe(true);
+    }
+    for (const location of [
+      '/studio/profile/identity',
+      '/studio/profile/gallery',
+    ]) {
+      expect(isStudioProfileGroup(location), location).toBe(true);
+      expect(isStudioChannelGroup(location), location).toBe(false);
+      expect(hasStudioNestedNav(location), location).toBe(true);
+    }
+    expect(isStudioChannelGroup('/studio/setup-channel')).toBe(false);
   });
 
   it('lights the right Music sub-tab for releases, distribution, and editor', () => {
@@ -189,7 +215,7 @@ describe('StudioNav section coverage', () => {
     expect(hasStudioNestedNav('/studio/audience?tab=store')).toBe(true);
   });
 
-  it('has six one-word tabs in plan order: Home, Music, Broadcast, Fans, Stats, Profile', () => {
+  it('has seven one-word tabs in plan order: Home, Music, Broadcast, Channel, Fans, Stats, Profile', () => {
     const labels = SUBMENUS['/studio'].map((item) =>
       i18n.t(`web:${item.labelKey}`),
     );
@@ -197,6 +223,7 @@ describe('StudioNav section coverage', () => {
       'Home',
       'Music',
       'Broadcast',
+      'Channel',
       'Fans',
       'Stats',
       'Profile',

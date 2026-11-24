@@ -1,10 +1,14 @@
 import { useRouterState } from '@tanstack/react-router';
 import { ArrowLeftIcon, LayoutGridIcon } from 'lucide-react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import { ButtonLink, NavLinks, SidebarNavigationItem } from '@tahti-player/ui';
 
 import { matchesSectionRoute } from '../lib/sectionNavigation';
+import {
+  CHANNEL_SUBNAV_ITEMS,
+  PROFILE_SUBNAV_ITEMS,
+} from '../lib/studioSectionCopy';
 
 type StudioSubmenuItem = {
   to: string;
@@ -25,6 +29,7 @@ export const SUBMENUS = {
     { to: '/studio', labelKey: 'studio.home' },
     { to: '/studio/sounds', labelKey: 'studio.music' },
     { to: '/studio/broadcast', labelKey: 'studio.goLive' },
+    { to: '/studio/channel', labelKey: 'studio.channel' },
     { to: '/studio/fans', labelKey: 'studio.fans' },
     { to: '/studio/stats', labelKey: 'studio.stats' },
     { to: '/studio/profile', labelKey: 'studio.profile' },
@@ -43,12 +48,11 @@ export const CATALOG_SUBNAV_ITEMS = [
 ] as const;
 
 /** Events and listening parties are filters of Schedule, and the 24/7 radio
- * is a section of Channel, so Broadcast has four pages. */
+ * is a page of the Channel tab, so Broadcast has three pages. */
 export const BROADCAST_SUBNAV_ITEMS = [
   { to: '/studio/go-live', labelKey: 'studio.onAir' as const },
   { to: '/studio/schedule', labelKey: 'studio.schedule' as const },
   { to: '/studio/shows', labelKey: 'studio.shows' as const },
-  { to: '/studio/channel', labelKey: 'studio.channel' as const },
 ] as const;
 
 const pathMatches = (pathname: string, prefix: string) =>
@@ -127,7 +131,6 @@ export const isSubmenuActive = (current: string | undefined, to: string) => {
       pathname?.startsWith('/studio/listening-parties/') === true ||
       pathname === '/studio/shows' ||
       pathname?.startsWith('/studio/shows/') === true ||
-      pathname === '/studio/channel' ||
       pathname === '/studio/recordings'
     );
   }
@@ -165,8 +168,62 @@ export function isStudioBroadcastGroup(current: string | undefined): boolean {
     pathname.startsWith('/studio/listening-parties/') ||
     pathname === '/studio/shows' ||
     pathname.startsWith('/studio/shows/') ||
-    pathname === '/studio/channel' ||
     pathname === '/studio/recordings'
+  );
+}
+
+export function isStudioChannelGroup(current: string | undefined): boolean {
+  return pathMatches(current?.split('?')[0] ?? '', '/studio/channel');
+}
+
+export function isStudioProfileGroup(current: string | undefined): boolean {
+  return pathMatches(current?.split('?')[0] ?? '', '/studio/profile');
+}
+
+function SectionSubNav({
+  current,
+  items,
+  label,
+}: {
+  current?: string;
+  items: readonly { to: string; labelKey: ParseKeys<'web'> }[];
+  label: string;
+}) {
+  const { t } = useTranslation('web');
+  const pathname = current?.split('?')[0] ?? '';
+  return (
+    <NavLinks
+      variant="fill"
+      aria-label={label}
+      items={items.map((item) => ({
+        id: item.to,
+        to: item.to,
+        label: t(item.labelKey),
+        active: pathMatches(pathname, item.to),
+      }))}
+    />
+  );
+}
+
+export function ChannelSubNav({ current }: { current?: string }) {
+  const { t } = useTranslation('web');
+  return (
+    <SectionSubNav
+      current={current}
+      items={CHANNEL_SUBNAV_ITEMS}
+      label={t('studioNavText.channelPages')}
+    />
+  );
+}
+
+export function ProfileSubNav({ current }: { current?: string }) {
+  const { t } = useTranslation('web');
+  return (
+    <SectionSubNav
+      current={current}
+      items={PROFILE_SUBNAV_ITEMS}
+      label={t('studioNavText.profilePages')}
+    />
   );
 }
 
@@ -338,6 +395,8 @@ export const hasStudioNestedNav = (current: string | undefined) =>
   (isStudioBroadcastGroup(current) &&
     !onHubItself(current, '/studio/broadcast')) ||
   isStudioCatalogGroup(current) ||
+  isStudioChannelGroup(current) ||
+  isStudioProfileGroup(current) ||
   (isStudioFansGroup(current) && current?.split('?')[0] !== '/studio/fans');
 
 export const StudioNav = ({ current }: { current?: string }) => (
@@ -431,6 +490,12 @@ function StudioNavigation({ current }: { current?: string }) {
           {showBroadcast ? <BroadcastSubNav current={current} /> : null}
           {showBroadcastBack ? <BroadcastBackLink /> : null}
           {showCatalog ? <CatalogSubNav current={current} /> : null}
+          {isStudioChannelGroup(current) ? (
+            <ChannelSubNav current={current} />
+          ) : null}
+          {isStudioProfileGroup(current) ? (
+            <ProfileSubNav current={current} />
+          ) : null}
           {showFansBack ? <FansBackLink /> : null}
         </div>
       ) : null}

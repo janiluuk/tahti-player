@@ -332,8 +332,8 @@ export function VisualizersCategory() {
       <p className="text-foreground-secondary text-xs">
         {t('themesCategory.channelDesignHint')}{' '}
         <Link
-          to="/studio/profile/$section"
-          params={{ section: 'appearance' }}
+          to="/studio/channel/$section"
+          params={{ section: 'design' }}
           className="underline underline-offset-2"
           onClick={() => useSettingsModalStore.getState().close()}
         >

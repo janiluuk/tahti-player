@@ -14,7 +14,10 @@ const meta: Meta<typeof PinnedAnnouncementsPanel> = {
   component: PinnedAnnouncementsPanel,
   parameters: { layout: 'padded' },
   tags: ['autodocs'],
-  decorators: [withTahtiRouter('/studio/channel'), withMockAuth()],
+  decorators: [
+    withTahtiRouter('/studio/channel/radio?tab=pinned'),
+    withMockAuth(),
+  ],
 };
 
 export default meta;

@@ -61,12 +61,10 @@ test('artist: Studio → Profile → Identity saves a creative role and city', a
 
   // The mock API keeps the profile in memory, so leave and come back inside
   // the app instead of reloading.
-  await page.getByTestId('page-back-link').click();
-  await expect(page).toHaveURL(/\/studio\/profile$/);
-  await page
-    .getByRole('list', { name: 'Artist profile settings' })
-    .getByRole('link', { name: /Identity/ })
-    .click();
+  const profilePages = page.getByRole('navigation', { name: 'Profile pages' });
+  await profilePages.getByRole('link', { name: 'Links' }).click();
+  await expect(page).toHaveURL(/\/studio\/profile\/connections$/);
+  await profilePages.getByRole('link', { name: 'Identity' }).click();
   await expect(
     identity().getByRole('checkbox', { name: 'DJ', exact: true }),
   ).toBeChecked();

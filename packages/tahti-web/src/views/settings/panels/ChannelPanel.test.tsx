@@ -35,11 +35,11 @@ const profile = {
 
 async function openDiscovery() {
   await act(async () => {
-    render(<ChannelPanel section="discovery" />);
+    render(<ChannelPanel section="visibility" />);
   });
 }
 
-describe('ChannelPanel discovery', () => {
+describe('ChannelPanel visibility', () => {
   beforeEach(() => {
     useAuthStore.setState({
       user: {
@@ -132,7 +132,7 @@ describe('ChannelPanel discovery', () => {
     expect(toggle.getAttribute('aria-checked')).toBe('false');
   });
 
-  it('keeps chat settings out of Discovery', async () => {
+  it('keeps chat settings out of Visibility', async () => {
     api.fetchMeProfile.mockResolvedValue({
       data: profile,
       meta: { source: 'api' },
@@ -170,7 +170,7 @@ describe('ChannelPanel address and domain', () => {
       .spyOn(channelDesign, 'updateChannelSlug')
       .mockResolvedValue({ ok: false, error: 'Taken' } as never);
     await act(async () => {
-      render(<ChannelPanel section="domain" />);
+      render(<ChannelPanel section="address" />);
     });
     const button = screen.getByRole('button', { name: 'Rename' });
     expect((button as HTMLButtonElement).disabled).toBe(true);
@@ -195,7 +195,7 @@ describe('ChannelPanel address and domain', () => {
   it('says in red when a name is taken and plainly when it is free', async () => {
     const check = vi.spyOn(channelDesign, 'checkSlugAvailable');
     await act(async () => {
-      render(<ChannelPanel section="domain" />);
+      render(<ChannelPanel section="address" />);
     });
     const button = screen.getByRole('button', { name: 'Check availability' });
     fireEvent.change(screen.getByLabelText('Channel slug / username'), {
@@ -221,6 +221,7 @@ describe('ChannelPanel address and domain', () => {
       (screen.getByRole('button', { name: 'Set domain' }) as HTMLButtonElement)
         .disabled,
     ).toBe(true);
+    expect(screen.queryByRole('button', { name: 'Verify' })).toBeNull();
   });
 
   it('shows the custom domain state as a badge, not plain text', async () => {
@@ -236,7 +237,7 @@ describe('ChannelPanel address and domain', () => {
       } as never,
     });
     await act(async () => {
-      render(<ChannelPanel section="domain" />);
+      render(<ChannelPanel section="address" />);
     });
     const status = screen.getByTestId('custom-domain-status');
     expect(status.textContent).toContain('music.example.com');
@@ -244,8 +245,8 @@ describe('ChannelPanel address and domain', () => {
       'rounded-full',
     );
     expect(screen.queryByText(/\(pending\)/)).toBeNull();
-    expect(
-      screen.getByRole('button', { name: 'About Custom domain' }),
-    ).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Custom domain' })).toBeTruthy();
+    expect(screen.getByRole('textbox', { name: 'Custom domain' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Verify' })).toBeTruthy();
   });
 });

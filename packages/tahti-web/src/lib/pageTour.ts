@@ -74,6 +74,7 @@ const PAGE_PURPOSE_BY_PREFIX: Array<{ prefix: string; key: string }> = [
   { prefix: '/studio/fans', key: 'studioFans' },
   { prefix: '/studio/audience', key: 'studioAudience' },
   { prefix: '/studio/profile', key: 'studioProfile' },
+  { prefix: '/studio/channel', key: 'studioChannel' },
   { prefix: '/studio/stripe', key: 'studioStripe' },
   { prefix: '/studio/shows', key: 'studioShows' },
   { prefix: '/studio/broadcast', key: 'studioBroadcast' },

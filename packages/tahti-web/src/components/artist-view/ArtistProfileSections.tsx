@@ -382,7 +382,8 @@ export function ArtistBioSection({
       {isOwner && (
         <div className="flex flex-wrap gap-3 text-sm">
           <Link
-            to="/studio/channel"
+            to="/studio/channel/$section"
+            params={{ section: 'design' }}
             className="text-foreground-secondary underline-offset-2 hover:underline"
           >
             {t('artistProfileSections.fullStudioSettings')}

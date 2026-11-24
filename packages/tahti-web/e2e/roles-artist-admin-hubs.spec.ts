@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
 });
 
-test('artist: Studio has six tabs and the Profile hub opens a Studio form page', async ({
+test('artist: Studio has seven tabs and Profile opens on its sub-tab row', async ({
   page,
 }) => {
   await signIn(page);
@@ -19,19 +19,21 @@ test('artist: Studio has six tabs and the Profile hub opens a Studio form page',
     'Home',
     'Music',
     'Broadcast',
+    'Channel',
     'Fans',
     'Stats',
     'Profile',
   ]);
 
   await page.goto('/studio/profile');
+  await expect(page).toHaveURL(/\/studio\/profile\/identity$/);
   await page
-    .getByRole('list', { name: 'Artist profile settings' })
-    .getByRole('link', { name: /Story/ })
+    .getByRole('navigation', { name: 'Profile pages' })
+    .getByRole('link', { name: 'Branding' })
     .click();
-  await expect(page).toHaveURL(/\/studio\/profile\/story$/);
+  await expect(page).toHaveURL(/\/studio\/profile\/branding$/);
   await expect(
-    page.getByRole('main').getByRole('heading', { level: 1, name: 'Story' }),
+    page.getByRole('main').getByRole('heading', { level: 1, name: 'Branding' }),
   ).toBeVisible();
   await expect(page.getByRole('dialog', { name: 'Settings' })).toHaveCount(0);
 });

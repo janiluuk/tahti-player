@@ -517,7 +517,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   DRel --> Cat["/studio/releases/:id · /studio/collections/:slug · /studio/editor/:id"]
   DIns --> Ins["/studio/stats/detail · /studio/insights/:kind/:id"]
   DSet --> Set["/settings/:section · /studio/updates · /studio/audience"]
-  DRadio --> TR["/studio/channel?radio=tahti-radio#radio"]
+  DRadio --> TR["/studio/channel/radio"]
   DImp --> Imp["/sources/:id → Settings → Add-ons · Import"]
   subgraph returns["Return parameters on /dashboard"]
     Q1["?mixcloud="] --> R1["/settings/plugin-store?category=import"]
@@ -1139,7 +1139,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
       'StudioNav: Overview · Stats · Governance · Posts · Audience · Releases · Editor · Broadcast, with Broadcast tabs for Go Live · Schedule · Events · Shows · Channel · Radio. Tracks, collections and upload are reached from Studio home and Library. Import lives in Settings → Add-ons.',
     mermaid: `flowchart TD
   Login["/login"] --> Studio["/studio"]
-  Studio --> Setup["/studio/channel if needed"]
+  Studio --> Setup["/studio/setup-channel if needed"]
 
   Studio --> St["/studio/stats"]
   Studio --> Upd["/studio/updates · edit · schedule"]
@@ -1163,8 +1163,9 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Studio --> Shows["/studio/shows"]
   Shows --> ShowD["/studio/shows/:id · visibility · numbering"]
   ShowD --> Ep["/studio/shows/episodes/:episodeId"]
-  Studio --> Ch["/studio/channel"]
-  Studio --> Radio["/studio/channel#radio"]
+  Studio --> Ch["/studio/channel/design · visibility · address"]
+  Studio --> Radio["/studio/channel/radio"]
+  Studio --> Prof["/studio/profile/identity · connections · link-page · branding · gallery"]
 
   Studio --> Settings["Settings modal"]
   Settings --> Addons["Add-ons · Import"]
@@ -1188,7 +1189,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   C --> M[Weekly live-time meter]
   C --> D[Go Live]
   D --> E[Player bar · open channel]
-  D --> F["Multistream · /studio/channel?radio=multicast#radio"]
+  D --> F["Multistream · /studio/go-live?step=destinations"]
   D --> G["Recordings · /studio/recordings"]
 `,
   },
@@ -1437,7 +1438,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Home --> Stats["/studio/stats"]
   Home --> Rev["/studio/audience"]
   Home --> Stripe["/studio/stripe"]
-  Home --> Ch["/studio/channel"]
+  Home --> Ch["/studio/channel/design"]
   Home --> Addons["Settings → Add-ons → Import"]
 `,
   },

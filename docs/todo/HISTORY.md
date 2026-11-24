@@ -1,3 +1,14 @@
+## 2026-11-24 — Studio Channel tab and Profile sub-tabs (0.0.482)
+
+Channel is its own Studio tab (Design · Radio · Visibility · Address) and
+Profile is a sub-tab row (Identity · Links · Link page · Branding · Gallery &
+press kit) instead of a card hub; near-empty forms merged (story and people
+into Identity, release visuals into Branding, press kit into Gallery,
+discovery and profile visibility into Visibility). Old profile, channel,
+branding, settings and dashboard links redirect. Address, Link page and Radio
+restyled onto StudioPanels with one primary action. Folded
+`studio-channel-tab-profile-tabs.md`.
+
 ## 2026-11-24 — Recently played moves to History (0.0.481)
 
 Listen no longer carries the Recently played block; its cards now sit above

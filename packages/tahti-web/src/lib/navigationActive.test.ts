@@ -71,7 +71,7 @@ describe('navigation active states', () => {
     ['/studio', 'studio'],
     ['/studio/go-live', 'studio'],
     ['/studio/schedule', 'studio'],
-    ['/studio/channel?radio=rotation', 'studio'],
+    ['/studio/channel/radio?tab=pinned', 'studio'],
     ['/library', 'library'],
     ['/library/sounds', 'library'],
     ['/library/upload', 'library'],

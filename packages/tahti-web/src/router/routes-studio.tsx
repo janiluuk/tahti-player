@@ -1,8 +1,7 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
 import {
-  channelRadioRedirect,
-  channelTabRedirect,
+  channelLandingRedirect,
   isChannelRadioTab,
   type ChannelRadioTab,
 } from '../lib/channelSections';
@@ -16,7 +15,11 @@ import {
   type ScheduleEventTab,
   type ScheduleSearchTab,
 } from '../lib/scheduleTabs';
-import { isStudioProfileSection } from '../lib/studioProfileSections';
+import {
+  isStudioChannelSection,
+  isStudioProfileSection,
+  legacyProfileSectionRedirect,
+} from '../lib/studioProfileSections';
 import { parseStudioSoundsSearch } from '../lib/studioSoundsSearch';
 import { editSearch } from '../lib/useEditMode';
 import { StudioSetupChannelRedirect } from '../views/studio/StudioSetupChannelRedirect';
@@ -43,7 +46,6 @@ import {
   StudioPlaylistEditorView,
   StudioProEditorView,
   StudioProfileSectionView,
-  StudioProfileView,
   StudioRecordingsView,
   StudioReleaseDetailView,
   StudioReleasesView,
@@ -348,30 +350,45 @@ export const studioChannelRoute = createRoute({
   path: '/studio/channel',
   validateSearch: (
     search: Record<string, unknown>,
-  ): { tab?: string; radio?: ChannelRadioTab | string } => ({
+  ): { tab?: string; radio?: string } => ({
     ...(typeof search.tab === 'string' ? { tab: search.tab } : {}),
     ...(typeof search.radio === 'string' ? { radio: search.radio } : {}),
   }),
-  beforeLoad: ({ search }) => {
-    const fromTab = channelTabRedirect(search.tab);
-    if (fromTab) {
-      throw redirect(fromTab as never);
-    }
-    const fromRadio = channelRadioRedirect(
-      typeof search.radio === 'string' ? search.radio : undefined,
+  beforeLoad: ({ search, location }) => {
+    throw redirect(
+      channelLandingRedirect({
+        tab: search.tab,
+        radio: search.radio,
+        hash: location.hash,
+      }) as never,
     );
-    if (fromRadio) {
-      throw redirect(fromRadio as never);
-    }
-    if (search.radio && !isChannelRadioTab(search.radio)) {
+  },
+});
+
+export const studioChannelSectionRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/channel/$section',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: ChannelRadioTab } =>
+    isChannelRadioTab(search.tab) && search.tab !== 'stream'
+      ? { tab: search.tab }
+      : {},
+  beforeLoad: ({ params }) => {
+    if (!isStudioChannelSection(params.section)) {
       throw redirect({
-        to: '/studio/channel',
-        search: {},
+        to: '/studio/channel/$section',
+        params: { section: 'design' },
         replace: true,
       });
     }
   },
-  component: StudioChannelView,
+  component: function StudioChannelSectionRoute() {
+    const { section } = studioChannelSectionRoute.useParams();
+    return isStudioChannelSection(section) ? (
+      <StudioChannelView section={section} />
+    ) : null;
+  },
 });
 
 export const studioBrandingRoute = createRoute({
@@ -388,16 +405,20 @@ export const studioBrandingRoute = createRoute({
         : undefined,
   }),
   beforeLoad: ({ search }) => {
-    throw redirect({
-      to: '/studio/profile/$section',
-      params: {
-        section:
-          search.tab === 'channel-designer'
-            ? 'appearance'
-            : (search.tab ?? 'branding'),
-      },
-      replace: true,
-    });
+    if (search.tab === 'channel-designer') {
+      throw redirect({
+        to: '/studio/channel/$section',
+        params: { section: 'design' },
+        replace: true,
+      });
+    }
+    throw redirect(
+      (legacyProfileSectionRedirect(search.tab) ?? {
+        to: '/studio/profile/$section',
+        params: { section: search.tab ?? 'branding' },
+        replace: true,
+      }) as never,
+    );
   },
 });
 
@@ -555,15 +576,29 @@ export const studioChatRoute = createRoute({
 export const studioProfileRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/profile',
-  component: StudioProfileView,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/studio/profile/$section',
+      params: { section: 'identity' },
+      replace: true,
+    });
+  },
 });
 
 export const studioProfileSectionRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/profile/$section',
   beforeLoad: ({ params }) => {
+    const legacy = legacyProfileSectionRedirect(params.section);
+    if (legacy) {
+      throw redirect(legacy as never);
+    }
     if (!isStudioProfileSection(params.section)) {
-      throw redirect({ to: '/studio/profile', replace: true });
+      throw redirect({
+        to: '/studio/profile/$section',
+        params: { section: 'identity' },
+        replace: true,
+      });
     }
   },
   component: function StudioProfileSectionRoute() {

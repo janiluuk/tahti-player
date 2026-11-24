@@ -77,11 +77,6 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
           },
           { id: 'studio-go-live-shows', label: 'Shows', path: '/studio/shows' },
           {
-            id: 'studio-go-live-channel',
-            label: 'Channel',
-            path: '/studio/channel',
-          },
-          {
             id: 'studio-go-live-radio',
             label: '24/7 radio',
             path: '/studio/schedule#channel-programme',
@@ -91,10 +86,32 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
             label: 'Recordings',
             path: '/studio/recordings',
           },
+        ],
+      },
+      {
+        id: 'studio-channel',
+        label: 'Channel',
+        path: '/studio/channel',
+        children: [
           {
-            id: 'studio-go-live-tahti-radio',
-            label: 'Tahti Radio',
-            path: '/studio/channel#radio',
+            id: 'studio-channel-design',
+            label: 'Design',
+            path: '/studio/channel/design',
+          },
+          {
+            id: 'studio-channel-radio',
+            label: 'Radio',
+            path: '/studio/channel/radio',
+          },
+          {
+            id: 'studio-channel-visibility',
+            label: 'Visibility',
+            path: '/studio/channel/visibility',
+          },
+          {
+            id: 'studio-channel-address',
+            label: 'Address',
+            path: '/studio/channel/address',
           },
         ],
       },
@@ -127,7 +144,38 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
         ],
       },
       { id: 'studio-stats', label: 'Stats', path: '/studio/stats' },
-      { id: 'studio-profile', label: 'Profile', path: '/studio/profile' },
+      {
+        id: 'studio-profile',
+        label: 'Profile',
+        path: '/studio/profile',
+        children: [
+          {
+            id: 'studio-profile-identity',
+            label: 'Identity',
+            path: '/studio/profile/identity',
+          },
+          {
+            id: 'studio-profile-links',
+            label: 'Links',
+            path: '/studio/profile/connections',
+          },
+          {
+            id: 'studio-profile-link-page',
+            label: 'Link page',
+            path: '/studio/profile/link-page',
+          },
+          {
+            id: 'studio-profile-branding',
+            label: 'Branding',
+            path: '/studio/profile/branding',
+          },
+          {
+            id: 'studio-profile-gallery',
+            label: 'Gallery & press kit',
+            path: '/studio/profile/gallery',
+          },
+        ],
+      },
     ],
   },
   { id: 'coop', label: 'Co-op', path: '/governance' },

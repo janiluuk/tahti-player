@@ -39,7 +39,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | ------- | ---- | -------- |
 | partial | [seo-canonical-host.md](seo-canonical-host.md) | Apex host, OG image, per-route canonical for crawlers (0.0.474); left (tahti-org): stack APP_URL, stable collection OG image URLs, raster channel OG images |
 | open    | [main-container-corner-controls.md](main-container-corner-controls.md) | Reduce main-container spacing so corner buttons are not clipped |
-| open    | [studio-channel-tab-profile-tabs.md](studio-channel-tab-profile-tabs.md) | Studio: Channel as its own tab with sub-tabs, Profile sub-items as smart tabs, consistent design, active buttons only for key actions |
 | partial | [radio-admin-playlist-ux.md](radio-admin-playlist-ux.md) | Admin edit-playlist icon shipped, picker keeps selection and adds select-all; left: ordering/current-track state and phone layout of the manager |
 | partial | [radio-expanded-visualizer.md](radio-expanded-visualizer.md) | Expanded layout shipped (large artwork, bottom controls, play bottom-left); left: view it at phone widths |
 | open    | [artist-profile-elegant.md](artist-profile-elegant.md) | Contain the Yaniho banner and refine public artist-page hierarchy |

@@ -37,15 +37,16 @@ describe('movedSettingsTarget', () => {
 
 describe('movedStudioSettingsPath', () => {
   it.each([
-    ['channel', undefined, '/studio/profile/appearance'],
-    ['channel', 'discovery', '/studio/profile/discovery'],
-    ['channel', 'domain', '/studio/profile/domain'],
+    ['channel', undefined, '/studio/channel/design'],
+    ['channel', 'discovery', '/studio/channel/visibility'],
+    ['channel', 'domain', '/studio/channel/address'],
+    ['channel', 'channel-designer', '/studio/channel/design'],
     ['channel', 'moderators', '/studio/chat?section=moderators'],
     ['channel', 'chat', '/studio/chat'],
-    ['broadcast', undefined, '/studio/channel'],
+    ['broadcast', undefined, '/studio/channel/radio'],
     ['broadcast', 'radio', '/studio/recordings#recording-settings'],
-    ['broadcast', 'green-room', '/studio/channel#green-room'],
-    ['broadcast', 'multistream', '/studio/channel?radio=multicast#radio'],
+    ['broadcast', 'green-room', '/studio/go-live?step=green-room'],
+    ['broadcast', 'multistream', '/studio/go-live?step=destinations'],
   ])('sends /settings/%s?tab=%s to %s', (section, tab, path) => {
     expect(movedStudioSettingsPath(section, tab)).toBe(path);
   });
