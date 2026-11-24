@@ -6664,3 +6664,10 @@ to Studio → Profile → Channel page → Visibility (`ProfileVisibilitySection
 section id `visibility`); Notifications links there. `PageBackLink` renders the
 round `BackButtonLink` (parent name as tooltip + accessible name) on every
 sub-page. `HubCards` contrast raised (icon chip, card background, description).
+
+## 2026-11-24 - Link page avatar no longer covers the page (0.0.460)
+
+`LinkPageView` header avatar frame lacked `relative`, so the absolutely
+positioned `MediaArtwork` filled the nearest positioned ancestor and drew the
+avatar as one huge blurred image over `tahti.live/u/<name>`. Frame is now
+`relative`; regression test added.
