@@ -35,22 +35,16 @@ export function ArtistSiteHeader({
       <MenuIcon size={18} />
     </Button>
   ) : null;
-  const mainLink = (
-    <a
-      href="https://tahti.live/"
-      className="shrink-0 rounded px-2 py-1 text-sm underline underline-offset-4 focus-visible:outline-2"
-    >
-      tahti.live
-    </a>
-  );
   if (hidden) {
+    if (!menu) {
+      return null;
+    }
     return (
       <footer
         className="order-last flex shrink-0 justify-end px-3 py-1"
         style={{ backgroundColor: scheme.bg, color: scheme.text }}
       >
         {menu}
-        {mainLink}
       </footer>
     );
   }
@@ -68,7 +62,6 @@ export function ArtistSiteHeader({
       <span className="min-w-0 truncate font-semibold">
         {title?.trim() || artistName}
       </span>
-      {mainLink}
     </header>
   );
 }

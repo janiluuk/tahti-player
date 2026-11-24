@@ -6684,3 +6684,9 @@ ALBUM/EP/SINGLE), DJ set (type MIX_SERIES or style DJ_SET_SERIES), other.
 `ArtistProfilePage` adds Albums / DJ sets tabs when it has such collections;
 the playlists grid shows only the rest. Collections stored as CUSTOM/PLAYLIST
 (all of yaniho's today) stay in the grid until their style is set.
+
+## 2026-11-24 - Artist site header without the tahti.live link (0.0.463)
+
+`ArtistSiteHeader` drops the "tahti.live" main-site link; with the header
+hidden it renders only the menu button (or nothing). Unit test, story and the
+artist-site-chrome e2e assert the link is gone.

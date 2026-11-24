@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.462',
+    version: '0.0.463',
     sections: [
       {
         id: 'listen',
@@ -51,6 +51,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
           'An artist’s short link page (tahti.live/u/name) shows their round profile picture again, instead of one large blurry picture covering the page.',
           'Listening parties moved to the bottom of Discover, so music picks come first.',
           'Artist pages get Albums and DJ sets tabs when the artist has album or DJ set series collections, so long mixes no longer sit between the albums.',
+          'An artist’s own site (name.tahti.live) no longer has a tahti.live link in its top bar, so the header is just the artist.',
           'Upcoming events now live only on Discover, where you go to find things to do, so Home stays about music you can play right away.',
           'Upcoming events on Discover is now one event poster at a time, glowing in the colours of its picture. Flip through with the arrows, a swipe or drag, or the arrow keys, and it loops back to the start. Start times use the 24-hour clock, with small icons for time, host and place.',
         ],

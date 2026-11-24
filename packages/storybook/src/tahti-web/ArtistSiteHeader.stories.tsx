@@ -19,19 +19,21 @@ type Story = StoryObj<typeof meta>;
 export const Themed: Story = {
   play: async ({ canvasElement }) => {
     await expect(
-      within(canvasElement).getByRole('link', { name: 'tahti.live' }),
-    ).toHaveAttribute('href', 'https://tahti.live/');
+      within(canvasElement).getByText('Northern Lights — music after dark'),
+    ).toBeVisible();
+    await expect(within(canvasElement).queryByRole('link')).toBeNull();
   },
 };
 export const ArtistName: Story = { args: { title: '' } };
 export const Hidden: Story = {
-  args: { hidden: true },
+  args: { hidden: true, onOpenMenu: () => {} },
   play: async ({ canvasElement }) => {
     await expect(
       within(canvasElement).queryByRole('banner'),
     ).not.toBeInTheDocument();
     await expect(
-      within(canvasElement).getByRole('link', { name: 'tahti.live' }),
+      within(canvasElement).getByRole('button', { name: 'Open navigation' }),
     ).toBeVisible();
+    await expect(within(canvasElement).queryByRole('link')).toBeNull();
   },
 };
