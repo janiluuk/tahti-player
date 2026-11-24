@@ -6781,3 +6781,7 @@ The top-nav `UserMenu` drops its desktop-only external "tahti.live" item; the te
 
 `queuePersistence` saves the current track's position under `tahti-queue-position-v1` (every 5 s of playback, on pause, on track change and on `pagehide`; never for radio/live, and not while the restored track is still untouched). On startup `resumePointFor` hands the spot to `hydrateQueue(items, currentId, resume)`, which shows the track paused at that time with its duration and sets `seekTarget`; the audio stays unloaded (`restoredPending`) and the engine's pending seek applies it on the first play. Spots under 1 s or within 3 s of the end start from the top. Verified in Chromium: playing at 0:40 → reload → paused at 0:40 → play continues from 0:40. Filed `settings-ux-sweep.md` and `front-page-smooth-loading.md`.
 
+## 2026-11-24 - Listening parties tile in the Discover masonry (0.0.478)
+
+`DiscoverPartiesRow` renders the same tile shell as `WidgetCard` (`data-testid="discover-parties-widget"`) and sits as the last item inside the Discover widget `Masonry` instead of a full-width `StudioPanel` below it; the masonry now renders even with no column widgets so the tile still shows. `DiscoverView.test` checks the tile is inside `discover-widget-columns`. Filed `recently-played-to-history.md`.
+

@@ -40,12 +40,13 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.477',
+    version: '0.0.478',
     sections: [
       {
         id: 'listen',
         label: 'Listen',
         highlights: [
+          'Listening parties on Discover are now a tile in the widget grid with the others, instead of a wide panel under it.',
           'Refreshing the page no longer loses your spot: the player comes back with the same track, paused where you left it, and pressing play carries on from there.',
           'The account menu at the top no longer has a tahti.live link; you are already on Tahti.',
           'On phones, Listen and Library no longer repeat the page name under their tabs, the Studio Sounds type filter stays on one row you can swipe, and the Admin sections sit in one swipeable row.',

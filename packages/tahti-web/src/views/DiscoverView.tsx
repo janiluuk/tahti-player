@@ -647,7 +647,7 @@ export function DiscoverView() {
           />
         ) : null}
 
-        {activeTab === 'discover' && columnWidgets.length > 0 && (
+        {activeTab === 'discover' && (
           <Masonry data-testid="discover-widget-columns">
             {columnWidgets.map((id, index) => {
               const widgetData = data[id];
@@ -726,10 +726,9 @@ export function DiscoverView() {
                 </motion.div>
               );
             })}
+            <DiscoverPartiesRow />
           </Masonry>
         )}
-
-        {activeTab === 'discover' ? <DiscoverPartiesRow /> : null}
 
         {activeTab === 'artists' && artistsError && artists.length === 0 ? (
           <PageError

@@ -143,26 +143,18 @@ describe('DiscoverView', () => {
     expect(container.textContent).not.toContain('haven’t heard');
   });
 
-  it('puts listening parties at the bottom, after the filters and widgets', async () => {
+  it('shows listening parties as a tile in the widget masonry', async () => {
     const { container } = await renderDiscover('/discover');
-    const parties = container.querySelector(
-      '[data-testid="discover-parties-row"]',
+    const tile = container.querySelector(
+      '[data-testid="discover-parties-widget"]',
     );
-    const filters = container.querySelector('[data-testid="discover-filters"]');
-    expect(parties).not.toBeNull();
-    expect(filters).not.toBeNull();
+    expect(tile).not.toBeNull();
     expect(
-      filters!.compareDocumentPosition(parties!) &
-        Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
-    const widgetTitle = [...container.querySelectorAll('h2, h3')].find((node) =>
-      node.textContent?.includes('This week: most played'),
-    );
-    expect(widgetTitle).toBeDefined();
+      tile!.querySelector('[data-testid="discover-parties-row"]'),
+    ).not.toBeNull();
     expect(
-      widgetTitle!.compareDocumentPosition(parties!) &
-        Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
+      tile!.closest('[data-testid="discover-widget-columns"]'),
+    ).not.toBeNull();
   });
 
   it('does not render the hero tile', async () => {
