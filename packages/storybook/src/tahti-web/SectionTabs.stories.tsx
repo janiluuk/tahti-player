@@ -100,7 +100,7 @@ export const StudioManage: Story = {
     items: [
       {
         id: 'channel',
-        to: '/studio/channel',
+        to: '/studio/channel/design',
         label: 'Channel',
         icon: <SettingsIcon size={16} aria-hidden />,
         active: true,
@@ -113,13 +113,13 @@ export const StudioManage: Story = {
       },
       {
         id: 'radio',
-        to: '/studio/channel?radio=rotation',
+        to: '/studio/channel/radio',
         label: 'Radio',
         icon: <RadioIcon size={16} aria-hidden />,
       },
     ],
   },
-  decorators: [withTahtiRouter('/studio/channel')],
+  decorators: [withTahtiRouter('/studio/channel/design')],
 };
 
 export const AdminModeration: Story = {

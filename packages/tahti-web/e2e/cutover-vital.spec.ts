@@ -539,29 +539,29 @@ test('help center documents artist gallery upload and reorder', async ({
   await expect(page.getByText(/no separate Add images button/)).toBeVisible();
 });
 
-test('the Channel Radio section keeps Stream, Pinned and Multicast as tabs', async ({
+test('the Channel Radio tab keeps Stream and Pinned as tabs', async ({
   page,
 }) => {
   await signIn(page);
   await page.goto('/studio/channel?tab=radio');
-  await expect(page).toHaveURL(/\/studio\/channel#radio$/);
+  await expect(page).toHaveURL(/\/studio\/channel\/radio$/);
   await expect(
-    page.getByRole('heading', { name: 'Radio', exact: true, level: 2 }),
+    page.getByRole('heading', { name: 'Radio', exact: true, level: 1 }),
   ).toBeVisible();
-  for (const tab of ['Stream', 'Pinned', 'Multicast']) {
+  for (const tab of ['Stream', 'Pinned']) {
     await expect(
       page.getByRole('tab', { name: tab, exact: true }),
     ).toBeVisible();
   }
-  await expect(page.getByRole('tab', { name: 'Tahti Radio' })).toHaveCount(0);
+  await expect(page.getByRole('tab', { name: 'Multicast' })).toHaveCount(0);
   await expect(
     page
-      .getByRole('navigation', { name: 'Broadcast pages' })
+      .getByRole('navigation', { name: 'Studio pages' })
       .getByRole('link', { name: 'Channel' }),
   ).toHaveAttribute('aria-current', 'page');
-  await page.getByRole('tab', { name: 'Multicast' }).click();
-  await expect(page).toHaveURL(/\/studio\/channel\?radio=multicast#radio/);
-  await expect(page.getByRole('tab', { name: 'Multicast' })).toHaveAttribute(
+  await page.getByRole('tab', { name: 'Pinned' }).click();
+  await expect(page).toHaveURL(/\/studio\/channel\/radio\?tab=pinned$/);
+  await expect(page.getByRole('tab', { name: 'Pinned' })).toHaveAttribute(
     'aria-selected',
     'true',
   );

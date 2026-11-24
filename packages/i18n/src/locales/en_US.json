@@ -2845,7 +2845,6 @@
         "moderatorsMovedTitle": "Moderators moved to Fans",
         "moderatorsMovedDescription": "Add and remove chat moderators on Studio → Fans, under Chat.",
         "openFansChat": "Open Fans chat",
-        "tabDomain": "Username & domain",
         "slugLabel": "Channel slug / username",
         "checkAvailability": "Check availability",
         "rename": "Rename",
@@ -2865,13 +2864,13 @@
         "domainRequiresMembership": "Requires membership. Add DNS TXT then verify.",
         "verifyDomain": "Verify",
         "signInHint": "Sign in with a channel to edit design and discovery.",
-        "tabDesigner": "Channel Designer",
-        "tabDiscovery": "Discovery",
         "tabModerators": "Moderators",
         "tabChat": "Chat",
         "domainCurrent": "Current domain: {{domain}}",
         "domainVerifiedBadge": "Verified",
-        "domainPendingBadge": "Pending verification"
+        "domainPendingBadge": "Pending verification",
+        "addressTitle": "Channel address",
+        "addressCurrent": "Your channel is at {{host}}."
       },
       "broadcast": {
         "radioLoadError": "Could not load your radio settings",
@@ -5767,7 +5766,7 @@
         },
         "studioProfile": {
           "label": "Profile",
-          "description": "How you look to listeners: each card opens one part of your artist profile or channel page settings."
+          "description": "How you look to listeners: identity, links, link page, branding, gallery and press kit, each on its own tab."
         },
         "studioStripe": {
           "label": "Stripe payouts",
@@ -5828,6 +5827,10 @@
         "home": {
           "label": "Home",
           "description": "The front page of Tahti — who’s live, the channel directory, and shortcuts into Listen, Radio, and Studio."
+        },
+        "studioChannel": {
+          "label": "Channel",
+          "description": "Your channel page: its design, the 24/7 radio, who finds it and what they see, and its address."
         }
       }
     },
@@ -6195,8 +6198,7 @@
       "nobodyIsInvitedYet": "Nobody is invited yet.",
       "greenRoom": "Green room",
       "letInvitedGuestsHearYour": "Let invited guests hear your stream before it goes public. Default invite rules live in Studio → Broadcast → Channel.",
-      "copyLink": "Copy link",
-      "openSettings": "Green room settings"
+      "copyLink": "Copy link"
     },
     "electionResult": {
       "recordTheResult": "Record the result",
@@ -6426,16 +6428,9 @@
       "youtubeBackdropPreview": "YouTube backdrop preview"
     },
     "studioProfile": {
-      "profile": "Profile",
-      "howYouLookToListeners": "How you look to listeners: your artist profile and your channel page. Each card opens its own page.",
-      "artistProfile": "Artist profile",
-      "artistProfileSettings": "Artist profile settings",
-      "channelPage": "Channel page",
-      "channelPageSettings": "Channel page settings",
       "livePreview": "Live preview",
       "livePreviewHint": "Updates as you edit. Save the form to publish the change.",
-      "livePreviewEmptyBio": "Add a short bio to show it here.",
-      "profileSections": "Profile sections"
+      "livePreviewEmptyBio": "Add a short bio to show it here."
     },
     "soundDetailsTab": {
       "allowComments": "Allow comments",
@@ -8014,8 +8009,7 @@
       "programmeOnSchedule": "The 24/7 programme is on Schedule",
       "programmeOnScheduleDescription": "Rotation, offline fallback and announcements are managed on Schedule, next to your shows.",
       "openSchedule": "Open Schedule",
-      "multistreamDestinations": "Live destinations",
-      "multistreamDestinationsDescription": "Manage where your broadcast is sent from Go live."
+      "multistreamDestinations": "Live destinations"
     },
     "releaseStatsPanel": {
       "anonymizedCountriesForThisRelease": "Anonymized countries for this release's counted plays and downloads.",
@@ -8031,8 +8025,7 @@
       "multistream": "Destinations",
       "destinationsForThisSessionAdd": "Destinations for this session. Add or edit targets here; saved destinations live under Studio → Channel.",
       "addDestination": "Add destination",
-      "removeDestination": "Remove destination",
-      "openSettings": "Saved destinations"
+      "removeDestination": "Remove destination"
     },
     "creditsEditor": {
       "creditsRoles": "Credits & roles",
@@ -8453,7 +8446,6 @@
     },
     "studioBrandingView": {
       "signInToDesignYour": "Sign in to design your public channel.",
-      "artistBranding": "Artist branding",
       "channelDesigner": "Channel Designer",
       "programmeTitle": "Channel programme",
       "programmeHint": "What your channel plays around live shows, such as the 24/7 rotation, the offline fallback and announcements, is set on Schedule.",
@@ -9223,33 +9215,26 @@
     },
     "studioProfileView": {
       "visibility": "Visibility",
-      "visibilityDescription": "What visitors see on your profile and uploads",
+      "visibilityDescription": "How fans find your channel and what visitors see on it.",
       "identity": "Identity",
-      "artistNamePictureGenresAnd": "Artist name, picture, genres and where you are based.",
       "story": "Story",
-      "yourBioAndTheLonger": "Your bio and the longer story on your profile.",
       "people": "People",
-      "bandMembersAndCollaboratorsShown": "Band members and collaborators shown on your page.",
       "links": "Links",
       "yourWebsiteSocialsAndStreaming": "Your website, socials and streaming profiles.",
       "branding": "Branding",
-      "logoColoursAndHeaderImage": "Logo, colours and header image.",
-      "gallery": "Gallery",
-      "photosFansSeeOnYour": "Photos fans see on your profile.",
-      "pressKit": "Press kit",
-      "downloadablePhotosBioAndTechnical": "Downloadable photos, bio and technical rider.",
       "releaseVisuals": "Release visuals",
       "defaultArtworkStyleForNew": "Default artwork style for new releases.",
-      "channelDesign": "Channel design",
       "howYourChannelPageLooks": "How your channel page looks: layout, blocks and colours.",
-      "howFansFindYou": "How fans find you",
-      "directoryListingTagsAndSearch": "Directory listing, tags and search.",
-      "addressAndDomain": "Address and domain",
       "yourChannelAddressAndA": "Your channel address and a custom domain.",
-      "chat": "Chat",
-      "whoCanChatOnYour": "Who can chat on your channel, and slow mode.",
-      "moderators": "Moderators",
-      "peopleWhoCanModerateYour": "People who can moderate your chat."
+      "identityDescription": "Your artist name, picture, roles, bio and the people behind the project.",
+      "linkPageDescription": "One page with all your links, ready to share in your bio.",
+      "brandingDescription": "Profile picture, header image, logo and the default look of new releases.",
+      "galleryAndPressKit": "Gallery & press kit",
+      "galleryDescription": "Photos fans see on your profile and the press kit promoters download.",
+      "design": "Design",
+      "radioDescription": "Your channel's 24/7 stream and the messages pinned on it.",
+      "address": "Address",
+      "basics": "Basics"
     },
     "documentLinks": {
       "aboutTahti": "About Tahti",
@@ -9358,8 +9343,6 @@
       "recordings": "Recordings",
       "pastBroadcastsReadyToPublish": "Past broadcasts, ready to publish or trim.",
       "bookASlotOnThe": "Book a slot on the shared member relay.",
-      "channel": "Channel",
-      "greenRoomRadioTabsAnd": "Green room, radio tabs and channel settings.",
       "parties": "Parties"
     },
     "smartPlaylistRules": {
@@ -9494,12 +9477,8 @@
       "shatterCarouselWebgl": "Shatter carousel (WebGL)"
     },
     "studioChannelViewMore": {
-      "setup": "Setup",
-      "greenRoom": "Green room",
-      "selects": "Selects",
       "stream": "Stream",
-      "pinned": "Pinned",
-      "multicast": "Multicast"
+      "pinned": "Pinned"
     },
     "governanceNav": {
       "overview": "Overview",
@@ -10513,7 +10492,9 @@
     "studioNavText": {
       "musicPages": "Music pages",
       "broadcastPages": "Broadcast pages",
-      "sectionPages": "{{section}} pages"
+      "sectionPages": "{{section}} pages",
+      "channelPages": "Channel pages",
+      "profilePages": "Profile pages"
     },
     "releaseTrackRowText": {
       "openOnBandcamp": "Open on Bandcamp"
@@ -11435,8 +11416,7 @@
       "import": "Import"
     },
     "studioChannelViewStates": {
-      "radio": "Radio",
-      "channel": "Channel"
+      "radio": "Radio"
     },
     "studioEventCreateViewStates": {
       "editEvent": "Edit event",
@@ -15703,9 +15683,8 @@
       "setItemCount": "{{count}} items",
       "yourLinkPage": "Your link page",
       "openLinkPage": "Open link page",
-      "statistics": "Statistics",
       "storiesHint": "Your stories and upcoming events appear on it by themselves.",
-      "linksHint": "Drag to sort. Profile links come from the Profile tab; own links appear only on the link page.",
+      "linksHint": "Profile links come from the Links tab. Your own links appear only on the link page; use the arrows to sort them.",
       "addOwnLink": "Add a link",
       "ownLinkLabel": "Label",
       "ownLinkUrl": "URL",
@@ -15723,7 +15702,8 @@
       "preview": "Preview",
       "previewHint": "Shows your changes before you save.",
       "save": "Save",
-      "tab": "Link page"
+      "tab": "Link page",
+      "copyLink": "Copy link"
     },
     "adminUserTracks": {
       "title": "Tracks",

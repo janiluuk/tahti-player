@@ -19,14 +19,14 @@ const meta: Meta<typeof ChannelPanel> = {
     docs: {
       description: {
         component:
-          'One channel page form per Studio → Profile page: Channel design (`appearance`, the Channel Designer, whose own stories live under Tahti/Channel Designer), How fans find you (`discovery`: share button and the rest of how the channel is found), Address and domain (`domain`: slug availability, rename with a confirm, custom domain). Chat and moderators are in Studio → Fans; old `/settings/channel?tab=` links redirect.',
+          'One channel page form per Studio → Channel tab: Design (`design`, the Channel Designer, whose own stories live under Tahti/Channel Designer), Visibility (`visibility`: share button, genres and the rest of how the channel is found), Address (`address`: channel address with availability check and a confirmed rename, then the custom domain). Chat and moderators are in Studio → Fans; old `/settings/channel?tab=` links redirect.',
       },
     },
   },
   decorators: [
     withPageSurface(),
     withToaster(),
-    withTahtiRouter('/studio/profile/discovery'),
+    withTahtiRouter('/studio/channel/visibility'),
     withMockAuth(MOCK_USERS.artist),
   ],
 };
@@ -34,8 +34,8 @@ const meta: Meta<typeof ChannelPanel> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Discovery: Story = {
-  args: { section: 'discovery' },
+export const Visibility: Story = {
+  args: { section: 'visibility' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.queryByRole('tab')).toBeNull();
@@ -49,7 +49,7 @@ export const Discovery: Story = {
 
 // Rename is disabled until the slug changes, and asks before renaming.
 export const RenameChannel: Story = {
-  args: { section: 'domain' },
+  args: { section: 'address' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const slug = await canvas.findByRole('textbox', {
@@ -77,7 +77,7 @@ export const RenameChannel: Story = {
 };
 
 export const SignedOut: Story = {
-  args: { section: 'discovery' },
+  args: { section: 'visibility' },
   decorators: [withMockAuth(null)],
   play: async ({ canvasElement }) => {
     await expectVisible(

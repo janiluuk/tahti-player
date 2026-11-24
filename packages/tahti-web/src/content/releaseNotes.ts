@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.481',
+    version: '0.0.482',
     sections: [
       {
         id: 'listen',
@@ -76,6 +76,8 @@ export const RELEASE_NOTES: ReleaseNote[] = [
         id: 'studio',
         label: 'Studio',
         highlights: [
+          'Your channel has its own Studio tab: its design, 24/7 radio, who can find it and its address each sit one tap away in a row of sub-tabs, instead of being split between Broadcast and Profile.',
+          'Studio → Profile is a row of five tabs instead of a page of cards: your name, story and band members are on one page with one Save, release visuals sit with your branding, and the gallery and press kit share a page.',
           'Studio → Music opens on Tracks. Each track shows a coloured status (processing, failed, public or private), types are tabs above the search, and the compact layout has larger cover art and easier-to-read text.',
           'Studio → Broadcast shows the red, blinking On air only while you are actually live; when just your 24/7 rotation plays it says Off air.',
           'Import on the Sounds page opens a step-by-step import: pick SoundCloud, hearthis.at, Spotify or Mixcloud, and if your profile already links to it, Tahti uses that link and goes straight to choosing tracks.',

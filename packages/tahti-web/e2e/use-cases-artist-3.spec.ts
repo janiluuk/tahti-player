@@ -78,9 +78,10 @@ test('artist: saves a newsletter draft', async ({ page }) => {
 test('artist: saves the profile story', async ({ page }) => {
   const story = `Started on a borrowed synth ${Date.now()}.`;
   await open(page, '/studio/profile/story');
+  await expect(page).toHaveURL(/\/studio\/profile\/identity#story$/);
   const dialog = page.getByRole('main');
   await dialog.getByRole('textbox', { name: 'Your story' }).fill(story);
-  await dialog.getByRole('button', { name: 'Save story' }).click();
+  await dialog.getByRole('button', { name: 'Save identity' }).click();
   await expect(page.getByText('Artist info saved.')).toBeVisible();
   await expect(dialog.getByRole('textbox', { name: 'Your story' })).toHaveValue(
     story,

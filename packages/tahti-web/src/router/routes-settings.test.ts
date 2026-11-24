@@ -47,7 +47,7 @@ describe('settingsSectionRoute', () => {
 
   it('sends Channel & chat and Broadcast bookmarks to their Studio pages', () => {
     expect(redirectFor('channel', { tab: 'discovery' })).toEqual({
-      href: '/studio/profile/discovery',
+      href: '/studio/channel/visibility',
     });
     expect(redirectFor('broadcast', { tab: 'radio' })).toEqual({
       href: '/studio/recordings#recording-settings',

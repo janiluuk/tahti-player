@@ -1,5 +1,4 @@
 import {
-  BarChart3Icon,
   ChevronDownIcon,
   ChevronUpIcon,
   CopyIcon,
@@ -12,7 +11,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, ButtonAnchor, Input } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  Input,
+  SaveButton,
+  SelectableTiles,
+} from '@tahti-player/ui';
 
 import {
   EMPTY_LINK_PAGE_CONFIG,
@@ -32,6 +37,7 @@ import { fetchStudioSoundsPage } from '../../api/studio/studio-sounds-library';
 import type { PublicProfile } from '../../api/types';
 import { HelpTitle } from '../../components/HelpTitle';
 import { PageError } from '../../components/PageStates';
+import { StudioPanel } from '../../components/StudioPanel';
 import { socialLinksForPreview } from '../../lib/linkPageSocials';
 import { LinkPageView } from '../link-page/LinkPageView';
 
@@ -261,422 +267,422 @@ export function LinkPageEditor() {
       data-testid="link-page-editor"
     >
       <div className="flex flex-col gap-6">
-        <section className="border-border flex flex-col gap-3 rounded-lg border p-4">
-          <HelpTitle
-            as="h2"
-            titleClassName="text-foreground text-base font-bold"
-            title={t('linkPage.yourLinkPage')}
-            help={t('linkPage.storiesHint')}
-          />
-          <div className="flex flex-wrap items-center gap-2">
-            <Input
-              readOnly
-              value={linkPageUrl}
-              className="min-w-0 flex-1"
-              aria-label={t('linkPage.yourLinkPage')}
-            />
-            <Button
-              size="icon"
-              variant="secondary"
-              aria-label={t('linkPage.openLinkPage')}
-              onClick={() => {
-                void navigator.clipboard
-                  .writeText(linkPageUrl)
-                  .then(() => toast.success(t('toasts.linkCopied')));
-              }}
-            >
-              <CopyIcon size={16} />
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <ButtonAnchor
-              href={linkPageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              size="sm"
-              variant="secondary"
-            >
-              <ExternalLinkIcon size={14} aria-hidden className="mr-1.5" />
-              {t('linkPage.openLinkPage')}
-            </ButtonAnchor>
-            <Button size="sm" variant="secondary" disabled>
-              <BarChart3Icon size={14} aria-hidden className="mr-1.5" />
-              {t('linkPage.statistics')}
-            </Button>
-          </div>
-        </section>
-
-        <section className="border-border flex flex-col gap-3 rounded-lg border p-4">
-          <HelpTitle
-            as="h2"
-            titleClassName="text-foreground text-base font-bold"
-            title={t('linkPage.links')}
-            help={t('linkPage.linksHint')}
-          />
-          <ul className="flex flex-col gap-2">
-            {socialLinksForPreview(profile.socialLinks).map((link) => (
-              <li
-                key={link.key}
-                className="border-border bg-background-secondary flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
-              >
-                <GripVerticalIcon
-                  size={14}
-                  className="text-foreground-secondary opacity-40"
-                  aria-hidden
+        <StudioPanel
+          title={t('linkPage.yourLinkPage')}
+          help={t('linkPage.storiesHint')}
+        >
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <Input
+                  readOnly
+                  value={linkPageUrl}
+                  aria-label={t('linkPage.yourLinkPage')}
                 />
-                <span className="font-medium">{link.label}</span>
-                <span className="text-foreground-secondary truncate">
-                  {link.url}
-                </span>
-              </li>
-            ))}
-            {draft.ownLinks.map((link, index) => (
-              <li
-                key={link.id}
-                className="border-border flex flex-col gap-2 rounded-md border p-3"
+              </div>
+              <Button
+                size="icon"
+                variant="secondary"
+                aria-label={t('linkPage.copyLink')}
+                onClick={() => {
+                  void navigator.clipboard
+                    .writeText(linkPageUrl)
+                    .then(() => toast.success(t('toasts.linkCopied')));
+                }}
               >
-                <div className="flex items-center gap-2">
-                  <div className="flex flex-col">
+                <CopyIcon size={16} />
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <ButtonAnchor
+                href={linkPageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                size="sm"
+                variant="secondary"
+              >
+                <ExternalLinkIcon size={14} aria-hidden className="mr-1.5" />
+                {t('linkPage.openLinkPage')}
+              </ButtonAnchor>
+            </div>
+          </div>
+        </StudioPanel>
+
+        <StudioPanel title={t('linkPage.links')} help={t('linkPage.linksHint')}>
+          <div className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-2">
+              {socialLinksForPreview(profile.socialLinks).map((link) => (
+                <li
+                  key={link.key}
+                  className="border-border bg-background-secondary flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
+                >
+                  <GripVerticalIcon
+                    size={14}
+                    className="text-foreground-secondary opacity-40"
+                    aria-hidden
+                  />
+                  <span className="font-medium">{link.label}</span>
+                  <span className="text-foreground-secondary truncate">
+                    {link.url}
+                  </span>
+                </li>
+              ))}
+              {draft.ownLinks.map((link, index) => (
+                <li
+                  key={link.id}
+                  className="border-border flex flex-col gap-2 rounded-md border p-3"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="flex flex-col">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={index === 0}
+                        aria-label={t('actions.moveUp')}
+                        onClick={() =>
+                          setDraft({
+                            ...draft,
+                            ownLinks: moveItem(
+                              draft.ownLinks,
+                              index,
+                              index - 1,
+                            ),
+                          })
+                        }
+                      >
+                        <ChevronUpIcon size={14} />
+                      </Button>
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={index === draft.ownLinks.length - 1}
+                        aria-label={t('actions.moveDown')}
+                        onClick={() =>
+                          setDraft({
+                            ...draft,
+                            ownLinks: moveItem(
+                              draft.ownLinks,
+                              index,
+                              index + 1,
+                            ),
+                          })
+                        }
+                      >
+                        <ChevronDownIcon size={14} />
+                      </Button>
+                    </div>
+                    <Input
+                      label={t('linkPage.ownLinkLabel')}
+                      value={link.label}
+                      onChange={(e) => {
+                        const next = [...draft.ownLinks];
+                        next[index] = { ...link, label: e.target.value };
+                        setDraft({ ...draft, ownLinks: next });
+                      }}
+                    />
                     <Button
                       size="icon-sm"
                       variant="text"
-                      disabled={index === 0}
-                      aria-label={t('actions.moveUp')}
-                      onClick={() =>
+                      aria-label={t('actions.remove')}
+                      onClick={() => {
                         setDraft({
                           ...draft,
-                          ownLinks: moveItem(draft.ownLinks, index, index - 1),
-                        })
-                      }
+                          ownLinks: draft.ownLinks.filter(
+                            (item) => item.id !== link.id,
+                          ),
+                        });
+                      }}
                     >
-                      <ChevronUpIcon size={14} />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={index === draft.ownLinks.length - 1}
-                      aria-label={t('actions.moveDown')}
-                      onClick={() =>
-                        setDraft({
-                          ...draft,
-                          ownLinks: moveItem(draft.ownLinks, index, index + 1),
-                        })
-                      }
-                    >
-                      <ChevronDownIcon size={14} />
+                      <Trash2Icon size={14} />
                     </Button>
                   </div>
                   <Input
-                    label={t('linkPage.ownLinkLabel')}
-                    value={link.label}
+                    label={t('linkPage.ownLinkUrl')}
+                    value={link.url}
                     onChange={(e) => {
                       const next = [...draft.ownLinks];
-                      next[index] = { ...link, label: e.target.value };
+                      next[index] = { ...link, url: e.target.value };
                       setDraft({ ...draft, ownLinks: next });
                     }}
                   />
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    aria-label={t('actions.remove')}
-                    onClick={() => {
-                      setDraft({
-                        ...draft,
-                        ownLinks: draft.ownLinks.filter(
-                          (item) => item.id !== link.id,
-                        ),
-                      });
-                    }}
-                  >
-                    <Trash2Icon size={14} />
-                  </Button>
-                </div>
-                <Input
-                  label={t('linkPage.ownLinkUrl')}
-                  value={link.url}
-                  onChange={(e) => {
-                    const next = [...draft.ownLinks];
-                    next[index] = { ...link, url: e.target.value };
-                    setDraft({ ...draft, ownLinks: next });
-                  }}
-                />
-              </li>
-            ))}
-          </ul>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() =>
-              setDraft({
-                ...draft,
-                ownLinks: [...draft.ownLinks, newOwnLink()],
-              })
-            }
-          >
-            <PlusIcon size={14} aria-hidden className="mr-1.5" />
-            {t('linkPage.addOwnLink')}
-          </Button>
-        </section>
-
-        <section className="border-border flex flex-col gap-3 rounded-lg border p-4">
-          <HelpTitle
-            as="h2"
-            titleClassName="text-foreground text-base font-bold"
-            title={t('linkPage.sounds')}
-            help={`${t('linkPage.soundsHint')} ${t('linkPage.soundsDefault')}`}
-          />
-          <ul className="flex flex-col gap-2">
-            {draft.soundIds.map((id, index) => {
-              const sound = soundById.get(id);
-              return (
-                <li
-                  key={id}
-                  className="border-border flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
-                >
-                  <div className="flex flex-col">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={index === 0}
-                      aria-label={t('actions.moveUp')}
-                      onClick={() =>
-                        setDraft({
-                          ...draft,
-                          soundIds: moveItem(draft.soundIds, index, index - 1),
-                        })
-                      }
-                    >
-                      <ChevronUpIcon size={14} />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={index === draft.soundIds.length - 1}
-                      aria-label={t('actions.moveDown')}
-                      onClick={() =>
-                        setDraft({
-                          ...draft,
-                          soundIds: moveItem(draft.soundIds, index, index + 1),
-                        })
-                      }
-                    >
-                      <ChevronDownIcon size={14} />
-                    </Button>
-                  </div>
-                  <span className="min-w-0 flex-1 truncate font-medium">
-                    {sound?.title ?? id}
-                  </span>
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    aria-label={t('actions.remove')}
-                    onClick={() =>
-                      setDraft({
-                        ...draft,
-                        soundIds: draft.soundIds.filter(
-                          (soundId) => soundId !== id,
-                        ),
-                      })
-                    }
-                  >
-                    <Trash2Icon size={14} />
-                  </Button>
                 </li>
-              );
-            })}
-          </ul>
-          {soundPickerOpen ? (
-            <ul className="border-border max-h-48 overflow-y-auto rounded-md border">
-              {unusedSounds.length === 0 ? (
-                <li className="text-foreground-secondary px-3 py-2 text-sm">
-                  —
-                </li>
-              ) : (
-                unusedSounds.map((sound) => (
-                  <li key={sound.id}>
-                    <button
-                      type="button"
-                      className="hover:bg-background-secondary w-full px-3 py-2 text-left text-sm"
-                      disabled={draft.soundIds.length >= LINK_PAGE_PICK_MAX}
-                      onClick={() => {
-                        setDraft({
-                          ...draft,
-                          soundIds: [...draft.soundIds, sound.id].slice(
-                            0,
-                            LINK_PAGE_PICK_MAX,
-                          ),
-                        });
-                        setSoundPickerOpen(false);
-                      }}
-                    >
-                      {sound.title}
-                    </button>
-                  </li>
-                ))
-              )}
+              ))}
             </ul>
-          ) : null}
-          <Button
-            size="sm"
-            variant="secondary"
-            disabled={draft.soundIds.length >= LINK_PAGE_PICK_MAX}
-            onClick={() => setSoundPickerOpen((open) => !open)}
-          >
-            <PlusIcon size={14} aria-hidden className="mr-1.5" />
-            {t('linkPage.addSound')}
-          </Button>
-        </section>
-
-        <section className="border-border flex flex-col gap-3 rounded-lg border p-4">
-          <HelpTitle
-            as="h2"
-            titleClassName="text-foreground text-base font-bold"
-            title={t('linkPage.sets')}
-            help={`${t('linkPage.setsHint')} ${t('linkPage.setsDefault')}`}
-          />
-          <ul className="flex flex-col gap-2">
-            {draft.setIds.map((id, index) => {
-              const collection = collectionById.get(id);
-              return (
-                <li
-                  key={id}
-                  className="border-border flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
-                >
-                  <div className="flex flex-col">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={index === 0}
-                      aria-label={t('actions.moveUp')}
-                      onClick={() =>
-                        setDraft({
-                          ...draft,
-                          setIds: moveItem(draft.setIds, index, index - 1),
-                        })
-                      }
-                    >
-                      <ChevronUpIcon size={14} />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={index === draft.setIds.length - 1}
-                      aria-label={t('actions.moveDown')}
-                      onClick={() =>
-                        setDraft({
-                          ...draft,
-                          setIds: moveItem(draft.setIds, index, index + 1),
-                        })
-                      }
-                    >
-                      <ChevronDownIcon size={14} />
-                    </Button>
-                  </div>
-                  <span className="min-w-0 flex-1 truncate font-medium">
-                    {collection?.name ?? id}
-                  </span>
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    aria-label={t('actions.remove')}
-                    onClick={() =>
-                      setDraft({
-                        ...draft,
-                        setIds: draft.setIds.filter((setId) => setId !== id),
-                      })
-                    }
-                  >
-                    <Trash2Icon size={14} />
-                  </Button>
-                </li>
-              );
-            })}
-          </ul>
-          {setPickerOpen ? (
-            <ul className="border-border max-h-48 overflow-y-auto rounded-md border">
-              {unusedSets.length === 0 ? (
-                <li className="text-foreground-secondary px-3 py-2 text-sm">
-                  —
-                </li>
-              ) : (
-                unusedSets.map((collection) => (
-                  <li key={collection.id}>
-                    <button
-                      type="button"
-                      className="hover:bg-background-secondary w-full px-3 py-2 text-left text-sm"
-                      disabled={draft.setIds.length >= LINK_PAGE_PICK_MAX}
-                      onClick={() => {
-                        if (!collection.id) {
-                          return;
-                        }
-                        setDraft({
-                          ...draft,
-                          setIds: [...draft.setIds, collection.id].slice(
-                            0,
-                            LINK_PAGE_PICK_MAX,
-                          ),
-                        });
-                        setSetPickerOpen(false);
-                      }}
-                    >
-                      {collection.name}
-                    </button>
-                  </li>
-                ))
-              )}
-            </ul>
-          ) : null}
-          <Button
-            size="sm"
-            variant="secondary"
-            disabled={draft.setIds.length >= LINK_PAGE_PICK_MAX}
-            onClick={() => setSetPickerOpen((open) => !open)}
-          >
-            <PlusIcon size={14} aria-hidden className="mr-1.5" />
-            {t('linkPage.addSet')}
-          </Button>
-        </section>
-
-        <section className="border-border flex flex-col gap-3 rounded-lg border p-4">
-          <h2 className="text-foreground text-base font-bold">
-            {t('linkPage.playbackTitle')}
-          </h2>
-          <div className="flex flex-col gap-2">
-            {(
-              [
-                ['inline', 'playbackInline', 'playbackInlineHint'],
-                ['open', 'playbackOpen', 'playbackOpenHint'],
-              ] as const
-            ).map(([mode, titleKey, hintKey]) => {
-              const selected = draft.playMode === mode;
-              return (
-                <button
-                  key={mode}
-                  type="button"
-                  className={
-                    selected
-                      ? 'border-accent-red-strong rounded-lg border-2 p-3 text-left'
-                      : 'border-border rounded-lg border p-3 text-left'
-                  }
-                  aria-pressed={selected}
-                  onClick={() => setDraft({ ...draft, playMode: mode })}
-                >
-                  <div className="text-foreground font-semibold">
-                    {t(`linkPage.${titleKey}`)}
-                  </div>
-                  <div className="text-foreground-secondary mt-1 text-sm">
-                    {t(`linkPage.${hintKey}`)}
-                  </div>
-                </button>
-              );
-            })}
+            <Button
+              size="sm"
+              variant="secondary"
+              className="self-start"
+              onClick={() =>
+                setDraft({
+                  ...draft,
+                  ownLinks: [...draft.ownLinks, newOwnLink()],
+                })
+              }
+            >
+              <PlusIcon size={14} aria-hidden className="mr-1.5" />
+              {t('linkPage.addOwnLink')}
+            </Button>
           </div>
-        </section>
+        </StudioPanel>
 
-        <div className="flex justify-end">
-          <Button onClick={() => void save()} disabled={saving}>
-            {t('linkPage.save')}
-          </Button>
+        <StudioPanel
+          title={t('linkPage.sounds')}
+          help={`${t('linkPage.soundsHint')} ${t('linkPage.soundsDefault')}`}
+        >
+          <div className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-2">
+              {draft.soundIds.map((id, index) => {
+                const sound = soundById.get(id);
+                return (
+                  <li
+                    key={id}
+                    className="border-border flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
+                  >
+                    <div className="flex flex-col">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={index === 0}
+                        aria-label={t('actions.moveUp')}
+                        onClick={() =>
+                          setDraft({
+                            ...draft,
+                            soundIds: moveItem(
+                              draft.soundIds,
+                              index,
+                              index - 1,
+                            ),
+                          })
+                        }
+                      >
+                        <ChevronUpIcon size={14} />
+                      </Button>
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={index === draft.soundIds.length - 1}
+                        aria-label={t('actions.moveDown')}
+                        onClick={() =>
+                          setDraft({
+                            ...draft,
+                            soundIds: moveItem(
+                              draft.soundIds,
+                              index,
+                              index + 1,
+                            ),
+                          })
+                        }
+                      >
+                        <ChevronDownIcon size={14} />
+                      </Button>
+                    </div>
+                    <span className="min-w-0 flex-1 truncate font-medium">
+                      {sound?.title ?? id}
+                    </span>
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      aria-label={t('actions.remove')}
+                      onClick={() =>
+                        setDraft({
+                          ...draft,
+                          soundIds: draft.soundIds.filter(
+                            (soundId) => soundId !== id,
+                          ),
+                        })
+                      }
+                    >
+                      <Trash2Icon size={14} />
+                    </Button>
+                  </li>
+                );
+              })}
+            </ul>
+            {soundPickerOpen ? (
+              <ul className="border-border max-h-48 overflow-y-auto rounded-md border">
+                {unusedSounds.length === 0 ? (
+                  <li className="text-foreground-secondary px-3 py-2 text-sm">
+                    —
+                  </li>
+                ) : (
+                  unusedSounds.map((sound) => (
+                    <li key={sound.id}>
+                      <Button
+                        variant="text"
+                        size="sm"
+                        className="w-full justify-start rounded-none"
+                        disabled={draft.soundIds.length >= LINK_PAGE_PICK_MAX}
+                        onClick={() => {
+                          setDraft({
+                            ...draft,
+                            soundIds: [...draft.soundIds, sound.id].slice(
+                              0,
+                              LINK_PAGE_PICK_MAX,
+                            ),
+                          });
+                          setSoundPickerOpen(false);
+                        }}
+                      >
+                        {sound.title}
+                      </Button>
+                    </li>
+                  ))
+                )}
+              </ul>
+            ) : null}
+            <Button
+              size="sm"
+              variant="secondary"
+              className="self-start"
+              disabled={draft.soundIds.length >= LINK_PAGE_PICK_MAX}
+              onClick={() => setSoundPickerOpen((open) => !open)}
+            >
+              <PlusIcon size={14} aria-hidden className="mr-1.5" />
+              {t('linkPage.addSound')}
+            </Button>
+          </div>
+        </StudioPanel>
+
+        <StudioPanel
+          title={t('linkPage.sets')}
+          help={`${t('linkPage.setsHint')} ${t('linkPage.setsDefault')}`}
+        >
+          <div className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-2">
+              {draft.setIds.map((id, index) => {
+                const collection = collectionById.get(id);
+                return (
+                  <li
+                    key={id}
+                    className="border-border flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
+                  >
+                    <div className="flex flex-col">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={index === 0}
+                        aria-label={t('actions.moveUp')}
+                        onClick={() =>
+                          setDraft({
+                            ...draft,
+                            setIds: moveItem(draft.setIds, index, index - 1),
+                          })
+                        }
+                      >
+                        <ChevronUpIcon size={14} />
+                      </Button>
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={index === draft.setIds.length - 1}
+                        aria-label={t('actions.moveDown')}
+                        onClick={() =>
+                          setDraft({
+                            ...draft,
+                            setIds: moveItem(draft.setIds, index, index + 1),
+                          })
+                        }
+                      >
+                        <ChevronDownIcon size={14} />
+                      </Button>
+                    </div>
+                    <span className="min-w-0 flex-1 truncate font-medium">
+                      {collection?.name ?? id}
+                    </span>
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      aria-label={t('actions.remove')}
+                      onClick={() =>
+                        setDraft({
+                          ...draft,
+                          setIds: draft.setIds.filter((setId) => setId !== id),
+                        })
+                      }
+                    >
+                      <Trash2Icon size={14} />
+                    </Button>
+                  </li>
+                );
+              })}
+            </ul>
+            {setPickerOpen ? (
+              <ul className="border-border max-h-48 overflow-y-auto rounded-md border">
+                {unusedSets.length === 0 ? (
+                  <li className="text-foreground-secondary px-3 py-2 text-sm">
+                    —
+                  </li>
+                ) : (
+                  unusedSets.map((collection) => (
+                    <li key={collection.id}>
+                      <Button
+                        variant="text"
+                        size="sm"
+                        className="w-full justify-start rounded-none"
+                        disabled={draft.setIds.length >= LINK_PAGE_PICK_MAX}
+                        onClick={() => {
+                          if (!collection.id) {
+                            return;
+                          }
+                          setDraft({
+                            ...draft,
+                            setIds: [...draft.setIds, collection.id].slice(
+                              0,
+                              LINK_PAGE_PICK_MAX,
+                            ),
+                          });
+                          setSetPickerOpen(false);
+                        }}
+                      >
+                        {collection.name}
+                      </Button>
+                    </li>
+                  ))
+                )}
+              </ul>
+            ) : null}
+            <Button
+              size="sm"
+              variant="secondary"
+              className="self-start"
+              disabled={draft.setIds.length >= LINK_PAGE_PICK_MAX}
+              onClick={() => setSetPickerOpen((open) => !open)}
+            >
+              <PlusIcon size={14} aria-hidden className="mr-1.5" />
+              {t('linkPage.addSet')}
+            </Button>
+          </div>
+        </StudioPanel>
+
+        <StudioPanel title={t('linkPage.playbackTitle')}>
+          <SelectableTiles
+            className="sm:grid-cols-2"
+            aria-label={t('linkPage.playbackTitle')}
+            items={[
+              {
+                id: 'inline',
+                label: t('linkPage.playbackInline'),
+                description: t('linkPage.playbackInlineHint'),
+              },
+              {
+                id: 'open',
+                label: t('linkPage.playbackOpen'),
+                description: t('linkPage.playbackOpenHint'),
+              },
+            ]}
+            selected={draft.playMode}
+            onChange={(mode) =>
+              setDraft({ ...draft, playMode: mode as typeof draft.playMode })
+            }
+          />
+        </StudioPanel>
+
+        <div className="sticky bottom-3 z-10 flex justify-end">
+          <SaveButton
+            saving={saving}
+            label={t('linkPage.save')}
+            onClick={() => void save()}
+          />
         </div>
       </div>
 

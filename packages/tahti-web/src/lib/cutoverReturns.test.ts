@@ -54,9 +54,9 @@ describe('appendSearchParams', () => {
 
   it('merges into a target that already has a query and keeps its hash', () => {
     expect(
-      appendSearchParams('/studio/channel?radio=multicast#radio', {
+      appendSearchParams('/studio/channel/radio?tab=pinned#radio', {
         status: 'ok',
       }),
-    ).toBe('/studio/channel?radio=multicast&status=ok#radio');
+    ).toBe('/studio/channel/radio?tab=pinned&status=ok#radio');
   });
 });

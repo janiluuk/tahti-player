@@ -25,19 +25,18 @@ import {
   normalizeGenresForPicker,
   parseGenreTags,
 } from '../../../lib/genres';
-import type { StudioProfileChannelSection } from '../../../lib/studioProfileSections';
 import { useAuthStore } from '../../../stores/authStore';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { ChannelAutoplayToggle } from './ChannelAutoplayToggle';
 import { channelRenameNote } from './channelRenameNote';
 
-/** One channel page form, as shown on its Studio → Profile page. Chat and
+/** One channel page form, as shown on its Studio → Channel page. Chat and
  * moderators are in Studio → Fans. */
 export function ChannelPanel({
   section,
 }: {
-  section: StudioProfileChannelSection;
+  section: 'design' | 'visibility' | 'address';
 }) {
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
@@ -49,6 +48,7 @@ export function ChannelPanel({
   const [attempt, setAttempt] = useState(0);
   const [slug, setSlug] = useState(channel?.slug ?? '');
   const [domain, setDomain] = useState('');
+  const [domainSet, setDomainSet] = useState(false);
   const [note, setNote] = useState<{ text: string; failed: boolean } | null>(
     null,
   );
@@ -108,13 +108,11 @@ export function ChannelPanel({
 
   const items = [
     {
-      id: 'appearance',
-      content: (
-        <StudioBrandingPanel section="channel-designer" hideSectionNav />
-      ),
+      id: 'design',
+      content: <StudioBrandingPanel section="channel-designer" />,
     },
     {
-      id: 'discovery',
+      id: 'visibility',
       content: !channelProfile ? (
         profileError ? (
           profileFailed
@@ -177,150 +175,176 @@ export function ChannelPanel({
       ),
     },
     {
-      id: 'domain',
+      id: 'address',
       content: (
-        <div className="flex flex-col gap-6">
-          <form
-            className="flex flex-col gap-6"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void checkSlugAvailable(slug.trim()).then((r) => {
-                if (r.available) {
-                  say(
-                    t('settingsBody.channel.slugAvailable', {
-                      slug: slug.trim(),
-                    }),
-                  );
-                } else {
-                  sayFailed(
-                    r.reason
-                      ? t('settingsBody.channel.slugNotAvailableReason', {
-                          reason: r.reason,
-                        })
-                      : t('settingsBody.channel.slugNotAvailable'),
-                  );
-                }
-              });
-            }}
+        <div className="flex flex-col gap-4">
+          <StudioPanel
+            title={t('settingsBody.channel.addressTitle')}
+            description={
+              channel?.slug
+                ? t('settingsBody.channel.addressCurrent', {
+                    host: `${channel.slug}.tahti.live`,
+                  })
+                : undefined
+            }
           >
-            <Input
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-              label={t('settingsBody.channel.slugLabel')}
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-            />
-            <div className="flex flex-wrap gap-2">
-              <Button
-                size="sm"
-                variant="secondary"
-                disabled={!slug.trim()}
-                type="submit"
-              >
-                {t('settingsBody.channel.checkAvailability')}
-              </Button>
-              <Button
-                size="sm"
-                disabled={!slug.trim() || slug.trim() === channel?.slug}
-                onClick={() => setConfirmingRename(true)}
-              >
-                {t('settingsBody.channel.rename')}
-              </Button>
-              <ConfirmDialog
-                destructive
-                isOpen={confirmingRename}
-                title={t('settingsBody.channel.renameTitle', {
-                  slug: slug.trim(),
-                })}
-                description={t('settingsBody.channel.renameDescription')}
-                confirmLabel={t('settingsBody.channel.rename')}
-                onCancel={() => setConfirmingRename(false)}
-                onConfirm={() => {
-                  setConfirmingRename(false);
-                  void updateChannelSlug(slug.trim()).then((r) => {
-                    if (r.ok) {
-                      say(channelRenameNote(r));
-                    } else {
-                      sayFailed(r.error);
-                    }
-                  });
-                }}
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void checkSlugAvailable(slug.trim()).then((r) => {
+                  if (r.available) {
+                    say(
+                      t('settingsBody.channel.slugAvailable', {
+                        slug: slug.trim(),
+                      }),
+                    );
+                  } else {
+                    sayFailed(
+                      r.reason
+                        ? t('settingsBody.channel.slugNotAvailableReason', {
+                            reason: r.reason,
+                          })
+                        : t('settingsBody.channel.slugNotAvailable'),
+                    );
+                  }
+                });
+              }}
+            >
+              <Input
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                label={t('settingsBody.channel.slugLabel')}
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
               />
-            </div>
-          </form>
-          <form
-            className="flex flex-col gap-6"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void setCustomDomain(domain.trim()).then((r) => {
-                if (!r.ok) {
-                  sayFailed(r.error);
-                } else {
-                  say(
-                    t('settingsBody.channel.domainTxtHint', {
-                      host: r.txtHost,
-                      record: r.txtRecord,
-                    }),
-                  );
-                }
-              });
-            }}
-          >
-            <Input
-              inputMode="url"
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-              label={t('settingsBody.channel.customDomain')}
-              help={t('settingsBody.channel.domainRequiresMembership')}
-              value={domain}
-              onChange={(e) => setDomain(e.target.value)}
-              placeholder="music.example.com"
-            />
-            {channel?.customDomain ? (
-              <div
-                className="flex flex-wrap items-center gap-2 text-sm"
-                data-testid="custom-domain-status"
-              >
-                <span className="text-foreground-secondary">
-                  {t('settingsBody.channel.domainCurrent', {
-                    domain: channel.customDomain,
-                  })}
-                </span>
-                <Badge
-                  variant="pill"
-                  color={channel.customDomainVerified ? 'green' : 'yellow'}
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  disabled={!slug.trim()}
+                  type="submit"
                 >
-                  {channel.customDomainVerified
-                    ? t('settingsBody.channel.domainVerifiedBadge')
-                    : t('settingsBody.channel.domainPendingBadge')}
-                </Badge>
+                  {t('settingsBody.channel.checkAvailability')}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  disabled={!slug.trim() || slug.trim() === channel?.slug}
+                  onClick={() => setConfirmingRename(true)}
+                >
+                  {t('settingsBody.channel.rename')}
+                </Button>
               </div>
-            ) : null}
-            <div className="flex flex-wrap gap-2">
-              <Button size="sm" disabled={!domain.trim()} type="submit">
-                {t('settingsBody.channel.setDomain')}
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => {
-                  void verifyCustomDomain().then((r) => {
-                    if (!r.ok) {
-                      sayFailed(r.error);
-                    } else if (r.verified) {
-                      say(t('settingsBody.channel.domainVerified'));
-                    } else {
-                      sayFailed(t('settingsBody.channel.domainNotVerified'));
-                    }
-                  });
-                }}
-              >
-                {t('settingsBody.channel.verifyDomain')}
-              </Button>
-            </div>
-          </form>
+            </form>
+            <ConfirmDialog
+              destructive
+              isOpen={confirmingRename}
+              title={t('settingsBody.channel.renameTitle', {
+                slug: slug.trim(),
+              })}
+              description={t('settingsBody.channel.renameDescription')}
+              confirmLabel={t('settingsBody.channel.rename')}
+              onCancel={() => setConfirmingRename(false)}
+              onConfirm={() => {
+                setConfirmingRename(false);
+                void updateChannelSlug(slug.trim()).then((r) => {
+                  if (r.ok) {
+                    say(channelRenameNote(r));
+                  } else {
+                    sayFailed(r.error);
+                  }
+                });
+              }}
+            />
+          </StudioPanel>
+          <StudioPanel
+            title={t('settingsBody.channel.customDomain')}
+            description={t('settingsBody.channel.domainRequiresMembership')}
+          >
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void setCustomDomain(domain.trim()).then((r) => {
+                  if (!r.ok) {
+                    sayFailed(r.error);
+                  } else {
+                    setDomainSet(true);
+                    say(
+                      t('settingsBody.channel.domainTxtHint', {
+                        host: r.txtHost,
+                        record: r.txtRecord,
+                      }),
+                    );
+                  }
+                });
+              }}
+            >
+              {channel?.customDomain ? (
+                <div
+                  className="flex flex-wrap items-center gap-2 text-sm"
+                  data-testid="custom-domain-status"
+                >
+                  <span className="text-foreground-secondary">
+                    {t('settingsBody.channel.domainCurrent', {
+                      domain: channel.customDomain,
+                    })}
+                  </span>
+                  <Badge
+                    variant="pill"
+                    color={channel.customDomainVerified ? 'green' : 'yellow'}
+                  >
+                    {channel.customDomainVerified
+                      ? t('settingsBody.channel.domainVerifiedBadge')
+                      : t('settingsBody.channel.domainPendingBadge')}
+                  </Badge>
+                </div>
+              ) : null}
+              <Input
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                aria-label={t('settingsBody.channel.customDomain')}
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
+                placeholder="music.example.com"
+              />
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  disabled={!domain.trim()}
+                  type="submit"
+                >
+                  {t('settingsBody.channel.setDomain')}
+                </Button>
+                {channel?.customDomain || domainSet ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      void verifyCustomDomain().then((r) => {
+                        if (!r.ok) {
+                          sayFailed(r.error);
+                        } else if (r.verified) {
+                          say(t('settingsBody.channel.domainVerified'));
+                        } else {
+                          sayFailed(
+                            t('settingsBody.channel.domainNotVerified'),
+                          );
+                        }
+                      });
+                    }}
+                  >
+                    {t('settingsBody.channel.verifyDomain')}
+                  </Button>
+                ) : null}
+              </div>
+            </form>
+          </StudioPanel>
           {note ? (
             <p
               role={note.failed ? 'alert' : 'status'}

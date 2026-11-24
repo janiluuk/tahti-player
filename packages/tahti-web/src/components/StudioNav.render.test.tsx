@@ -37,15 +37,22 @@ describe('StudioNav', () => {
       within(studio)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Home', 'Music', 'Broadcast', 'Fans', 'Stats', 'Profile']);
+    ).toEqual([
+      'Home',
+      'Music',
+      'Broadcast',
+      'Channel',
+      'Fans',
+      'Stats',
+      'Profile',
+    ]);
   });
 
-  it('shows the four Broadcast pages as a filled sub-nav on Broadcast pages', async () => {
+  it('shows the three Broadcast pages as a filled sub-nav on Broadcast pages', async () => {
     for (const [current, page] of [
       ['/studio/go-live?step=credentials', 'Go live'],
       ['/studio/schedule?show=events', 'Schedule'],
       ['/studio/events/new', 'Schedule'],
-      ['/studio/channel', 'Channel'],
     ] as const) {
       const { unmount } = await renderWithRouter(
         <StudioNav current={current} />,
@@ -57,7 +64,7 @@ describe('StudioNav', () => {
         within(broadcast)
           .getAllByRole('link')
           .map((link) => link.textContent),
-      ).toEqual(['Go live', 'Schedule', 'Shows', 'Channel']);
+      ).toEqual(['Go live', 'Schedule', 'Shows']);
       const active = within(broadcast).getByRole('link', { name: page });
       expect(active, current).toHaveAttribute('aria-current', 'page');
       expect(active.className).toContain('bg-background-input');
@@ -72,6 +79,58 @@ describe('StudioNav', () => {
     expect(
       screen.queryByRole('navigation', { name: 'Broadcast pages' }),
     ).toBeNull();
+  });
+
+  it('shows the Channel pages as a filled sub-nav under the Channel tab', async () => {
+    for (const [current, page] of [
+      ['/studio/channel/design', 'Design'],
+      ['/studio/channel/radio?tab=pinned', 'Radio'],
+      ['/studio/channel/address', 'Address'],
+    ] as const) {
+      const { unmount } = await renderWithRouter(
+        <StudioNav current={current} />,
+      );
+      const channel = screen.getByRole('navigation', {
+        name: 'Channel pages',
+      });
+      expect(
+        within(channel)
+          .getAllByRole('link')
+          .map((link) => link.textContent),
+      ).toEqual(['Design', 'Radio', 'Visibility', 'Address']);
+      expect(
+        within(channel).getByRole('link', { name: page }),
+        current,
+      ).toHaveAttribute('aria-current', 'page');
+      expect(
+        screen
+          .getByRole('navigation', { name: 'Studio pages' })
+          .querySelector('[aria-current="page"]')?.textContent,
+      ).toBe('Channel');
+      expect(
+        screen.queryByRole('navigation', { name: 'Broadcast pages' }),
+      ).toBeNull();
+      unmount();
+    }
+  });
+
+  it('shows the Profile pages as a filled sub-nav under the Profile tab', async () => {
+    await renderWithRouter(<StudioNav current="/studio/profile/gallery" />);
+    const profile = screen.getByRole('navigation', { name: 'Profile pages' });
+    expect(
+      within(profile)
+        .getAllByRole('link')
+        .map((link) => link.textContent),
+    ).toEqual([
+      'Identity',
+      'Links',
+      'Link page',
+      'Branding',
+      'Gallery & press kit',
+    ]);
+    expect(
+      within(profile).getByRole('link', { name: 'Gallery & press kit' }),
+    ).toHaveAttribute('aria-current', 'page');
   });
 
   it('leaves Stats without a nested row', async () => {

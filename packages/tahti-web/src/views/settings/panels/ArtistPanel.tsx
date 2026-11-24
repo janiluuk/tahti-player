@@ -42,6 +42,7 @@ import { MentionTextarea } from '../../../components/MentionTextarea';
 import { PageError } from '../../../components/PageStates';
 import { SocialLinkIcon } from '../../../components/SocialLinkIcon';
 import { ArtistProfileLivePreview } from '../../../components/studio/ArtistProfileLivePreview';
+import { StudioPanel } from '../../../components/StudioPanel';
 import { COUNTRIES, flagEmoji } from '../../../lib/countries';
 import {
   readReleaseVisualizerPreference,
@@ -267,6 +268,163 @@ export function ArtistPanel({
     <InlineLoader label={t('settingsBody.loading')} />
   );
 
+  const identityFields = profile && (
+    <>
+      <ArtistImagePurposePicker
+        avatarUrl={profile.avatarUrl}
+        displayName={profile.displayName}
+        onProfileUploaded={(avatarUrl) => {
+          setProfile({ ...profile, avatarUrl });
+          void refreshAuth();
+          toast.success(t('settingsBody.artist.profileImageUpdated'));
+        }}
+        onGalleryUploaded={() => {
+          toast.success(t('settingsBody.artist.galleryImageAdded'));
+        }}
+      />
+      <Input
+        label={t('settingsBody.artist.displayName')}
+        value={profile.displayName}
+        onChange={(e) =>
+          setProfile({ ...profile, displayName: e.target.value })
+        }
+      />
+      <NameplateFields profile={profile} setProfile={setProfile} />
+      <div className="flex flex-col gap-2">
+        <HelpTitle
+          as="span"
+          title={t('settingsBody.artist.whatDoYouDo')}
+          help={t('settingsBody.artist.rolesDescription')}
+        />
+        <FilterChips
+          multiple
+          items={ARTIST_ROLE_IDS.map((id) => ({
+            id,
+            label: t(ARTIST_ROLE_LABEL_KEYS[id]),
+          }))}
+          selected={artistRoles}
+          onChange={setArtistRoles}
+          aria-label={t('settingsBody.artist.creativeRoles')}
+        />
+        <p className="text-foreground-secondary text-xs">
+          {t('settingsBody.artist.selectedRoles')}{' '}
+          {artistRoles.length > 0
+            ? artistRoles
+                .map((role) =>
+                  role in ARTIST_ROLE_LABEL_KEYS
+                    ? t(
+                        ARTIST_ROLE_LABEL_KEYS[
+                          role as keyof typeof ARTIST_ROLE_LABEL_KEYS
+                        ],
+                      )
+                    : role,
+                )
+                .join(', ')
+            : t('settingsBody.artist.noneYet')}
+        </p>
+      </div>
+      <PronounsField profile={profile} setProfile={setProfile} />
+      <Select
+        label={t('settingsBody.artist.country')}
+        value={profile.countryCode ?? ''}
+        onValueChange={(value) =>
+          setProfile({
+            ...profile,
+            countryCode: value || null,
+          })
+        }
+        options={[
+          { id: '', label: t('settingsBody.artist.preferNotToSay') },
+          ...COUNTRIES.map((c) => ({
+            id: c.code,
+            label: `${flagEmoji(c.code)} ${c.name}`,
+          })),
+        ]}
+      />
+      {profile.countryCode && (
+        <Input
+          autoComplete="address-level2"
+          label={t('settingsBody.artist.cityLocation')}
+          value={profile.defaultLocation ?? ''}
+          onChange={(e) =>
+            setProfile({ ...profile, defaultLocation: e.target.value })
+          }
+          help={t('settingsBody.artist.cityDescription')}
+        />
+      )}
+      <Input
+        inputMode="url"
+        autoCapitalize="none"
+        autoCorrect="off"
+        spellCheck={false}
+        label={t('settingsBody.artist.tipJarUrl')}
+        value={profile.tipJarUrl ?? ''}
+        onChange={(e) => setProfile({ ...profile, tipJarUrl: e.target.value })}
+      />
+    </>
+  );
+
+  const storyFields = profile && (
+    <>
+      <MentionTextarea
+        label={t('settingsBody.artist.shortBio')}
+        rows={4}
+        value={profile.bio ?? ''}
+        onChange={(bio) => setProfile({ ...profile, bio })}
+        placeholder={t('settingsBody.artist.shortBioPlaceholder')}
+        submitOnModEnter
+      />
+      <MentionTextarea
+        label={t('settingsBody.artist.yourStory')}
+        rows={8}
+        value={profile.fullBio ?? ''}
+        onChange={(fullBio) => setProfile({ ...profile, fullBio })}
+        placeholder={t('settingsBody.artist.yourStoryPlaceholder')}
+        submitOnModEnter
+      />
+    </>
+  );
+
+  const peopleFields = (
+    <>
+      <div className="flex flex-col gap-1.5 text-sm">
+        <HelpTitle
+          as="span"
+          title={t('settingsBody.artist.projectType')}
+          help={t('settingsBody.artist.projectTypeDescription')}
+        />
+        <SelectableTiles
+          aria-label={t('settingsBody.artist.projectType')}
+          items={[
+            { id: 'SINGLE', label: t('settingsBody.artist.soloArtist') },
+            {
+              id: 'COLLECTIVE',
+              label: t('settingsBody.artist.bandCollective'),
+            },
+          ]}
+          selected={profile?.artistKind ?? 'SINGLE'}
+          onChange={(kind) =>
+            profile &&
+            setProfile({
+              ...profile,
+              artistKind: kind as 'SINGLE' | 'COLLECTIVE',
+            })
+          }
+          className="grid-cols-2"
+        />
+      </div>
+      {profile?.artistKind === 'COLLECTIVE' ? (
+        <div className="flex flex-col gap-3">
+          <HelpTitle
+            title={t('settingsBody.artist.membersCredits')}
+            help={t('settingsBody.artist.membersCreditsDescription')}
+          />
+          <ChannelMembersEditor members={members} onChange={setMembers} />
+        </div>
+      ) : null}
+    </>
+  );
+
   const tabItems: TabsItem[] = [
     {
       id: 'identity',
@@ -282,99 +440,7 @@ export function ArtistPanel({
             saveArtistInfo();
           }}
         >
-          <ArtistImagePurposePicker
-            avatarUrl={profile.avatarUrl}
-            displayName={profile.displayName}
-            onProfileUploaded={(avatarUrl) => {
-              setProfile({ ...profile, avatarUrl });
-              void refreshAuth();
-              toast.success(t('settingsBody.artist.profileImageUpdated'));
-            }}
-            onGalleryUploaded={() => {
-              toast.success(t('settingsBody.artist.galleryImageAdded'));
-            }}
-          />
-          <Input
-            label={t('settingsBody.artist.displayName')}
-            value={profile.displayName}
-            onChange={(e) =>
-              setProfile({ ...profile, displayName: e.target.value })
-            }
-          />
-          <NameplateFields profile={profile} setProfile={setProfile} />
-          <div className="flex flex-col gap-2">
-            <HelpTitle
-              as="span"
-              title={t('settingsBody.artist.whatDoYouDo')}
-              help={t('settingsBody.artist.rolesDescription')}
-            />
-            <FilterChips
-              multiple
-              items={ARTIST_ROLE_IDS.map((id) => ({
-                id,
-                label: t(ARTIST_ROLE_LABEL_KEYS[id]),
-              }))}
-              selected={artistRoles}
-              onChange={setArtistRoles}
-              aria-label={t('settingsBody.artist.creativeRoles')}
-            />
-            <p className="text-foreground-secondary text-xs">
-              {t('settingsBody.artist.selectedRoles')}{' '}
-              {artistRoles.length > 0
-                ? artistRoles
-                    .map((role) =>
-                      role in ARTIST_ROLE_LABEL_KEYS
-                        ? t(
-                            ARTIST_ROLE_LABEL_KEYS[
-                              role as keyof typeof ARTIST_ROLE_LABEL_KEYS
-                            ],
-                          )
-                        : role,
-                    )
-                    .join(', ')
-                : t('settingsBody.artist.noneYet')}
-            </p>
-          </div>
-          <PronounsField profile={profile} setProfile={setProfile} />
-          <Select
-            label={t('settingsBody.artist.country')}
-            value={profile.countryCode ?? ''}
-            onValueChange={(value) =>
-              setProfile({
-                ...profile,
-                countryCode: value || null,
-              })
-            }
-            options={[
-              { id: '', label: t('settingsBody.artist.preferNotToSay') },
-              ...COUNTRIES.map((c) => ({
-                id: c.code,
-                label: `${flagEmoji(c.code)} ${c.name}`,
-              })),
-            ]}
-          />
-          {profile.countryCode && (
-            <Input
-              autoComplete="address-level2"
-              label={t('settingsBody.artist.cityLocation')}
-              value={profile.defaultLocation ?? ''}
-              onChange={(e) =>
-                setProfile({ ...profile, defaultLocation: e.target.value })
-              }
-              help={t('settingsBody.artist.cityDescription')}
-            />
-          )}
-          <Input
-            inputMode="url"
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-            label={t('settingsBody.artist.tipJarUrl')}
-            value={profile.tipJarUrl ?? ''}
-            onChange={(e) =>
-              setProfile({ ...profile, tipJarUrl: e.target.value })
-            }
-          />
+          {identityFields}
           <div className="flex justify-end">
             <SaveButton
               saving={busy}
@@ -400,22 +466,7 @@ export function ArtistPanel({
             saveArtistInfo();
           }}
         >
-          <MentionTextarea
-            label={t('settingsBody.artist.shortBio')}
-            rows={4}
-            value={profile.bio ?? ''}
-            onChange={(bio) => setProfile({ ...profile, bio })}
-            placeholder={t('settingsBody.artist.shortBioPlaceholder')}
-            submitOnModEnter
-          />
-          <MentionTextarea
-            label={t('settingsBody.artist.yourStory')}
-            rows={8}
-            value={profile.fullBio ?? ''}
-            onChange={(fullBio) => setProfile({ ...profile, fullBio })}
-            placeholder={t('settingsBody.artist.yourStoryPlaceholder')}
-            submitOnModEnter
-          />
+          {storyFields}
           <div className="flex justify-end">
             <SaveButton
               saving={busy}
@@ -433,39 +484,7 @@ export function ArtistPanel({
       icon: <Users size={14} />,
       content: (
         <div className="flex flex-col gap-5">
-          <div className="flex flex-col gap-1.5 text-sm">
-            <HelpTitle
-              as="span"
-              title={t('settingsBody.artist.projectType')}
-              help={t('settingsBody.artist.projectTypeDescription')}
-            />
-            <SelectableTiles
-              aria-label={t('settingsBody.artist.projectType')}
-              items={[
-                { id: 'SINGLE', label: t('settingsBody.artist.soloArtist') },
-                {
-                  id: 'COLLECTIVE',
-                  label: t('settingsBody.artist.bandCollective'),
-                },
-              ]}
-              selected={profile?.artistKind ?? 'SINGLE'}
-              onChange={(kind) =>
-                profile &&
-                setProfile({
-                  ...profile,
-                  artistKind: kind as 'SINGLE' | 'COLLECTIVE',
-                })
-              }
-              className="grid-cols-2"
-            />
-          </div>
-          <div className="flex flex-col gap-3">
-            <HelpTitle
-              title={t('settingsBody.artist.membersCredits')}
-              help={t('settingsBody.artist.membersCreditsDescription')}
-            />
-            <ChannelMembersEditor members={members} onChange={setMembers} />
-          </div>
+          {peopleFields}
           <div className="flex justify-end">
             <SaveButton
               saving={busy}
@@ -591,16 +610,53 @@ export function ArtistPanel({
       icon: <Sparkles size={14} />,
       content: <ReleaseVisualDefaultsPanel />,
     },
-  ].filter(
-    (item) => item.id !== 'people' || profile?.artistKind === 'COLLECTIVE',
-  );
+  ];
   if (section) {
     const content =
-      tabItems.find((item) => item.id === section)?.content ?? null;
-    const showPreview =
-      Boolean(profile) &&
-      (section === 'identity' || section === 'story' || section === 'people');
-    if (showPreview && profile) {
+      section !== 'identity' ? (
+        (tabItems.find((item) => item.id === section)?.content ?? null)
+      ) : !profile ? (
+        profilePending
+      ) : (
+        <div className="flex flex-col gap-4">
+          <form
+            id="artist-identity-form"
+            className="flex flex-col gap-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              saveArtistInfo();
+            }}
+          >
+            <StudioPanel title={t('studioProfileView.basics')}>
+              <div className="flex flex-col gap-6">{identityFields}</div>
+            </StudioPanel>
+            <StudioPanel
+              id="story"
+              className="scroll-mt-4"
+              title={t('studioProfileView.story')}
+            >
+              <div className="flex flex-col gap-6">{storyFields}</div>
+            </StudioPanel>
+          </form>
+          <StudioPanel
+            id="people"
+            className="scroll-mt-4"
+            title={t('studioProfileView.people')}
+          >
+            <div className="flex flex-col gap-5">{peopleFields}</div>
+          </StudioPanel>
+          <div className="sticky bottom-3 z-10 flex justify-end">
+            <SaveButton
+              form="artist-identity-form"
+              type="submit"
+              saving={busy}
+              label={t('settingsBody.artist.saveIdentity')}
+            />
+          </div>
+          {msg && <SettingsHint>{msg}</SettingsHint>}
+        </div>
+      );
+    if (section === 'identity' && profile) {
       const roleLabels = artistRoles.map((role) =>
         role in ARTIST_ROLE_LABEL_KEYS
           ? t(

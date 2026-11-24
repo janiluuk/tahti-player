@@ -11,7 +11,6 @@ import {
   RadioIcon,
   RadioTowerIcon,
   RepeatIcon,
-  Settings2Icon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -90,17 +89,10 @@ export function studioBroadcastItems(t: TFunction<'web'>): HubCardItem[] {
     },
     {
       id: 'tahti-radio',
-      href: '/studio/channel#radio',
+      href: '/studio/channel/radio',
       icon: RadioIcon,
       title: 'Tahti Radio',
       description: t('studioBroadcastViewMore.bookASlotOnThe'),
-    },
-    {
-      id: 'channel',
-      href: '/studio/channel',
-      icon: Settings2Icon,
-      title: t('studioBroadcastViewMore.channel'),
-      description: t('studioBroadcastViewMore.greenRoomRadioTabsAnd'),
     },
   ];
 }

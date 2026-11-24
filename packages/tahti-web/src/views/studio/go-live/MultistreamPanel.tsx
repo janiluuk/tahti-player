@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, ButtonLink, Dialog, Tooltip } from '@tahti-player/ui';
+import { Button, Dialog, Tooltip } from '@tahti-player/ui';
 
 import {
   deleteRtmpTarget,
@@ -46,15 +46,6 @@ export function MultistreamPanel({
         description={t('multistreamPanel.destinationsForThisSessionAdd')}
         action={
           <div className="flex items-center gap-2">
-            <ButtonLink
-              size="sm"
-              variant="ghost"
-              to="/studio/channel"
-              search={{ radio: 'multicast' }}
-              hash="radio"
-            >
-              {t('multistreamPanel.openSettings')}
-            </ButtonLink>
             <Tooltip content={t('multistreamPanel.addDestination')} side="top">
               <Button
                 size="icon-sm"

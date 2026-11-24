@@ -18,7 +18,7 @@ import { StudioPanel } from './StudioPanel';
 
 /** What visitors see on your profile and uploads: counts, connections,
  * top lists, comments and grant-report attribution. Each toggle saves on its
- * own. Lives in Studio → Profile → Channel page → Visibility. */
+ * own. Lives in Studio → Channel → Visibility. */
 export function ProfileVisibilitySection() {
   const { t } = useTranslation('web');
   const [profile, setProfile] = useState<ProfileFields | null>(null);
@@ -91,7 +91,7 @@ export function ProfileVisibilitySection() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       {!profile && profileError ? (
         <PageError
           title={t('settingsBody.account.visibilityLoadError')}

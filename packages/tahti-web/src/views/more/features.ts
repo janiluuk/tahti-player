@@ -155,7 +155,7 @@ export const FEATURES: FeatureRow[] = [
   {
     feature: 'Studio channel settings',
     tahti: '/dashboard/settings/* + channel/edit',
-    nuclear: '/studio/profile/appearance',
+    nuclear: '/studio/channel/design',
     status: 'live',
     notes: 'Design | Profile | Username/domain',
   },

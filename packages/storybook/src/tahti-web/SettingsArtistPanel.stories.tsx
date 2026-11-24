@@ -22,7 +22,7 @@ const meta: Meta<typeof ArtistPanel> = {
     docs: {
       description: {
         component:
-          'Profile forms in three groups: Profile (identity, story, people for a band or collective), Social links, press kit (social connections, news feed, auto-post; press kit) and Artist branding (branding, gallery, release visual defaults). A listener sees it as Settings → Profile; an artist gets each form on its own Studio → Profile page (`section`). Following is Library → Following. Signed out it only links to sign-in.',
+          'Profile forms in three groups: Profile (identity, story, people with the project type and, for a band or collective, its members), Social links, press kit (social connections, news feed, auto-post; press kit) and Artist branding (branding, gallery, release visual defaults). A listener sees it as Settings → Profile; an artist gets them as Studio → Profile tabs (`section`; Identity holds identity, story and people). Following is Library → Following. Signed out it only links to sign-in.',
       },
     },
   },
@@ -70,8 +70,10 @@ export const Identity: Story = {
       canvas.getByRole('textbox', { name: 'Display name' }),
     ).toHaveValue(MOCK_USERS.artist.displayName);
     await expectVisible(canvas.getByRole('group', { name: 'Creative roles' }));
-    // A solo artist has no People tab.
-    await expect(canvas.queryByRole('tab', { name: 'People' })).toBeNull();
+    // A solo artist still gets People, where the project type lives.
+    await expect(
+      canvas.getByRole('tab', { name: 'People' }),
+    ).toBeInTheDocument();
   },
 };
 

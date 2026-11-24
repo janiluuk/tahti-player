@@ -7,7 +7,6 @@ import {
   Badge,
   Button,
   ButtonAnchor,
-  ButtonLink,
   CopyButton,
   Toggle,
 } from '@tahti-player/ui';
@@ -100,16 +99,6 @@ export function GreenRoomSessionPanel() {
     <StudioPanel
       title={t('greenRoomSession.greenRoom')}
       description={t('greenRoomSession.letInvitedGuestsHearYour')}
-      action={
-        <ButtonLink
-          size="sm"
-          variant="ghost"
-          to="/studio/channel"
-          hash="green-room"
-        >
-          {t('greenRoomSession.openSettings')}
-        </ButtonLink>
-      }
     >
       {username ? (
         <ButtonAnchor

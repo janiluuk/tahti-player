@@ -1140,11 +1140,11 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           { label: 'Open Posts', to: '/studio/updates' },
           { label: 'Open Stats', to: '/studio/stats' },
           { label: 'Open Revenue', to: '/studio/audience' },
-          { label: 'Open Channel look', to: '/studio/channel' },
+          { label: 'Open Channel design', to: '/studio/channel/design' },
           { label: 'Open recordings', to: '/studio/recordings' },
           {
             label: 'If no channel yet, land on setup',
-            to: '/studio/channel',
+            to: '/studio/setup-channel',
           },
         ],
         old: {
@@ -1180,7 +1180,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/setup-channel-gated.png',
-          route: '/studio/channel',
+          route: '/studio/channel/design',
           caption: 'Nuclear combines channel setup and design',
         },
         storybookUrl: storybookStory(
@@ -1674,7 +1674,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/channel-design.png',
-          route: '/studio/channel',
+          route: '/studio/channel/design',
           caption: 'Nuclear channel designer',
         },
         storybookUrl: storybookStory('Tahti/Channel/Designer', 'Full'),
@@ -1693,7 +1693,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open Channel Designer for rotation/fallback settings',
-            to: '/studio/channel',
+            to: '/studio/channel/design',
           },
         ],
         old: {
@@ -1779,7 +1779,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           { label: 'Open Audience (fan tiers)', to: '/studio/audience' },
           {
             label: 'Open Broadcast / green room',
-            to: '/studio/channel#green-room',
+            to: '/studio/go-live?step=green-room',
           },
           { label: 'Open Themes', to: '/settings/themes' },
           { label: 'Open Add-ons', to: '/settings/plugin-store' },
@@ -1943,7 +1943,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open Channel Designer',
-            to: '/studio/profile/appearance',
+            to: '/studio/channel/design',
           },
           { label: 'Open Go Live', to: '/studio/go-live' },
           { label: 'Open the Tracks library', to: '/studio/sounds' },
@@ -1955,7 +1955,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/studio-channel-radio.png',
-          route: '/studio/channel#radio',
+          route: '/studio/channel/radio',
           caption: 'Channel radio controls',
         },
       },
@@ -1973,7 +1973,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Return to Radio controls',
-            to: '/studio/channel#radio',
+            to: '/studio/channel/radio',
           },
           { label: 'Open the public channel', to: '/channel/$slug' },
         ],
@@ -2008,7 +2008,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           { label: 'Browse Tracks', to: '/studio/sounds' },
           {
             label: 'Return to Radio controls',
-            to: '/studio/channel#radio',
+            to: '/studio/channel/radio',
           },
         ],
         old: {
@@ -2018,7 +2018,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/studio-channel-tahti-radio.png',
-          route: '/studio/channel#radio',
+          route: '/studio/channel/radio',
           caption: 'Tahti Radio submission panel',
         },
       },

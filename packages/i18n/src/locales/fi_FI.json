@@ -2845,7 +2845,6 @@
         "moderatorsMovedTitle": "Moderaattorit siirtyivät Fanit-näkymään",
         "moderatorsMovedDescription": "Lisää ja poista chatin moderaattoreita kohdassa Studio → Fanit, Chatin alla.",
         "openFansChat": "Avaa Fanien chat",
-        "tabDomain": "Käyttäjänimi ja domain",
         "slugLabel": "Kanavan slug / käyttäjänimi",
         "checkAvailability": "Tarkista saatavuus",
         "rename": "Nimeä uudelleen",
@@ -2865,13 +2864,13 @@
         "domainRequiresMembership": "Vaatii jäsenyyden. Lisää DNS TXT ja vahvista.",
         "verifyDomain": "Vahvista",
         "signInHint": "Kirjaudu kanavalla muokataksesi ulkoasua ja löydettävyyttä.",
-        "tabDesigner": "Kanavan suunnittelija",
-        "tabDiscovery": "Löydettävyys",
         "tabModerators": "Moderaattorit",
         "tabChat": "Chat",
         "domainCurrent": "Nykyinen verkkotunnus: {{domain}}",
         "domainVerifiedBadge": "Vahvistettu",
-        "domainPendingBadge": "Odottaa vahvistusta"
+        "domainPendingBadge": "Odottaa vahvistusta",
+        "addressTitle": "Kanavan osoite",
+        "addressCurrent": "Kanavasi osoite on {{host}}."
       },
       "broadcast": {
         "radioLoadError": "Radioasetuksia ei voitu ladata",
@@ -5763,7 +5762,7 @@
         },
         "studioProfile": {
           "label": "Profiili",
-          "description": "Miltä näytät kuuntelijoille: jokainen kortti avaa yhden osan artistiprofiilin tai kanavasivun asetuksista."
+          "description": "Miltä näytät kuuntelijoille: identiteetti, linkit, linkkisivu, brändi, galleria ja pressikitti, kukin omalla välilehdellään."
         },
         "studioStripe": {
           "label": "Stripe-tilitykset",
@@ -5824,6 +5823,10 @@
         "home": {
           "label": "Etusivu",
           "description": "Tahdin etusivu — kuka on livenä, kanavahakemisto ja oikotiet Kuuntele-, Radio- ja Studio-osioihin."
+        },
+        "studioChannel": {
+          "label": "Kanava",
+          "description": "Kanavasivusi: sen ulkoasu, ympärivuorokautinen radio, kuka sen löytää ja mitä hän näkee, sekä osoite."
         }
       }
     },
@@ -6191,8 +6194,7 @@
       "nobodyIsInvitedYet": "Ketään ei ole vielä kutsuttu.",
       "greenRoom": "Green room",
       "letInvitedGuestsHearYour": "Anna kutsuttujen vieraiden kuulla lähetyksesi ennen kuin se on julkinen. Kutsujen oletussäännöt ovat kohdassa Studio → Lähetys → Kanava.",
-      "copyLink": "Kopioi linkki",
-      "openSettings": "Green roomin asetukset"
+      "copyLink": "Kopioi linkki"
     },
     "electionResult": {
       "recordTheResult": "Kirjaa tulos",
@@ -6422,16 +6424,9 @@
       "youtubeBackdropPreview": "YouTube-taustan esikatselu"
     },
     "studioProfile": {
-      "profile": "Profiili",
-      "howYouLookToListeners": "Miltä näytät kuuntelijoille: artistiprofiilisi ja kanavasivusi. Jokainen kortti avaa oman sivunsa.",
-      "artistProfile": "Artistiprofiili",
-      "artistProfileSettings": "Artistiprofiilin asetukset",
-      "channelPage": "Kanavasivu",
-      "channelPageSettings": "Kanavasivun asetukset",
       "livePreview": "Esikatselu",
       "livePreviewHint": "Päivittyy kun muokkaat. Tallenna lomake julkaistaksesi muutoksen.",
-      "livePreviewEmptyBio": "Lisää lyhyt bio, niin se näkyy tässä.",
-      "profileSections": "Profiilin osiot"
+      "livePreviewEmptyBio": "Lisää lyhyt bio, niin se näkyy tässä."
     },
     "soundDetailsTab": {
       "allowComments": "Salli kommentit",
@@ -8010,8 +8005,7 @@
       "programmeOnSchedule": "24/7-ohjelma on Aikataulussa",
       "programmeOnScheduleDescription": "Rotaatiota, offline-varaohjelmaa ja ilmoituksia hallitaan Aikataulussa ohjelmiesi vieressä.",
       "openSchedule": "Avaa Aikataulu",
-      "multistreamDestinations": "Live-kohteet",
-      "multistreamDestinationsDescription": "Hallitse lähetyskohteita Go live -näkymässä."
+      "multistreamDestinations": "Live-kohteet"
     },
     "releaseStatsPanel": {
       "anonymizedCountriesForThisRelease": "Anonymisoidut maat tämän julkaisun lasketuille soitoille ja latauksille.",
@@ -8027,8 +8021,7 @@
       "multistream": "Kohteet",
       "destinationsForThisSessionAdd": "Tämän lähetyksen kohteet. Lisää tai muokkaa niitä täällä; tallennetut kohteet ovat Studiossa → Kanava.",
       "addDestination": "Lisää kohde",
-      "removeDestination": "Poista kohde",
-      "openSettings": "Tallennetut kohteet"
+      "removeDestination": "Poista kohde"
     },
     "creditsEditor": {
       "creditsRoles": "Tekijät ja roolit",
@@ -8449,7 +8442,6 @@
     },
     "studioBrandingView": {
       "signInToDesignYour": "Kirjaudu sisään suunnitellaksesi julkista kanavaasi.",
-      "artistBranding": "Artistin brändi",
       "channelDesigner": "Kanavan suunnittelu",
       "programmeTitle": "Kanavan ohjelma",
       "programmeHint": "Mitä kanavasi soittaa live-lähetysten ympärillä, kuten 24/7-rotaatio, offline-varaohjelma ja tiedotteet, asetetaan Aikataulu-sivulla.",
@@ -9219,33 +9211,26 @@
     },
     "studioProfileView": {
       "visibility": "Näkyvyys",
-      "visibilityDescription": "Mitä vierailijat näkevät profiilistasi ja julkaisuistasi",
+      "visibilityDescription": "Miten fanit löytävät kanavasi ja mitä vierailijat näkevät siellä.",
       "identity": "Identiteetti",
-      "artistNamePictureGenresAnd": "Artistinimi, kuva, tyylilajit ja kotipaikka.",
       "story": "Tarina",
-      "yourBioAndTheLonger": "Esittelysi ja pidempi tarina profiilissasi.",
       "people": "Ihmiset",
-      "bandMembersAndCollaboratorsShown": "Sivullasi näkyvät bändin jäsenet ja yhteistyökumppanit.",
       "links": "Linkit",
       "yourWebsiteSocialsAndStreaming": "Verkkosivusi, somekanavat ja suoratoistoprofiilit.",
       "branding": "Brändi",
-      "logoColoursAndHeaderImage": "Logo, värit ja yläkuva.",
-      "gallery": "Galleria",
-      "photosFansSeeOnYour": "Kuvat, jotka fanit näkevät profiilissasi.",
-      "pressKit": "Pressikitti",
-      "downloadablePhotosBioAndTechnical": "Ladattavat kuvat, esittely ja tekninen raideri.",
       "releaseVisuals": "Julkaisujen visuaalit",
       "defaultArtworkStyleForNew": "Uusien julkaisujen oletuskansityyli.",
-      "channelDesign": "Kanavan ulkoasu",
       "howYourChannelPageLooks": "Miltä kanavasivusi näyttää: asettelu, lohkot ja värit.",
-      "howFansFindYou": "Miten fanit löytävät sinut",
-      "directoryListingTagsAndSearch": "Hakemistonäkyvyys, tunnisteet ja haku.",
-      "addressAndDomain": "Osoite ja verkkotunnus",
       "yourChannelAddressAndA": "Kanavasi osoite ja oma verkkotunnus.",
-      "chat": "Chat",
-      "whoCanChatOnYour": "Kuka voi keskustella kanavallasi, ja hidas tila.",
-      "moderators": "Moderaattorit",
-      "peopleWhoCanModerateYour": "Ihmiset, jotka voivat moderoida chattiasi."
+      "identityDescription": "Artistinimesi, kuvasi, roolisi, esittelysi ja projektin takana olevat ihmiset.",
+      "linkPageDescription": "Yksi sivu kaikille linkeillesi, valmiina jaettavaksi esittelyssäsi.",
+      "brandingDescription": "Profiilikuva, yläkuva, logo ja uusien julkaisujen oletusilme.",
+      "galleryAndPressKit": "Galleria ja pressikitti",
+      "galleryDescription": "Kuvat, jotka fanit näkevät profiilissasi, ja pressikitti, jonka järjestäjät lataavat.",
+      "design": "Ulkoasu",
+      "radioDescription": "Kanavasi ympärivuorokautinen lähetys ja siihen kiinnitetyt viestit.",
+      "address": "Osoite",
+      "basics": "Perustiedot"
     },
     "documentLinks": {
       "aboutTahti": "Tietoa Tahdista",
@@ -9354,8 +9339,6 @@
       "recordings": "Tallenteet",
       "pastBroadcastsReadyToPublish": "Menneet lähetykset, valmiina julkaistaviksi tai trimmattaviksi.",
       "bookASlotOnThe": "Varaa aikaväli jäsenten yhteiseltä välityslähetykseltä.",
-      "channel": "Kanava",
-      "greenRoomRadioTabsAnd": "Green room, radiovälilehdet ja kanavan asetukset.",
       "parties": "Juhlat"
     },
     "smartPlaylistRules": {
@@ -9490,12 +9473,8 @@
       "shatterCarouselWebgl": "Särkyvä karuselli (WebGL)"
     },
     "studioChannelViewMore": {
-      "setup": "Asetukset",
-      "greenRoom": "Green room",
-      "selects": "Selects",
       "stream": "Striimi",
-      "pinned": "Kiinnitetyt",
-      "multicast": "Monilähetys"
+      "pinned": "Kiinnitetyt"
     },
     "governanceNav": {
       "overview": "Yleiskatsaus",
@@ -10509,7 +10488,9 @@
     "studioNavText": {
       "musicPages": "Musiikkisivut",
       "broadcastPages": "Lähetyssivut",
-      "sectionPages": "{{section}}: sivut"
+      "sectionPages": "{{section}}: sivut",
+      "channelPages": "Kanavan sivut",
+      "profilePages": "Profiilin sivut"
     },
     "releaseTrackRowText": {
       "openOnBandcamp": "Avaa Bandcampissa"
@@ -11431,8 +11412,7 @@
       "import": "Tuo"
     },
     "studioChannelViewStates": {
-      "radio": "Radio",
-      "channel": "Kanava"
+      "radio": "Radio"
     },
     "studioEventCreateViewStates": {
       "editEvent": "Muokkaa tapahtumaa",
@@ -15699,9 +15679,8 @@
       "setItemCount": "{{count}} kohdetta",
       "yourLinkPage": "Linkkisivusi",
       "openLinkPage": "Avaa linkkisivu",
-      "statistics": "Tilastot",
       "storiesHint": "Tarinaasi ja tulevat tapahtumat näkyvät sillä itsestään.",
-      "linksHint": "Järjestä vetämällä. Profiililinkit tulevat Profiili-välilehdeltä; omat linkit näkyvät vain linkkisivulla.",
+      "linksHint": "Profiililinkit tulevat Linkit-välilehdeltä. Omat linkkisi näkyvät vain linkkisivulla; järjestä ne nuolilla.",
       "addOwnLink": "Lisää linkki",
       "ownLinkLabel": "Nimi",
       "ownLinkUrl": "URL",
@@ -15719,7 +15698,8 @@
       "preview": "Esikatselu",
       "previewHint": "Näyttää muutokset ennen tallennusta.",
       "save": "Tallenna",
-      "tab": "Linkkisivu"
+      "tab": "Linkkisivu",
+      "copyLink": "Kopioi linkki"
     },
     "adminCommunityView": {
       "community": "Yhteisö",

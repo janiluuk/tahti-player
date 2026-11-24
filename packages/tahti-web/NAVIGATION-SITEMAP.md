@@ -26,6 +26,12 @@ Integrations under Playback & language (`/settings/integrations` still
 opens that tab). Library Files chips and Studio Profile forms stay as
 shipped 2026-11-16.
 
+**2026-11-24 changes:** Channel is its own Studio tab with sub-tabs Design ·
+Radio · Visibility · Address (`/studio/channel/$section`); Broadcast keeps Go
+live · Schedule · Shows. Profile is a sub-tab row too: Identity (with story and
+people) · Links · Link page · Branding (with release visuals) · Gallery & press
+kit. The Profile hub page is gone; old section links redirect.
+
 **2026-11-19 changes:** Library is Favorites · Playlists · History · Following ·
 Files; Go live is a chrome takeover (no StudioNav / sidebar / mobile bottom nav).
 
@@ -61,7 +67,7 @@ editor. See root `AGENTS.md` → Persistent chrome visibility.
 | Signed in | Notifications, Messages | Top bar popovers | Notification links go through `/dashboard/*` redirects; messages open `/messages/$id` |
 
 Studio row (`StudioNav` `SUBMENUS['/studio']`): **Home · Music · Broadcast ·
-Fans · Stats · Profile**.
+Channel · Fans · Stats · Profile**.
 
 - Music chips (`CatalogSubNav`): Releases · Tracks · Collections ·
   Distribution · Editor · Groups. Upload keeps Tracks lit; Smart links opens
@@ -71,9 +77,16 @@ Fans · Stats · Profile**.
   24/7, Recordings, Tahti Radio. Go live is a chrome takeover (shipped)
   work.
 - Fans hub: Posts · Newsletter · Memberships · Store · Earnings (back links).
-- Profile hub: cards → `/studio/profile/$section` (Identity, Story, People,
-  Links, Branding, Gallery, Press kit, Release visuals, Channel design,
-  Discovery, Address and domain). Chat and Moderators live under Fans.
+- Broadcast sub-tabs (`BroadcastSubNav`): Go live · Schedule · Shows.
+- Channel sub-tabs (`ChannelSubNav`, `/studio/channel/$section`): Design ·
+  Radio (Stream · Pinned, plus links to Schedule, stats, chat, green room and
+  live destinations) · Visibility (discovery and profile visibility) ·
+  Address (channel address and custom domain). Bare `/studio/channel` opens
+  Design.
+- Profile sub-tabs (`ProfileSubNav`, `/studio/profile/$section`): Identity
+  (basics, story, people) · Links · Link page · Branding (with release
+  visuals) · Gallery & press kit. Bare `/studio/profile` opens Identity. Chat
+  and Moderators live under Fans.
 
 Library tabs (`LibraryView`): **Favorites · Playlists · History · Following · Files**.
 Files (`/library/files?kind=`) shows Media, Stash and Local files as chips.
@@ -126,7 +139,7 @@ Desktop right rail: Queue only.
 | Everyone | Discover | `/discover` (+ `?tab=artists`, `venues`, `parties`, `feed`) | `/venues` redirects to the Venues tab. |
 | Everyone | Library | `/library` (→ Favorites), `/library/favorites`, `/library/history`, `/library/following`, `/library/files`; `/library/media`, `/library/stash`, `/library/local` redirect to Files | Opening Library or Favorites does not ask for sign-in. Other tabs stay visible and grayed until there is an account. |
 | Everyone | Help | `/help`, `/help/$slug` | Articles reach `/status`, `/news`, `/whats-new`, legal pages and `/transparency`. |
-| Artist | Studio | `/studio`, music catalog under `/studio/sounds`, `/studio/collections`, `/studio/releases`, and related routes; broadcast and fans hubs and children; `/studio/stats`; `/studio/profile` (+ `/$section`) | Detail pages swap the section row for a back link. |
+| Artist | Studio | `/studio`, music catalog under `/studio/sounds`, `/studio/collections`, `/studio/releases`, and related routes; broadcast and fans hubs and children; `/studio/stats`; `/studio/channel/$section`; `/studio/profile/$section` | Detail pages swap the section row for a back link. |
 | Members | Co-op | `/governance` (+ motion/meeting detail, `/governance/guide`, `/governance/documents`) | Was Studio → Governance; `/studio/governance` redirects. |
 | Signed in | Settings | `/settings`, `/settings/$section`, `/account`, `/onboarding` | Modal + bookmarkable sections. `/themes` redirects here. `/settings/plugin-store?category=themes` opens Themes. |
 | Board | Admin | `/admin`, hubs, `/admin/moderation`, `/admin/users`, content/platform tools, `/admin/governance` (+ `$tab`), `/admin/grants/$year` | Queue/detail routes stay contextual. |
@@ -155,7 +168,12 @@ These routes are real but should not become extra top-level navigation items:
   `/help/governance` → `/governance/guide`.
 - Studio aliases: `/studio/info` → go-live; `/studio/archive*` → sounds;
   `/studio/stash` → `/library/files?kind=stash`; `/studio/channel?tab=selects`
-  → `/admin/tahti-selects`; branding/profile tabs → `/studio/profile/$section`.
+  → `/admin/tahti-selects`; other `/studio/channel?tab=` / `?radio=` / `#radio`
+  → a Channel tab, Schedule or Go live; `/studio/profile/story` and `people` →
+  Identity, `release-visuals` → Branding, `press-kit` → Gallery & press kit
+  (each at its anchor); `/studio/profile/appearance`, `discovery`,
+  `visibility`, `domain` → Channel Design / Visibility / Address;
+  `/studio/branding?tab=` → the matching Profile or Channel tab.
 - Library catalog aliases (redirect-only, no mounted view): `/library/sounds`,
   `/library/collections`, `/library/collections/$slug`, `/library/upload`,
   `/library/smartlinks`, and related paths → Studio Music / Broadcast (see

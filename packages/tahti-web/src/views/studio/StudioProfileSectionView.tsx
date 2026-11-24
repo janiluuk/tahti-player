@@ -1,68 +1,55 @@
 import { useTranslation } from '@tahti-player/i18n';
-import { ViewShell } from '@tahti-player/ui';
 
-import { PageBackLink } from '../../components/PageBackLink';
-import { ProfileVisibilitySection } from '../../components/ProfileVisibilitySection';
-import { SectionTabs } from '../../components/SectionTabs';
-import { StudioGate } from '../../components/StudioGate';
+import { StudioPanel } from '../../components/StudioPanel';
+import type { StudioProfileSection } from '../../lib/studioProfileSections';
 import {
-  isStudioProfileChannelSection,
-  type StudioProfileSection,
-} from '../../lib/studioProfileSections';
-import { ArtistPanel } from '../settings/panels/ArtistPanel';
-import { ChannelPanel } from '../settings/panels/ChannelPanel';
+  ArtistPanel,
+  ReleaseVisualDefaultsPanel,
+} from '../settings/panels/ArtistPanel';
 import { LinkPageEditor } from './LinkPageEditor';
-import {
-  studioProfileArtistItems,
-  studioProfileChannelItems,
-} from './StudioProfileView';
+import { StudioBrandingPanel } from './StudioBrandingView';
+import { StudioSectionPage } from './StudioSectionPage';
 
+function ProfileSectionBody({ section }: { section: StudioProfileSection }) {
+  const { t } = useTranslation('web');
+  if (section === 'link-page') {
+    return <LinkPageEditor />;
+  }
+  if (section === 'gallery') {
+    return <StudioBrandingPanel section="gallery-and-press-kit" />;
+  }
+  if (section === 'branding') {
+    return (
+      <>
+        <StudioBrandingPanel section="branding" />
+        <StudioPanel
+          id="release-visuals"
+          className="scroll-mt-4"
+          title={t('studioProfileView.releaseVisuals')}
+          description={t('studioProfileView.defaultArtworkStyleForNew')}
+        >
+          <ReleaseVisualDefaultsPanel />
+        </StudioPanel>
+      </>
+    );
+  }
+  return <ArtistPanel section={section} />;
+}
+
+/** Studio → Profile: one tab of the artist profile (identity, links, link
+ * page, branding, gallery and press kit). */
 export function StudioProfileSectionView({
   section,
 }: {
   section: StudioProfileSection;
 }) {
-  const { t } = useTranslation('web');
-  const channelForm =
-    isStudioProfileChannelSection(section) && section !== 'visibility';
-  const cards = [
-    ...studioProfileArtistItems(t),
-    ...studioProfileChannelItems(t),
-  ];
-  const card = cards.find((item) => item.id === section);
-
   return (
-    <StudioGate requireChannel={channelForm}>
-      <div className="studio-page-layout mx-auto flex max-w-6xl flex-col gap-4 px-1 py-2">
-        <PageBackLink to="/studio/profile" label={t('studioProfile.profile')} />
-        <SectionTabs
-          aria-label={t('studioProfile.profileSections')}
-          items={cards.map(({ id, href, title, icon: Icon }) => ({
-            id,
-            to: href,
-            label: title,
-            icon: <Icon size={14} aria-hidden />,
-            active: id === section,
-          }))}
-        />
-        <ViewShell
-          title={card?.title ?? t('studioProfile.profile')}
-          subtitle={card?.description}
-          classes={{ root: 'px-0 pt-0', content: 'gap-5' }}
-        >
-          <div data-testid={`studio-profile-section-${section}`}>
-            {section === 'link-page' ? (
-              <LinkPageEditor />
-            ) : section === 'visibility' ? (
-              <ProfileVisibilitySection />
-            ) : channelForm ? (
-              <ChannelPanel section={section} />
-            ) : (
-              <ArtistPanel section={section} />
-            )}
-          </div>
-        </ViewShell>
-      </div>
-    </StudioGate>
+    <StudioSectionPage
+      section={section}
+      requireChannel={false}
+      data-testid={`studio-profile-section-${section}`}
+    >
+      <ProfileSectionBody section={section} />
+    </StudioSectionPage>
   );
 }

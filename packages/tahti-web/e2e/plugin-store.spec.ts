@@ -93,17 +93,23 @@ test('Studio Go Live multistream: every API-supported provider is selectable, an
   ).toBeVisible();
 });
 
-test('Channel > Multicast points to the Go live destinations step', async ({
+test('old multistream settings links open the Go live destinations step', async ({
   page,
 }) => {
   await signIn(page);
   await page.goto('/settings/broadcast?tab=multistream');
-  await expect(page).toHaveURL(/\/studio\/channel\?radio=multicast#radio$/);
-  const panel = page.getByRole('tabpanel', { name: 'Multicast' });
-  await expect(
-    panel.getByRole('heading', { name: 'Live destinations' }),
-  ).toBeVisible();
-  await panel.getByRole('link', { name: 'Manage live destinations' }).click();
+  await expect(page).toHaveURL(/\/studio\/go-live\?step=destinations$/);
+});
+
+test('Channel > Radio links to the Go live destinations step', async ({
+  page,
+}) => {
+  await signIn(page);
+  await page.goto('/studio/channel/radio');
+  await page
+    .getByRole('main')
+    .getByRole('link', { name: 'Live destinations' })
+    .click();
   await expect(page).toHaveURL(/\/studio\/go-live\?step=destinations$/);
 });
 

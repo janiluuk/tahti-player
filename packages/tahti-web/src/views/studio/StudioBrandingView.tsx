@@ -1,13 +1,7 @@
-import {
-  DownloadIcon,
-  ImagesIcon,
-  PaintbrushIcon,
-  PaletteIcon,
-} from 'lucide-react';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { ButtonLink, SectionTitle, TabLabel, Tabs } from '@tahti-player/ui';
+import { ButtonLink } from '@tahti-player/ui';
 
 import { ChannelDesigner } from '../../components/ChannelDesigner';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
@@ -19,20 +13,16 @@ import { ProfileLogoSection } from './branding/ProfileLogoSection';
 import { ProfilePictureSection } from './branding/ProfilePictureSection';
 import { usePressKit } from './branding/usePressKit';
 
-export const STUDIO_BRANDING_SECTIONS = [
-  'branding',
-  'gallery',
-  'press-kit',
-  'channel-designer',
-] as const;
-
-export type StudioBrandingSection = (typeof STUDIO_BRANDING_SECTIONS)[number];
+export type StudioBrandingSection =
+  | 'branding'
+  | 'gallery'
+  | 'press-kit'
+  | 'gallery-and-press-kit'
+  | 'channel-designer';
 
 export const StudioBrandingPanel: FC<{
-  section?: StudioBrandingSection;
-  hideSectionNav?: boolean;
-  onSectionChange?: (section: StudioBrandingSection) => void;
-}> = ({ section, hideSectionNav = section != null, onSectionChange }) => {
+  section: StudioBrandingSection;
+}> = ({ section }) => {
   const { t } = useTranslation('web');
   const kit = usePressKit();
   const {
@@ -47,57 +37,15 @@ export const StudioBrandingPanel: FC<{
     setPendingImageDeleteId,
     removeImage,
   } = kit;
-  const [tab, setTab] = useState<StudioBrandingSection>(section ?? 'branding');
-
-  useEffect(() => {
-    if (section) {
-      setTab(section);
-    }
-  }, [section]);
-
-  const selectSection = (next: StudioBrandingSection) => {
-    setTab(next);
-    onSectionChange?.(next);
-  };
+  const showGallery =
+    section === 'gallery' || section === 'gallery-and-press-kit';
+  const showPressKit =
+    section === 'press-kit' || section === 'gallery-and-press-kit';
 
   return (
     <div className="flex flex-col gap-6">
-      {hideSectionNav ? null : (
-        <Tabs.Root
-          selectedIndex={Math.max(0, STUDIO_BRANDING_SECTIONS.indexOf(tab))}
-          onChange={(index) => {
-            const next = STUDIO_BRANDING_SECTIONS[index];
-            if (next) {
-              selectSection(next);
-            }
-          }}
-        >
-          <Tabs.List className="w-fit flex-wrap">
-            {(
-              [
-                ['branding', 'Artist branding', PaletteIcon],
-                ['gallery', 'Gallery', ImagesIcon],
-                ['press-kit', 'Press kit', DownloadIcon],
-                ['channel-designer', 'Channel Designer', PaintbrushIcon],
-              ] as const
-            ).map(([id, label, Icon]) => (
-              <Tabs.Tab key={id}>
-                <TabLabel icon={<Icon size={15} />}>{label}</TabLabel>
-              </Tabs.Tab>
-            ))}
-          </Tabs.List>
-        </Tabs.Root>
-      )}
-
-      {tab === 'branding' ? (
+      {section === 'branding' ? (
         <>
-          {hideSectionNav ? null : (
-            <SectionTitle
-              title={t('studioBrandingView.artistBranding')}
-              wrap
-              className="font-display tracking-tight"
-            />
-          )}
           <div
             className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]"
             data-testid="branding-profile-row"
@@ -123,7 +71,7 @@ export const StudioBrandingPanel: FC<{
           />
         </>
       ) : null}
-      {tab === 'channel-designer' ? (
+      {section === 'channel-designer' ? (
         profile ? (
           <>
             <ChannelDesigner
@@ -158,9 +106,13 @@ export const StudioBrandingPanel: FC<{
         )
       ) : null}
 
-      {tab === 'gallery' ? <GallerySection kit={kit} /> : null}
+      {showGallery ? <GallerySection kit={kit} /> : null}
 
-      {tab === 'press-kit' ? <PressKitSection kit={kit} /> : null}
+      {showPressKit ? (
+        <div id="press-kit" className="flex scroll-mt-4 flex-col gap-6">
+          <PressKitSection kit={kit} />
+        </div>
+      ) : null}
       <ConfirmDialog
         destructive
         isOpen={pendingReplaceUpload !== null}

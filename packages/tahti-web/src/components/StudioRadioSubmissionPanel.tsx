@@ -105,7 +105,11 @@ export function StudioRadioSubmissionPanel() {
             checked={!optedOut}
             onChange={() => void toggleOptOut()}
           />
-          <Button className="gap-1.5" onClick={() => setOpen(true)}>
+          <Button
+            variant="secondary"
+            className="gap-1.5"
+            onClick={() => setOpen(true)}
+          >
             <SendIcon size={16} aria-hidden />
             {t('studioRadioSubmissionPanel.selectTracks')}
           </Button>

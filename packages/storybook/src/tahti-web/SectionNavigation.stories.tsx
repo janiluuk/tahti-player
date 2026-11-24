@@ -31,9 +31,9 @@ const frame = (children: ReactNode) => (
 export const StudioDeepRoute: Story = {
   decorators: [
     withMockAuth(MOCK_USERS.artist),
-    withTahtiRouter('/studio/channel'),
+    withTahtiRouter('/studio/channel/radio'),
   ],
-  render: () => frame(<StudioNav current="/studio/channel" />),
+  render: () => frame(<StudioNav current="/studio/channel/radio" />),
 };
 
 export const StudioLibraryRoute: Story = {

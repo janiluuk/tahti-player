@@ -1,5 +1,6 @@
 import type { ParseKeys } from '@tahti-player/i18n';
 
+import { channelRadioPath } from './channelSections';
 import { movedProfileSettingsPath } from './studioProfileSections';
 import { webT } from './webT';
 
@@ -60,10 +61,10 @@ export function movedStudioSettingsPath(
     return '/studio/recordings#recording-settings';
   }
   if (tabId === 'multistream') {
-    return '/studio/channel?radio=multicast#radio';
+    return '/studio/go-live?step=destinations';
   }
   if (tabId === 'green-room') {
-    return '/studio/channel#green-room';
+    return '/studio/go-live?step=green-room';
   }
-  return '/studio/channel';
+  return channelRadioPath();
 }

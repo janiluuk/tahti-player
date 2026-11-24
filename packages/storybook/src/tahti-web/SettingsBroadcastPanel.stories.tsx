@@ -19,14 +19,14 @@ const meta: Meta<typeof BroadcastPanel> = {
     docs: {
       description: {
         component:
-          'Green room and multistream defaults, shown as sections of Studio → Broadcast → Channel. Settings has no Broadcast section: `/settings/broadcast?tab=` links go to Channel, and the recording switches are on the Recordings page. A switch shows its new value at once and goes back, with a toast, when the save fails.',
+          'Green room and multistream defaults. Settings has no Broadcast section: `/settings/broadcast?tab=` links go to the Go live green room and live destinations steps, and the recording switches are on the Recordings page. A switch shows its new value at once and goes back, with a toast, when the save fails.',
       },
     },
   },
   decorators: [
     withPageSurface(),
     withToaster(),
-    withTahtiRouter('/studio/channel'),
+    withTahtiRouter('/studio/go-live?step=green-room'),
     withMockAuth(MOCK_USERS.artist),
   ],
 };
