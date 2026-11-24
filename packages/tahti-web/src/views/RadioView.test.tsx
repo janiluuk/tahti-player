@@ -366,16 +366,24 @@ describe('RadioView up next', () => {
   it('lists the rotation tracks coming next while the rotation plays', async () => {
     await renderRadio();
     const rotation = await screen.findByTestId('radio-up-next-rotation');
-    const items = within(rotation).getAllByRole('listitem');
+    const items = within(rotation).getAllByTestId('track-row');
+    expect(screen.getByText('Replay')).toBeVisible();
+    expect(screen.queryByText('ON AIR')).toBeNull();
+    expect(
+      screen
+        .getAllByRole('tab')
+        .slice(0, 2)
+        .map((tab) => tab.textContent),
+    ).toEqual([
+      expect.stringContaining('Up next'),
+      expect.stringContaining('Just played'),
+    ]);
+    expect(items[0]).toHaveAttribute('aria-current', 'true');
     expect(items.map((item) => item.textContent)).toEqual([
+      expect.stringContaining('Aurora Drift'),
       expect.stringContaining('Polar Night'),
       expect.stringContaining('Harbour Lights'),
     ]);
-    expect(
-      within(rotation)
-        .getByRole('link', { name: 'Northern Lights' })
-        .getAttribute('href'),
-    ).toBe('/u/northern-lights');
     expect(screen.getByRole('tab', { name: /Up next/ }).textContent).toContain(
       '2',
     );
@@ -484,7 +492,7 @@ describe('RadioView up next', () => {
     await renderRadio();
     const rotation = await screen.findByTestId('radio-up-next-rotation');
     expect(
-      within(rotation).getByText('Could not load the rotation'),
+      within(rotation).getByText('Could not refresh the rotation'),
     ).toBeTruthy();
   });
 });

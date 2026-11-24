@@ -38,6 +38,9 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | partial | [seo-canonical-host.md](seo-canonical-host.md) | Apex host, OG image, per-route canonical for crawlers (0.0.474); left (tahti-org): stack APP_URL, stable collection OG image URLs, raster channel OG images |
+| open    | [main-container-corner-controls.md](main-container-corner-controls.md) | Reduce main-container spacing so corner buttons are not clipped |
+| open    | [radio-admin-playlist-ux.md](radio-admin-playlist-ux.md) | Admin edit-playlist shortcut and playlist-manager usability sweep |
+| open    | [radio-expanded-visualizer.md](radio-expanded-visualizer.md) | Expanded artwork/text layout, bottom controls and left play button |
 | open    | [recently-played-to-history.md](recently-played-to-history.md) | Move Recently played from Listen to History (after the Listen loading PR) |
 | open    | [profile-settings-cleanup.md](profile-settings-cleanup.md) | Account links to profile edit; drop image help text; help icons instead of paragraphs; Profile sub-tabs |
 | open    | [settings-ux-sweep.md](settings-ux-sweep.md) | Settings: coloured status indicators, one 2FA section (keep the off warning), drop Visibility link, fill Account |

@@ -7094,3 +7094,7 @@ Validated with affected Storybook plays, UI/theme/unit tests, type-check/lint, a
 - `STUDIO_PROFILE_CHANNEL_SECTIONS` gains `visibility`; `StudioProfileSectionView` renders `ProfileVisibilitySection`; `NotificationsVisibilityPanel` is notifications only, tab renamed "Notifications".
 - `PageBackLink` → `BackButtonLink` in a `Tooltip`; tests check the accessible name, e2e back-link helper finds the link by role + name.
 - `HubCards`: `bg-primary/25 text-primary-strong` chip, `bg-background-secondary/70` card, `text-foreground/80` description.
+
+## 2026-11-24 — Radio track rows and replay status (0.0.479)
+
+Up next and Just played use the shared striped TrackTable flush to the widget edges, with full-height artwork and hover playback. The current rotation track is highlighted above upcoming tracks. Just played follows Up next. The header says Replay for rotation and reserves On air for a live member relay. Upcoming entries have no playback URL in the API and keep their play control disabled. Expanded visualizer layout and main-container corner-control spacing are queued separately.

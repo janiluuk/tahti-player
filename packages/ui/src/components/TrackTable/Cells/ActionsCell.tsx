@@ -21,6 +21,7 @@ type ActionsCellMeta = {
   isTrackQueued?: (track: Track) => boolean;
   canEditTrack?: (track: Track) => boolean;
   canOpenDetail?: (track: Track) => boolean;
+  canPlayTrack?: (track: Track) => boolean;
   ContextMenuWrapper?: FC<ContextMenuWrapperProps>;
   actionsWidthClass?: string;
 };
@@ -162,7 +163,8 @@ export const ActionsCell = <T extends Track>({
   const track = row.original;
   const showControls = meta?.displayQueueControls;
   const ContextMenuWrapper = meta?.ContextMenuWrapper;
-  const hasAddToQueue = Boolean(meta?.onAddToQueue);
+  const hasAddToQueue =
+    Boolean(meta?.onAddToQueue) && meta?.canPlayTrack?.(track) !== false;
   const hasContextMenu = Boolean(ContextMenuWrapper);
   const canEdit = Boolean(meta?.onEdit && meta.canEditTrack?.(track));
   const canOpenDetail = Boolean(

@@ -1,14 +1,8 @@
-import { Link } from '@tanstack/react-router';
-
 import { i18n, useTranslation } from '@tahti-player/i18n';
-import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import type { RadioRecentlyPlayedItem, TahtiPlayable } from '../../api/types';
-import {
-  MediaIconActions,
-  playQueueFavoriteActions,
-} from '../MediaIconActions';
 import { PageEmpty, PageError, PageErrorBanner } from '../PageStates';
+import { RadioTrackTable } from './RadioTrackTable';
 
 export function formatRadioAgo(iso: string): string {
   const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60_000);
@@ -74,8 +68,8 @@ export function RadioJustPlayedPanel({
           onRetry={onRetry}
         />
       ) : null}
-      <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-        {items.map((item) => {
+      <RadioTrackTable
+        rows={items.map((item) => {
           const playable: TahtiPlayable | null =
             item.audioUrl && item.soundId
               ? {
@@ -89,75 +83,26 @@ export function RadioJustPlayedPanel({
                   protocol: 'https',
                 }
               : null;
-          const isPlaying = Boolean(
+          const current = Boolean(
             playable && playable.id === handlers.currentId,
           );
-          const isActivelyPlaying =
-            isPlaying &&
-            (handlers.playerStatus === 'playing' ||
-              handlers.playerStatus === 'loading');
-          return (
-            <li
-              key={item.id}
-              className={`flex items-center gap-3 border-l-4 px-3 py-2 transition-colors ${
-                isPlaying
-                  ? 'border-l-accent-cyan bg-accent-cyan/10'
-                  : 'border-l-transparent'
-              }`}
-            >
-              <Button
-                type="button"
-                variant="text"
-                size="flexible"
-                onClick={() => handlers.onTrackInfo(item, playable)}
-                aria-label={t('radio.trackInfoFor', { title: item.title })}
-                className="shrink-0 p-0"
-              >
-                <MediaArtwork
-                  size="sm"
-                  src={item.artworkUrl}
-                  alt=""
-                  seed={item.soundId ?? item.id}
-                  className="rounded-md"
-                />
-              </Button>
-              <div className="min-w-0 flex-1">
-                <Link
-                  to="/t/$id"
-                  params={{ id: item.id }}
-                  className={`block truncate text-sm leading-6 font-medium underline-offset-2 hover:underline ${
-                    isPlaying ? 'text-accent-cyan-strong' : ''
-                  }`}
-                >
-                  {item.title}
-                </Link>
-                <div className="text-foreground-secondary truncate text-xs">
-                  {item.artistName}
-                </div>
-              </div>
-              <span className="text-foreground-secondary hidden shrink-0 text-xs sm:inline">
-                {formatRadioAgo(item.playedAt)}
-              </span>
-              <MediaIconActions
-                actions={playQueueFavoriteActions({
-                  itemName: item.title,
-                  onPlay: () => playable && handlers.onPlay(playable),
-                  onTogglePause: handlers.onTogglePause,
-                  isPlaying: isActivelyPlaying,
-                  onQueue: () => playable && handlers.onQueue(playable),
-                  playDisabled: !playable,
-                  queueDisabled: !playable,
-                  playLabel: t('actions.playItem', { title: item.title }),
-                  queueLabel: t('actions.queueItem', { title: item.title }),
-                  queued: Boolean(
-                    playable && handlers.queueIds.has(playable.id),
-                  ),
-                })}
-              />
-            </li>
-          );
+          const playing =
+            current && ['playing', 'loading'].includes(handlers.playerStatus);
+          return {
+            ...item,
+            artworkSeed: item.soundId ?? item.id,
+            current,
+            playing,
+            annotation: formatRadioAgo(item.playedAt),
+            onPlay: playable
+              ? () =>
+                  current ? handlers.onTogglePause() : handlers.onPlay(playable)
+              : undefined,
+            onInfo: () => handlers.onTrackInfo(item, playable),
+            onQueue: playable ? () => handlers.onQueue(playable) : undefined,
+          };
         })}
-      </ul>
+      />
     </div>
   );
 }

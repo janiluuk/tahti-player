@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
+  Badge,
   Button,
   ButtonLink,
   Tooltip,
@@ -323,6 +324,18 @@ export function RadioView() {
       count: !memberLive && rotation.length > 0 ? rotation.length : undefined,
       content: (
         <RadioUpNextPanel
+          current={
+            online && nowPlaying && !memberLive
+              ? {
+                  id: 'radio-current',
+                  ...nowPlaying,
+                  current: true,
+                  playing: isRadioPlaying,
+                  annotation: t('radio.nowPlaying'),
+                  onPlay: playStation,
+                }
+              : null
+          }
           onRotation={!memberLive}
           rotation={rotation}
           rotationError={sectionErrors.rotation}
@@ -402,8 +415,12 @@ export function RadioView() {
       actions={
         station ? (
           <div className="flex shrink-0 items-center gap-2">
-            {online ? (
+            {online && memberLive ? (
               <OnAirBadge />
+            ) : online ? (
+              <Badge variant="pill" color="cyan">
+                {t('listen.replayBadge')}
+              </Badge>
             ) : (
               <span className="text-accent-red-strong font-mono text-xs font-semibold tracking-wide uppercase">
                 {t('radio.offline')}
@@ -566,7 +583,9 @@ export function RadioView() {
             selectedTabIndex={RADIO_TABS.indexOf(activeTab)}
             defaultExpanded={search.tab !== undefined}
             onTabChange={selectTab}
-            tabs={playerTabs}
+            tabs={RADIO_TABS.map((id) =>
+              playerTabs.find((tab) => tab.id === id)!,
+            )}
           />
         </ContentReveal>
       )}

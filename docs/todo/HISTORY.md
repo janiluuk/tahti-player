@@ -6785,3 +6785,7 @@ The top-nav `UserMenu` drops its desktop-only external "tahti.live" item; the te
 
 `DiscoverPartiesRow` renders the same tile shell as `WidgetCard` (`data-testid="discover-parties-widget"`) and sits as the last item inside the Discover widget `Masonry` instead of a full-width `StudioPanel` below it; the masonry now renders even with no column widgets so the tile still shows. `DiscoverView.test` checks the tile is inside `discover-widget-columns`. Filed `recently-played-to-history.md`.
 
+
+## 2026-11-24 — Radio widget track rows (0.0.479)
+
+Up next and Just played now use the shared striped TrackTable with edge-to-edge artwork, hover playback, current-track highlighting, adjacent queue/history tabs, and Replay status outside live relays. Upcoming tracks lack audio URLs in the current API and show disabled play controls. Verified with 25 web tests, 19 shared-table tests and 15 browser Storybook checks, including artwork alignment.
