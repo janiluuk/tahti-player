@@ -56,7 +56,7 @@ for (const mobile of [false, true]) {
     await expect(page.getByTestId('status-bar-content')).toHaveCount(0);
     await expect(
       page.getByRole('link', { name: 'tahti.live', exact: true }),
-    ).toHaveAttribute('href', 'https://tahti.live/');
+    ).toHaveCount(0);
     await page.addInitScript(() => {
       sessionStorage.setItem(
         'tahti-mock-channel-visual',
@@ -72,7 +72,7 @@ for (const mobile of [false, true]) {
     await expect(header).toHaveCount(0);
     await expect(
       page.getByRole('link', { name: 'tahti.live', exact: true }),
-    ).toBeVisible();
+    ).toHaveCount(0);
     if (mobile) {
       await expect(page.getByTestId('mobile-bottom-nav')).toBeVisible();
       await page

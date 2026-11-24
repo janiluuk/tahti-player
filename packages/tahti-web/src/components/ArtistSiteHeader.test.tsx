@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { ArtistSiteHeader } from './ArtistSiteHeader';
 
 describe('ArtistSiteHeader', () => {
-  it('shows the saved title and channel colors with a main-site link', () => {
+  it('shows the saved title and channel colors without a main-site link', () => {
     render(
       <ArtistSiteHeader
         title="My artist site"
@@ -17,10 +17,7 @@ describe('ArtistSiteHeader', () => {
       backgroundColor: '#123456',
       color: '#ffffff',
     });
-    expect(screen.getByRole('link', { name: 'tahti.live' })).toHaveAttribute(
-      'href',
-      'https://tahti.live/',
-    );
+    expect(screen.queryByRole('link', { name: 'tahti.live' })).toBeNull();
   });
 
   it('falls back to the artist name for an empty title', () => {
@@ -28,12 +25,21 @@ describe('ArtistSiteHeader', () => {
     expect(screen.getByText('Artist')).toBeInTheDocument();
   });
 
-  it('keeps the main-site link when the header is hidden', () => {
-    render(<ArtistSiteHeader title="Hidden title" hidden />);
-    expect(screen.queryByRole('banner')).not.toBeInTheDocument();
+  it('renders nothing when the header is hidden and there is no menu', () => {
+    const { container } = render(
+      <ArtistSiteHeader title="Hidden title" hidden />,
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('keeps only the menu button when the header is hidden', () => {
+    render(
+      <ArtistSiteHeader title="Hidden title" hidden onOpenMenu={() => {}} />,
+    );
     expect(screen.queryByText('Hidden title')).not.toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: 'tahti.live' }),
+      screen.getByRole('button', { name: 'Open navigation' }),
     ).toBeInTheDocument();
+    expect(screen.queryByRole('link')).toBeNull();
   });
 });
