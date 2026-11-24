@@ -17,6 +17,7 @@ import {
   AdminContentView,
   AdminDashboardView,
   AdminDiagnosticsView,
+  AdminEncodingQueueView,
   AdminFinancialView,
   AdminGovernanceView,
   AdminGrantCycleView,
@@ -365,6 +366,12 @@ export const adminMissedShowsRoute = createRoute({
       params: { tab: 'missed-shows' },
     });
   },
+});
+
+export const adminEncodingQueueRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/admin/encoding-queue',
+  component: AdminEncodingQueueView,
 });
 
 export const adminVendorsRoute = createRoute({

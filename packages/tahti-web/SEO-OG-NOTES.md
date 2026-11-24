@@ -1,5 +1,13 @@
 # SEO / dynamic OG metadata — research notes and plan
 
+**2026-11-18:** live audit found the default OG image 404, static robots/
+sitemaps/`index.html` still on `app.`/`beta.`, and API sitemaps emitting
+`app.tahti.live` via `APP_URL`. Fixed in tahti-web 0.0.413 + production
+`APP_URL=https://tahti.live` (see [`docs/todo/seo-canonical-host.md`](../../docs/todo/seo-canonical-host.md)).
+Bot OG still works for `/c`/`/u`/`/r`/`/t`. Venue/collection crawler QA and
+raster-only channel OG images remain open
+([`final-season-hardening.md`](../../docs/todo/final-season-hardening.md)).
+
 **2026-10-28:** the SPA serves every public host, so this is the only SEO
 path. Bot OG works for a channel on the apex (`/c/tahti-radio` with a
 `facebookexternalhit` user agent returns `og:title`, checked 2026-10-28). The

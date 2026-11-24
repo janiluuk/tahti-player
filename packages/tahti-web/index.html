@@ -23,11 +23,33 @@
       property="og:description"
       content="Listen to independent artists, live channels, radio, and lossless releases on Tahti."
     />
-    <meta property="og:url" content="https://app.tahti.live/" />
+    <meta property="og:url" content="https://tahti.live/" />
     <meta property="og:image" content="https://tahti.live/og-image.png" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="720" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="canonical" href="https://app.tahti.live/" />
+    <meta name="twitter:title" content="Tahti · Independent music, live" />
+    <meta
+      name="twitter:description"
+      content="Listen to independent artists, live channels, radio, and lossless releases on Tahti."
+    />
+    <meta name="twitter:image" content="https://tahti.live/og-image.png" />
+    <link rel="canonical" href="https://tahti.live/" />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Tahti",
+        "url": "https://tahti.live/",
+        "description": "Listen to independent artists, live channels, radio, and lossless releases on Tahti.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://tahti.live/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
     <script src="/theme-boot.js"></script>
   </head>
   <body class="bg-background text-foreground">

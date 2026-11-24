@@ -1,10 +1,23 @@
 import { i18n, type ParseKeys } from '@tahti-player/i18n';
 
+export const DEFAULT_OG_IMAGE = 'https://tahti.live/og-image.png';
+
 export type RouteMetadata = {
   title: string;
   description: string;
   image?: string;
 };
+
+const NOINDEX_PREFIXES = [
+  '/admin',
+  '/settings',
+  '/studio',
+  '/messages',
+  '/notifications',
+  '/library',
+  '/moderate',
+  '/jam',
+] as const;
 
 function defaultMetadata(): RouteMetadata {
   return {
@@ -191,6 +204,13 @@ export function metadataForPath(pathname: string): RouteMetadata {
     };
   }
 
+  if (/^\/t\/[^/]+/.test(pathname)) {
+    return {
+      title: i18n.t('web:seo.trackTitle'),
+      description: i18n.t('web:seo.trackDescription'),
+    };
+  }
+
   const subscribe = /^\/subscribe\/([^/]+)/.exec(pathname)?.[1];
   if (subscribe) {
     const name = displaySlug(subscribe);
@@ -236,11 +256,29 @@ function setMeta(property: string, content: string): void {
   element?.setAttribute('content', content);
 }
 
+function setNamedMeta(name: string, content: string): void {
+  const selector = `meta[name="${name}"]`;
+  let element = document.head.querySelector<HTMLMetaElement>(selector);
+  if (!element) {
+    element = document.createElement('meta');
+    element.setAttribute('name', name);
+    document.head.appendChild(element);
+  }
+  element.setAttribute('content', content);
+}
+
+function shouldNoIndex(pathname: string): boolean {
+  return NOINDEX_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
 let lastApplied: (RouteMetadata & { pathname: string }) | null = null;
 let playbackTitle: string | null = null;
 
 function applyMetadata(pathname: string, metadata: RouteMetadata): void {
   const canonicalUrl = new URL(pathname, window.location.origin).toString();
+  const image = metadata.image ?? DEFAULT_OG_IMAGE;
   document.title = playbackTitle ?? metadata.title;
   document.head
     .querySelector<HTMLMetaElement>('meta[name="description"]')
@@ -248,9 +286,14 @@ function applyMetadata(pathname: string, metadata: RouteMetadata): void {
   setMeta('og:title', metadata.title);
   setMeta('og:description', metadata.description);
   setMeta('og:url', canonicalUrl);
-  if (metadata.image) {
-    setMeta('og:image', metadata.image);
-  }
+  setMeta('og:image', image);
+  setNamedMeta('twitter:title', metadata.title);
+  setNamedMeta('twitter:description', metadata.description);
+  setNamedMeta('twitter:image', image);
+  setNamedMeta(
+    'robots',
+    shouldNoIndex(pathname) ? 'noindex,nofollow' : 'index,follow',
+  );
   document.head
     .querySelector<HTMLLinkElement>('link[rel="canonical"]')
     ?.setAttribute('href', canonicalUrl);

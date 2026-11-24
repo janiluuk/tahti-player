@@ -149,19 +149,34 @@ export function AmbientTrackList({
         className={cn(
           'flex items-center gap-2',
           heading ? 'min-h-10' : 'px-1',
-          toolbarStart ? 'flex-nowrap' : 'flex-wrap',
+          toolbarStart && !heading ? 'flex-nowrap' : 'flex-wrap',
         )}
         data-testid="ambient-track-list-toolbar"
       >
-        {toolbarStart ? (
-          <div className="min-w-0 flex-1">{toolbarStart}</div>
-        ) : null}
-        {/* The list view is a table that prints its own count. */}
         {heading ? (
-          <h2 className="text-foreground me-auto text-lg font-bold">
+          <h2
+            className={cn(
+              'text-foreground text-lg font-bold',
+              toolbarStart ? 'shrink-0' : 'me-auto',
+            )}
+          >
             {heading}
           </h2>
-        ) : showList ? null : (
+        ) : null}
+        {/* Under a heading the search wraps to its own row on phones and
+            sits between the heading and sort/size from `sm` up. */}
+        {toolbarStart ? (
+          <div
+            className={cn(
+              'min-w-0 flex-1',
+              heading && 'order-last basis-full sm:order-none sm:basis-0',
+            )}
+          >
+            {toolbarStart}
+          </div>
+        ) : null}
+        {/* The list view is a table that prints its own count. */}
+        {heading ? null : showList ? null : (
           <span
             className={cn(
               'text-foreground-secondary shrink-0 text-xs font-semibold tabular-nums',

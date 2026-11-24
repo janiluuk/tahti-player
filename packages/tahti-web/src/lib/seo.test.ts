@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { applyLocale } from './locale';
 import {
+  DEFAULT_OG_IMAGE,
   metadataForPath,
   playbackDocumentTitle,
   setPlaybackDocumentTitle,
@@ -17,6 +18,7 @@ describe('metadataForPath', () => {
     ['/u/mart-saar/c/late-nights', 'Late Nights by Mart Saar on Tahti'],
     ['/v/tavastia', 'Tavastia on Tahti'],
     ['/r/summer-release', 'Summer Release on Tahti'],
+    ['/t/cmtrack123', 'Track on Tahti'],
     ['/radio', 'Tahti Radio'],
     ['/studio', 'Studio · Tahti'],
     ['/studio/go-live', 'Broadcast · Studio · Tahti'],
@@ -119,7 +121,11 @@ describe('syncDocumentMetadata / setPlaybackDocumentTitle', () => {
       <meta property="og:title" content="" />
       <meta property="og:description" content="" />
       <meta property="og:url" content="" />
-      <meta property="og:image" content="https://tahti.live/og-image.png" />
+      <meta property="og:image" content="${DEFAULT_OG_IMAGE}" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="" />
+      <meta name="twitter:description" content="" />
+      <meta name="twitter:image" content="${DEFAULT_OG_IMAGE}" />
       <link rel="canonical" href="" />
     `;
   });
@@ -132,10 +138,20 @@ describe('syncDocumentMetadata / setPlaybackDocumentTitle', () => {
     );
   }
 
+  function namedMeta(name: string): string | null {
+    return (
+      document.head
+        .querySelector(`meta[name="${name}"]`)
+        ?.getAttribute('content') ?? null
+    );
+  }
+
   it('applies the slug-guessed metadata with no overrides', () => {
     syncDocumentMetadata('/channel/night-radio');
     expect(document.title).toBe('Night Radio live on Tahti');
-    expect(ogImage()).toBe('https://tahti.live/og-image.png');
+    expect(ogImage()).toBe(DEFAULT_OG_IMAGE);
+    expect(namedMeta('twitter:image')).toBe(DEFAULT_OG_IMAGE);
+    expect(namedMeta('robots')).toBe('index,follow');
   });
 
   it('overrides the slug guess with real data once it is available', () => {
@@ -151,6 +167,17 @@ describe('syncDocumentMetadata / setPlaybackDocumentTitle', () => {
         ?.getAttribute('content'),
     ).toBe('A real bio.');
     expect(ogImage()).toBe('https://cdn.tahti.live/avatar.jpg');
+    expect(namedMeta('twitter:title')).toBe('Real Channel Name live on Tahti');
+    expect(namedMeta('twitter:image')).toBe(
+      'https://cdn.tahti.live/avatar.jpg',
+    );
+  });
+
+  it('marks private Studio and Settings routes noindex', () => {
+    syncDocumentMetadata('/studio/sounds');
+    expect(namedMeta('robots')).toBe('noindex,nofollow');
+    syncDocumentMetadata('/settings/account');
+    expect(namedMeta('robots')).toBe('noindex,nofollow');
   });
 
   it('keeps the playback title while a page syncs its own metadata', () => {

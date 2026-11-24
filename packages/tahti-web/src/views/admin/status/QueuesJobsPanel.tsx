@@ -1,8 +1,8 @@
 import { ListVideoIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, FilterChips, InlineError } from '@tahti-player/ui';
+import { Button, FilterChips, InlineError, Toggle } from '@tahti-player/ui';
 
 import {
   fetchAdminQueueJobs,
@@ -17,7 +17,11 @@ import {
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { usePolling } from '../../../hooks/usePolling';
+import { dateLocaleTag } from '../../../lib/locale';
 import { StuckPendingPanel } from './StuckPendingPanel';
+
+const LIVE_INTERVAL_MS = 5_000;
 
 const STATES: AdminQueueJobState[] = [
   'waiting',
@@ -61,15 +65,22 @@ export function QueuesJobsPanel() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [removeJob, setRemoveJob] = useState<AdminQueueJob | null>(null);
+  const [live, setLive] = useState(true);
+  const [updatedAt, setUpdatedAt] = useState<number | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    void Promise.all([
-      fetchAdminQueueJobs({ state, limit: 50 }),
-      fetchAdminQueuePaused(),
-    ]).then(([jobsResult, pausedResult]) => {
-      if (cancelled) {
+  const requestId = useRef(0);
+  const load = useCallback(
+    async (silent: boolean) => {
+      const id = ++requestId.current;
+      if (!silent) {
+        setLoading(true);
+      }
+      const [jobsResult, pausedResult] = await Promise.all([
+        fetchAdminQueueJobs({ state, limit: 50 }),
+        fetchAdminQueuePaused(),
+      ]);
+      // A slower earlier poll must not overwrite a newer state's result.
+      if (id !== requestId.current) {
         return;
       }
       setLoading(false);
@@ -77,18 +88,28 @@ export function QueuesJobsPanel() {
         setPaused(pausedResult.data.paused);
       }
       if (!jobsResult.data) {
-        setJobs(null);
+        if (!silent) {
+          setJobs(null);
+        }
         setError(jobsResult.meta.reason ?? t('adminQueues.loadError'));
         return;
       }
       setError(null);
       setJobs(jobsResult.data.jobs);
       setTotal(jobsResult.data.total);
-    });
+      setUpdatedAt(Date.now());
+    },
+    [state, t],
+  );
+
+  useEffect(() => {
+    void load(false);
     return () => {
-      cancelled = true;
+      requestId.current += 1;
     };
-  }, [state, attempt, t]);
+  }, [load, attempt]);
+
+  usePolling(() => void load(true), LIVE_INTERVAL_MS, live);
 
   const refresh = () => setAttempt((n) => n + 1);
 
@@ -151,6 +172,24 @@ export function QueuesJobsPanel() {
               {t('adminQueues.pausedHint')}
             </span>
           ) : null}
+          <div className="ms-auto flex items-center gap-2">
+            {updatedAt ? (
+              <span
+                className="text-foreground-secondary text-xs tabular-nums"
+                data-testid="admin-queues-updated"
+              >
+                {t('adminQueues.updatedAt', {
+                  time: new Date(updatedAt).toLocaleTimeString(dateLocaleTag()),
+                })}
+              </span>
+            ) : null}
+            <Toggle
+              label={t('adminQueues.liveUpdates')}
+              showLabel
+              checked={live}
+              onChange={setLive}
+            />
+          </div>
         </div>
         <FilterChips
           aria-label={t('adminQueues.stateFilter')}
@@ -204,6 +243,9 @@ export function QueuesJobsPanel() {
                       {job.name}
                       {job.subject.ownerUsername
                         ? ` · ${job.subject.ownerUsername}`
+                        : ''}
+                      {job.state === 'active' && job.processedOn
+                        ? ` · ${t('adminQueues.runningFor', { age: ageLabel(job.processedOn) })}`
                         : ''}
                       {job.attemptsMade > 0
                         ? ` · ${t('adminQueues.attempts', { count: job.attemptsMade })}`

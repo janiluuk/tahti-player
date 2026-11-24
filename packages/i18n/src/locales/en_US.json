@@ -1198,7 +1198,7 @@
       "sectionPlatform": "Platform",
       "hubContentDescription": "News, announcements, Selects, top lists, radio, venues, artwork presets and the catalog.",
       "hubCoopDescription": "Board, AGM, grants, annual reports, records and finances.",
-      "hubPlatformDescription": "Add-ons, languages, vendors, storage, streams and diagnostics."
+      "hubPlatformDescription": "Add-ons, languages, vendors, storage, streams, the encoding queue and diagnostics."
     },
     "adminPages": {
       "dashboard": "Dashboard",
@@ -1248,6 +1248,8 @@
       "governanceDescription": "Member votes, annual reports, grants, and AGM — hub of area cards.",
       "addonsDescription": "Register and manage available listener, artist, and admin add-ons.",
       "vendorsDescription": "Track vendors, integrations, launch checks, and DPAs.",
+      "encodingQueue": "Encoding queue",
+      "encodingQueueDescription": "Upload transcode jobs by state, updated live: retry, remove, pause the queue and re-queue stuck uploads.",
       "i18nDescription": "Add languages and import translation CSVs.",
       "tahtiSelectsDescription": "Manage the Tahti Selects editorial stream and rotation.",
       "orphanPagesDescription": "Real pages that shipped without a menu entry or an in-app link, gathered here as tabs.",
@@ -1255,7 +1257,7 @@
       "diagnosticsDescription": "Logs, orphan pages, and the screen atlas.",
       "hubContentCardDescription": "News, announcements, Selects, top lists, radio, venues, artwork presets and the catalog.",
       "hubCoopCardDescription": "Board, AGM, grants, annual reports, records and finances.",
-      "hubPlatformCardDescription": "Add-ons, languages, vendors, storage, streams and diagnostics."
+      "hubPlatformCardDescription": "Add-ons, languages, vendors, storage, streams, the encoding queue and diagnostics."
     },
     "adminDiagnosticsView": {
       "admin": "Admin",
@@ -2135,6 +2137,8 @@
       "profileDescription": "Explore {{name}}'s music, releases, collections, and live channel on Tahti.",
       "venueDescription": "{{name}} is a verified venue on Tahti.",
       "releaseDescription": "Listen to {{name}} and find its official links on Tahti.",
+      "trackTitle": "Track on Tahti",
+      "trackDescription": "Listen to this track on Tahti - independent music, live.",
       "subscribeTitle": "Subscribe to {{name}} · Tahti",
       "subscribeDescription": "Support {{name}} with a fan subscription on Tahti.",
       "moderateTitle": "{{name}}: chat moderation · Tahti",
@@ -8392,6 +8396,9 @@
       "stuckLoadError": "Could not load stuck uploads.",
       "requeue": "Re-queue",
       "requeueAll": "Re-queue all {{count}}",
+      "liveUpdates": "Live updates",
+      "updatedAt": "Updated {{time}}",
+      "runningFor": "running {{age}}",
       "states": {
         "waiting": "Waiting",
         "active": "Active",

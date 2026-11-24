@@ -64,7 +64,10 @@ export async function fetchAdminQueueJobs(input: {
             name: 'transcode-sound',
             state,
             timestamp: new Date().toISOString(),
-            processedOn: null,
+            processedOn:
+              state === 'active'
+                ? new Date(Date.now() - 3 * 60_000).toISOString()
+                : null,
             finishedOn: null,
             attemptsMade: state === 'failed' ? 2 : 0,
             failedReason:

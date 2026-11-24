@@ -1,3 +1,11 @@
+## 2026-11-24 - SEO apex host, New tracks widget, live encoding queue (0.0.472)
+
+Committed the SEO hot-patch (OG image, apex canonical/sitemaps/robots, the
+`app.tahti.live` redirect, track metadata and noindex). Listen's New tracks is
+its own card with search beside sort and size; the track table keeps short
+columns narrow so titles get the room. Admin -> Platform -> Encoding queue
+refreshes itself every 5 seconds with a Live updates switch.
+
 ## 2026-11-23 - Event page comments (0.0.451)
 
 Chat-alike thread on EventView; signed-out visitors get a sign-in CTA.
