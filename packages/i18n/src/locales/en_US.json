@@ -12412,6 +12412,8 @@
       "deselectRow": "Deselect {{name}}",
       "selectAllRows": "Select all rows",
       "deselectAllRows": "Deselect all rows",
+      "startSelecting": "Select",
+      "doneSelecting": "Done",
       "editTrack": "Edit track",
       "openTrack": "Open track",
       "notifications": "Notifications",

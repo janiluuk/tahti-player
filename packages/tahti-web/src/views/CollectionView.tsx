@@ -52,6 +52,7 @@ import {
 import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
+import { FULL_BLEED_TOP_CANCEL } from '../layout/contentPadding';
 import { hasAccountRole } from '../lib/accountRoles';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import { collectionToPlayables } from '../lib/collectionPlayables';
@@ -265,7 +266,7 @@ export function CollectionView({ slug }: { slug: string }) {
 
   return (
     // Full-bleed like the track page: cancel AppShell's content padding.
-    <div className="-mx-6 -mt-6 min-h-full p-6 md:-mx-8 md:-mt-8 md:p-8">
+    <div className={`min-h-full ${FULL_BLEED_TOP_CANCEL}`}>
       <PageFrame maxWidth="full" className="relative">
         <Tooltip
           content={t('collectionView.backToListen')}

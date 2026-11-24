@@ -53,6 +53,8 @@ export function WebUiLabelsProvider({ children }: { children: ReactNode }) {
       deselectRow: (name) => t('uiLabels.deselectRow', { name }),
       selectAllRows: t('uiLabels.selectAllRows'),
       deselectAllRows: t('uiLabels.deselectAllRows'),
+      startSelecting: t('uiLabels.startSelecting'),
+      doneSelecting: t('uiLabels.doneSelecting'),
       editTrack: t('uiLabels.editTrack'),
       openTrack: t('uiLabels.openTrack'),
       playOrShiftQueue: (playLabel) =>

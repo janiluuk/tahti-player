@@ -57,6 +57,7 @@ import { useChannelLayoutEditing } from '../hooks/useChannelLayoutEditing';
 import { useHasFanTiers } from '../hooks/useHasFanTiers';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useServerChannelLayout } from '../hooks/useServerChannelLayout';
+import { FULL_BLEED_CANCEL } from '../layout/contentPadding';
 import { hasAccountRole } from '../lib/accountRoles';
 import {
   getLayoutPreset,
@@ -519,7 +520,7 @@ export function ChannelView({ slug }: { slug: string }) {
         // plain-bg-background border around it (see TrackDetailView's
         // same trick). Editing mode stays inset — it sits inline with the
         // designer toolbar/layers menu, not full-bleed.
-        !editing && '-m-6 md:-m-8',
+        !editing && FULL_BLEED_CANCEL,
       )}
       style={{
         ...colorSchemeCssVars(pageScheme),

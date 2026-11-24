@@ -11,6 +11,7 @@ import {
   PageLoading,
 } from '../components/PageStates';
 import { TrackEditDialog } from '../components/TrackEditDialog';
+import { FULL_BLEED_TOP_CANCEL_FLUSH } from '../layout/contentPadding';
 import { buildTrackPage } from './track-detail/buildTrackPage';
 import { DownloadGateDialog } from './track-detail/DownloadGateDialog';
 import { TrackBody } from './track-detail/TrackBody';
@@ -85,7 +86,7 @@ export function TrackDetailView({
 
   return (
     <div
-      className="-mx-6 -mt-6 min-h-full md:-mx-8 md:-mt-8"
+      className={`min-h-full ${FULL_BLEED_TOP_CANCEL_FLUSH}`}
       data-testid="track-listen-page"
     >
       {loadError ? (

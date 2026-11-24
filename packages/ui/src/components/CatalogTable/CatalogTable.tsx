@@ -1,5 +1,11 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { ArrowDownIcon, ArrowUpIcon, Settings2Icon } from 'lucide-react';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  CheckIcon,
+  ListChecksIcon,
+  Settings2Icon,
+} from 'lucide-react';
 import {
   useEffect,
   useId,
@@ -10,8 +16,10 @@ import {
   type ReactNode,
 } from 'react';
 
+import { useOnDemandSelection } from '../../hooks/useOnDemandSelection';
 import { cn } from '../../utils';
 import { Button } from '../Button';
+import { Checkbox } from '../Checkbox';
 import { Loader } from '../Loader';
 import { Tooltip } from '../Tooltip';
 import { useUiLabels } from '../UiLabels';
@@ -139,15 +147,21 @@ export function CatalogTable<T>({
   );
   const selectable = Boolean(onSelectedIdsChange);
   const selected = selectedIds ?? new Set<string>();
+  const selection = useOnDemandSelection({
+    selectable,
+    selectedCount: selected.size,
+    onClear: () => onSelectedIdsChange?.(new Set()),
+  });
+  const showSelectColumn = selection.showCheckboxes;
   const gridTemplate = [
-    selectable ? `${SELECT_WIDTH}px` : null,
+    showSelectColumn ? `${SELECT_WIDTH}px` : null,
     ...visibleColumns.map((column) => `${column.pxWidth}px`),
     renderActions ? `${actionsWidth}px` : null,
   ]
     .filter(Boolean)
     .join(' ');
   const contentWidth =
-    (selectable ? SELECT_WIDTH : 0) +
+    (showSelectColumn ? SELECT_WIDTH : 0) +
     visibleColumns.reduce((sum, column) => sum + column.pxWidth, 0) +
     (renderActions ? actionsWidth : 0);
 
@@ -430,6 +444,27 @@ export function CatalogTable<T>({
           />
         ) : null}
         {toolbar}
+        {selection.onDemand ? (
+          <Button
+            size="sm"
+            variant="text"
+            onClick={selection.selecting ? selection.stop : selection.start}
+            data-testid={
+              selection.selecting
+                ? 'done-selecting-button'
+                : 'start-selecting-button'
+            }
+          >
+            {selection.selecting ? (
+              <CheckIcon size={14} className="mr-1" aria-hidden />
+            ) : (
+              <ListChecksIcon size={14} className="mr-1" aria-hidden />
+            )}
+            {selection.selecting
+              ? uiLabels.doneSelecting
+              : uiLabels.startSelecting}
+          </Button>
+        ) : null}
         <Tooltip content={uiLabels.tableSettings} side="top">
           <Button
             size="icon-sm"
@@ -460,18 +495,14 @@ export function CatalogTable<T>({
             className="border-border grid items-center border-b text-xs font-semibold"
             style={{ gridTemplateColumns: gridTemplate }}
           >
-            {selectable ? (
+            {showSelectColumn ? (
               <div role="columnheader" className="flex justify-center">
-                <input
-                  type="checkbox"
-                  className="accent-primary h-4 w-4 cursor-pointer"
+                <Checkbox
                   aria-label={uiLabels.selectAllLoaded}
                   checked={allLoadedSelected}
-                  onChange={(event) =>
+                  onChange={(checked) =>
                     onSelectedIdsChange?.(
-                      event.target.checked
-                        ? new Set(rows.map(getRowId))
-                        : new Set(),
+                      checked ? new Set(rows.map(getRowId)) : new Set(),
                     )
                   }
                 />
@@ -630,11 +661,9 @@ export function CatalogTable<T>({
                       gridTemplateColumns: gridTemplate,
                     }}
                   >
-                    {selectable ? (
+                    {showSelectColumn ? (
                       <div role="cell" className="flex justify-center">
-                        <input
-                          type="checkbox"
-                          className="accent-primary h-4 w-4 cursor-pointer"
+                        <Checkbox
                           aria-label={uiLabels.selectRow(getRowLabel(row))}
                           checked={selected.has(id)}
                           onChange={() => undefined}

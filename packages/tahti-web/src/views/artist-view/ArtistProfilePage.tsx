@@ -69,6 +69,7 @@ import {
 } from '../../components/ReleaseTracklistDialog';
 import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { TrackEditDialog } from '../../components/TrackEditDialog';
+import { FULL_BLEED_TOP_CANCEL } from '../../layout/contentPadding';
 import { hasAccountRole, hasStudioAccess } from '../../lib/accountRoles';
 import {
   artistHeaderSubtitle,
@@ -402,7 +403,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
     <ContentReveal
       // Cancels AppShell's content padding so the artist's colors reach the
       // pane edges, like the track page.
-      className="relative isolate -mx-6 -mt-6 flex min-h-full flex-col gap-4 overflow-hidden p-6 md:-mx-8 md:-mt-8 md:p-8"
+      className={`relative isolate flex min-h-full flex-col gap-4 overflow-hidden ${FULL_BLEED_TOP_CANCEL}`}
       style={{
         ...colorSchemeCssVars(pageScheme),
         color: pageScheme.text,

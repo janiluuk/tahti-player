@@ -6,6 +6,7 @@ import { vi } from 'vitest';
 import type { Track } from '@tahti-player/model';
 
 import { TrackTable, TrackTableLabels } from '.';
+import { stubPhoneViewport } from '../../test/phoneViewport';
 
 const labels: TrackTableLabels = {
   headers: {
@@ -396,6 +397,56 @@ describe('TrackTable', () => {
     await screen.findByText('Track 1');
     expect(
       screen.queryByRole('checkbox', { name: 'Select Track 1' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('hides row checkboxes on phones until Select is pressed', async () => {
+    const restore = stubPhoneViewport();
+    try {
+      const onRemoveSelected = vi.fn();
+      render(
+        <TrackTable
+          tracks={makeTracks(2)}
+          labels={labels}
+          features={{ selectable: true }}
+          display={{ displayThumbnail: false }}
+          actions={{ onRemoveSelected }}
+        />,
+      );
+
+      await screen.findByText('Track 1');
+      expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+
+      await userEvent.click(screen.getByTestId('start-selecting-button'));
+      await userEvent.click(
+        screen.getByRole('checkbox', { name: 'Select Track 2' }),
+      );
+      expect(screen.getByText('1 selected')).toBeInTheDocument();
+
+      await userEvent.click(screen.getByTestId('done-selecting-button'));
+      expect(screen.queryByText('1 selected')).not.toBeInTheDocument();
+      expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+    } finally {
+      restore();
+    }
+  });
+
+  it('keeps checkboxes visible without a Select button on wider screens', async () => {
+    render(
+      <TrackTable
+        tracks={makeTracks(1)}
+        labels={labels}
+        features={{ selectable: true }}
+        display={{ displayThumbnail: false }}
+      />,
+    );
+
+    await screen.findByText('Track 1');
+    expect(
+      screen.getByRole('checkbox', { name: 'Select Track 1' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('start-selecting-button'),
     ).not.toBeInTheDocument();
   });
 

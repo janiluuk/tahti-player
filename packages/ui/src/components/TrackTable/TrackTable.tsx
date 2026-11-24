@@ -11,6 +11,7 @@ import { useMemo, useRef } from 'react';
 
 import { Track } from '@tahti-player/model';
 
+import { useOnDemandSelection } from '../../hooks/useOnDemandSelection';
 import { cn } from '../../utils';
 import { ScrollableArea } from '../ScrollableArea';
 import { defaultDisplay, defaultFeatures } from './defaults';
@@ -65,6 +66,11 @@ export function TrackTable<T extends Track = Track>({
   const { globalFilter, setGlobalFilter, globalFilterFn, hasFilter } =
     useGlobalFilter<T>();
   const rowSelection = useRowSelection(itemIds);
+  const selection = useOnDemandSelection({
+    selectable: Boolean(resolvedFeatures.selectable),
+    selectedCount: rowSelection.selectedIds.length,
+    onClear: rowSelection.clear,
+  });
 
   const actionsColumn = useMemo(
     () =>
@@ -82,7 +88,10 @@ export function TrackTable<T extends Track = Track>({
       display: resolvedDisplay,
       labels,
       actions,
-      features: resolvedFeatures,
+      features: {
+        ...resolvedFeatures,
+        selectable: selection.showCheckboxes,
+      },
     },
     actionsColumn,
   );
@@ -157,6 +166,7 @@ export function TrackTable<T extends Track = Track>({
           onFilterChange={setGlobalFilter}
           selectedIds={rowSelection.selectedIds}
           onClearSelection={rowSelection.clear}
+          selection={selection}
           className="mb-2 shrink-0"
         />
         <ScrollableArea

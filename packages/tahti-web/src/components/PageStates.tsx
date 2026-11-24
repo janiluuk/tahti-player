@@ -10,6 +10,7 @@ import {
   Skeleton,
 } from '@tahti-player/ui';
 
+import { FULL_BLEED_TOP_CANCEL } from '../layout/contentPadding';
 import { cn } from '../lib/cn';
 
 const REVEAL =
@@ -132,7 +133,8 @@ export function ProfileSkeleton({ className }: { className?: string }) {
       role="status"
       data-testid="profile-skeleton"
       className={cn(
-        'relative isolate -mx-6 -mt-6 flex min-h-full flex-col gap-4 overflow-hidden p-6 md:-mx-8 md:-mt-8 md:p-8',
+        'relative isolate flex min-h-full flex-col gap-4 overflow-hidden',
+        FULL_BLEED_TOP_CANCEL,
         className,
       )}
     >

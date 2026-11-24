@@ -47,12 +47,15 @@ export const ViewShell: FC<ViewShellProps> = ({
     >
       {corner}
       {actions ? (
-        <div className="mb-3 flex w-full flex-0 flex-row items-start justify-between gap-4">
+        <div className="mb-3 flex w-full flex-0 flex-row flex-wrap items-start justify-between gap-x-4 gap-y-2">
           <div
             className={cn('flex min-w-0 flex-col text-left', corner && 'pl-14')}
           >
             {title && (
-              <h1 className="text-3xl font-bold" data-testid="title">
+              <h1
+                className="text-2xl font-bold sm:text-3xl"
+                data-testid="title"
+              >
                 {title}
               </h1>
             )}
@@ -74,7 +77,7 @@ export const ViewShell: FC<ViewShellProps> = ({
           {title && (
             <h1
               className={cn(
-                'flex w-full flex-0 flex-row text-3xl font-bold',
+                'flex w-full flex-0 flex-row text-2xl font-bold sm:text-3xl',
                 subtitle ? 'mb-1' : 'mb-6',
                 corner ? 'pl-14' : 'text-left',
               )}

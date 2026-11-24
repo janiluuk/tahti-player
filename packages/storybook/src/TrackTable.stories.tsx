@@ -11,6 +11,7 @@ import {
 
 import { Track } from '@tahti-player/model';
 import {
+  PHONE_SELECTION_QUERY,
   TrackTable,
   TrackTableLabels,
   TrackTableProps,
@@ -498,4 +499,49 @@ export const BrowserView: Story = {
   render: (args) => (
     <ResponsiveTable {...(args as TrackTableProps)} width={1280} />
   ),
+};
+
+/** Phone width: no checkbox column until Select is pressed; Done clears the
+ * selection and hides the checkboxes again. */
+export const PhoneSelectOnDemand: Story = {
+  args: {
+    tracks,
+    labels,
+    features: { selectable: true },
+    display: { displayThumbnail: true },
+    actions: { onAddSelectedToQueue: fn() },
+  },
+  beforeEach: () => {
+    const real = window.matchMedia;
+    window.matchMedia = (query: string) =>
+      query === PHONE_SELECTION_QUERY
+        ? ({
+            matches: true,
+            media: query,
+            onchange: null,
+            addEventListener: () => undefined,
+            removeEventListener: () => undefined,
+            addListener: () => undefined,
+            removeListener: () => undefined,
+            dispatchEvent: () => false,
+          } as MediaQueryList)
+        : real.call(window, query);
+    return () => {
+      window.matchMedia = real;
+    };
+  },
+  render: (args) => <TrackTable {...(args as TrackTableProps)} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.queryAllByRole('checkbox')).toHaveLength(0);
+    await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
+    await userEvent.click(
+      canvas.getByRole('checkbox', { name: 'Select Waka/Jawaka' }),
+    );
+    await expect(canvas.getByText('1 selected')).toBeInTheDocument();
+    await userEvent.click(canvas.getByRole('button', { name: 'Done' }));
+    await waitFor(() =>
+      expect(canvas.queryAllByRole('checkbox')).toHaveLength(0),
+    );
+  },
 };
