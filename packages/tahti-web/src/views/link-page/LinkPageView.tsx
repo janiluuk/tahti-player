@@ -1,5 +1,6 @@
+import { useRouter } from '@tanstack/react-router';
 import { ExternalLinkIcon, LinkIcon, Share2Icon } from 'lucide-react';
-import { useMemo } from 'react';
+import { useMemo, type ComponentProps, type MouseEvent } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -13,6 +14,7 @@ import {
   PageError,
   ProfileSkeleton,
 } from '../../components/PageStates';
+import { inAppPath } from '../../lib/inAppPath';
 import { formatDuration } from '../../lib/playableToTrack';
 import { webT } from '../../lib/webT';
 import { usePlayerStore } from '../../stores/playerStore';
@@ -25,6 +27,45 @@ function shareLinkPage(url: string, title: string) {
   void navigator.clipboard.writeText(url).then(
     () => toast.success(webT()('toasts.linkCopied')),
     () => toast.error(webT()('toasts.linkCopied')),
+  );
+}
+
+function isPlainLeftClick(event: MouseEvent<HTMLAnchorElement>): boolean {
+  return (
+    event.button === 0 &&
+    !event.metaKey &&
+    !event.ctrlKey &&
+    !event.shiftKey &&
+    !event.altKey
+  );
+}
+
+/** Opens Tahti links (the artist's `slug.tahti.live` site, `/u/...` sets)
+ * through the router, so following them keeps the current track playing;
+ * other sites stay plain links. */
+function LinkPageAnchor({
+  href,
+  onClick,
+  ...rest
+}: ComponentProps<typeof ButtonAnchor> & { href: string }) {
+  const router = useRouter();
+  const path =
+    typeof window === 'undefined'
+      ? null
+      : inAppPath(href, window.location.origin);
+  return (
+    <ButtonAnchor
+      {...rest}
+      href={path ?? href}
+      onClick={(event) => {
+        onClick?.(event);
+        if (!path || event.defaultPrevented || !isPlainLeftClick(event)) {
+          return;
+        }
+        event.preventDefault();
+        router.history.push(path);
+      }}
+    />
   );
 }
 
@@ -195,9 +236,9 @@ export function LinkPageView({
           </p>
         ) : null}
         <div className="flex flex-wrap justify-center gap-2">
-          <ButtonAnchor href={linkPage.siteUrl}>
+          <LinkPageAnchor href={linkPage.siteUrl}>
             {t('linkPage.openProfile')}
-          </ButtonAnchor>
+          </LinkPageAnchor>
           <Button
             variant="secondary"
             onClick={() =>
@@ -278,14 +319,14 @@ export function LinkPageView({
             {t('linkPage.sets')}
           </h2>
           {linkPage.sets.map((set) => (
-            <ButtonAnchor
+            <LinkPageAnchor
               key={set.id}
               href={set.url}
               variant="text"
               className="border-border bg-background-secondary hover:border-foreground/30 flex h-auto w-full items-center justify-start gap-3 rounded-lg border p-2"
               data-testid="link-page-set"
             >
-              <div className="size-14 shrink-0 overflow-hidden rounded-md">
+              <div className="relative size-14 shrink-0 overflow-hidden rounded-md">
                 <MediaArtwork
                   src={set.coverUrl ?? undefined}
                   seed={set.slug}
@@ -301,7 +342,7 @@ export function LinkPageView({
                   {t('linkPage.setItemCount', { count: set.itemCount })}
                 </div>
               </div>
-            </ButtonAnchor>
+            </LinkPageAnchor>
           ))}
         </section>
       ) : null}

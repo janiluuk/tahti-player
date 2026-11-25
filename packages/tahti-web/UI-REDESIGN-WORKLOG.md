@@ -7154,3 +7154,7 @@ Desktop main-pane padding is four pixels tighter at each breakpoint, full-bleed 
 - Events: `stores/eventBrowseStore.ts` + `EventBrowseRow` (`useRememberEventRow`), `useEventBrowse` (keys, swipe), EventView header nav + `aside` side panel.
 - Identity: `ProfileIdentityHeader` with `ProfileBackdropDialog` / `ProfilePictureDialog` (`useProfileAvatar`); `ProfilePictureSection`, `ProfileBackdropSection`, `ArtistImagePurposePicker` removed.
 - Player bar: `MiniStripProgress`, paused ⋯ menu; `AdminNav` `useSelectedTabInView` + `TAB_STRIP_FADE`; `LegalHubLinks` `<nav>`.
+
+## 2026-11-25 — Keep playing on the artist page (0.0.490)
+
+- The Link page's "Open profile" and set links open in the app (`/u/<slug>?full=1`) instead of reloading onto `<slug>.tahti.live`, so the current track keeps playing; the set artwork no longer covers the page.

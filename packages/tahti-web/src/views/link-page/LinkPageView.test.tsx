@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { PublicProfile } from '../../api/types';
@@ -77,5 +77,66 @@ describe('LinkPageView', () => {
     expect(frame.className).toContain('relative');
     expect(frame.className).toContain('overflow-hidden');
     expect(frame.querySelector('[data-testid="media-artwork"]')).toBeTruthy();
+  });
+  it('opens the artist site and sets in the app instead of reloading the page', async () => {
+    const withSet: PublicProfile = {
+      ...profile,
+      linkPage: {
+        ...profile.linkPage!,
+        sets: [
+          {
+            id: 'vault',
+            slug: 'vault',
+            name: 'Vault',
+            coverUrl: null,
+            itemCount: 2,
+            url: '/u/yaniho/c/vault',
+          },
+        ],
+      },
+    };
+    const { router } = await renderWithRouter(
+      <LinkPageView
+        profile={withSet}
+        loading={false}
+        error={null}
+        onRetry={vi.fn()}
+      />,
+      { paths: ['/u/$username', '/u/$username/c/$slug'] },
+    );
+    // An unpositioned frame let the fill artwork cover the whole page, so
+    // every click landed on the set link.
+    const setArtwork = screen
+      .getByTestId('link-page-set')
+      .querySelector('[data-testid="media-artwork"]');
+    expect(setArtwork?.parentElement?.className).toContain('relative');
+    const open = screen.getByRole('link', { name: 'Open profile' });
+    expect(open.getAttribute('href')).toBe('/u/yaniho?full=1');
+    await act(async () => {
+      fireEvent.click(open);
+    });
+    expect(router.state.location.pathname).toBe('/u/yaniho');
+    expect(router.state.location.searchStr).toBe('?full=1');
+    await act(async () => {
+      router.history.push('/');
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('link-page-set'));
+    });
+    expect(router.state.location.pathname).toBe('/u/yaniho/c/vault');
+  });
+
+  it('keeps links to other sites as plain links', async () => {
+    await renderWithRouter(
+      <LinkPageView
+        profile={profile}
+        loading={false}
+        error={null}
+        onRetry={vi.fn()}
+      />,
+    );
+    expect(screen.getByTestId('link-page-link').getAttribute('href')).toBe(
+      'https://facebook.com/yaniho',
+    );
   });
 });
