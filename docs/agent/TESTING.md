@@ -164,7 +164,7 @@ CI shards (~50 files) plus one retry; Chromium launches with
 - Lint and **`test-core`** run only the packages a PR affects and their dependents (`turbo --affected` against the PR base); pushes to master run every package.
 - **`test-web`**: tahti-web's Vitest suite in four shards (`--shard=N/4`), only when `web` paths changed. Workspace packages export their sources, so no build is needed.
 - **`storybook`**: story plays as ten Vitest shards (one Chromium page per shard; past ~100 story files the renderer crashes), run three or four at a time on three runners ("plays 1/3" … "plays 3/3"), only when `storybook` paths changed.
-- **`e2e-mock`**: role / use-case journeys against the mock app on **master pushes and `workflow_dispatch` only** (not on PRs; not part of the required `CI` gate), in four Playwright shards ("mock app 1/4" … "4/4"). The beta and Storybook deploys wait for the whole CI workflow, journeys included. Playwright Chromium is cached like the Storybook job.
+- **`e2e-mock`**: role / use-case journeys against the mock app on **master pushes and `workflow_dispatch` only** (not on PRs; not part of the required `CI` gate), in six Playwright shards ("mock app 1/6" … "6/6"). The beta and Storybook deploys wait for the whole CI workflow, journeys included; on master pushes `web-dist` builds the production bundle in parallel and the self-hosted beta deploy ships that artifact instead of rebuilding. Playwright Chromium is cached like the Storybook job.
 - **Coverage** (`coverage.yml`) runs on master pushes and by hand only.
 - Shared setup (Node 24, pnpm store cache, frozen install, optional turbo cache) is the composite action `.github/actions/setup`.
 
