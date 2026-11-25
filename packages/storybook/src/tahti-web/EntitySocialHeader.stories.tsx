@@ -100,6 +100,42 @@ export const ArtistOnPhoneWithBack: Story = {
   },
 };
 
+/** The artist page's phone header: the image sits beside the title, the
+ * actions take their own row under it and the counts stay in one swipeable
+ * row, so the header stays short enough for the first section to show. */
+export const ArtistCompactOnPhone: Story = {
+  name: 'Artist compact on phone',
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  args: {
+    ...ArtistOnPhoneWithBack.args,
+    compactOnPhone: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const header = canvas.getByTestId('artist-social-header');
+    const title = canvas.getByRole('heading', { name: 'Pooh Shiesty' });
+    const actions = canvas.getByTestId('entity-social-header-actions');
+    const stats = canvas.getByTestId('entity-social-stats');
+    if (window.innerWidth >= 640) {
+      return;
+    }
+    await expect(header.getBoundingClientRect().height).toBeLessThan(320);
+    await expect(actions.getBoundingClientRect().top).toBeGreaterThanOrEqual(
+      title.getBoundingClientRect().bottom,
+    );
+    await expect(stats.getBoundingClientRect().top).toBeGreaterThanOrEqual(
+      actions.getBoundingClientRect().bottom,
+    );
+    const chipTops = [...stats.children].map(
+      (chip) => chip.getBoundingClientRect().top,
+    );
+    await expect(new Set(chipTops).size).toBe(1);
+    await expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(
+      window.innerWidth,
+    );
+  },
+};
+
 export const ArtistWithBackdrop: Story = {
   name: 'Artist + backdrop image',
   args: {

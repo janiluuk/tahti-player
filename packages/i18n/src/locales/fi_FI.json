@@ -9017,19 +9017,19 @@
       "playlistSummaryTracks": "{{count}} kappaletta curated-rotaatiossa — muokkaa Soittolista-välilehdellä."
     },
     "tahtiRadioPlaylistPanel": {
-      "curatedRotationDescription": "Tahti Radion curated-rotaatio — pyörii live-nostojen välillä. Vain julkisia, valmiita arkistokappaleita voi lisätä.",
-      "dragTracksDescription": "Vedä kappaleet siihen järjestykseen, jossa kuulijat kuulevat ne live-lähetysten välillä.",
-      "nowPlayingTrack": "Nyt soi: {{title}}",
+      "curatedRotationDescription": "Soi live-lähetysten välissä. Vain julkisia, valmiita kappaleita voi lisätä.",
+      "dragTracksDescription": "Muuta järjestystä vetämällä riviä tai rivin valikosta.",
+      "nowPlayingTrack": "Soi nyt: {{title}}",
       "addTracks": "Lisää kappaleita",
-      "addTracksTitle": "Lisää kappaleita Tahti Radioon",
-      "addTracksDescription": "Selaa julkisia, valmiita arkistokappaleita. Valitse yksi tai useampi ja lisää ne rotaation loppuun.",
+      "addTracksTitle": "Lisää Tahti Radioon",
+      "addTracksDescription": "Vain julkiset, valmiit kappaleet. Lisätyt menevät loppuun.",
       "contentTypes": "Sisältötyypit",
       "tracks": "Kappaleet",
       "searchContent": "Hae sisältöä",
-      "searchTracksByTitle": "Hae kappaleita otsikolla…",
+      "searchTracksByTitle": "Hae nimellä…",
       "availableTracks": "Saatavilla olevat kappaleet",
-      "noTracksMatch": "Mikään julkinen arkistokappale ei vastaa hakua “{{query}}”.",
-      "noEligibleTracks": "Kelvollisia arkistokappaleita ei löytynyt.",
+      "noTracksMatch": "Ei osumia haulle “{{query}}”.",
+      "noEligibleTracks": "Ei lisättäviä kappaleita.",
       "adding": "Lisätään…",
       "removeTrackTitle": "Poistetaanko rotaatiosta?",
       "removeTrackDescription": "Poista “{{title}}” Tahti Radion soittolistasta.",
@@ -9037,9 +9037,9 @@
       "selectAllShown": "Valitse kaikki näkyvät",
       "selectedCount_one": "{{count}} valittu",
       "selectedCount_other": "{{count}} valittua",
-      "addedTracks_one": "{{count}} kappale lisätty kiertoon.",
-      "addedTracks_other": "{{count}} kappaletta lisätty kiertoon.",
-      "addedSome": "Lisättiin {{added}} / {{total}} kappaletta. {{error}}"
+      "addedTracks_one": "{{count}} kappale lisätty.",
+      "addedTracks_other": "{{count}} kappaletta lisätty.",
+      "addedSome": "Lisättiin {{added}}/{{total}}. {{error}}"
     },
     "tahtiRadioPlaylistPanelLabels": {
       "currentRotationLength": "Soittolista ({{length}})"
@@ -10561,7 +10561,13 @@
       "tahtiRadioRotationPlaylist": "Tahti Radion kiertosoittolista",
       "trackCount_one": "{{count}} kappale",
       "trackCount_other": "{{count}} kappaletta",
-      "totalDuration": "{{duration}} yhteensä"
+      "totalDuration": "{{duration}} yhteensä",
+      "onAir": "Soi nyt",
+      "upNext": "Seuraavana",
+      "moveToTop": "Siirrä alkuun",
+      "moveUp": "Siirrä ylös",
+      "moveDown": "Siirrä alas",
+      "moveToBottom": "Siirrä loppuun"
     },
     "stemsPanelText": {
       "stems": "Raidat"

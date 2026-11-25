@@ -9021,29 +9021,29 @@
       "playlistSummaryTracks": "{{count}} tracks in the curated rotation — edit them on the Playlist tab."
     },
     "tahtiRadioPlaylistPanel": {
-      "curatedRotationDescription": "Curated Tahti Radio rotation — loops between live member features. Only public, ready archive tracks can be added.",
-      "dragTracksDescription": "Drag tracks into the order listeners hear between live shows.",
-      "nowPlayingTrack": "On air now: {{title}}",
+      "curatedRotationDescription": "Plays between live shows. Only public, ready tracks can be added.",
+      "dragTracksDescription": "Drag a row, or use its menu, to change the order.",
+      "nowPlayingTrack": "On air: {{title}}",
       "addTracks": "Add tracks",
-      "addTracksTitle": "Add tracks to Tahti Radio",
-      "addTracksDescription": "Browse public, ready archive tracks. Select one or more, then append them to the rotation.",
+      "addTracksTitle": "Add to Tahti Radio",
+      "addTracksDescription": "Public, ready tracks only. Added tracks go to the end.",
       "contentTypes": "Content types",
       "tracks": "Tracks",
       "searchContent": "Search content",
-      "searchTracksByTitle": "Search tracks by title…",
+      "searchTracksByTitle": "Search by title…",
       "availableTracks": "Available tracks",
-      "noTracksMatch": "No public archive tracks match “{{query}}”.",
-      "noEligibleTracks": "No eligible archive tracks found.",
+      "noTracksMatch": "No tracks match “{{query}}”.",
+      "noEligibleTracks": "No tracks to add.",
       "adding": "Adding…",
       "removeTrackTitle": "Remove from rotation?",
-      "removeTrackDescription": "Remove “{{title}}” from the Tahti Radio playlist.",
+      "removeTrackDescription": "Take “{{title}}” off the Tahti Radio playlist.",
       "removeTrackConfirm": "Remove",
       "selectAllShown": "Select all shown",
       "selectedCount_one": "{{count}} selected",
       "selectedCount_other": "{{count}} selected",
-      "addedTracks_one": "Added {{count}} track to the rotation.",
-      "addedTracks_other": "Added {{count}} tracks to the rotation.",
-      "addedSome": "Added {{added}} of {{total}} tracks. {{error}}"
+      "addedTracks_one": "Added {{count}} track.",
+      "addedTracks_other": "Added {{count}} tracks.",
+      "addedSome": "Added {{added}} of {{total}}. {{error}}"
     },
     "tahtiRadioPlaylistPanelLabels": {
       "currentRotationLength": "Playlist ({{length}})"
@@ -10565,7 +10565,13 @@
       "tahtiRadioRotationPlaylist": "Tahti Radio rotation playlist",
       "trackCount_one": "{{count}} track",
       "trackCount_other": "{{count}} tracks",
-      "totalDuration": "{{duration}} total"
+      "totalDuration": "{{duration}} total",
+      "onAir": "On air",
+      "upNext": "Up next",
+      "moveToTop": "Move to top",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "moveToBottom": "Move to bottom"
     },
     "stemsPanelText": {
       "stems": "Stems"

@@ -219,3 +219,45 @@ export const ServerHiddenBlocks: Story = {
     });
   },
 };
+
+/** A phone: the short header (name, then the actions, then one row of
+ * counts) leaves the first section, the tracks, starting above the fold,
+ * and those tracks sit on the page without a card around them. The story
+ * has no AppShell padding for the page's full-bleed margins to cancel, so
+ * the width check is on the blocks, not the document. */
+export const PhoneHierarchy: Story = {
+  decorators: [withMockAuth(MOCK_USERS.listener)],
+  parameters: { viewport: { defaultViewport: 'mobile2' } },
+  play: async ({ canvasElement }) => {
+    const canvas = await findHero(canvasElement);
+    if (window.innerWidth >= 640) {
+      return;
+    }
+    const header = canvas.getByTestId('artist-social-header');
+    const title = within(header).getByRole('heading', {
+      level: 1,
+      name: ARTIST_NAME,
+    });
+    const actions = within(header).getByTestId('entity-social-header-actions');
+    const popular = await canvas.findByTestId('artist-popular');
+
+    await expect(canvas.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    await expect(actions.getBoundingClientRect().top).toBeGreaterThanOrEqual(
+      title.getBoundingClientRect().bottom,
+    );
+    await expect(popular.getBoundingClientRect().top).toBeGreaterThan(
+      header.getBoundingClientRect().bottom,
+    );
+    await expect(popular.getBoundingClientRect().top).toBeLessThan(
+      window.innerHeight,
+    );
+    await expect(
+      within(popular).getByTestId('ambient-track-list'),
+    ).toHaveAttribute('data-flush');
+    for (const block of [header, popular]) {
+      await expect(block.getBoundingClientRect().right).toBeLessThanOrEqual(
+        window.innerWidth,
+      );
+    }
+  },
+};

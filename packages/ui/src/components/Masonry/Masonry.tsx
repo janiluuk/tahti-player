@@ -1,6 +1,7 @@
-import { Children, useSyncExternalStore, type FC, type ReactNode } from 'react';
+import { Children, type FC, type ReactNode } from 'react';
 
 import { cn } from '../../utils';
+import { useMediaQuery } from '../../utils/mediaQuery';
 
 /** Column counts per breakpoint; `md` and `xl` match Tailwind's 768px and
  * 1280px. */
@@ -8,37 +9,6 @@ export type MasonryColumns = { base: number; md?: number; xl?: number };
 
 const MD_QUERY = '(min-width: 768px)';
 const XL_QUERY = '(min-width: 1280px)';
-
-function query(media: string): MediaQueryList | null {
-  if (
-    typeof window === 'undefined' ||
-    typeof window.matchMedia !== 'function'
-  ) {
-    return null;
-  }
-  return window.matchMedia(media) ?? null;
-}
-
-function subscribe(onChange: () => void): () => void {
-  const lists = [query(MD_QUERY), query(XL_QUERY)].filter(
-    (list): list is MediaQueryList => list !== null,
-  );
-  for (const list of lists) {
-    list.addEventListener('change', onChange);
-  }
-  return () => {
-    for (const list of lists) {
-      list.removeEventListener('change', onChange);
-    }
-  };
-}
-
-function breakpoint(): 'base' | 'md' | 'xl' {
-  if (query(XL_QUERY)?.matches) {
-    return 'xl';
-  }
-  return query(MD_QUERY)?.matches ? 'md' : 'base';
-}
 
 function columnCount(columns: MasonryColumns, at: 'base' | 'md' | 'xl') {
   const md = columns.md ?? columns.base;
@@ -65,7 +35,9 @@ export const Masonry: FC<MasonryProps> = ({
   columnClassName,
   'data-testid': testId,
 }) => {
-  const at = useSyncExternalStore(subscribe, breakpoint, () => 'base' as const);
+  const md = useMediaQuery(MD_QUERY);
+  const xl = useMediaQuery(XL_QUERY);
+  const at = xl ? 'xl' : md ? 'md' : 'base';
   const count = columnCount(columns, at);
   const stacks: ReactNode[][] = Array.from({ length: count }, () => []);
   Children.toArray(children).forEach((child, index) => {

@@ -6835,3 +6835,7 @@ pixels for edge shadows and focus rings. Full-bleed page offsets remain paired
 with the shared inset, while phone gutters remain unchanged. Focused Storybook
 plays verify left and right corner controls stay inside the pane and focusable at
 desktop and phone widths.
+
+## 2026-11-25 — Next 10: radio manager, artist page on phones, calm Listen, faster unit tests (0.0.485)
+
+Tahti Radio rotation list numbers its rows, marks On air (matched by `soundId` from recently-played, title fallback) and Up next, and gets a touch/keyboard Move menu; the add-tracks dialog fits phones and the Playlist tab copy is shorter (EN + FI). The compact Radio strip no longer wraps its label at 390 px. The public artist page uses a compact phone header (`EntitySocialHeader` `compactOnPhone`, Yaniho ~470 → ~225 px), and channel/artist track lists drop their card on phones via `AmbientTrackList` `flushOnPhone` without breaking dark-scheme contrast. A guidelines notice that arrives after first paint is a sticky toast instead of pushing Listen down (signed-in CLS 0.11 → 0.0001 at 390 px; `scripts/measure-listen-cls.mjs`). `@tahti-player/ui` shares one `MediaQueryList` per query (`useMediaQuery`) in Tooltip, reduced motion, Masonry and on-demand selection. tahti-web vitest runs with `isolate: false` after the shared setup resets DOM, storage, stubs, clipboard, language and modules per file, and `@tahti-player/i18n` no longer re-inits the i18next singleton when the module is evaluated again (local shards ~90 s → ~15 s; full unsharded run passes 4x in a row).

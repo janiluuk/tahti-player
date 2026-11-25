@@ -13,11 +13,16 @@ import {
   type AdminRadioBrowseItem,
   type AdminRadioRotationItem,
 } from '../../api/admin';
-import { fetchRadioStation } from '../../api/client';
+import {
+  fetchRadioRecentlyPlayed,
+  fetchRadioStation,
+  type RadioRecentlyPlayedItem,
+} from '../../api/client';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { TahtiRotationPlaylistEditor } from '../../components/TahtiRotationPlaylistEditor';
+import { findOnAirRotationItemId } from '../../lib/radioRotationOnAir';
 import { webT } from '../../lib/webT';
 import { usePlayerStore } from '../../stores/playerStore';
 
@@ -35,6 +40,9 @@ export function TahtiRadioPlaylistPanel() {
   const play = usePlayerStore((s) => s.play);
   const [items, setItems] = useState<AdminRadioRotationItem[]>([]);
   const [nowPlayingTitle, setNowPlayingTitle] = useState<string | null>(null);
+  const [latestPlay, setLatestPlay] = useState<RadioRecentlyPlayedItem | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
@@ -52,18 +60,21 @@ export function TahtiRadioPlaylistPanel() {
     useState<AdminRadioRotationItem | null>(null);
 
   const reload = useCallback(() => {
-    void Promise.all([fetchAdminRadioRotation(), fetchRadioStation()]).then(
-      ([rotationResult, stationResult]) => {
-        setItems(rotationResult.data);
-        setLoadError(
-          rotationResult.meta.source === 'api'
-            ? (rotationResult.meta.reason ?? null)
-            : null,
-        );
-        setNowPlayingTitle(stationResult.data.nowPlaying?.title ?? null);
-        setLoading(false);
-      },
-    );
+    void Promise.all([
+      fetchAdminRadioRotation(),
+      fetchRadioStation(),
+      fetchRadioRecentlyPlayed(),
+    ]).then(([rotationResult, stationResult, recentResult]) => {
+      setItems(rotationResult.data);
+      setLoadError(
+        rotationResult.meta.source === 'api'
+          ? (rotationResult.meta.reason ?? null)
+          : null,
+      );
+      setNowPlayingTitle(stationResult.data.nowPlaying?.title ?? null);
+      setLatestPlay(recentResult.data[0] ?? null);
+      setLoading(false);
+    });
   }, []);
 
   useEffect(reload, [reload]);
@@ -163,10 +174,11 @@ export function TahtiRadioPlaylistPanel() {
       setMsg(t('tahtiRadioPlaylistPanel.addedTracks', { count: added }));
     });
   };
-  const nowPlayingId =
-    nowPlayingTitle == null
-      ? null
-      : (items.find((item) => item.title === nowPlayingTitle)?.id ?? null);
+  const nowPlayingId = findOnAirRotationItemId(
+    items,
+    nowPlayingTitle == null ? null : { title: nowPlayingTitle },
+    latestPlay,
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -303,7 +315,7 @@ export function TahtiRadioPlaylistPanel() {
       <Dialog.Root
         isOpen={pickerOpen}
         onClose={closePicker}
-        className="max-w-4xl"
+        className="flex max-w-4xl flex-col overflow-hidden p-4 sm:p-6"
       >
         <Dialog.Title>
           {t('tahtiRadioPlaylistPanel.addTracksTitle')}
@@ -311,10 +323,10 @@ export function TahtiRadioPlaylistPanel() {
         <Dialog.Description>
           {t('tahtiRadioPlaylistPanel.addTracksDescription')}
         </Dialog.Description>
-        <div className="grid min-h-96 gap-4 md:grid-cols-[12rem_minmax(0,1fr)]">
+        <div className="mt-4 flex min-h-0 flex-1 flex-col gap-4 md:grid md:min-h-96 md:grid-cols-[12rem_minmax(0,1fr)]">
           <nav
             aria-label={t('tahtiRadioPlaylistPanel.contentTypes')}
-            className="border-border flex gap-1 overflow-x-auto border-b pb-2 md:flex-col md:overflow-visible md:border-r md:border-b-0 md:pr-3"
+            className="border-border hidden md:flex md:flex-col md:border-r md:pr-3"
           >
             <Button
               variant="tertiary"
@@ -325,7 +337,7 @@ export function TahtiRadioPlaylistPanel() {
               {t('tahtiRadioPlaylistPanel.tracks')}
             </Button>
           </nav>
-          <div className="flex min-w-0 flex-col gap-3">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
             <FilterBar
               searchValue={query}
               onSearchChange={setQuery}
@@ -348,7 +360,7 @@ export function TahtiRadioPlaylistPanel() {
                 </span>
               </div>
             ) : null}
-            <div className="border-border min-h-0 overflow-auto rounded-md border">
+            <div className="border-border min-h-0 flex-1 overflow-auto rounded-md border">
               {browseError ? (
                 <PageError
                   title={t('loadErrors.couldnTLoadArchiveTracks')}
@@ -375,7 +387,7 @@ export function TahtiRadioPlaylistPanel() {
                     return (
                       <li
                         key={item.id}
-                        className={`flex items-center gap-3 px-3 py-2.5 text-sm ${index % 2 === 1 ? 'bg-background-secondary/40' : 'bg-background'}`}
+                        className={`flex items-center gap-2 px-3 py-2.5 text-sm sm:gap-3 ${index % 2 === 1 ? 'bg-background-secondary/40' : 'bg-background'}`}
                       >
                         <Checkbox
                           checked={already || selected.has(item.id)}
@@ -429,13 +441,17 @@ export function TahtiRadioPlaylistPanel() {
                             </Button>
                           </Tooltip>
                         ) : null}
-                        <span className="text-foreground-secondary w-20 text-right text-xs">
-                          {already
-                            ? t('selectsTabLeftovers.inRotation')
-                            : selected.has(item.id)
+                        {already ? (
+                          <span className="text-foreground-secondary shrink-0 text-right text-xs sm:w-20">
+                            {t('selectsTabLeftovers.inRotation')}
+                          </span>
+                        ) : (
+                          <span className="text-foreground-secondary hidden w-20 shrink-0 text-right text-xs sm:inline">
+                            {selected.has(item.id)
                               ? t('selectsTabLeftovers.selected')
                               : ''}
-                        </span>
+                          </span>
+                        )}
                       </li>
                     );
                   })}

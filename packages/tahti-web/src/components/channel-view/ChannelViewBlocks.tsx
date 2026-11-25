@@ -81,7 +81,8 @@ function ChannelTrackRows({
       playAll
       filterable
       allowGrid={false}
-      className="bg-background-secondary"
+      surfaceClassName="bg-background-secondary"
+      flushOnPhone
       getTrackMeta={getTrackMeta}
       getAnnotation={pinnedIds.size > 0 ? pinnedNote : undefined}
       emptyMessage={emptyMessage}

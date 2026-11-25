@@ -20,6 +20,7 @@ import { AddToPlaylistPanel } from './AddToPlaylistPanel';
 import {
   AmbientTrackList,
   type AmbientTrackListItem,
+  type AmbientTrackListProps,
   type AmbientTrackListView,
 } from './AmbientTrackList';
 import type {
@@ -75,6 +76,8 @@ export function PlayableAmbientTrackList({
   allowGrid = true,
   initialView,
   heading,
+  surfaceClassName,
+  flushOnPhone,
   className,
 }: {
   items: TahtiPlayable[];
@@ -112,6 +115,8 @@ export function PlayableAmbientTrackList({
   initialView?: AmbientTrackListView;
   /** Section title shown in the toolbar instead of the track count. */
   heading?: ReactNode;
+  surfaceClassName?: AmbientTrackListProps['surfaceClassName'];
+  flushOnPhone?: AmbientTrackListProps['flushOnPhone'];
   className?: string;
 }) {
   const play = usePlayerStore((s) => s.play);
@@ -424,6 +429,8 @@ export function PlayableAmbientTrackList({
         allowGrid={allowGrid}
         initialView={initialView}
         heading={heading}
+        surfaceClassName={surfaceClassName}
+        flushOnPhone={flushOnPhone}
         defaultDensity={defaultDensity}
         emptyMessage={shownEmptyMessage}
         toolbarStart={toolbarStart ?? filterBox}

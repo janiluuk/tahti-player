@@ -1,28 +1,9 @@
-import { useCallback, useState, useSyncExternalStore } from 'react';
+import { useCallback, useState } from 'react';
+
+import { useMediaQuery } from '../utils/mediaQuery';
 
 /** Below Tailwind's `sm` breakpoint. */
 export const PHONE_SELECTION_QUERY = '(max-width: 639px)';
-
-function phoneQuery(): MediaQueryList | null {
-  if (
-    typeof window === 'undefined' ||
-    typeof window.matchMedia !== 'function'
-  ) {
-    return null;
-  }
-  return window.matchMedia(PHONE_SELECTION_QUERY) ?? null;
-}
-
-function subscribe(onChange: () => void): () => void {
-  const mql = phoneQuery();
-  if (!mql) {
-    return () => undefined;
-  }
-  mql.addEventListener('change', onChange);
-  return () => mql.removeEventListener('change', onChange);
-}
-
-const isPhoneWidth = () => phoneQuery()?.matches ?? false;
 
 /**
  * Row checkboxes for a multi-select list: always shown on wider screens, but
@@ -38,7 +19,7 @@ export function useOnDemandSelection({
   selectedCount: number;
   onClear?: () => void;
 }) {
-  const isPhone = useSyncExternalStore(subscribe, isPhoneWidth, () => false);
+  const isPhone = useMediaQuery(PHONE_SELECTION_QUERY);
   const [selecting, setSelecting] = useState(false);
 
   const start = useCallback(() => setSelecting(true), []);

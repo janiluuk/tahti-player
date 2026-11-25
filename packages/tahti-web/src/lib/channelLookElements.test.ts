@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
   channelLookElements,
@@ -55,26 +55,8 @@ describe('isChannelLookElementId', () => {
 });
 
 describe('artist look visibility', () => {
-  const memory = new Map<string, string>();
-
   beforeEach(() => {
-    memory.clear();
-    Object.defineProperty(globalThis, 'localStorage', {
-      configurable: true,
-      value: {
-        getItem: (key: string) => memory.get(key) ?? null,
-        setItem: (key: string, value: string) => {
-          memory.set(key, value);
-        },
-        removeItem: (key: string) => {
-          memory.delete(key);
-        },
-      },
-    });
-  });
-
-  afterEach(() => {
-    memory.clear();
+    localStorage.clear();
   });
 
   it('defaults every hideable block to visible', () => {

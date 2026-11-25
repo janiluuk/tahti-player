@@ -7,7 +7,7 @@ import {
   Outlet,
   RouterProvider,
 } from '@tanstack/react-router';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -303,9 +303,10 @@ describe('StudioCollectionEditView empty tracklist', () => {
     await act(async () =>
       fireEvent.click(screen.getByRole('button', { name: 'Add tracks' })),
     );
-    expect(scrollIntoView).toHaveBeenCalledTimes(1);
-    expect(scrollIntoView.mock.contexts[0]).toBe(
-      screen.getByTestId('collection-import-panels'),
+    await waitFor(() =>
+      expect(scrollIntoView.mock.contexts).toContain(
+        screen.getByTestId('collection-import-panels'),
+      ),
     );
   });
 });

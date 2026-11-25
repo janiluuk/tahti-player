@@ -1,5 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
+import { sortRotationByPosition } from '../../lib/radioRotationOnAir';
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
 import {
@@ -48,6 +49,8 @@ export type AdminRadioData = {
 
 export type AdminRadioRotationItem = {
   id: string;
+  /** Play order; absent on older API deploys. */
+  position?: number;
   title: string;
   artistName: string;
   durationSec: number | null;
@@ -87,11 +90,11 @@ function radioRotationState(): AdminRadioRotationItem[] {
       },
       {
         id: 'radio-rotation-2',
-        soundId: 'radio-archive-2',
-        title: 'Signal Bloom',
-        artistName: 'Lumo Collective',
+        soundId: 'mock-rp-1',
+        title: 'Aurora Drift',
+        artistName: 'Northern Lights',
         durationSec: 346,
-        channelSlug: 'lumo-collective',
+        channelSlug: 'northern-lights',
         license: 'CC_BY_SA',
         addedBy: 'radio-editorial',
         audioUrl:
@@ -139,7 +142,10 @@ export async function fetchAdminRadioRotation(): Promise<{
     const data = await getJson<{ items: AdminRadioRotationItem[] }>(
       '/api/admin/tahti-radio',
     );
-    return { data: data.items ?? [], meta: { source: 'api' } };
+    return {
+      data: sortRotationByPosition(data.items ?? []),
+      meta: { source: 'api' },
+    };
   } catch (err) {
     return { data: [], meta: failMeta(err) };
   }

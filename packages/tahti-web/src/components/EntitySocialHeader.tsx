@@ -116,6 +116,10 @@ export type EntitySocialHeaderProps = {
   /** A control in the header's top-left corner (the page's back
    * button); the header content moves right to make room for it. */
   leading?: ReactNode;
+  /** Phones get a short header: a smaller image beside the title, the
+   * actions on their own row under it and the counts in one swipeable row,
+   * so the page's first content block starts above the fold. */
+  compactOnPhone?: boolean;
   className?: string;
   children?: ReactNode;
   'data-testid'?: string;
@@ -155,6 +159,7 @@ export function EntitySocialHeader({
   onImageClick,
   onImageDelete,
   leading,
+  compactOnPhone = false,
   className,
   children,
   'data-testid': dataTestId = 'entity-social-header',
@@ -184,6 +189,9 @@ export function EntitySocialHeader({
   const showVisualizer =
     !hasDesignedBackdrop && !imageBackdrop && Boolean(visualizerPreset);
   const activeStats = stats.filter((stat) => stat.value > 0);
+  const imageSize = compactOnPhone
+    ? 'size-24 min-w-24 max-sm:size-16 max-sm:min-w-16'
+    : 'size-24 min-w-24';
   const schemeStyle: CSSProperties | undefined = scheme
     ? ({
         ...colorSchemeCssVars(scheme),
@@ -214,6 +222,7 @@ export function EntitySocialHeader({
     <div
       className={cn(
         'border-border shadow-shadow relative isolate flex flex-col gap-5 overflow-hidden rounded-md border-(length:--border-width) p-6',
+        compactOnPhone && 'max-sm:gap-3 max-sm:p-4',
         leading ? 'sm:pl-[4.5rem]' : undefined,
         !scheme &&
           !hasDesignedBackdrop &&
@@ -319,20 +328,27 @@ export function EntitySocialHeader({
       <div
         className={cn(
           'flex flex-wrap items-center gap-5',
-          leading ? 'max-sm:pl-12' : undefined,
+          compactOnPhone && 'max-sm:items-start max-sm:gap-x-3 max-sm:gap-y-3',
+          leading && !compactOnPhone ? 'max-sm:pl-12' : undefined,
         )}
       >
-        <div className="relative shrink-0">
+        <div
+          className={cn(
+            'relative shrink-0',
+            leading && compactOnPhone ? 'max-sm:ml-12' : undefined,
+          )}
+        >
           {imageUrl ? (
             onImageClick ? (
-              <div className="group relative size-24 shrink-0">
+              <div className={cn('group relative shrink-0', imageSize)}>
                 <Button
                   variant="plain"
                   size="flexible"
                   type="button"
                   onClick={onImageClick}
                   className={cn(
-                    'border-border shadow-shadow relative inline-block size-24 overflow-hidden border-(length:--border-width) p-0 whitespace-normal active:scale-100',
+                    'border-border shadow-shadow relative inline-block overflow-hidden border-(length:--border-width) p-0 whitespace-normal active:scale-100',
+                    imageSize,
                     roundImage ? 'rounded-full' : 'rounded-md',
                   )}
                   aria-label={t('entitySocialHeaderLabels.changeTitleArtwork', {
@@ -377,7 +393,8 @@ export function EntitySocialHeader({
                 size="lg"
                 imageReveal={false}
                 className={cn(
-                  'border-border shadow-shadow size-24 min-w-24 shrink-0 border-(length:--border-width)',
+                  'border-border shadow-shadow shrink-0 border-(length:--border-width)',
+                  imageSize,
                   roundImage ? 'rounded-full' : 'rounded-md',
                 )}
               />
@@ -389,7 +406,8 @@ export function EntitySocialHeader({
               type="button"
               onClick={onImageClick}
               className={cn(
-                'border-border bg-background-secondary/40 text-foreground-secondary shadow-shadow flex size-24 shrink-0 items-center justify-center border-(length:--border-width) whitespace-normal active:scale-100',
+                'border-border bg-background-secondary/40 text-foreground-secondary shadow-shadow flex shrink-0 items-center justify-center border-(length:--border-width) whitespace-normal active:scale-100',
+                imageSize,
                 roundImage ? 'rounded-full' : 'rounded-md',
               )}
               aria-label={t('entitySocialHeaderLabels.uploadTitleArtwork', {
@@ -409,7 +427,8 @@ export function EntitySocialHeader({
                 </span>
               }
               className={cn(
-                'border-border shadow-shadow size-24 min-w-24 border-(length:--border-width)',
+                'border-border shadow-shadow border-(length:--border-width)',
+                imageSize,
                 roundImage ? 'rounded-full' : 'rounded-md',
               )}
             />
@@ -422,7 +441,10 @@ export function EntitySocialHeader({
                   {title.trim().charAt(0).toUpperCase()}
                 </span>
               }
-              className="border-border shadow-shadow size-24 min-w-24 rounded-full border-(length:--border-width)"
+              className={cn(
+                'border-border shadow-shadow rounded-full border-(length:--border-width)',
+                imageSize,
+              )}
             />
           ) : (
             <MediaArtwork
@@ -430,7 +452,10 @@ export function EntitySocialHeader({
               alt=""
               seed={title}
               size="lg"
-              className="border-border shadow-shadow size-24 min-w-24 rounded-md border-(length:--border-width)"
+              className={cn(
+                'border-border shadow-shadow rounded-md border-(length:--border-width)',
+                imageSize,
+              )}
             />
           )}
           {logo && logo.placement !== 'COVER' ? (
@@ -442,9 +467,19 @@ export function EntitySocialHeader({
             />
           ) : null}
         </div>
-        <div className="flex min-w-0 flex-1 basis-56 flex-col gap-1 break-words">
+        <div
+          className={cn(
+            'flex min-w-0 flex-1 basis-56 flex-col gap-1 break-words',
+            compactOnPhone && 'max-sm:basis-0',
+          )}
+        >
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <h1 className="font-heading text-3xl font-extrabold tracking-tight">
+            <h1
+              className={cn(
+                'font-heading text-3xl font-extrabold tracking-tight',
+                compactOnPhone && 'max-sm:text-2xl',
+              )}
+            >
               {title}
             </h1>
             <Nameplate
@@ -500,7 +535,13 @@ export function EntitySocialHeader({
           ) : null}
         </div>
         {actions ? (
-          <div className="z-10 flex max-w-full shrink-0 flex-wrap items-center gap-2 self-start sm:justify-end">
+          <div
+            className={cn(
+              'z-10 flex max-w-full shrink-0 flex-wrap items-center gap-2 self-start sm:justify-end',
+              compactOnPhone && 'max-sm:basis-full',
+            )}
+            data-testid="entity-social-header-actions"
+          >
             {actions}
           </div>
         ) : null}
@@ -509,11 +550,12 @@ export function EntitySocialHeader({
       {activeStats.length > 0 ? (
         <div
           data-testid="entity-social-stats"
-          className={
-            statsDimmed
-              ? 'flex flex-wrap gap-2 opacity-40 sm:gap-3'
-              : 'flex flex-wrap gap-2 sm:gap-3'
-          }
+          className={cn(
+            'flex flex-wrap gap-2 sm:gap-3',
+            statsDimmed && 'opacity-40',
+            compactOnPhone &&
+              'max-sm:-mx-4 max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:px-4 max-sm:pb-1 max-sm:[&>*]:shrink-0',
+          )}
         >
           {activeStats.map((stat) => {
             const chip = (

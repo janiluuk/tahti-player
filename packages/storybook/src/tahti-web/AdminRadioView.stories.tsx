@@ -59,7 +59,7 @@ export const PlaylistPicker: Story = {
     await userEvent.click(
       await canvas.findByRole('button', { name: 'Add tracks' }),
     );
-    const dialog = await findDialog(canvasElement, /Add tracks to Tahti Radio/);
+    const dialog = await findDialog(canvasElement, /Add to Tahti Radio/);
     const all = await dialog.findByRole('checkbox', {
       name: 'Select all shown',
     });

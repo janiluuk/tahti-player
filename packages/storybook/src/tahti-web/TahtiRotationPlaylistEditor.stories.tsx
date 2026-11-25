@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { AdminSelectsItem } from '@tahti-web/api/admin';
 import { TahtiRotationPlaylistEditor } from '@tahti-web/components/TahtiRotationPlaylistEditor';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 const meta: Meta<typeof TahtiRotationPlaylistEditor> = {
   title: 'Tahti/Studio/TahtiRotationPlaylistEditor',
@@ -80,4 +80,55 @@ export const LongList: Story = {
 
 export const ReadOnly: Story = {
   args: { items, readOnly: true },
+};
+
+export const OnAir: Story = {
+  name: 'On air and up next',
+  args: { items, nowPlayingItemId: 'selects-2' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('On air')).toBeVisible();
+    await expect(canvas.getByText('Up next')).toBeVisible();
+    const rows = canvas.getAllByTestId('track-row');
+    await expect(rows[1]).toHaveAttribute('aria-current', 'true');
+    await expect(within(rows[0]!).getByText('1')).toBeVisible();
+  },
+};
+
+export const MoveFromRowMenu: Story = {
+  name: 'Move a track from its row menu',
+  args: { items },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const [firstRow] = canvas.getAllByTestId('track-row');
+    await userEvent.click(
+      within(firstRow!).getByTestId('track-context-menu-button'),
+    );
+    const body = within(canvasElement.ownerDocument.body);
+    await userEvent.click(await body.findByTestId('rotation-move-down'));
+    await expect(args.onReorder).toHaveBeenCalledWith([
+      items[1],
+      items[0],
+      items[2],
+    ]);
+  },
+};
+
+export const Phone: Story = {
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  globals: { viewport: { value: 'mobile1', isRotated: false } },
+  args: { items, nowPlayingItemId: 'selects-1' },
+  render: (args) => (
+    <div className="w-[358px]">
+      <TahtiRotationPlaylistEditor {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const table = canvas.getByRole('table');
+    await expect(table.scrollWidth).toBeLessThanOrEqual(table.clientWidth + 1);
+    await expect(
+      canvas.getAllByTestId('track-context-menu-button'),
+    ).toHaveLength(items.length);
+  },
 };

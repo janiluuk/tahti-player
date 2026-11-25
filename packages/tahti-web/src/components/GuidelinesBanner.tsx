@@ -1,11 +1,16 @@
 import { ScrollTextIcon } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
-import { Alert, Button, ButtonAnchor } from '@tahti-player/ui';
+import {
+  Alert,
+  Button,
+  ButtonAnchor,
+  showNotificationToast,
+  toast,
+} from '@tahti-player/ui';
 
 import type { TahtiNotification } from '../api/notifications';
-import { cn } from '../lib/cn';
 import { useAuthStore } from '../stores/authStore';
 import { useNotificationInboxStore } from '../stores/notificationInboxStore';
 
@@ -47,6 +52,10 @@ function writeStickyNotice(userId: string, notice: StickyNotice | null) {
   }
 }
 
+/** The sticky guidelines notice above Listen. A notice known at first
+ * paint (cached for this account) shows inline; one that only arrives once
+ * the inbox loads shows as a sticky toast instead, so it never pushes down
+ * content that is already on screen. */
 export function GuidelinesBanner() {
   const userId = useAuthStore((s) => s.user?.id);
   return <UserGuidelinesBanner key={userId ?? 'anonymous'} userId={userId} />;
@@ -69,28 +78,43 @@ function UserGuidelinesBanner({ userId }: { userId: string | undefined }) {
 
   const sticky = live ?? (loaded ? null : remembered);
   const shownAtMount = useRef(sticky != null);
-  const [opened, setOpened] = useState(shownAtMount.current);
+  const late = sticky != null && !shownAtMount.current ? sticky : null;
+
+  const onAcknowledge = useCallback(
+    (id: string) => {
+      setRemembered(null);
+      if (userId) {
+        writeStickyNotice(userId, null);
+      }
+      void acknowledge(id);
+    },
+    [userId, acknowledge],
+  );
+
+  const lateId = late?.id;
+  const lateTitle = late?.title;
+  const lateBody = late?.body;
   useEffect(() => {
-    if (!sticky || opened) {
+    if (!lateId || !lateTitle) {
       return;
     }
-    const frame = requestAnimationFrame(() => setOpened(true));
-    return () => cancelAnimationFrame(frame);
-  }, [sticky, opened]);
+    showNotificationToast(lateTitle, {
+      id: lateId,
+      description: lateBody ?? i18n.t('web:batch52.reviewGuidelines'),
+      sticky: true,
+      actionLabel: i18n.t('web:guidelinesBanner.acknowledge'),
+      onAction: () => onAcknowledge(lateId),
+    });
+    return () => {
+      toast.dismiss(lateId);
+    };
+  }, [lateId, lateTitle, lateBody, onAcknowledge]);
 
-  if (!sticky) {
+  if (!sticky || late) {
     return null;
   }
 
-  const onAcknowledge = () => {
-    setRemembered(null);
-    if (userId) {
-      writeStickyNotice(userId, null);
-    }
-    void acknowledge(sticky.id);
-  };
-
-  const alert = (
+  return (
     <Alert
       tone="neutral"
       icon={<ScrollTextIcon size={16} className="text-primary" aria-hidden />}
@@ -106,26 +130,15 @@ function UserGuidelinesBanner({ userId }: { userId: string | undefined }) {
               {t('guidelinesBanner.readGuidelines')}
             </ButtonAnchor>
           ) : null}
-          <Button size="sm" variant="secondary" onClick={onAcknowledge}>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => onAcknowledge(sticky.id)}
+          >
             {t('guidelinesBanner.acknowledge')}
           </Button>
         </div>
       </div>
     </Alert>
-  );
-  if (shownAtMount.current) {
-    return alert;
-  }
-  return (
-    <div
-      data-testid="guidelines-banner-reveal"
-      data-open={opened || undefined}
-      className={cn(
-        'grid motion-safe:transition-[grid-template-rows] motion-safe:duration-300 motion-safe:ease-out',
-        opened ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
-      )}
-    >
-      <div className="min-h-0 overflow-hidden">{alert}</div>
-    </div>
   );
 }

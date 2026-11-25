@@ -16,7 +16,7 @@ Import (~650 s summed) and setup/environment (~450 s summed) dominate; the tests
 
 ## Left
 
-- [ ] Make the 36 leaking files isolation-safe (reset stores/mocks in `afterEach`, no module-level state), then turn on `isolate: false` for tahti-web: ~7x faster unit shards.
+- [ ] Watch a few CI runs with `isolate: false` (0.0.485): local shards went from ~85-93 s to ~15 s. A `vi.mock` registered in one file still applies to later files in the same worker; revert to isolated if a shard turns flaky.
 - [ ] Product call: run the e2e journeys in their own workflow so beta/Storybook deploys don't wait for them.
 - [ ] Turbo remote cache for tahti-player needs a `TURBO_TOKEN` secret (ops).
 - [ ] Optional: a 5th tahti-org test shard (renames the `(n/4)` checks).
