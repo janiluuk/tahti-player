@@ -1,10 +1,27 @@
 type BuildEnvironment = Record<string, string | undefined>;
 
+/** Vite mode of the mock-data bundle the CI e2e journeys run against. */
+export const E2E_MOCK_MODE = 'e2e-mock';
+
 export function validateProductionBuildEnvironment(
   command: 'build' | 'serve',
   env: BuildEnvironment,
+  mode = 'production',
 ): void {
   if (command !== 'build') {
+    return;
+  }
+  if (mode === E2E_MOCK_MODE) {
+    // The only build allowed to bake in mock data; it must never double as
+    // a deploy build.
+    if (env.TAHTI_WEB_DEPLOY_PROFILE) {
+      throw new Error(
+        `TAHTI_WEB_DEPLOY_PROFILE cannot be set for an ${E2E_MOCK_MODE} build`,
+      );
+    }
+    if (env.VITE_FORCE_MOCK !== '1') {
+      throw new Error(`${E2E_MOCK_MODE} builds need VITE_FORCE_MOCK=1`);
+    }
     return;
   }
   const unsafeKey = ['VITE_FORCE_MOCK', 'VITE_ALLOW_MOCK_FALLBACK'].find(

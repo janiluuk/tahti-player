@@ -14,6 +14,7 @@ import tseslint from 'typescript-eslint';
 const ignores = [
   '**/src-tauri/**/*',
   '**/dist/**/*',
+  '**/dist-e2e-mock/**/*',
   '**/build/**/*',
   '**/target/**/*',
   '**/node_modules/**/*',

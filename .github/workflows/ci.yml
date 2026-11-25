@@ -401,7 +401,11 @@ jobs:
   # The deploy workflows start when this whole workflow completes and these
   # shards finish last, so their count sets the merge-to-production time:
   # at four shards the slowest took ~7 min against ~4.5 min for every other
-  # job.
+  # job. Each shard builds the mock bundle (`vite build --mode e2e-mock`,
+  # never a deploy build) and serves it with `vite preview`: a cold dev
+  # server compiled routes on first visit, which landed unevenly on shards.
+  # Building per shard is shorter on the critical path than a separate
+  # build job the shards would wait for.
   e2e-mock:
     name: E2E journeys (mock app ${{ matrix.shard }}/6)
     runs-on: ubuntu-latest
@@ -418,6 +422,13 @@ jobs:
 
       - name: Setup
         uses: ./.github/actions/setup
+
+      - name: Start building the mock bundle
+        working-directory: packages/tahti-web
+        # Runs alongside the Playwright install steps; "Serve the mock
+        # bundle" waits for it.
+        run: |
+          nohup bash -c "pnpm build:e2e-mock > '$RUNNER_TEMP/e2e-build.log' 2>&1; echo \$? > '$RUNNER_TEMP/e2e-build.exit'" > /dev/null 2>&1 &
 
       - name: Get installed Playwright version
         id: playwright-version
@@ -444,23 +455,39 @@ jobs:
           echo "PLAYWRIGHT_CHROMIUM_PATH=${CHROMIUM_PATH}" >> "$GITHUB_ENV"
           echo "Using Chromium at: ${CHROMIUM_PATH}"
 
-      - name: Start the mock app
+      - name: Serve the mock bundle
         working-directory: packages/tahti-web
         run: |
-          VITE_FORCE_MOCK=1 nohup pnpm exec vite --port 5196 --strictPort > "$RUNNER_TEMP/vite.log" 2>&1 &
-          for attempt in $(seq 1 60); do
-            curl -sf http://localhost:5196/ > /dev/null && exit 0
+          for _ in $(seq 1 150); do
+            test -f "$RUNNER_TEMP/e2e-build.exit" && break
             sleep 2
           done
-          cat "$RUNNER_TEMP/vite.log"
+          cat "$RUNNER_TEMP/e2e-build.log"
+          test "$(cat "$RUNNER_TEMP/e2e-build.exit" 2>/dev/null)" = 0
+          nohup pnpm preview:e2e-mock > "$RUNNER_TEMP/preview.log" 2>&1 &
+          for _ in $(seq 1 30); do
+            curl -sf http://localhost:5196/ > /dev/null && exit 0
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/preview.log"
           exit 1
 
       - name: Role journeys
         working-directory: packages/tahti-web
-        run: pnpm exec playwright test e2e/roles-*.spec.ts e2e/use-cases-*.spec.ts e2e/routes-*.spec.ts e2e/view-before-edit.spec.ts e2e/batch-fixes*.spec.ts e2e/nav-chrome.spec.ts e2e/layout-stability.spec.ts e2e/studio-release-detail-chrome.spec.ts e2e/library-*.spec.ts e2e/viewport-studio-sounds.spec.ts e2e/a11y-play-controls.spec.ts e2e/event-calendar.spec.ts e2e/cutover-vital.spec.ts e2e/real-user-journeys.spec.ts e2e/plugin-store.spec.ts e2e/radio-cover.spec.ts e2e/channel-designer-elements.spec.ts e2e/channel-designer-artist-look.spec.ts e2e/channel-clips.spec.ts e2e/fullscreen-player-minimize.spec.ts e2e/mastering.spec.ts e2e/stash-and-subscriber-access.spec.ts e2e/listings-news.spec.ts e2e/channel-designer-parity.spec.ts e2e/listener-purchase-flow.spec.ts e2e/fan-sub-and-track-purchase.spec.ts e2e/artist-site-chrome.spec.ts e2e/phone-*.spec.ts --fully-parallel --workers=2 --retries=1 --shard=${{ matrix.shard }}/6
+        run: pnpm exec playwright test e2e/roles-*.spec.ts e2e/use-cases-*.spec.ts e2e/routes-*.spec.ts e2e/view-before-edit.spec.ts e2e/batch-fixes*.spec.ts e2e/nav-chrome.spec.ts e2e/layout-stability.spec.ts e2e/studio-release-detail-chrome.spec.ts e2e/library-*.spec.ts e2e/viewport-studio-sounds.spec.ts e2e/a11y-play-controls.spec.ts e2e/event-calendar.spec.ts e2e/cutover-vital.spec.ts e2e/real-user-journeys.spec.ts e2e/plugin-store.spec.ts e2e/radio-cover.spec.ts e2e/channel-designer-elements.spec.ts e2e/channel-designer-artist-look.spec.ts e2e/channel-clips.spec.ts e2e/fullscreen-player-minimize.spec.ts e2e/mastering.spec.ts e2e/stash-and-subscriber-access.spec.ts e2e/listings-news.spec.ts e2e/channel-designer-parity.spec.ts e2e/listener-purchase-flow.spec.ts e2e/fan-sub-and-track-purchase.spec.ts e2e/artist-site-chrome.spec.ts e2e/phone-*.spec.ts --fully-parallel --workers=2 --retries=1 --shard=${{ matrix.shard }}/6 --reporter=list,json
         env:
           PLAYWRIGHT_BASE_URL: http://localhost:5196
+          PLAYWRIGHT_JSON_OUTPUT_NAME: e2e-timings.json
           PLAYWRIGHT_CHROMIUM_PATH: ${{ env.PLAYWRIGHT_CHROMIUM_PATH }}
+
+      - name: Upload per-test timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-mock-timings-${{ matrix.shard }}
+          path: packages/tahti-web/e2e-timings.json
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Upload test results
         if: failure()

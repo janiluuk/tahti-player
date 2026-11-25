@@ -1,5 +1,7 @@
 import type { Page, Route } from '@playwright/test';
 
+import { waitForE2eHooks, type TahtiE2eHooks } from './e2eHooks';
+
 type RecordedFanSub = {
   fanUsername: string;
   fanDisplayName: string;
@@ -200,7 +202,8 @@ export async function installStripeMock(
 }
 
 export async function grantBoardView(page: Page): Promise<void> {
-  await page.evaluate(async () => {
+  await waitForE2eHooks(page);
+  await page.evaluate(() => {
     const raw = localStorage.getItem('tahti-web-auth');
     if (raw) {
       const parsed = JSON.parse(raw) as {
@@ -218,7 +221,8 @@ export async function grantBoardView(page: Page): Promise<void> {
         localStorage.setItem('tahti-web-auth', JSON.stringify(parsed));
       }
     }
-    const session = await import('/src/api/mock-session.ts');
+    const session = (window as unknown as { __tahtiE2e: TahtiE2eHooks })
+      .__tahtiE2e;
     const user = session.getMockSessionUser();
     if (user) {
       session.setMockSessionUser({

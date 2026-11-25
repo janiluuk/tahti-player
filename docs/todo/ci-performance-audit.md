@@ -47,7 +47,21 @@ Further options, not done: running journeys against a `vite build` + `vite previ
 
 ## E2E shard balance (2026-11-26)
 
-Playwright shards by file unless tests are fully parallel, so the 6 journey shards took 3-7 min (whole master run 6-7 min). The journeys step now passes `--fully-parallel`, which shards by test. Local check: all 306 journey tests pass fully parallel (4 workers, no flaky retries, 11.4 min). Watch the per-shard spread on the next master runs.
+Playwright shards by file unless tests are fully parallel, so the 6 journey shards took 3-7 min (whole master run 6-7 min). The journeys step now passes `--fully-parallel`, which shards by test. Local check: all 306 journey tests pass fully parallel (4 workers, no flaky retries, 11.4 min).
+
+Fully parallel did not even them out: on the first master run (#2189) every shard had 51 tests, and the Playwright step still took 178-378 s (3.0-6.3 min of tests, no retries). The cause was the cold Vite dev server compiling each route on first visit. Measured locally on shard 3/6 (2 workers, CI=1):
+
+| Server | Wall | Summed test time | Retries |
+| ------ | ---- | ---------------- | ------- |
+| Cold dev server | 201 s | 393 s | 1 (first attempt 76 s) |
+| Warm dev server | 156 s | 306 s | 0 |
+| Built mock bundle + `vite preview` | 129 s | 252 s | 0 |
+
+Full journeys glob against the built bundle: 306 passed, no retries, 7.9 min at 4 workers (11.4 min on the dev server); summed test time 1865 s (about 2688 s on the dev server), about 2.6 min per shard at 2 workers if evenly split.
+
+Changes: each journey shard builds `vite build --mode e2e-mock` (about 30 s locally, 16 MB, into `dist-e2e-mock/`) in the background while Playwright installs, then serves it with `vite preview` on 5196. `validateProductionBuildEnvironment` allows `VITE_FORCE_MOCK=1` only in that mode and refuses a deploy profile there; every other build still refuses mock. Specs that imported `/src/api/*.ts` in `page.evaluate` (only the dev server serves those) use `window.__tahtiE2e` (`src/e2e/testHooks.ts`), installed only when `DEV` or mode `e2e-mock`; the production bundle has no trace of it. The journeys step uses `--reporter=list,json` (per-test durations in the log) and uploads `e2e-mock-timings-<n>` (JSON) for later balancing.
+
+Watch on the next master runs: the bundle build time on the runner (log of "Serve the mock bundle"), per-shard spread, and any spec that relied on dev-only behaviour (`import.meta.env.DEV` is false in the bundle).
 
 ## Left
 

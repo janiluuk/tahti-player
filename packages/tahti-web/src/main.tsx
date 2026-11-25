@@ -19,3 +19,11 @@ const [{ mountTahtiApp }] = await Promise.all([
   ),
 ]);
 void mountTahtiApp(el);
+
+// Both conditions are build-time constants, so production builds drop the
+// hooks module entirely.
+if (import.meta.env.DEV || import.meta.env.MODE === 'e2e-mock') {
+  void import('./e2e/testHooks').then((module) =>
+    module.installE2eHooks(window),
+  );
+}

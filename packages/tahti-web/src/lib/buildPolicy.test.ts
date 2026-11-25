@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   assertProductionBundleFreeOfMockMarkers,
+  E2E_MOCK_MODE,
   PRODUCTION_MOCK_MARKERS,
   validateProductionBuildEnvironment,
 } from './buildPolicy';
@@ -57,6 +58,33 @@ describe('validateProductionBuildEnvironment', () => {
         TAHTI_WEB_DEPLOY_PROFILE: 'preview',
       }),
     ).toThrow('must be prod or beta');
+  });
+
+  it('allows mock data only in the e2e-mock build mode', () => {
+    expect(() =>
+      validateProductionBuildEnvironment(
+        'build',
+        { VITE_FORCE_MOCK: '1' },
+        E2E_MOCK_MODE,
+      ),
+    ).not.toThrow();
+    expect(() =>
+      validateProductionBuildEnvironment(
+        'build',
+        { VITE_FORCE_MOCK: '1' },
+        'staging',
+      ),
+    ).toThrow('VITE_FORCE_MOCK=1');
+    expect(() =>
+      validateProductionBuildEnvironment(
+        'build',
+        { VITE_FORCE_MOCK: '1', TAHTI_WEB_DEPLOY_PROFILE: 'prod' },
+        E2E_MOCK_MODE,
+      ),
+    ).toThrow('TAHTI_WEB_DEPLOY_PROFILE');
+    expect(() =>
+      validateProductionBuildEnvironment('build', {}, E2E_MOCK_MODE),
+    ).toThrow('VITE_FORCE_MOCK=1');
   });
 
   it('rejects known mock fixture markers in bundle text', () => {
