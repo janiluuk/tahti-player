@@ -1,5 +1,7 @@
 node_modules
 dist
+dist-e2e-mock
+e2e-timings.json
 build
 *.d.ts.map
 *.js.map

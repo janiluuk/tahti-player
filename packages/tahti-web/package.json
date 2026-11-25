@@ -9,6 +9,8 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build",
     "build:diagnostics": "TAHTI_WEB_DEPLOY_PROFILE=beta VITE_ENABLE_DIAGNOSTICS=1 pnpm build",
     "preview": "vite preview",
+    "build:e2e-mock": "vite build --mode e2e-mock",
+    "preview:e2e-mock": "vite preview --mode e2e-mock --port 5196 --strictPort",
     "test": "vitest run --exclude 'e2e/**'",
     "test:e2e": "playwright test",
     "journeys": "./scripts/run-e2e-journeys.sh",

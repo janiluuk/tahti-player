@@ -9,7 +9,10 @@ import svgr from 'vite-plugin-svgr';
 import { generateAdvancedThemeCSS } from '../themes/src/advanced/generator';
 import pkg from './package.json';
 import { pruneDiagnosticsAssets } from './scripts/lib/diagnosticsAssets';
-import { validateProductionBuildEnvironment } from './src/lib/buildPolicy';
+import {
+  E2E_MOCK_MODE,
+  validateProductionBuildEnvironment,
+} from './src/lib/buildPolicy';
 import { sandboxDocumentHtml } from './src/lib/disco-widget-sandbox';
 import {
   GRUVBOX_THEME,
@@ -171,7 +174,8 @@ export default defineConfig(({ command, mode }) => {
     process.env.LC_ALL = 'en_US.UTF-8';
   }
   const env = loadEnv(mode, process.cwd(), '');
-  validateProductionBuildEnvironment(command, env);
+  validateProductionBuildEnvironment(command, env, mode);
+  const e2eMock = mode === E2E_MOCK_MODE;
   const buildDiagnostics = env.VITE_ENABLE_DIAGNOSTICS === '1';
   const deployVersion =
     env.VITE_DEPLOY_VERSION ?? new Date().toISOString().replace(/\D/g, '');
@@ -197,9 +201,15 @@ export default defineConfig(({ command, mode }) => {
       reviewStateApiPlugin(),
       discoWidgetSandboxPlugin(),
       defaultThemeBootStylePlugin(),
-      diagnosticsAssetsPlugin(buildDiagnostics),
+      // The journeys only read the /more page text, not the 166 MB atlas
+      // screenshots the shards would otherwise download.
+      diagnosticsAssetsPlugin(buildDiagnostics && !e2eMock),
     ],
     clearScreen: false,
+    build: {
+      // A mock bundle never lands in dist/, the directory deploys ship.
+      outDir: e2eMock ? 'dist-e2e-mock' : 'dist',
+    },
     server: {
       host: process.env.VITE_HOST ?? 'localhost',
       port: 5180,

@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 
+import { waitForE2eHooks, type TahtiE2eHooks } from './helpers/e2eHooks';
 import { grantBoardView, installStripeMock } from './helpers/mockStripe';
 
 const RIFF_CANDIDATES = [
@@ -135,14 +136,15 @@ async function captureDownload(
   soundId: string,
 ): Promise<Buffer> {
   await page.getByRole('button', { name: buttonName }).click();
+  await waitForE2eHooks(page);
   const bytes = await page.evaluate(async (id) => {
-    const client = await import('/src/api/client.ts');
-    const detail = await client.fetchTrackDetail(id);
+    const hooks = (window as unknown as { __tahtiE2e: TahtiE2eHooks })
+      .__tahtiE2e;
+    const detail = await hooks.fetchTrackDetail(id);
     if (!detail.data) {
       throw new Error('Track detail missing');
     }
-    const downloads = await import('/src/api/public-sound-download.ts');
-    const result = await downloads.fetchPublicSoundDownload(
+    const result = await hooks.fetchPublicSoundDownload(
       detail.data.channelSlug,
       id,
     );
@@ -207,8 +209,9 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
     throw new Error(`Could not extract sound id from ${page.url()}`);
   }
 
+  await waitForE2eHooks(page);
   const purchaseSetup = await page.evaluate(async (id) => {
-    const mod = await import('/src/api/purchase-tiers.ts');
+    const mod = (window as unknown as { __tahtiE2e: TahtiE2eHooks }).__tahtiE2e;
     const created = await mod.createPurchaseTier({
       name: 'Track download',
       priceCents: 500,

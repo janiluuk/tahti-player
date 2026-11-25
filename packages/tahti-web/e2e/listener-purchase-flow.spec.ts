@@ -2,6 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 
+import { waitForE2eHooks, type TahtiE2eHooks } from './helpers/e2eHooks';
 import { installStripeMock } from './helpers/mockStripe';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -114,8 +115,9 @@ async function uploadPublicPurchasableTrack(
     throw new Error(`Could not extract sound id from ${page.url()}`);
   }
 
+  await waitForE2eHooks(page);
   const purchaseSetup = await page.evaluate(async (id) => {
-    const mod = await import('/src/api/purchase-tiers.ts');
+    const mod = (window as unknown as { __tahtiE2e: TahtiE2eHooks }).__tahtiE2e;
     const created = await mod.createPurchaseTier({
       name: 'Track download',
       priceCents: 500,
@@ -220,8 +222,9 @@ test('listener subscribes, sees it in Subs & purchases, cancels it', async ({
     process.env.TAHTI_E2E_FAN_SUB_EMAIL ?? `e2e-lpf-sub-${stamp}@example.com`;
 
   await signIn(page, artistEmail, artistPassword);
+  await waitForE2eHooks(page);
   const username = await page.evaluate(async () => {
-    const mod = await import('/src/api/studio-extras.ts');
+    const mod = (window as unknown as { __tahtiE2e: TahtiE2eHooks }).__tahtiE2e;
     const { data } = await mod.fetchMeProfile();
     return data.username;
   });
