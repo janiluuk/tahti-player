@@ -308,7 +308,7 @@ These shared components are used across many views but lack dedicated Storybook 
 
 | Component                      | Used In                                       | Story Status                                                 |
 | ------------------------------ | --------------------------------------------- | ------------------------------------------------------------ |
-| **AppShell**                   | All tahti-web routes                          | Has story (tahti-web) but not tested with real route content |
+| **AppShell**                   | All tahti-web routes                          | Has story (tahti-web); `MainContentSpacing` covers desktop/phone pane insets and corner controls, but not real route content |
 | **PageHeader**                 | Studio, Library, Help, Feed, Collection views | Has story                                                    |
 | **ConfirmDialog**              | Delete actions across Studio, Admin, Settings | No dedicated story                                           |
 | **PageStates** (Loading/Empty) | All views                                     | Has story but needs real-view composition tests              |
