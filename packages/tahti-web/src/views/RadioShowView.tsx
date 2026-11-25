@@ -241,6 +241,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
       ) : null}
 
       <EntitySocialHeader
+        compactOnPhone
         title={show.artist.displayName}
         imageUrl={
           show.artist.avatarUrl ??

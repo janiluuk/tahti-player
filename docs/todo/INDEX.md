@@ -39,9 +39,8 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | ------- | ---- | -------- |
 | partial | [seo-canonical-host.md](seo-canonical-host.md) | Apex host, OG image, per-route canonical for crawlers (0.0.474); left (tahti-org): stack APP_URL, stable collection OG image URLs, raster channel OG images |
 | blocked | [radio-admin-playlist-ux.md](radio-admin-playlist-ux.md) | Manager UX done (on-air by sound id, order, phone layout, short labels); left (tahti-org): store now-playing sound id so "Next:" stops matching by title |
-| partial | [artist-profile-elegant.md](artist-profile-elegant.md) | Compact phone header + phone order on the artist page (0.0.485); left: compact header on other entity pages, dark-scheme contrast of two labels |
-| partial | [ui-performance-audit.md](ui-performance-audit.md) | Screen-sized backdrops, still mode without GPU, no per-tick table re-render (0.0.475, 10-13 → 60 fps in software mode); shared matchMedia cache (0.0.485); left: Firefox measurement, event banner |
-| partial | [ci-performance-audit.md](ci-performance-audit.md) | Journeys sharded (master CI ~9 min), migration baseline parallel in tahti-org; tahti-web vitest isolate:false (0.0.485); left: watch CI with no isolation, journeys workflow call, turbo token |
+| partial | [ui-performance-audit.md](ui-performance-audit.md) | Screen-sized backdrops, still mode without GPU, no per-tick table re-render (0.0.475, 10-13 → 60 fps in software mode); shared matchMedia cache (0.0.485), event banner still path + live frame monitor (0.0.487); left: Firefox measurement, event page fps |
+| partial | [ci-performance-audit.md](ci-performance-audit.md) | Journeys sharded (master CI ~9 min), migration baseline parallel in tahti-org; tahti-web vitest isolate:false (0.0.485); faster local runs (0.0.487); left: watch CI with no isolation, journeys workflow call, turbo token |
 | partial | [yaniho-hearthis-albums.md](yaniho-hearthis-albums.md) | Album track numbers, dense order, owner + board reorder shipped (tahti-org#1128, web); left: clean existing "artist - album - NN - title" names on production, 1:1 check against hearthis.at |
 | partial | [more-3d-visualizers.md](more-3d-visualizers.md) | Visualizers follow the artwork colour; left: 3-4 new 3D presets (user picks the list) |
 | partial | [discover-events-tab.md](discover-events-tab.md) | Events tab with range / past / city / venue / search filters and calendar view, posting, banner crop, event page backdrop built; left: live post check, event gallery API deploy (tahti-org#1122 merged) |
@@ -66,6 +65,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/; storybook surfaces + close-external-issue wrapped; desktop shims deprecated toward `tahti-ops desktop` |
 | partial | [listening-party.md](listening-party.md) | Digital-only v1 merged (tahti-org#1029, tahti-player#1704); real-API check after deploy, then playout, formats/pre-orders/physical |
 | partial | [listening-parties-discover.md](listening-parties-discover.md) | Discover → Parties tab, widget and row reminders shipped; left: non-artist hosting and Studio filter product calls |
+| open    | [full-player-living-backdrop.md](full-player-living-backdrop.md) | Full player: subtle drift on static backdrop and cover glass panel, cover-colour glow, ping-pong scroll for long names, 4 title-change transitions to pick from |
 
 ## Blocked on a decision, credentials or manual testing
 

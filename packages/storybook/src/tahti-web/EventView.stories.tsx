@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { setBackdropFrameVerdict } from '@tahti-web/lib/backdropMotion';
 import { EventView } from '@tahti-web/views/EventView';
 import { expect, within } from 'storybook/test';
 
@@ -30,6 +31,24 @@ export const Published: Story = {
     await expect(
       canvas.getByRole('link', { name: /Add to Google Calendar/ }),
     ).toBeVisible();
+    await expect(canvas.getByTestId('event-banner-backdrop')).toBeTruthy();
+  },
+};
+
+/** The banner backdrop as a device that drops frames (or has no GPU, or
+ * asks for reduced motion) sees it: blurred once, no drift. */
+export const StillBackdrop: Story = {
+  beforeEach: () => {
+    setBackdropFrameVerdict('slow');
+    return () => setBackdropFrameVerdict('pending');
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByTestId('event-page')).toBeVisible();
+    const backdrop = canvas.getByTestId('event-banner-backdrop');
+    await expect(backdrop).toHaveAttribute('data-still', 'true');
+    const drift = backdrop.querySelector('.tahti-event-backdrop-drift');
+    await expect(drift && getComputedStyle(drift).animationName).toBe('none');
   },
 };
 

@@ -458,8 +458,10 @@ export function ArtistGalleryAddIcon({
       onCreated(result.images);
       toast.success(
         result.images.length === 1
-          ? 'Photo added.'
-          : `${result.images.length} photos added.`,
+          ? t('artistGalleryPanelLeftovers.photoAdded')
+          : t('artistGalleryPanelLeftovers.photosAdded', {
+              count: result.images.length,
+            }),
       );
     }
     if (result.errors.length > 0) {

@@ -53,7 +53,9 @@ pnpm tahti --help        # product API/TUI CLI
 pnpm tahti-ops --help    # maintainer CLI: desktop, test, e2e, snapshots, deploy, stack, env, backup
 pnpm desktop             # build + launch the desktop app (tahti-ops desktop run)
 pnpm desktop:latest      # build origin/master in .desktop-build + launch (scripts/tahti-desktop)
-pnpm test:all            # every package's tests (tahti-ops test all)
+pnpm test:all            # every package's tests + chunked Storybook plays
+pnpm test:changed        # tests related to changes since origin/master (see docs/agent/TESTING.md)
+pnpm test:stories:changed # Storybook plays for changed stories/components
 pnpm e2e                 # screenshot journeys on the mock app (tahti-ops e2e journeys)
 pnpm snapshots update ui player   # re-record snapshot groups (tahti-ops snapshots)
 pnpm deploy:web          # ship beta.tahti.live (tahti-ops deploy web)

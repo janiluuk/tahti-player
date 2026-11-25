@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   SoundAudience,
@@ -37,8 +37,10 @@ function toPerson(
   };
 }
 
-function playsLabel(plays: number): string {
-  return plays === 1 ? 'Played once' : `Played ${plays}×`;
+function playsLabel(t: TFunction<'web'>, plays: number): string {
+  return plays === 1
+    ? t('trackAudienceStates.playedOnce')
+    : t('trackAudienceStates.playedTimes', { count: plays });
 }
 
 /** The sound page's Collections / Liked / Reposted / Played by widget. */
@@ -134,7 +136,7 @@ export function TrackAudience({
       }))}
       likers={likes.items.map((p) => toPerson(p, storyDate(p.at)))}
       reposters={reposts.items.map((p) => toPerson(p, storyDate(p.at)))}
-      listeners={plays.items.map((p) => toPerson(p, playsLabel(p.plays)))}
+      listeners={plays.items.map((p) => toPerson(p, playsLabel(t, p.plays)))}
       counts={{
         collections: collections.total,
         likes: likes.total,

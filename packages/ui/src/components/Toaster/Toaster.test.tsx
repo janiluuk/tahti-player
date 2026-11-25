@@ -60,4 +60,22 @@ describe('Toaster', () => {
     await user.click(screen.getByRole('button', { name: 'Acknowledge' }));
     expect(onAction).toHaveBeenCalledOnce();
   });
+
+  it('offers a link beside the action that leaves a sticky toast up', async () => {
+    const user = userEvent.setup();
+    render(<Toaster />);
+    showNotificationToast('Guidelines updated', {
+      id: 'sticky-guidelines',
+      sticky: true,
+      actionLabel: 'Acknowledge',
+      onAction: vi.fn(),
+      link: { label: 'Read guidelines', href: '#guidelines' },
+    });
+
+    const link = await screen.findByRole('link', { name: 'Read guidelines' });
+    expect(link).toHaveAttribute('href', '#guidelines');
+    await user.click(link);
+    expect(screen.getByText('Guidelines updated')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Acknowledge' })).toBeVisible();
+  });
 });

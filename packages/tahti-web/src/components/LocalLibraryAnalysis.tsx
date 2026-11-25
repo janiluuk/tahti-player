@@ -190,8 +190,10 @@ export function LocalLibraryAnalysis({ library, onChanged }: Props) {
         >
           <ActivityIcon size={14} aria-hidden />
           {summary && summary.analyzed > 0 && remaining > 0
-            ? `Analyze ${remaining.toLocaleString('en-US')} remaining`
-            : 'Analyze library'}
+            ? t('localLibraryAnalysisStates.analyzeRemaining', {
+                remaining: remaining.toLocaleString('en-US'),
+              })
+            : t('localLibraryAnalysisStates.analyzeLibrary')}
         </Button>
       )}
       {starting && !progress ? (

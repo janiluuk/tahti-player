@@ -1,0 +1,57 @@
+/* Local system faces scaled to the bundled web fonts' advance widths and
+   vertical metrics, listed right after each web font in the stacks. Text
+   painted before the web font arrives then takes the same space, so the
+   swap moves nothing. Arial / Courier New (and their metric twins on Linux)
+   are the measured bases: size-adjust = web font width / base width over
+   English letter frequencies, overrides = web font hhea metric / size-adjust. */
+
+@font-face {
+  font-family: 'DM Sans Fallback';
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local('Arial'), local('ArialMT'), local('Liberation Sans'), local('Arimo');
+  size-adjust: 105.81%;
+  ascent-override: 93.76%;
+  descent-override: 29.3%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'DM Sans Fallback';
+  font-style: normal;
+  font-weight: 700;
+  src:
+    local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'),
+    local('Arimo Bold');
+  size-adjust: 103.23%;
+  ascent-override: 96.1%;
+  descent-override: 30.03%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Bricolage Grotesque Fallback';
+  font-style: normal;
+  font-weight: 800;
+  src:
+    local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'),
+    local('Arimo Bold');
+  size-adjust: 104.1%;
+  ascent-override: 89.34%;
+  descent-override: 25.94%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Space Mono Fallback';
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local('Courier New'), local('CourierNewPSMT'), local('Liberation Mono'),
+    local('Cousine');
+  size-adjust: 101.98%;
+  ascent-override: 109.83%;
+  descent-override: 35.4%;
+  line-gap-override: 0%;
+}

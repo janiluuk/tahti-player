@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { Toaster as SonnerToaster, toast, type ExternalToast } from 'sonner';
 
+import { ButtonAnchor } from '../Button/ButtonLink';
 import { useUiLabels } from '../UiLabels';
 
 type ToasterProps = {
@@ -27,6 +28,9 @@ type NotificationToastOptions = {
   sticky?: boolean;
   actionLabel?: string;
   onAction?: () => void;
+  /** A link beside the action (e.g. the document to read before
+   * acknowledging). Following it leaves the toast up. */
+  link?: { label: string; href: string };
 };
 
 export function showNotificationToast(
@@ -37,6 +41,7 @@ export function showNotificationToast(
     sticky = false,
     actionLabel,
     onAction,
+    link,
   }: NotificationToastOptions = {},
 ) {
   return toast(title, {
@@ -49,6 +54,22 @@ export function showNotificationToast(
     position: sticky ? 'top-center' : undefined,
     ...(actionLabel && onAction
       ? { action: { label: actionLabel, onClick: onAction } }
+      : {}),
+    // Sonner renders an element passed as `cancel` as-is, without the
+    // dismiss-on-click its own cancel button has.
+    ...(link
+      ? {
+          cancel: (
+            <ButtonAnchor
+              href={link.href}
+              size="sm"
+              variant="secondary"
+              className="h-8 shrink-0 px-2.5 text-xs"
+            >
+              {link.label}
+            </ButtonAnchor>
+          ),
+        }
       : {}),
   });
 }

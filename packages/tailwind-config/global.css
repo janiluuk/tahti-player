@@ -161,12 +161,16 @@
   --shadow-float: var(--shadow);
 
   /* Typography */
-  --font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
-  --default-font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
-  --font-family-heading: 'Bricolage Grotesque', var(--default-font-family);
+  --font-family:
+    'DM Sans', 'DM Sans Fallback', system-ui, -apple-system, sans-serif;
+  --default-font-family:
+    'DM Sans', 'DM Sans Fallback', system-ui, -apple-system, sans-serif;
+  --font-family-heading:
+    'Bricolage Grotesque', 'Bricolage Grotesque Fallback',
+    var(--default-font-family);
   --font-family-mono:
-    'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    monospace;
+    'Space Mono', 'Space Mono Fallback', ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, monospace;
   --font-weight-normal: 400;
   --font-weight-bold: 700;
   --font-weight-extra-bold: 800;
@@ -207,6 +211,32 @@
   .tone-drift-target {
     animation: tahti-tone-drift 28s ease-in-out infinite;
     will-change: filter;
+  }
+}
+
+/* MarqueeText: the track holds two copies plus a gap each, so -50% lands
+   the second copy exactly where the first started. The hold at 0% gives
+   the start of the title a moment before it moves. */
+@keyframes tahti-marquee {
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tahti-marquee-track {
+    animation: tahti-marquee var(--tahti-marquee-duration, 12s) linear infinite;
+    will-change: transform;
+  }
+
+  .tahti-marquee:hover .tahti-marquee-track,
+  .tahti-marquee:focus-within .tahti-marquee-track,
+  :focus-visible .tahti-marquee .tahti-marquee-track {
+    animation-play-state: paused;
   }
 }
 

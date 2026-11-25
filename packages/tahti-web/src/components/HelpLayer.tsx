@@ -39,7 +39,7 @@ export function HelpLayer({
         onClick={() => setOpen((current) => !current)}
       >
         <CircleHelpIcon size={14} aria-hidden />
-        {open ? 'Hide help' : title}
+        {open ? t('helpLayerText.hideHelp') : title}
       </Button>
       {open ? (
         <div

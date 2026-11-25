@@ -1376,7 +1376,9 @@
       "swipeTracks": "Swipe left or right to change track",
       "moreOptionsFor": "More options for {{title}}",
       "buffering": "Buffering…",
-      "closePlayer": "Close player"
+      "closePlayer": "Close player",
+      "minimizePlayer": "Minimize player",
+      "restorePlayer": "Show full player"
     },
     "listen": {
       "sections": "Listen sections",
@@ -7253,6 +7255,8 @@
       "letsAnAiToolSuch": "Lets an AI tool such as Claude Code or Cursor control playback, the queue, your library and radio. It listens on this computer only."
     },
     "materialTagsField": {
+      "addATag": "Add a tag",
+      "addATagPlaceholder": "# Add a tag",
       "tags": "Tags",
       "helpListenersFindItGenres": "Help listeners find it — genres, moods, instruments. Separate several tags with commas."
     },
@@ -9960,6 +9964,7 @@
       "removeTagName": "Remove tag {{name}}"
     },
     "themeSubmissionsLabels": {
+      "deleteSubmission": "Delete submission?",
       "deleteTheNameSubmission": "Delete the {{name}} submission"
     },
     "studioCollectionMoreMenuLabels": {
@@ -10468,6 +10473,7 @@
       "djSet": "DJ set"
     },
     "videoOrImageFieldFields": {
+      "browseFiles": "Browse files",
       "chooseAVideoOrImage": "Choose a video or image",
       "mp4WebmJpegPngWebp": "MP4, WebM, JPEG, PNG, WebP, or GIF · maximum 10 MB"
     },
@@ -10631,6 +10637,7 @@
       "back": "Back"
     },
     "helpLayerText": {
+      "hideHelp": "Hide help",
       "sectionHelp": "Section help"
     },
     "meetingConflictsText": {
@@ -10878,6 +10885,7 @@
       "blockDisplayname": "Block {{displayName}}?"
     },
     "artistImagePurposePickerLabels": {
+      "chooseImages": "Choose images",
       "removeName": "Remove {{name}}"
     },
     "broadcastControlsLabels": {
@@ -11026,6 +11034,11 @@
       "manageSubscription": "Manage subscription"
     },
     "mermaidDiagramText": {
+      "renderFailed": "Mermaid render failed",
+      "exitFullscreen": "Exit fullscreen",
+      "viewFullscreen": "View fullscreen",
+      "exitFullscreenDiagram": "Exit fullscreen diagram",
+      "viewDiagramFullscreen": "View diagram fullscreen",
       "renderingDiagram": "Rendering diagram…",
       "diagramZoomControls": "Diagram zoom controls",
       "zoomOutDiagram": "Zoom out diagram",
@@ -11303,6 +11316,11 @@
       "analyze": "Analyze"
     },
     "trackExportConnectionsStates": {
+      "configureName": "Configure {{name}}",
+      "testingConnection": "Testing connection…",
+      "connected": "Connected",
+      "connectedAs": "Connected as {{username}}",
+      "notConnected": "Not connected",
       "testing": "Testing…",
       "testConnection": "Test connection"
     },
@@ -11894,6 +11912,8 @@
       "generateReport": "Generate report"
     },
     "localLibraryAnalysisStates": {
+      "analyzeLibrary": "Analyze library",
+      "analyzeRemaining": "Analyze {{remaining}} remaining",
       "resume": "Resume",
       "pause": "Pause",
       "pausedProgress": "Paused {{done}} of {{total}}",
@@ -12058,6 +12078,7 @@
       "connecting": "Connecting…"
     },
     "fanTiersEditorStates": {
+      "tierCreated": "Tier created.",
       "activate": "Activate",
       "deactivate": "Deactivate",
       "creating": "Creating…",
@@ -12072,6 +12093,7 @@
       "useThisImage": "Use this image"
     },
     "purchaseTiersEditorStates": {
+      "tierCreated": "Tier created.",
       "activate": "Activate",
       "deactivate": "Deactivate",
       "suggestedPrice": "Suggested price (€)",
@@ -12359,6 +12381,7 @@
       "members": "Members"
     },
     "smartPlaylistDialogStates": {
+      "invalidRule": "Invalid rule.",
       "editSmartPlaylist": "Edit smart playlist",
       "newSmartPlaylist": "New smart playlist"
     },
@@ -12367,6 +12390,8 @@
       "sendMessage": "Send message"
     },
     "trackAudienceStates": {
+      "playedOnce": "Played once",
+      "playedTimes": "Played {{count}}×",
       "loading": "Loading…",
       "showMore": "Show more"
     },

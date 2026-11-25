@@ -211,7 +211,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
             labels={{
               title: t('artistImagePurposePicker.artistImages'),
               description: t('artistImagePurposePicker.jpegPngOrWebp'),
-              browse: 'Choose images',
+              browse: t('artistImagePurposePickerLabels.chooseImages'),
             }}
             accept={ACCEPTED_IMAGES}
             multiple

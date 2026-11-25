@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { setBackdropFrameVerdict } from '../lib/backdropMotion';
 import type { VisualizerScheme } from '../plugins/visualizers/types';
 import { ChannelVisualizer } from './ChannelVisualizer';
 
@@ -58,6 +59,28 @@ describe('ChannelVisualizer', () => {
 
     render(<ChannelVisualizer preset="AURORA" colorScheme={CHANNEL_SCHEME} />);
     expect(await screen.findByTestId('three-visualizer')).toBeInTheDocument();
+  });
+
+  it('drops an animated backdrop to the still gradient when frames drop', async () => {
+    render(
+      <>
+        <ChannelVisualizer
+          preset="AURORA"
+          colorScheme={CHANNEL_SCHEME}
+          backdrop
+        />
+        <ChannelVisualizer
+          preset="AURORA"
+          colorScheme={CHANNEL_SCHEME}
+          backdrop
+          stillWhenFramesDrop={false}
+        />
+      </>,
+    );
+    expect(await screen.findAllByTestId('three-visualizer')).toHaveLength(2);
+    act(() => setBackdropFrameVerdict('slow'));
+    expect(screen.getAllByTestId('three-visualizer')).toHaveLength(1);
+    act(() => setBackdropFrameVerdict('pending'));
   });
 
   it('takes accent and highlight from the track artwork when asked', async () => {

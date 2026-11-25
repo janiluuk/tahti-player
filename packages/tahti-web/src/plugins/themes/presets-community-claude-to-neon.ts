@@ -24,8 +24,10 @@ const CLAUDE_VARS: Record<string, string> = {
   'shadow-x': '0px',
   'shadow-y': '1px',
   'shadow-blur': '3px',
-  'font-family': "'Inter', 'DM Sans', system-ui, sans-serif",
-  'font-family-heading': "'Inter', 'DM Sans', system-ui, sans-serif",
+  'font-family':
+    "'Inter', 'DM Sans', 'DM Sans Fallback', system-ui, sans-serif",
+  'font-family-heading':
+    "'Inter', 'DM Sans', 'DM Sans Fallback', system-ui, sans-serif",
   'font-weight-normal': '400',
   'font-weight-bold': '600',
   'font-weight-extra-bold': '700',
@@ -541,9 +543,10 @@ const GRUVBOX_VARS: Record<string, string> = {
   'shadow-x': '2px',
   'shadow-y': '2px',
   'shadow-blur': '0px',
-  'font-family': "'IBM Plex Mono', 'Space Mono', ui-monospace, monospace",
+  'font-family':
+    "'IBM Plex Mono', 'Space Mono', 'Space Mono Fallback', ui-monospace, monospace",
   'font-family-heading':
-    "'IBM Plex Mono', 'Space Mono', ui-monospace, monospace",
+    "'IBM Plex Mono', 'Space Mono', 'Space Mono Fallback', ui-monospace, monospace",
   'radius-sm': '2px',
   'radius-md': '4px',
   'radius-lg': '6px',

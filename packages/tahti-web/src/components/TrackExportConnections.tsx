@@ -56,7 +56,9 @@ function ConnectionConfigureDialog({
 
   return (
     <Dialog.Root isOpen onClose={onClose} className="max-w-md">
-      <Dialog.Title>Configure {name}</Dialog.Title>
+      <Dialog.Title>
+        {t('trackExportConnectionsStates.configureName', { name })}
+      </Dialog.Title>
       <Dialog.Description>
         {t('trackExportConnections.testTheConnectionThenEnable')}
       </Dialog.Description>
@@ -64,10 +66,14 @@ function ConnectionConfigureDialog({
         <div className="border-border flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
           <span>
             {testing
-              ? 'Testing connection…'
+              ? t('trackExportConnectionsStates.testingConnection')
               : status?.connected
-                ? `Connected${status.username ? ` as ${status.username}` : ''}`
-                : 'Not connected'}
+                ? status.username
+                  ? t('trackExportConnectionsStates.connectedAs', {
+                      username: status.username,
+                    })
+                  : t('trackExportConnectionsStates.connected')
+                : t('trackExportConnectionsStates.notConnected')}
           </span>
           <Button
             size="sm"

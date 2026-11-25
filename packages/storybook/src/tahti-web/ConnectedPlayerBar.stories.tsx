@@ -1,12 +1,17 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
 import { ConnectedPlayerBar } from '@tahti-web/components/ConnectedPlayerBar';
 import { HearthisEmbedHostProvider } from '@tahti-web/components/HearthisEmbedHost';
+import {
+  PHONE_PLAYER_MINIMIZED_KEY,
+  resetPhonePlayerMinimizedCache,
+} from '@tahti-web/hooks/usePhonePlayerMinimized';
 import { useLayoutStore } from '@tahti-web/stores/layoutStore';
 import { usePlayerStore } from '@tahti-web/stores/playerStore';
 import { expect, fireEvent, userEvent, waitFor, within } from 'storybook/test';
 
 import type { QueueItem } from '@tahti-player/model';
 
+import { stubReducedMotion } from '../_lib/motion';
 import { withTahtiRouter } from './_lib/decorators';
 import { stubPhoneViewport } from './_lib/phone';
 
@@ -314,5 +319,188 @@ export const PhoneCloseWhenPaused: Story = {
 
     usePlayerStore.getState().setStatus('playing');
     await expect(await canvas.findByTestId('mobile-player-bar')).toBeVisible();
+  },
+};
+
+const longTitleQueue: QueueItem[] = [
+  mockQueueItem(
+    'archive:long',
+    'Aamuyön valot (pitkä versio, livenä Tavastialla syksyllä 2025)',
+    'Northern Lights, Halcyon Field ja muut ystävät',
+    412000,
+  ),
+  ...mockQueue,
+];
+
+function forgetPhoneMinimized(minimized: boolean) {
+  return () => {
+    try {
+      if (minimized) {
+        localStorage.setItem(PHONE_PLAYER_MINIMIZED_KEY, '1');
+      } else {
+        localStorage.removeItem(PHONE_PLAYER_MINIMIZED_KEY);
+      }
+    } catch {
+      // Stories still render when the browser blocks storage.
+    }
+    resetPhonePlayerMinimizedCache();
+    return () => {
+      try {
+        localStorage.removeItem(PHONE_PLAYER_MINIMIZED_KEY);
+      } catch {
+        // See above.
+      }
+      resetPhonePlayerMinimizedCache();
+    };
+  };
+}
+
+/** A title too long for the bar scrolls; the full title is announced once. */
+export const LongTitleScrolls: Story = {
+  decorators: [withSeededPlayerBar({ queue: longTitleQueue })],
+  beforeEach: stubReducedMotion(false),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const title = canvas.getByTestId('now-playing-title');
+    const marquee = title.querySelector<HTMLElement>('.tahti-marquee')!;
+    await waitFor(() =>
+      expect(marquee).toHaveAttribute('data-marquee', 'scrolling'),
+    );
+    await expect(title).toHaveAccessibleName(longTitleQueue[0]!.track.title);
+  },
+};
+
+/** Same title under reduced motion: static, truncated. */
+export const LongTitleReducedMotion: Story = {
+  decorators: [withSeededPlayerBar({ queue: longTitleQueue })],
+  beforeEach: stubReducedMotion(true),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const marquee = canvas
+      .getByTestId('now-playing-title')
+      .querySelector<HTMLElement>('.tahti-marquee')!;
+    await waitFor(() =>
+      expect(marquee).toHaveAttribute('data-marquee', 'static'),
+    );
+    await expect(marquee.querySelector('.tahti-marquee-track')).toBeNull();
+  },
+};
+
+/** Phone bar with a long title: the title line scrolls inside the bar. */
+export const PhoneLongTitleScrolls: Story = {
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  decorators: [
+    (Story) => (
+      <div className="max-w-[390px]">
+        <Story />
+      </div>
+    ),
+    withSeededPlayerBar({ queue: longTitleQueue }),
+  ],
+  beforeEach: () => {
+    const undoPhone = stubPhoneViewport();
+    const undoMotion = stubReducedMotion(false)();
+    const undoMinimized = forgetPhoneMinimized(false)();
+    return () => {
+      undoMinimized();
+      undoMotion();
+      undoPhone();
+    };
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const title = await canvas.findByTestId('mobile-player-title');
+    await waitFor(() =>
+      expect(title).toHaveAttribute('data-marquee', 'scrolling'),
+    );
+    await expect(
+      canvas.getByRole('button', {
+        name: `Open full-screen player: ${longTitleQueue[0]!.track.title}`,
+      }),
+    ).toBeVisible();
+  },
+};
+
+/** Phone bar minimized to a thin strip and restored, the choice kept in
+ * localStorage. */
+export const PhoneMinimizeAndRestore: Story = {
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  decorators: [
+    (Story) => (
+      <div className="max-w-[390px]">
+        <Story />
+      </div>
+    ),
+    withSeededPlayerBar({}),
+  ],
+  beforeEach: () => {
+    const undoPhone = stubPhoneViewport();
+    const undoMinimized = forgetPhoneMinimized(false)();
+    return () => {
+      undoMinimized();
+      undoPhone();
+    };
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const bar = await canvas.findByTestId('mobile-player-bar');
+    const fullHeight = bar.getBoundingClientRect().height;
+
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Minimize player' }),
+    );
+    const mini = await canvas.findByTestId('mobile-player-bar');
+    await expect(mini).toHaveAttribute('data-minimized');
+    await expect(mini.getBoundingClientRect().height).toBeLessThan(
+      fullHeight / 1.5,
+    );
+    await expect(localStorage.getItem(PHONE_PLAYER_MINIMIZED_KEY)).toBe('1');
+
+    await userEvent.click(canvas.getByTestId('player-pause-button'));
+    await expect(usePlayerStore.getState().status).toBe('paused');
+
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Show full player: Midnight Drift' }),
+    );
+    await waitFor(() =>
+      expect(canvas.getByTestId('mobile-player-bar')).not.toHaveAttribute(
+        'data-minimized',
+      ),
+    );
+    await expect(localStorage.getItem(PHONE_PLAYER_MINIMIZED_KEY)).toBeNull();
+  },
+};
+
+/** A phone that minimized the bar earlier opens with the strip. */
+export const PhoneMinimized: Story = {
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  decorators: [
+    (Story) => (
+      <div className="max-w-[390px]">
+        <Story />
+      </div>
+    ),
+    withSeededPlayerBar({ queue: longTitleQueue }),
+  ],
+  beforeEach: () => {
+    const undoPhone = stubPhoneViewport();
+    const undoMinimized = forgetPhoneMinimized(true)();
+    return () => {
+      undoMinimized();
+      undoPhone();
+    };
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByTestId('mobile-player-bar'),
+    ).toHaveAttribute('data-minimized');
+    await expect(
+      canvas.queryByRole('button', { name: 'Minimize player' }),
+    ).toBeNull();
+    await userEvent.click(canvas.getByTestId('expand-mobile-player-bar'));
+    await expect(
+      await canvas.findByRole('button', { name: 'Minimize player' }),
+    ).toBeVisible();
   },
 };

@@ -15,31 +15,94 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
           class="flex min-w-0 items-center gap-3.5"
         >
           <div
-            class="border-border bg-background-secondary size-16 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+            class="group/media relative overflow-hidden size-16 min-w-16 border-border shrink-0 rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+            data-testid="media-artwork"
           >
-            <img
-              alt=""
-              class="size-full object-cover select-none"
-              data-testid="player-now-playing-thumbnail"
-              src="https://picsum.photos/48"
-            />
+            <div
+              class="overflow-hidden absolute inset-0"
+            >
+              <img
+                alt=""
+                class="h-full w-full object-cover"
+                decoding="async"
+                loading="lazy"
+                src="https://picsum.photos/48"
+              />
+              <div
+                class="pointer-events-none absolute inset-0 flex items-center justify-center"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-cassette-tape opacity-20"
+                  fill="none"
+                  height="48"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1"
+                  viewBox="0 0 24 24"
+                  width="48"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    height="16"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="4"
+                  />
+                  <circle
+                    cx="8"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="M8 12h8"
+                  />
+                  <circle
+                    cx="16"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
           <div
             class="min-w-0 flex-1"
           >
             <div
-              class="text-foreground truncate text-sm font-semibold tracking-tight"
               data-testid="now-playing-title"
               title="Crystalized"
             >
-              Crystalized
+              <span
+                class="tahti-marquee block min-w-0 overflow-hidden whitespace-nowrap text-foreground w-full text-sm font-semibold tracking-tight"
+                data-marquee="fits"
+              >
+                <span
+                  class="block truncate"
+                >
+                  Crystalized
+                </span>
+              </span>
             </div>
             <div
-              class="text-foreground-secondary truncate text-xs"
               data-testid="player-now-playing-artist"
               title="XX"
             >
-              XX
+              <span
+                class="tahti-marquee block min-w-0 overflow-hidden whitespace-nowrap text-foreground-secondary w-full text-xs"
+                data-marquee="fits"
+              >
+                <span
+                  class="block truncate"
+                >
+                  XX
+                </span>
+              </span>
             </div>
           </div>
         </div>
@@ -344,31 +407,94 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
           class="flex min-w-0 items-center gap-3.5"
         >
           <div
-            class="border-border bg-background-secondary size-16 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+            class="group/media relative overflow-hidden size-16 min-w-16 border-border shrink-0 rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+            data-testid="media-artwork"
           >
-            <img
-              alt=""
-              class="size-full object-cover select-none"
-              data-testid="player-now-playing-thumbnail"
-              src="https://picsum.photos/48"
-            />
+            <div
+              class="overflow-hidden absolute inset-0"
+            >
+              <img
+                alt=""
+                class="h-full w-full object-cover"
+                decoding="async"
+                loading="lazy"
+                src="https://picsum.photos/48"
+              />
+              <div
+                class="pointer-events-none absolute inset-0 flex items-center justify-center"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-cassette-tape opacity-20"
+                  fill="none"
+                  height="48"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1"
+                  viewBox="0 0 24 24"
+                  width="48"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    height="16"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="4"
+                  />
+                  <circle
+                    cx="8"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="M8 12h8"
+                  />
+                  <circle
+                    cx="16"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
           <div
             class="min-w-0 flex-1"
           >
             <div
-              class="text-foreground truncate text-sm font-semibold tracking-tight"
               data-testid="now-playing-title"
               title="Song Title"
             >
-              Song Title
+              <span
+                class="tahti-marquee block min-w-0 overflow-hidden whitespace-nowrap text-foreground w-full text-sm font-semibold tracking-tight"
+                data-marquee="fits"
+              >
+                <span
+                  class="block truncate"
+                >
+                  Song Title
+                </span>
+              </span>
             </div>
             <div
-              class="text-foreground-secondary truncate text-xs"
               data-testid="player-now-playing-artist"
               title="Artist Name"
             >
-              Artist Name
+              <span
+                class="tahti-marquee block min-w-0 overflow-hidden whitespace-nowrap text-foreground-secondary w-full text-xs"
+                data-marquee="fits"
+              >
+                <span
+                  class="block truncate"
+                >
+                  Artist Name
+                </span>
+              </span>
             </div>
           </div>
         </div>
@@ -665,31 +791,94 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
             class="flex min-w-0 items-center gap-3.5"
           >
             <div
-              class="border-border bg-background-secondary size-16 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+              class="group/media relative overflow-hidden size-16 min-w-16 border-border shrink-0 rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+              data-testid="media-artwork"
             >
-              <img
-                alt=""
-                class="size-full object-cover select-none"
-                data-testid="player-now-playing-thumbnail"
-                src="https://picsum.photos/48"
-              />
+              <div
+                class="overflow-hidden absolute inset-0"
+              >
+                <img
+                  alt=""
+                  class="h-full w-full object-cover"
+                  decoding="async"
+                  loading="lazy"
+                  src="https://picsum.photos/48"
+                />
+                <div
+                  class="pointer-events-none absolute inset-0 flex items-center justify-center"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-cassette-tape opacity-20"
+                    fill="none"
+                    height="48"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1"
+                    viewBox="0 0 24 24"
+                    width="48"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <rect
+                      height="16"
+                      rx="2"
+                      width="20"
+                      x="2"
+                      y="4"
+                    />
+                    <circle
+                      cx="8"
+                      cy="10"
+                      r="2"
+                    />
+                    <path
+                      d="M8 12h8"
+                    />
+                    <circle
+                      cx="16"
+                      cy="10"
+                      r="2"
+                    />
+                    <path
+                      d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
             <div
               class="min-w-0 flex-1"
             >
               <div
-                class="text-foreground truncate text-sm font-semibold tracking-tight"
                 data-testid="now-playing-title"
                 title="An Incredibly, Ridiculously Long Song Title That Should Truncate Nicely"
               >
-                An Incredibly, Ridiculously Long Song Title That Should Truncate Nicely
+                <span
+                  class="tahti-marquee block min-w-0 overflow-hidden whitespace-nowrap text-foreground w-full text-sm font-semibold tracking-tight"
+                  data-marquee="fits"
+                >
+                  <span
+                    class="block truncate"
+                  >
+                    An Incredibly, Ridiculously Long Song Title That Should Truncate Nicely
+                  </span>
+                </span>
               </div>
               <div
-                class="text-foreground-secondary truncate text-xs"
                 data-testid="player-now-playing-artist"
                 title="A Very Long Artist Name Featuring Another Long Artist With Even More Characters"
               >
-                A Very Long Artist Name Featuring Another Long Artist With Even More Characters
+                <span
+                  class="tahti-marquee block min-w-0 overflow-hidden whitespace-nowrap text-foreground-secondary w-full text-xs"
+                  data-marquee="fits"
+                >
+                  <span
+                    class="block truncate"
+                  >
+                    A Very Long Artist Name Featuring Another Long Artist With Even More Characters
+                  </span>
+                </span>
               </div>
             </div>
           </div>
@@ -984,32 +1173,48 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
           class="flex min-w-0 items-center gap-3.5"
         >
           <div
-            class="border-border bg-background-secondary size-16 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+            class="group/media relative overflow-hidden size-16 min-w-16 border-border shrink-0 rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5"
+            data-testid="media-artwork"
           >
             <div
-              class="text-foreground-secondary flex size-full items-center justify-center"
-              data-testid="player-now-playing-placeholder"
+              class="absolute inset-0 flex items-center justify-center bg-background-secondary"
+              data-testid="media-artwork-fallback"
             >
               <svg
                 aria-hidden="true"
-                class="lucide lucide-music2 lucide-music-2"
+                class="lucide lucide-cassette-tape text-foreground opacity-20"
                 fill="none"
-                height="20"
+                height="48"
                 stroke="currentColor"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
+                stroke-width="1"
                 viewBox="0 0 24 24"
-                width="20"
+                width="48"
                 xmlns="http://www.w3.org/2000/svg"
               >
+                <rect
+                  height="16"
+                  rx="2"
+                  width="20"
+                  x="2"
+                  y="4"
+                />
                 <circle
                   cx="8"
-                  cy="18"
-                  r="4"
+                  cy="10"
+                  r="2"
                 />
                 <path
-                  d="M12 18V2l7 4"
+                  d="M8 12h8"
+                />
+                <circle
+                  cx="16"
+                  cy="10"
+                  r="2"
+                />
+                <path
+                  d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
                 />
               </svg>
             </div>
@@ -1018,18 +1223,34 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
             class="min-w-0 flex-1"
           >
             <div
-              class="text-foreground truncate text-sm font-semibold tracking-tight"
               data-testid="now-playing-title"
               title="Untitled Track"
             >
-              Untitled Track
+              <span
+                class="tahti-marquee block min-w-0 overflow-hidden whitespace-nowrap text-foreground w-full text-sm font-semibold tracking-tight"
+                data-marquee="fits"
+              >
+                <span
+                  class="block truncate"
+                >
+                  Untitled Track
+                </span>
+              </span>
             </div>
             <div
-              class="text-foreground-secondary truncate text-xs"
               data-testid="player-now-playing-artist"
               title="Unknown Artist"
             >
-              Unknown Artist
+              <span
+                class="tahti-marquee block min-w-0 overflow-hidden whitespace-nowrap text-foreground-secondary w-full text-xs"
+                data-marquee="fits"
+              >
+                <span
+                  class="block truncate"
+                >
+                  Unknown Artist
+                </span>
+              </span>
             </div>
           </div>
         </div>

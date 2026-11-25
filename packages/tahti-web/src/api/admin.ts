@@ -12,6 +12,7 @@ export * from './admin/admin-financial';
 export * from './admin/admin-i18n';
 export * from './admin/admin-news';
 export * from './admin/admin-radio';
+export * from './admin/admin-radio-submissions';
 export * from './admin/admin-status';
 export * from './admin/admin-top-lists';
 export * from './admin/admin-vendors';
@@ -29,6 +30,8 @@ export * from './admin/admin-storage';
 
 export * from './admin/admin-annual-reports';
 export * from './admin/admin-governance';
+export * from './admin/admin-feature-requests';
+export * from './admin/admin-grants';
 export * from './admin/admin-governance-meeting-records';
 
 export * from './admin/admin-addons';

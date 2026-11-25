@@ -76,6 +76,19 @@ function makeTracks(count: number): Track[] {
 }
 
 describe('TrackTable', () => {
+  it('names the table from aria-label', async () => {
+    render(
+      <TrackTable
+        aria-label="Rotation"
+        tracks={makeTracks(1)}
+        labels={labels}
+      />,
+    );
+    expect(
+      await screen.findByRole('table', { name: 'Rotation' }),
+    ).toBeInTheDocument();
+  });
+
   it('(Snapshot) Basic', async () => {
     const { asFragment, findByText } = render(
       <TrackTable

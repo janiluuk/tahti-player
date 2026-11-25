@@ -222,7 +222,7 @@ export function FanTiersEditor() {
                 setMsg(r.error);
                 return;
               }
-              setMsg('Tier created.');
+              setMsg(t('fanTiersEditorStates.tierCreated'));
               closeCreate();
               reload();
             });

@@ -3,7 +3,7 @@ import { act, cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as beta from '../../../../api/admin/admin-beta';
-import * as radio from '../../../../api/admin/admin-radio';
+import * as radio from '../../../../api/admin/admin-radio-submissions';
 import * as support from '../../../../api/admin/admin-support';
 import { BetaTab } from './BetaTab';
 import { RadioSubmissionsTab } from './RadioSubmissionsTab';

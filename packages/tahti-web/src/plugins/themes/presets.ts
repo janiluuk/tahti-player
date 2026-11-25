@@ -148,9 +148,11 @@ const SPOTIFY_DARK_THEME_VARS: Record<string, string> = {
   'shadow-x': '0px',
   'shadow-y': '4px',
   'shadow-blur': '12px',
-  'font-family': "'Circular', 'DM Sans', system-ui, -apple-system, sans-serif",
-  'font-family-heading': "'Circular', 'Bricolage Grotesque', sans-serif",
-  'font-family-mono': "'Space Mono', monospace",
+  'font-family':
+    "'Circular', 'DM Sans', 'DM Sans Fallback', system-ui, -apple-system, sans-serif",
+  'font-family-heading':
+    "'Circular', 'Bricolage Grotesque', 'Bricolage Grotesque Fallback', sans-serif",
+  'font-family-mono': "'Space Mono', 'Space Mono Fallback', monospace",
   'font-weight-normal': '400',
   'font-weight-bold': '700',
   'font-weight-extra-bold': '800',

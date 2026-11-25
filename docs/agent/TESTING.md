@@ -120,6 +120,25 @@ it('shows empty state when no playlists', async () => {
 });
 ```
 
+### Fast local runs
+
+| Command | What it runs | Wall time (Mac, 2026-11-25) |
+| ------- | ------------ | --------------------------- |
+| `pnpm test` | every package's Vitest, no Storybook plays; no dependency builds first | ~70 s cold, cached packages skip |
+| `pnpm test:changed` | only affected packages, and in each only tests related to files changed since `origin/master` (`TEST_BASE=<ref>` to change) | seconds |
+| `pnpm test:stories` | every story play, 50 story files per Chromium session, two sessions at a time | ~4 min |
+| `pnpm test:stories:changed` | plays for stories that changed or name a changed component / import a changed module | ~25 s for ~50 stories |
+| `pnpm test:all` | `pnpm test` plus `test:stories` | |
+
+`node packages/storybook/scripts/run-plays.mjs --changed origin/master --list`
+prints the story selection without running it; `--chunk` and `--jobs` tune
+the session size and parallelism.
+
+tahti-web runs Vitest with `isolate: false`: test files share a worker and
+`src/test/setup.ts` resets the DOM, storage, stubs, spies, URL, animation
+frames and module registry after each file. A `vi.mock` still carries over
+to later files in the same worker.
+
 ### Storybook play tests (headless Chromium)
 
 The Storybook Vitest project can drop its browser connection after many story
@@ -130,8 +149,8 @@ story files per invocation** and bisect when a chunk fails:
 cd packages/storybook
 pnpm exec vitest --project storybook --no-file-parallelism \
   src/tahti-web/Studio*.stories.tsx
-# Halve the glob until one file reproduces, or use tahti-ops:
-pnpm tahti-ops test storybook -- src/tahti-web/Admin*.stories.tsx
+# Halve the glob until one file reproduces, or use tahti-ops (chunked):
+pnpm tahti-ops test storybook -- src/tahti-web/Admin
 ```
 
 CI shards (~50 files) plus one retry; Chromium launches with

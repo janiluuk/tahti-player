@@ -1376,7 +1376,9 @@
       "swipeTracks": "Vaihda kappaletta pyyhkäisemällä vasemmalle tai oikealle",
       "moreOptionsFor": "Lisää valintoja: {{title}}",
       "buffering": "Puskuroidaan…",
-      "closePlayer": "Sulje soitin"
+      "closePlayer": "Sulje soitin",
+      "minimizePlayer": "Pienennä soitin",
+      "restorePlayer": "Näytä koko soitin"
     },
     "listen": {
       "sections": "Kuuntele-osiot",
@@ -7249,6 +7251,8 @@
       "letsAnAiToolSuch": "Antaa tekoälytyökalun, kuten Claude Coden tai Cursorin, ohjata toistoa, jonoa, kirjastoasi ja radiota. Kuuntelee vain tällä tietokoneella."
     },
     "materialTagsField": {
+      "addATag": "Lisää tunniste",
+      "addATagPlaceholder": "# Lisää tunniste",
       "tags": "Tunnisteet",
       "helpListenersFindItGenres": "Auta kuuntelijoita löytämään se: tyylilajit, tunnelmat, soittimet. Erota tunnisteet pilkuilla."
     },
@@ -9956,6 +9960,7 @@
       "removeTagName": "Poista tunniste: {{name}}"
     },
     "themeSubmissionsLabels": {
+      "deleteSubmission": "Poistetaanko ehdotus?",
       "deleteTheNameSubmission": "Poista ehdotus: {{name}}"
     },
     "studioCollectionMoreMenuLabels": {
@@ -10464,6 +10469,7 @@
       "djSet": "DJ-setti"
     },
     "videoOrImageFieldFields": {
+      "browseFiles": "Selaa tiedostoja",
       "chooseAVideoOrImage": "Valitse video tai kuva",
       "mp4WebmJpegPngWebp": "MP4, WebM, JPEG, PNG, WebP tai GIF · enintään 10 Mt"
     },
@@ -10627,6 +10633,7 @@
       "back": "Takaisin"
     },
     "helpLayerText": {
+      "hideHelp": "Piilota ohje",
       "sectionHelp": "Osion ohje"
     },
     "meetingConflictsText": {
@@ -10874,6 +10881,7 @@
       "blockDisplayname": "Estetäänkö {{displayName}}?"
     },
     "artistImagePurposePickerLabels": {
+      "chooseImages": "Valitse kuvat",
       "removeName": "Poista: {{name}}"
     },
     "broadcastControlsLabels": {
@@ -11022,6 +11030,11 @@
       "manageSubscription": "Hallitse tilausta"
     },
     "mermaidDiagramText": {
+      "renderFailed": "Kaavion piirtäminen epäonnistui",
+      "exitFullscreen": "Poistu koko näytöstä",
+      "viewFullscreen": "Näytä koko näytöllä",
+      "exitFullscreenDiagram": "Poistu kaavion koko näytön tilasta",
+      "viewDiagramFullscreen": "Näytä kaavio koko näytöllä",
       "renderingDiagram": "Piirretään kaaviota…",
       "diagramZoomControls": "Kaavion zoomaus",
       "zoomOutDiagram": "Loitonna kaaviota",
@@ -11299,6 +11312,11 @@
       "analyze": "Analysoi"
     },
     "trackExportConnectionsStates": {
+      "configureName": "Määritä {{name}}",
+      "testingConnection": "Testataan yhteyttä…",
+      "connected": "Yhdistetty",
+      "connectedAs": "Yhdistetty käyttäjänä {{username}}",
+      "notConnected": "Ei yhdistetty",
       "testing": "Testataan…",
       "testConnection": "Testaa yhteys"
     },
@@ -11890,6 +11908,8 @@
       "generateReport": "Luo raportti"
     },
     "localLibraryAnalysisStates": {
+      "analyzeLibrary": "Analysoi kirjasto",
+      "analyzeRemaining": "Analysoi loput {{remaining}}",
       "resume": "Jatka",
       "pause": "Tauko",
       "pausedProgress": "Keskeytetty {{done}}/{{total}}",
@@ -12054,6 +12074,7 @@
       "connecting": "Yhdistetään…"
     },
     "fanTiersEditorStates": {
+      "tierCreated": "Taso luotu.",
       "activate": "Aktivoi",
       "deactivate": "Poista käytöstä",
       "creating": "Luodaan…",
@@ -12068,6 +12089,7 @@
       "useThisImage": "Käytä tätä kuvaa"
     },
     "purchaseTiersEditorStates": {
+      "tierCreated": "Taso luotu.",
       "activate": "Aktivoi",
       "deactivate": "Poista käytöstä",
       "suggestedPrice": "Ehdotettu hinta (€)",
@@ -12355,6 +12377,7 @@
       "members": "Jäsenet"
     },
     "smartPlaylistDialogStates": {
+      "invalidRule": "Virheellinen sääntö.",
       "editSmartPlaylist": "Muokkaa älykästä soittolistaa",
       "newSmartPlaylist": "Uusi älykäs soittolista"
     },
@@ -12363,6 +12386,8 @@
       "sendMessage": "Lähetä viesti"
     },
     "trackAudienceStates": {
+      "playedOnce": "Soitettu kerran",
+      "playedTimes": "Soitettu {{count}}×",
       "loading": "Ladataan…",
       "showMore": "Näytä lisää"
     },

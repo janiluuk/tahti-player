@@ -82,7 +82,7 @@ export function VideoOrImageField({
         labels={{
           title: t('videoOrImageFieldFields.chooseAVideoOrImage'),
           description: t('videoOrImageFieldFields.mp4WebmJpegPngWebp'),
-          browse: 'Browse files',
+          browse: t('videoOrImageFieldFields.browseFiles'),
         }}
         onFiles={onFiles}
       />

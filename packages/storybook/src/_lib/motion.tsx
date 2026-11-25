@@ -38,3 +38,31 @@ export const withMotionAllowed: Decorator = (Story) => {
     </MotionAllowed>
   );
 };
+
+/**
+ * Story `beforeEach` that makes `usePrefersReducedMotion` report `reduce`.
+ * The Vitest play runner launches Chromium with reduced motion on, so a
+ * story that shows motion has to opt out with `reduce: false`. Composes with
+ * other `matchMedia` stubs (e.g. `stubPhoneViewport`).
+ */
+export function stubReducedMotion(reduce: boolean): () => () => void {
+  return () => {
+    const real = window.matchMedia;
+    window.matchMedia = (query: string) =>
+      query === REDUCED_MOTION_QUERY
+        ? ({
+            matches: reduce,
+            media: query,
+            onchange: null,
+            addEventListener: () => undefined,
+            removeEventListener: () => undefined,
+            addListener: () => undefined,
+            removeListener: () => undefined,
+            dispatchEvent: () => false,
+          } as MediaQueryList)
+        : real.call(window, query);
+    return () => {
+      window.matchMedia = real;
+    };
+  };
+}

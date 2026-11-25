@@ -18,6 +18,6 @@ Requested 2026-11-24. First pass in tahti-web 0.0.475 (#2165), measured in Chrom
 
 ## Left
 
+- [ ] No-GPU fps on the event page (Storybook `EventView` mock `evt-mock-guest`).
+
 - [ ] Measure in Firefox with `layers.acceleration.disabled` / `gfx.webrender.software` (Playwright Firefox download timed out). The no-GPU check reads the WebGL renderer name, so it may not trigger when Firefox keeps hardware WebGL but paints in software.
-- [ ] Event page banner backdrop (no mock event page to measure).
-- [ ] Optional: a live frame-time monitor that switches to the still backdrop when frames drop, instead of the one-time startup check.

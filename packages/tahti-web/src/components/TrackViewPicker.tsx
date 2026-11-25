@@ -90,7 +90,7 @@ export function TrackViewPicker({
   return (
     <Popover
       anchor="bottom end"
-      tooltip={{ content: 'Track size', side: 'top' }}
+      tooltip={{ content: t('trackViewPickerText.trackSize'), side: 'top' }}
       panelClassName="p-1"
       trigger={
         <Button

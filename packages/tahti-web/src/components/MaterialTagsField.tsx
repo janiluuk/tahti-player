@@ -26,8 +26,8 @@ export function MaterialTagsField({ value, onChange, usedBefore }: Props) {
         label={t('materialTagsField.tags')}
         hideLabel
         hideCount
-        addLabel="Add a tag"
-        placeholder="# Add a tag"
+        addLabel={t('materialTagsField.addATag')}
+        placeholder={t('materialTagsField.addATagPlaceholder')}
         maxCount={20}
         maxLength={40}
         value={value}

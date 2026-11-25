@@ -43,6 +43,7 @@ export function TrackTable<T extends Track = Track>({
   meta,
   rowHeight = DEFAULT_ROW_HEIGHT,
   overscan = DEFAULT_OVERSCAN,
+  'aria-label': ariaLabel,
 }: TrackTableProps<T>) {
   const resolvedFeatures = {
     ...defaultFeatures,
@@ -183,6 +184,7 @@ export function TrackTable<T extends Track = Track>({
           >
             <table
               role="table"
+              aria-label={ariaLabel}
               className={cn(
                 'border-border text-foreground relative w-full table-fixed border-(length:--border-width)',
                 classes?.root,

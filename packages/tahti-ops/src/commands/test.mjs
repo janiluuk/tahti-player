@@ -32,15 +32,19 @@ const GROUPS = {
     args: ['--filter', '@tahti-player/visualizer', 'test'],
   },
   storybook: {
-    summary: 'Storybook play tests in headless Chromium',
-    args: ['--filter', '@tahti-player/storybook', 'test'],
+    summary:
+      'Storybook play tests in headless Chromium, 50 story files per browser session',
+    args: ['--filter', '@tahti-player/storybook', 'test:plays'],
   },
   types: {
     summary: 'TypeScript checks in every package',
     args: ['type-check'],
   },
   lint: { summary: 'ESLint in every package', args: ['lint'] },
-  all: { summary: 'every package (turbo test)', args: ['test'] },
+  all: {
+    summary: 'every package except Storybook plays (turbo test)',
+    args: ['test'],
+  },
 };
 
 export function testGroups() {

@@ -132,7 +132,7 @@ export function ThemeSubmissions({
         title={
           pendingDelete
             ? webT()('a11yNamed.deleteSubmission', { name: pendingDelete.name })
-            : 'Delete submission?'
+            : t('themeSubmissionsLabels.deleteSubmission')
         }
         description={t('themeSubmissions.theThemeLeavesYourSubmissions')}
         confirmLabel={t('themeSubmissions.delete')}

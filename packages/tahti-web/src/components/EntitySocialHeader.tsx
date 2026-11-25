@@ -337,6 +337,7 @@ export function EntitySocialHeader({
             'relative shrink-0',
             leading && compactOnPhone ? 'max-sm:ml-12' : undefined,
           )}
+          data-testid="entity-social-header-image"
         >
           {imageUrl ? (
             onImageClick ? (

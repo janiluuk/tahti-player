@@ -10,7 +10,7 @@ import {
 } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { CardsRow } from '@tahti-player/ui';
+import { CARDS_ROW_FILTER_MIN_ITEMS, CardsRow } from '@tahti-player/ui';
 
 import type { EnabledInternetRadioPreset } from '../../api/client';
 import type { MyRadioStation } from '../../api/my-radio-stations';
@@ -261,6 +261,15 @@ export function RadioStationsRow({
         }
         onRetry={onRetry}
         actions={actions}
+        expectFilter={
+          // While the curated presets load, count on at least one: the board
+          // keeps some enabled, and production has never served none.
+          enabledStationIds.length +
+            ownStations.length +
+            savedStations.length +
+            Math.max(radioPresets.length, 1) >=
+          CARDS_ROW_FILTER_MIN_ITEMS
+        }
       >
         <CardsRow
           actions={actions}

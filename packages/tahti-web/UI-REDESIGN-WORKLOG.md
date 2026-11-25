@@ -7135,3 +7135,10 @@ Desktop main-pane padding is four pixels tighter at each breakpoint, full-bleed 
 - Artist page: `EntitySocialHeader` `compactOnPhone` (64 px avatar beside the name, actions row, swipeable stats) on `ArtistPageHero`; `AmbientTrackList` `surfaceClassName` + `flushOnPhone` on channel and artist track/embed lists.
 - Listen: late `GuidelinesBanner` notice shows as a sticky toast; inline only when known at first paint.
 - ui: `utils/mediaQuery.ts` `useMediaQuery` shared per query; tahti-web vitest `isolate: false`.
+
+## 2026-11-25 — Next 20 slices (0.0.487)
+
+- Player: ui `MarqueeText`; `PlayerBarNowPlaying` uses `MediaArtwork` + `Button`; `usePhonePlayerMinimized` mini strip in `ConnectedPlayerBar`.
+- Headers: `compactOnPhone` on CollectionView (back button in `leading`), VenueDetailView, RadioShowView, ChannelFallbackHeader; `ArtistProfilePage` gets `CHANNEL_SCHEME_TEXT_CLASS`.
+- Motion/perf: `lib/backdropMotion.ts` frame monitor (`stillWhenFramesDrop`), EventBannerBackdrop still path, ui `fontFallbacks.css`, `ListenSection` `expectFilter`, toast `link`.
+- Stories for Legal/Terms/Privacy/AGPL/ForArtists/Embed/StudioRevenue views; e2e `use-cases-admin-radio-playlist`, `use-cases-anonymous-artist-phone`.

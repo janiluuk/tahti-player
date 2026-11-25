@@ -79,6 +79,42 @@ export const LoadingKeepsReadyHeight: Story = {
   },
 };
 
+const stations = [
+  'YleX',
+  'Radio Helsinki',
+  'Yle Radio Suomi',
+  'Radio Nova',
+  'Bassoradio',
+  'Yle Puhe',
+].map((title) => ({ id: title, title, subtitle: 'Internet radio' }));
+
+/** A row long enough for its filter, which wraps under the title on phones:
+ * loading reserves that line, so both slots match at every width. */
+export const LoadingKeepsFilterRowHeight: Story = {
+  args: {
+    title: 'Radio',
+    badge: 'Internet radio',
+    badgeColor: 'cyan',
+    expectFilter: true,
+    children: (
+      <CardsRow
+        title="Radio"
+        badge="Internet radio"
+        badgeColor="cyan"
+        items={stations}
+        defaultLayout="cards"
+        labels={{
+          filterPlaceholder: 'Filter stations…',
+          nothingFound: 'Nothing matches that filter.',
+        }}
+      />
+    ),
+  },
+  globals: { viewport: { value: 'mobile1', isRotated: false } },
+  render: LoadingKeepsReadyHeight.render,
+  play: LoadingKeepsReadyHeight.play,
+};
+
 export const LoadingList: Story = {
   args: { status: 'loading', skeleton: 'list', title: 'New tracks' },
 };
