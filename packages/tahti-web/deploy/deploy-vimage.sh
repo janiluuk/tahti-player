@@ -74,15 +74,19 @@ BUILD_ENV=(
   -u VITE_TAHTI_API_URL
   -u VITE_FORCE_MOCK
   -u VITE_ALLOW_MOCK_FALLBACK
+)
+
+if [[ "${PROFILE}" != "beta" ]]; then
+  BUILD_ENV+=(-u VITE_ENABLE_DIAGNOSTICS)
+fi
+
+BUILD_ENV+=(
   "VITE_CENTRIFUGO_WS=${CENTRIFUGO_WS}"
   "VITE_DEPLOY_VERSION=${DEPLOY_VERSION}"
 )
 
 if [[ "${PROFILE}" == "beta" ]]; then
   BUILD_ENV+=("VITE_ENABLE_DIAGNOSTICS=1")
-else
-  # Prod-shaped build: leave diagnostics unset so /more and Screen atlas stay gated.
-  BUILD_ENV+=(-u VITE_ENABLE_DIAGNOSTICS)
 fi
 
 if [[ -n "${VITE_HCAPTCHA_SITEKEY:-}" ]]; then
