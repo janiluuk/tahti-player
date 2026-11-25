@@ -20,7 +20,8 @@ A single `vitest --project storybook` browser session drops all its websockets a
 
 - Playwright context `reducedMotion: 'reduce'` (`packages/storybook/vitest.config.ts`): WebGL visualizers stay static, stories run much faster, so CI shards finish well under 90s. Stories about motion opt back in with `withMotionAllowed` (`packages/storybook/src/_lib/motion.tsx`).
 - CI retries a shard once when it disconnects without a failing story (`.github/workflows/ci.yml`).
-- CI runs ten shards of ~50 files (was six of 85, which hit the drop on master 2026-11-11, retry included); two jobs run five shards each.
+- CI runs three deterministic groups; the shared runner starts a fresh Chromium
+  session for every chunk of at most 50 files and retries only connection drops.
 - Locally, run stories in chunks of ~60 files.
 
 ## Bisect by time (2026-11-18)
@@ -45,7 +46,8 @@ pnpm exec vitest --project storybook --no-file-parallelism \
 # Target.getTargets between files.
 ```
 
-CI already uses ten shards (~50 files) + one retry; keep local chunks ≤60.
+CI uses fresh sessions for chunks of at most 50 files + one drop-only retry;
+keep local chunks ≤60.
 
 ## File-count bisect (2026-11-19, next-30)
 
@@ -59,10 +61,19 @@ CI already uses ten shards (~50 files) + one retry; keep local chunks ≤60.
 
 ## Mitigation shipped with next-30
 
-- Keep CI at ten shards (~50 files) + one retry (already in `ci.yml`).
+- Keep CI chunks at ≤50 files + one drop-only retry (already in `ci.yml`).
 - Document local chunks ≤60 in this todo and in AGENTS testing notes.
 - Prefer running Storybook play tests by package/family glob, not the whole
   `tahti-web` tree, when debugging locally.
+
+## Shared chunk runner (2026-11-25)
+
+- CI's three Storybook jobs use `scripts/run-plays.mjs` with deterministic
+  `--group n/3` partitioning instead of maintaining a second shell shard loop.
+- Every group starts a fresh Chromium session per 50 files and retains the
+  runner's browser-drop-only retry; real story failures are not retried.
+- Local and CI execution now share the same file selection, chunk size and
+  retry policy.
 
 ## Next
 
