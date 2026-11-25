@@ -1,6 +1,6 @@
 # Full player: living static backdrop and cover glow
 
-**Status:** open
+**Status:** partial
 
 Requested 2026-11-25.
 
@@ -21,10 +21,15 @@ In the full-screen player (`packages/tahti-web/src/components/FullScreenPlayer.t
 - Covers without art use the default artwork; the glow follows whatever is shown.
 - Cover colour extraction: reuse an existing palette/dominant-colour helper if one exists before adding a new one.
 
-## Plan
+## Built (0.0.488)
 
-- [ ] Locate the static-image backdrop path and the cover glass panel (`FullScreenPlayer.tsx` ~L458).
-- [ ] Add slow drift animation to both (shared keyframes / Tailwind utility).
-- [ ] Derive cover colour and apply a soft coloured glow to the glass panel.
-- [ ] Ping-pong scroll for overflowing names; 4 title-change transitions behind a prop, user picks one.
-- [ ] Storybook story / play for both states (static image, reduced motion).
+- [x] The static `CoverAmbience` glow uses a slower, smaller transform than event banners; the cover glass panel drifts independently.
+- [x] The panel glow uses the existing `useDominantColor` sample and falls back cleanly while no colour is available.
+- [x] `OverflowPingPongText` measures the actual overflow and moves title, show and artist names only as far as needed.
+- [x] `FullScreenPlayer.titleTransition` offers `fade`, `slide-up`, `soft-scale` and `slide-side`; all use opacity/transforms only.
+- [x] Reduced motion disables backdrop, panel, name and title movement while leaving the colour glow static.
+- [x] Storybook has the static-art, long-name, four transition and reduced-motion states; focused component and play tests pass.
+
+## Left
+
+- [ ] Pick the final default title transition after comparing the four Storybook states. `fade` is the conservative temporary default.

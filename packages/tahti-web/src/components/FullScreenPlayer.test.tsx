@@ -23,8 +23,15 @@ import { FullScreenPlayer } from './FullScreenPlayer';
 const stationNowPlaying = vi.hoisted(() => ({
   value: null as { title: string; artist: string } | null,
 }));
+const dominantColor = vi.hoisted(() => ({ url: null as string | null }));
 vi.mock('../hooks/useStationNowPlaying', () => ({
   usePlayerStationNowPlaying: () => stationNowPlaying.value,
+}));
+vi.mock('../lib/useDominantColor', () => ({
+  useDominantColor: (url: string | null) => {
+    dominantColor.url = url;
+    return [24, 96, 168];
+  },
 }));
 vi.mock('./AddToPlaylistButton', () => ({
   AddToPlaylistButton: () => <button type="button">Add to playlist</button>,
@@ -71,6 +78,65 @@ async function open(status: 'loading' | 'playing' | 'paused') {
     render(<FullScreenPlayer />);
   });
 }
+
+describe('FullScreenPlayer living artwork', () => {
+  afterEach(() => {
+    cleanup();
+    useLayoutStore.setState({ fullScreenPlayerOpen: false });
+    usePlayerStore.getState().clearQueue();
+    dominantColor.url = null;
+  });
+
+  it('moves a colour-glowing cover panel and exposes the chosen title transition', async () => {
+    usePlayerStore.getState().play({ ...TRACK, coverUrl: '/cover.jpg' });
+    usePlayerStore.setState({ status: 'playing' });
+    useLayoutStore.setState({ fullScreenPlayerOpen: true });
+    await act(async () => {
+      render(<FullScreenPlayer titleTransition="slide-up" />);
+    });
+
+    const panel = screen.getByTestId('full-screen-player-cover-panel');
+    expect(panel).toHaveAttribute('data-cover-glow', 'true');
+    expect(panel.style.boxShadow).toContain('rgba(24, 96, 168, 0.3)');
+    expect(screen.getByTestId('full-screen-player-title')).toHaveAttribute(
+      'data-transition',
+      'slide-up',
+    );
+  });
+
+  it.each(['fade', 'slide-up', 'soft-scale', 'slide-side'] as const)(
+    'offers the %s title transition',
+    async (titleTransition) => {
+      usePlayerStore.getState().play(TRACK);
+      usePlayerStore.setState({ status: 'playing' });
+      useLayoutStore.setState({ fullScreenPlayerOpen: true });
+      await act(async () => {
+        render(<FullScreenPlayer titleTransition={titleTransition} />);
+      });
+      expect(screen.getByTestId('full-screen-player-title')).toHaveAttribute(
+        'data-transition',
+        titleTransition,
+      );
+      cleanup();
+    },
+  );
+
+  it('uses the default artwork for the panel, backdrop and colour sample', async () => {
+    usePlayerStore.getState().play(TRACK);
+    usePlayerStore.setState({ status: 'playing' });
+    useLayoutStore.setState({ fullScreenPlayerOpen: true });
+    await act(async () => {
+      render(<FullScreenPlayer />);
+    });
+
+    const src = screen
+      .getByTestId('full-screen-player-cover-panel')
+      .querySelector('img')
+      ?.getAttribute('src');
+    expect(src).toMatch(/^data:image\/svg\+xml/);
+    expect(dominantColor.url).toBe(src);
+  });
+});
 
 describe('FullScreenPlayer buffering', () => {
   beforeEach(() => {

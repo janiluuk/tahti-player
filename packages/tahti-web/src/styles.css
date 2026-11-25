@@ -84,9 +84,120 @@ body,
 }
 
 [data-still] .tahti-event-backdrop-drift,
+[data-still] .tahti-full-player-backdrop-drift,
 [data-still] .tahti-cover-pan {
   animation: none;
   will-change: auto;
+}
+
+@keyframes tahti-full-player-backdrop-drift {
+  from {
+    transform: translate3d(-1.2%, -0.8%, 0) scale(1.04);
+  }
+  to {
+    transform: translate3d(1.2%, 0.8%, 0) scale(1.08);
+  }
+}
+
+@keyframes tahti-full-player-cover-drift {
+  from {
+    transform: translate3d(-0.35rem, -0.2rem, 0) rotate(-0.35deg);
+  }
+  to {
+    transform: translate3d(0.35rem, 0.2rem, 0) rotate(0.35deg);
+  }
+}
+
+@keyframes tahti-ping-pong {
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+  82%,
+  100% {
+    transform: translateX(var(--tahti-ping-pong-distance));
+  }
+}
+
+@keyframes tahti-full-player-title-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes tahti-full-player-title-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+@keyframes tahti-full-player-title-soft-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.965);
+  }
+}
+
+@keyframes tahti-full-player-title-slide-side {
+  from {
+    opacity: 0;
+    transform: translateX(0.75rem);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tahti-full-player-backdrop-drift {
+    animation: tahti-full-player-backdrop-drift 72s ease-in-out infinite
+      alternate;
+    will-change: transform;
+  }
+
+  .tahti-full-player-cover-drift {
+    animation: tahti-full-player-cover-drift 18s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  [data-overflow='true'] > .tahti-ping-pong-track {
+    animation: tahti-ping-pong var(--tahti-ping-pong-duration) ease-in-out
+      infinite alternate;
+    will-change: transform;
+  }
+
+  .tahti-ping-pong:hover > .tahti-ping-pong-track,
+  .tahti-ping-pong:focus-within > .tahti-ping-pong-track {
+    animation-play-state: paused;
+  }
+
+  .tahti-full-player-title-change[data-transition='fade'] {
+    animation: tahti-full-player-title-fade 420ms ease-out both;
+  }
+
+  .tahti-full-player-title-change[data-transition='slide-up'] {
+    animation: tahti-full-player-title-slide-up 420ms
+      cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .tahti-full-player-title-change[data-transition='soft-scale'] {
+    animation: tahti-full-player-title-soft-scale 460ms
+      cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .tahti-full-player-title-change[data-transition='slide-side'] {
+    animation: tahti-full-player-title-slide-side 420ms
+      cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tahti-full-player-backdrop-drift,
+  .tahti-full-player-cover-drift,
+  .tahti-ping-pong-track,
+  .tahti-full-player-title-change {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
 }
 
 :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,

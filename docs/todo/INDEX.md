@@ -65,7 +65,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/; storybook surfaces + close-external-issue wrapped; desktop shims deprecated toward `tahti-ops desktop` |
 | partial | [listening-party.md](listening-party.md) | Digital-only v1 merged (tahti-org#1029, tahti-player#1704); real-API check after deploy, then playout, formats/pre-orders/physical |
 | partial | [listening-parties-discover.md](listening-parties-discover.md) | Discover → Parties tab, widget and row reminders shipped; left: non-artist hosting and Studio filter product calls |
-| open    | [full-player-living-backdrop.md](full-player-living-backdrop.md) | Full player: subtle drift on static backdrop and cover glass panel, cover-colour glow, ping-pong scroll for long names, 4 title-change transitions to pick from |
+| partial | [full-player-living-backdrop.md](full-player-living-backdrop.md) | Living static backdrop, cover glow, ping-pong names and 4 title transitions built (0.0.488); left: pick the default transition |
 
 ## Blocked on a decision, credentials or manual testing
 

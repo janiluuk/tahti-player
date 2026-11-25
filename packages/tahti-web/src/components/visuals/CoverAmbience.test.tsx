@@ -101,4 +101,15 @@ describe('CoverAmbience', () => {
       'data-still',
     );
   });
+
+  it('uses the subtle full-player drift when requested', () => {
+    mockReducedMotion(false);
+    const { container } = render(
+      <CoverAmbience coverUrl="/cover.jpg" variant="glow" subtleMotion />,
+    );
+    expect(
+      container.querySelectorAll('.tahti-full-player-backdrop-drift'),
+    ).toHaveLength(2);
+    expect(container.querySelector('.tahti-event-backdrop-drift')).toBeNull();
+  });
 });

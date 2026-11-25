@@ -17,6 +17,7 @@ import {
   MediaArtwork,
   PlayerBar,
   Tooltip,
+  useMediaArtworkDefaultSrc,
 } from '@tahti-player/ui';
 
 import { useHorizontalSwipe } from '../hooks/useHorizontalSwipe';
@@ -38,12 +39,16 @@ import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { ChannelVisualizer } from './ChannelVisualizer';
 import { useHearthisEmbedClaimed } from './HearthisEmbedHost';
 import { NowPlayingActionSheet } from './NowPlayingActionSheet';
+import { OverflowPingPongText } from './OverflowPingPongText';
 import { ConnectedSeekBar, PlayerLiveIndicator } from './PlayerSeekBar';
 import { EmbedSlot } from './PlayingEmbedDock';
 import { VisualizerModeMenu } from './VisualizerModeMenu';
 import { CoverAmbience } from './visuals/CoverAmbience';
 
 const ANIMATION_MS = 280;
+
+export type FullPlayerTitleTransition =
+  'fade' | 'slide-up' | 'soft-scale' | 'slide-side';
 
 /** Matches the back button: a light frosted circle that reads on any
  * artwork or visualizer behind it. */
@@ -128,7 +133,11 @@ function LoveButton({
  * mode: bigger art and transport, edge prev/next taps, secondary chrome
  * hidden. Touch swipe left/right always changes track while this overlay
  * is open. */
-export function FullScreenPlayer() {
+export function FullScreenPlayer({
+  titleTransition = 'fade',
+}: {
+  titleTransition?: FullPlayerTitleTransition;
+}) {
   const { t } = useTranslation('web');
   const isMobile = useIsMobile();
   const open = useLayoutStore((s) => s.fullScreenPlayerOpen);
@@ -226,6 +235,9 @@ export function FullScreenPlayer() {
     stationNowPlaying?.artist ??
     playable?.artist ??
     (current ? formatArtistNames(current.track.artists) : '');
+  const artworkSeed = currentId ?? title;
+  const defaultCoverUrl = useMediaArtworkDefaultSrc(artworkSeed);
+  const displayedCoverUrl = coverUrl ?? defaultCoverUrl;
   const { show: parsedShow, track: parsedTrack } = splitShowAndTrack(title);
   /** Station / channel label — kept on its own line above the track so the
    * two never compete in one heading. */
@@ -272,7 +284,7 @@ export function FullScreenPlayer() {
   const embed = playable?.embed;
   const embedHostedElsewhere = useHearthisEmbedClaimed();
 
-  const rgb = useDominantColor(coverUrl);
+  const rgb = useDominantColor(displayedCoverUrl);
   const swipe = useHorizontalSwipe({
     onPrev: previous,
     onNext: next,
@@ -312,14 +324,15 @@ export function FullScreenPlayer() {
         <div className="bg-background/35 absolute inset-0">
           {isAmbientScene(engineMode) ? (
             <CoverAmbience
-              coverUrl={coverUrl}
+              coverUrl={displayedCoverUrl}
               rgb={rgb}
               variant={engineMode === 'ambient-water' ? 'water' : 'glow'}
+              subtleMotion
             />
           ) : (
             <ChannelVisualizer
               className="h-full w-full"
-              artworkUrl={coverUrl}
+              artworkUrl={displayedCoverUrl}
               followArtworkColor
               engineMode={engineMode}
               showModeButtons={false}
@@ -450,63 +463,74 @@ export function FullScreenPlayer() {
           <>
             <div
               className={cn(
-                'flex aspect-square shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-2xl',
+                'tahti-full-player-cover-drift bg-background/45 flex aspect-square shrink-0 items-center justify-center overflow-hidden rounded-xl border p-3 inset-ring inset-ring-white/10 backdrop-blur-md backdrop-saturate-150',
                 driving
                   ? 'w-[min(20rem,48vh)] sm:w-[min(24rem,52vh)]'
                   : 'w-[min(14rem,30vh)] sm:w-[min(18rem,34vh)] md:w-[min(22rem,36vh)]',
-                isLive
-                  ? 'border-white/20 bg-white/10 p-6 inset-ring inset-ring-white/10 backdrop-blur-sm backdrop-saturate-150 sm:p-8'
-                  : 'border-border bg-background-secondary',
+                isLive ? 'border-white/20 p-6 sm:p-8' : 'border-border',
               )}
+              style={
+                rgb
+                  ? {
+                      boxShadow: `0 24px 90px rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.3)`,
+                    }
+                  : undefined
+              }
+              data-cover-glow={rgb ? 'true' : undefined}
+              data-testid="full-screen-player-cover-panel"
             >
-              {coverUrl ? (
-                <MediaArtwork
-                  src={coverUrl}
-                  alt={isLive ? `${artist} logo` : ''}
-                  fit={isLive ? 'contain' : 'cover'}
-                  imageReveal={false}
-                  className="relative size-full"
-                />
-              ) : null}
+              <MediaArtwork
+                src={coverUrl}
+                seed={artworkSeed}
+                alt={isLive ? `${artist} logo` : ''}
+                fit={isLive ? 'contain' : 'cover'}
+                imageReveal={false}
+                className="relative size-full"
+              />
             </div>
 
             <div
+              key={`${currentId ?? 'empty'}:${title}`}
               className={cn(
                 TITLE_OVERLAY,
-                'shrink-0',
+                'tahti-full-player-title-change shrink-0',
                 driving ? 'px-7 py-5' : 'max-w-md',
               )}
+              data-transition={titleTransition}
               data-testid="full-screen-player-title"
             >
               {showName ? (
-                <p
+                <OverflowPingPongText
                   className={cn(
-                    'font-heading text-foreground mb-1.5 truncate font-bold tracking-[0.14em] uppercase',
+                    'font-heading text-foreground mb-1.5 font-bold tracking-[0.14em] uppercase',
                     driving ? 'text-sm sm:text-base' : 'text-xs sm:text-sm',
                   )}
                 >
                   {showName}
-                </p>
+                </OverflowPingPongText>
               ) : null}
-              <h1
+              <OverflowPingPongText
+                as="h1"
                 className={cn(
-                  'font-heading text-foreground line-clamp-3 font-extrabold tracking-tight text-balance',
+                  'font-heading text-foreground font-extrabold tracking-tight',
                   driving
                     ? 'text-4xl sm:text-5xl'
                     : 'text-2xl sm:text-3xl md:text-4xl',
                 )}
+                testId="full-screen-player-track-name"
               >
                 {trackName}
-              </h1>
+              </OverflowPingPongText>
               {artistLine ? (
-                <p
+                <OverflowPingPongText
                   className={cn(
-                    'font-heading text-foreground mt-2 truncate font-bold',
+                    'font-heading text-foreground mt-2 font-bold',
                     driving ? 'text-xl sm:text-2xl' : 'text-base sm:text-lg',
                   )}
+                  testId="full-screen-player-artist-name"
                 >
                   {artistLine}
-                </p>
+                </OverflowPingPongText>
               ) : null}
               {isMobile && playable && !driving && canLike(playable) ? (
                 <div className="mt-3 flex justify-center">

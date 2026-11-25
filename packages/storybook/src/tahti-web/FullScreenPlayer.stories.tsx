@@ -7,6 +7,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import type { QueueItem } from '@tahti-player/model';
 
+import { stubReducedMotion, withMotionAllowed } from '../_lib/motion';
 import { MOCK_USERS, seedMockAuth } from './_lib/decorators';
 import { stubPhoneViewport } from './_lib/phone';
 import { withinBody } from './_lib/play';
@@ -81,6 +82,13 @@ const meta: Meta<typeof FullScreenPlayer> = {
   component: FullScreenPlayer,
   parameters: { layout: 'fullscreen' },
   decorators: [withSeededFullScreenPlayer({})],
+  args: { titleTransition: 'fade' },
+  argTypes: {
+    titleTransition: {
+      control: 'radio',
+      options: ['fade', 'slide-up', 'soft-scale', 'slide-side'],
+    },
+  },
 };
 
 export default meta;
@@ -102,6 +110,78 @@ export const ArchiveTrack: Story = {
       player.getByRole('button', { name: 'Minimize player' }),
     );
     await expect(useLayoutStore.getState().fullScreenPlayerOpen).toBe(false);
+  },
+};
+
+const longTitleQueue = [
+  mockQueueItem(
+    'archive:long-title',
+    'The Northern Lights Keep Moving Long After the Last Train Has Gone Home',
+    'The Intercontinental Society of Midnight Radio Astronomers',
+    245000,
+  ),
+  mockQueueItem('archive:next-title', 'Polar Static', 'DJ Moonlight', 198000),
+];
+
+export const LivingArtworkAndFade: Story = {
+  decorators: [
+    withSeededFullScreenPlayer({ queue: longTitleQueue }),
+    withMotionAllowed,
+  ],
+  args: { titleTransition: 'fade' },
+  play: async ({ canvasElement }) => {
+    const body = withinBody(canvasElement);
+    const player = within(
+      await body.findByRole('dialog', {
+        name: 'Now playing, full screen',
+      }),
+    );
+    await userEvent.click(player.getByTestId('visualizer-mode-trigger'));
+    await userEvent.click(
+      await body.findByRole('menuitemradio', { name: 'Off (cover glow)' }),
+    );
+    await expect(await player.findByTestId('cover-ambience')).toHaveAttribute(
+      'data-variant',
+      'glow',
+    );
+    await expect(
+      player.getByTestId('full-screen-player-cover-panel'),
+    ).toHaveAttribute('data-cover-glow', 'true');
+    await expect(
+      player.getByTestId('full-screen-player-title'),
+    ).toHaveAttribute('data-transition', 'fade');
+  },
+};
+
+export const TitleSlideUp: Story = {
+  decorators: [withSeededFullScreenPlayer({ queue: longTitleQueue })],
+  args: { titleTransition: 'slide-up' },
+};
+
+export const TitleSoftScale: Story = {
+  decorators: [withSeededFullScreenPlayer({ queue: longTitleQueue })],
+  args: { titleTransition: 'soft-scale' },
+};
+
+export const TitleSlideSide: Story = {
+  decorators: [withSeededFullScreenPlayer({ queue: longTitleQueue })],
+  args: { titleTransition: 'slide-side' },
+};
+
+export const ReducedMotion: Story = {
+  decorators: [withSeededFullScreenPlayer({ queue: longTitleQueue })],
+  beforeEach: stubReducedMotion(true),
+  args: { titleTransition: 'slide-up' },
+  play: async ({ canvasElement }) => {
+    const player = within(
+      await withinBody(canvasElement).findByRole('dialog', {
+        name: 'Now playing, full screen',
+      }),
+    );
+    const cover = player.getByTestId('full-screen-player-cover-panel');
+    const title = player.getByTestId('full-screen-player-title');
+    await expect(getComputedStyle(cover).animationName).toBe('none');
+    await expect(getComputedStyle(title).animationName).toBe('none');
   },
 };
 
