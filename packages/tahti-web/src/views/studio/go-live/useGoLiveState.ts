@@ -136,7 +136,8 @@ export function useGoLiveState() {
     setPreflightError(
       preflightResult.data
         ? null
-        : (preflightResult.meta.reason ?? 'Show info is unavailable.'),
+        : (preflightResult.meta.reason ??
+            i18n.t('web:studioStringsBatch37.showInfoUnavailable')),
     );
     setLoaded(true);
     setRecordEnabled(recordingResult.data);

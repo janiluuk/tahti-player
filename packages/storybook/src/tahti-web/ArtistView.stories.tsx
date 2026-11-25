@@ -323,3 +323,42 @@ export const PhoneHierarchy: Story = {
     }
   },
 };
+
+/** Related artists sit on an opaque theme surface, so their names switch
+ * back to the theme's text colour under any channel scheme. Light theme
+ * over the fixture's dark scheme is the case that used to wash out. */
+async function expectReadableRelatedArtists(canvasElement: HTMLElement) {
+  const canvas = within(canvasElement);
+  const related = await canvas.findByTestId(
+    'artist-related',
+    {},
+    { timeout: 5000 },
+  );
+  const list = within(related).getByRole('list');
+  await expect(
+    toRgba(getComputedStyle(list).backgroundColor)[3],
+  ).toBeGreaterThan(0.99);
+  const links = within(related).getAllByRole('link');
+  await expect(links.length).toBeGreaterThan(0);
+  for (const link of links) {
+    await expectReadable(link.querySelector('span') ?? link);
+  }
+}
+
+export const RelatedArtistsLightTheme: Story = {
+  globals: { themeId: 'nuclear:aurora', themeMode: 'light' },
+  decorators: [withMockAuth(MOCK_USERS.listener)],
+  play: async ({ canvasElement }) => {
+    await findHero(canvasElement);
+    await expectReadableRelatedArtists(canvasElement);
+  },
+};
+
+export const RelatedArtistsDarkTheme: Story = {
+  globals: { themeId: 'nuclear:default', themeMode: 'dark' },
+  decorators: [withMockAuth(MOCK_USERS.listener)],
+  play: async ({ canvasElement }) => {
+    await findHero(canvasElement);
+    await expectReadableRelatedArtists(canvasElement);
+  },
+};

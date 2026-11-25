@@ -72,8 +72,10 @@ export function useCollectionImages(
     setUploadTarget(null);
     toast.success(
       uploaded.length > 1
-        ? `${uploaded.length} backdrop images uploaded. Save details to publish them.`
-        : 'Backdrop uploaded. Save details to publish it.',
+        ? i18n.t('web:studioStringsBatch37.backdropsUploaded', {
+            count: uploaded.length,
+          })
+        : i18n.t('web:studioStringsBatch37.backdropUploaded'),
     );
   };
 

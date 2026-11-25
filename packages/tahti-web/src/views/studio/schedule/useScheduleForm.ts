@@ -142,9 +142,7 @@ export function useScheduleForm() {
       return;
     }
     dispatch({ type: 'showUpdated', show: recurrence.data });
-    toast.success(
-      'Recurring schedule saved. Upcoming episodes are being generated.',
-    );
+    toast.success(i18n.t('web:studioStringsBatch37.recurringScheduleSaved'));
   };
 
   const stopRecurringSchedule = async () => {
@@ -165,9 +163,7 @@ export function useScheduleForm() {
       return;
     }
     dispatch({ type: 'recurrenceStopped', show: result.data });
-    toast.success(
-      'Recurring schedule stopped. Existing upcoming episodes remain scheduled.',
-    );
+    toast.success(i18n.t('web:studioStringsBatch37.recurringScheduleStopped'));
   };
 
   const scheduleEpisode = async () => {
@@ -264,7 +260,9 @@ export function useScheduleForm() {
           schedule.nextBroadcastAt,
           schedule.nextBroadcastDurationHours,
         ),
-        title: schedule.nextBroadcastNote ?? 'Next live session',
+        title:
+          schedule.nextBroadcastNote ??
+          i18n.t('web:studioStringsBatch37.nextLiveSession'),
       });
     }
     return rows

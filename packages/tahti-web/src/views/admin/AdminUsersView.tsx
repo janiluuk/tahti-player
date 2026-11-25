@@ -108,7 +108,7 @@ export const AdminUsersView = () => {
                       id: value,
                       label: value
                         ? value.charAt(0) + value.slice(1).toLowerCase()
-                        : 'All roles',
+                        : t('listenAdminStringsBatch37.allRoles'),
                     }))}
                   />
                   <Select

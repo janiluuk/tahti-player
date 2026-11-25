@@ -95,7 +95,8 @@ export function RadioStationSuggestionsTab() {
                         ? ` · ${row.bitrateKbps}kbps`
                         : ''}
                       {' · '}
-                      {row.submitter?.displayName ?? 'Unknown submitter'}
+                      {row.submitter?.displayName ??
+                        t('listenAdminStringsBatch37.unknownSubmitter')}
                     </p>
                     <p className="text-foreground-secondary mt-1 font-mono text-xs break-all">
                       {row.streamUrl}

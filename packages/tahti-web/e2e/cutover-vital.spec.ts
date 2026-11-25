@@ -493,11 +493,21 @@ test('artist branding keeps the picture, gallery and press kit in Studio → Pro
   await expect(page).toHaveURL(/\/studio\/profile\/branding$/);
   let settings = page.getByRole('main');
   await expect(
-    settings.getByRole('heading', { name: 'Profile picture' }),
+    settings.getByRole('heading', { name: 'Logo', exact: true }),
   ).toBeVisible();
   await expect(
-    settings.getByRole('button', { name: 'Change profile picture' }),
+    settings.getByRole('heading', { name: 'Profile picture' }),
+  ).toHaveCount(0);
+
+  await page.goto('/studio/profile/identity');
+  settings = page.getByRole('main');
+  const header = settings.getByTestId('profile-identity-header');
+  await expect(
+    header.getByRole('button', { name: 'Change backdrop' }),
   ).toBeVisible();
+  await header.getByRole('button', { name: 'Change profile picture' }).click();
+  await expect(page.getByTestId('cover-art-picker')).toBeVisible();
+  await page.keyboard.press('Escape');
 
   await page.goto('/studio/profile/gallery');
   settings = page.getByRole('main');

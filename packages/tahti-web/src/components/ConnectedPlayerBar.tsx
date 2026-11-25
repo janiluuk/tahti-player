@@ -4,6 +4,7 @@ import {
   ChevronUpIcon,
   ListMusicIcon,
   Maximize2Icon,
+  MoreHorizontalIcon,
   PauseIcon,
   PlayIcon,
   XIcon,
@@ -20,6 +21,7 @@ import {
   Loader,
   MarqueeText,
   MediaArtwork,
+  OverflowMenu,
   PlayerBar,
   Tooltip,
 } from '@tahti-player/ui';
@@ -397,6 +399,7 @@ export function ConnectedPlayerBar() {
         data-testid="mobile-player-bar"
         data-minimized=""
       >
+        {isLive || embed ? null : <MiniStripProgress />}
         <div className="flex h-12 w-full items-center gap-2 pr-1 pl-3">
           <Button
             variant="plain"
@@ -502,31 +505,48 @@ export function ConnectedPlayerBar() {
           </Button>
           {embed ? null : mobilePlayPauseButton}
           {queueButton}
-          <Tooltip content={t('player.minimizePlayer')} side="top">
-            <Button
-              size="icon"
-              variant="text"
-              onClick={() => setPhoneMinimized(true)}
-              aria-label={t('player.minimizePlayer')}
-              className="text-foreground-secondary -mx-1 size-11 shrink-0"
-              data-testid="minimize-mobile-player-bar"
-            >
-              <ChevronDownIcon size={18} aria-hidden />
-            </Button>
-          </Tooltip>
-          {isPlaying ? null : (
-            <Tooltip content={t('player.closePlayer')} side="top">
+          {isPlaying ? (
+            <Tooltip content={t('player.minimizePlayer')} side="top">
               <Button
                 size="icon"
                 variant="text"
-                onClick={hidePlayerBar}
-                aria-label={t('player.closePlayer')}
+                onClick={() => setPhoneMinimized(true)}
+                aria-label={t('player.minimizePlayer')}
                 className="text-foreground-secondary -mr-2 size-11 shrink-0"
-                data-testid="close-mobile-player-bar"
+                data-testid="minimize-mobile-player-bar"
               >
-                <XIcon size={16} aria-hidden />
+                <ChevronDownIcon size={18} aria-hidden />
               </Button>
             </Tooltip>
+          ) : (
+            <OverflowMenu
+              label={t('player.moreOptionsFor', { title })}
+              trigger={
+                <Button
+                  size="icon"
+                  variant="text"
+                  aria-label={t('player.moreOptionsFor', { title })}
+                  className="text-foreground-secondary -mr-2 size-11 shrink-0"
+                  data-testid="mobile-player-more"
+                >
+                  <MoreHorizontalIcon size={18} aria-hidden />
+                </Button>
+              }
+              items={[
+                {
+                  id: 'minimize',
+                  label: t('player.minimizePlayer'),
+                  icon: <ChevronDownIcon size={16} aria-hidden />,
+                  onSelect: () => setPhoneMinimized(true),
+                },
+                {
+                  id: 'close',
+                  label: t('player.closePlayer'),
+                  icon: <XIcon size={16} aria-hidden />,
+                  onSelect: hidePlayerBar,
+                },
+              ]}
+            />
           )}
         </div>
       </div>
@@ -620,6 +640,50 @@ export function ConnectedPlayerBar() {
             )}
           </div>
         }
+      />
+    </div>
+  );
+}
+
+/** Hairline progress along the top of the phone mini strip. Writes the
+ * transform straight from the store subscription so playback ticks don't
+ * re-render the bar. */
+function MiniStripProgress() {
+  const fillRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const apply = (currentTime: number, duration: number) => {
+      const fill = fillRef.current;
+      if (!fill) {
+        return;
+      }
+      const ratio =
+        duration > 0 ? Math.min(1, Math.max(0, currentTime / duration)) : 0;
+      fill.style.transform = `scaleX(${ratio})`;
+    };
+    const { currentTime, duration } = usePlayerStore.getState();
+    apply(currentTime, duration);
+    return usePlayerStore.subscribe((state, prev) => {
+      if (
+        state.currentTime !== prev.currentTime ||
+        state.duration !== prev.duration
+      ) {
+        apply(state.currentTime, state.duration);
+      }
+    });
+  }, []);
+
+  return (
+    <div
+      className="bg-foreground/10 relative h-0.5 w-full overflow-hidden"
+      aria-hidden
+      data-testid="mini-player-progress"
+    >
+      <div
+        ref={fillRef}
+        className="bg-primary absolute inset-0 origin-left"
+        style={{ transform: 'scaleX(0)' }}
+        data-testid="mini-player-progress-fill"
       />
     </div>
   );

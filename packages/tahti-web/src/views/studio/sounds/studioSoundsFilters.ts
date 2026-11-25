@@ -46,7 +46,7 @@ export function contentTypeFilters(t: TFunction<'web'>): Array<{
   label: string;
 }> {
   return [
-    { id: 'ALL', label: 'All types' },
+    { id: 'ALL', label: t('studioStringsBatch37.allTypes') },
     ...selectableContentTypes(t).map((type) => ({
       id: type.id,
       label: type.label,

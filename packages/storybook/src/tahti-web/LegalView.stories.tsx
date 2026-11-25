@@ -41,6 +41,11 @@ export const About: Story = {
     await expect(
       within(article).getByRole('link', { name: 'Terms of service' }),
     ).toBeVisible();
+    await expect(
+      within(
+        canvas.getByRole('navigation', { name: 'About and legal' }),
+      ).getByRole('link', { name: 'Terms of service' }),
+    ).toBeVisible();
   },
 };
 

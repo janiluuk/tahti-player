@@ -36,7 +36,6 @@ import {
   patchMeProfile,
   type ProfileFields,
 } from '../../../api/studio-extras';
-import { ArtistImagePurposePicker } from '../../../components/ArtistImagePurposePicker';
 import { HelpTitle } from '../../../components/HelpTitle';
 import { MentionTextarea } from '../../../components/MentionTextarea';
 import { PageError } from '../../../components/PageStates';
@@ -56,6 +55,7 @@ import {
   useSettingsModalStore,
   type ArtistSettingsSection,
 } from '../../../stores/settingsModalStore';
+import { ProfileIdentityHeader } from '../../studio/branding/ProfileIdentityHeader';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { ChannelMembersEditor } from '../ChannelMembersEditor';
 import { NameplateFields, nameplatePatch } from '../NameplateFields';
@@ -268,20 +268,12 @@ export function ArtistPanel({
     <InlineLoader label={t('settingsBody.loading')} />
   );
 
+  const profileHeader = profile && (
+    <ProfileIdentityHeader profile={profile} setProfile={setProfile} />
+  );
+
   const identityFields = profile && (
     <>
-      <ArtistImagePurposePicker
-        avatarUrl={profile.avatarUrl}
-        displayName={profile.displayName}
-        onProfileUploaded={(avatarUrl) => {
-          setProfile({ ...profile, avatarUrl });
-          void refreshAuth();
-          toast.success(t('settingsBody.artist.profileImageUpdated'));
-        }}
-        onGalleryUploaded={() => {
-          toast.success(t('settingsBody.artist.galleryImageAdded'));
-        }}
-      />
       <Input
         label={t('settingsBody.artist.displayName')}
         value={profile.displayName}
@@ -440,6 +432,7 @@ export function ArtistPanel({
             saveArtistInfo();
           }}
         >
+          {profileHeader}
           {identityFields}
           <div className="flex justify-end">
             <SaveButton
@@ -667,9 +660,15 @@ export function ArtistPanel({
           : role,
       );
       return (
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(15rem,18rem)] lg:items-start">
-          <div className="min-w-0">{content}</div>
-          <ArtistProfileLivePreview profile={profile} roleLabels={roleLabels} />
+        <div className="flex min-w-0 flex-col gap-6">
+          {profileHeader}
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(15rem,18rem)] lg:items-start">
+            <div className="min-w-0">{content}</div>
+            <ArtistProfileLivePreview
+              profile={profile}
+              roleLabels={roleLabels}
+            />
+          </div>
         </div>
       );
     }

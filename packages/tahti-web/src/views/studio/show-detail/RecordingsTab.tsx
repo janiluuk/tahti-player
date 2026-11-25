@@ -58,7 +58,7 @@ export function RecordingsTab({ state }: { state: ShowDetailState }) {
                   {episode.slotStartAt ? (
                     <ListingDate value={episode.slotStartAt} />
                   ) : (
-                    'Recorded episode'
+                    t('studioStringsBatch37.recordedEpisode')
                   )}{' '}
                   · {episode.status}
                 </p>

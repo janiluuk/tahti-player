@@ -233,7 +233,7 @@ export default defineConfig(({ command, mode }) => {
       execArgv: ['--no-experimental-webstorage'],
       setupFiles: ['./src/test/setup.ts'],
       // setup.ts resets the DOM, storage, stubs and module registry after each
-      // file; vi.mock registrations still carry over between files.
+      // file; see docs/agent/TESTING.md for what can still leak.
       isolate: false,
     },
   };

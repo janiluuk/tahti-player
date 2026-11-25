@@ -7,6 +7,7 @@ import { Badge, ExternalLink, MediaArtwork } from '@tahti-player/ui';
 
 import type { ArtistEvent } from '../../api/events';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
+import { useRememberEventRow } from './EventBrowseRow';
 import { EventParticipantChips } from './EventParticipantChips';
 import { EventStatusBadge } from './EventStatusBadge';
 
@@ -51,6 +52,7 @@ export function EventCard({
   actions?: ReactNode;
 }) {
   const { t } = useTranslation('web');
+  const rememberRow = useRememberEventRow();
   const cancelled = event.status === 'CANCELLED';
   const participants = showPendingTags
     ? event.participants
@@ -79,6 +81,7 @@ export function EventCard({
               <Link
                 to="/events/$eventId"
                 params={{ eventId: event.id }}
+                onClick={rememberRow}
                 className="hover:underline"
               >
                 {event.title}

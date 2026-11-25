@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, Button, FilterBar, InlineLoader } from '@tahti-player/ui';
 
 import {
@@ -20,9 +20,9 @@ const STATUS_COLORS: Record<string, 'green' | 'yellow' | 'red' | 'secondary'> =
     EXPIRED: 'red',
   };
 
-function statusLabel(status: string | null): string {
+function statusLabel(status: string | null, t: TFunction<'web'>): string {
   if (!status) {
-    return 'No membership';
+    return t('listenAdminStringsBatch37.noMembership');
   }
   const text = status.toLowerCase().replace(/_/g, ' ');
   return text.charAt(0).toUpperCase() + text.slice(1);
@@ -128,7 +128,7 @@ export function MemberRegisterPanel() {
                       STATUS_COLORS[row.membershipStatus ?? ''] ?? 'secondary'
                     }
                   >
-                    {statusLabel(row.membershipStatus)}
+                    {statusLabel(row.membershipStatus, t)}
                   </Badge>
                 </li>
               ))}

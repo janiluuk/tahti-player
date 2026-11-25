@@ -289,28 +289,42 @@ export const EmbedTrack: Story = {
   },
 };
 
-/** Phone bar while paused: a quiet × hides it until something plays again,
- * and the queue stays. While playing there is no close. */
+/** Phone bar while paused: minimize and a quiet close share one ⋯ menu so
+ * the title keeps its room, and the queue stays. While playing the bar shows
+ * minimize directly and has no close. */
 export const PhoneCloseWhenPaused: Story = {
   parameters: { viewport: { defaultViewport: 'mobile1' } },
   decorators: [withSeededPlayerBar({ status: 'paused' })],
-  beforeEach: stubPhoneViewport,
+  beforeEach: () => {
+    const undoPhone = stubPhoneViewport();
+    const undoMinimized = forgetPhoneMinimized(false)();
+    return () => {
+      undoMinimized();
+      undoPhone();
+    };
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const page = within(canvasElement.ownerDocument.body);
     await expect(await canvas.findByTestId('mobile-player-bar')).toBeVisible();
-    const close = canvas.getByRole('button', { name: 'Close player' });
-    const box = close.getBoundingClientRect();
+    await expect(
+      canvas.queryByRole('button', { name: 'Minimize player' }),
+    ).toBeNull();
+    const more = canvas.getByTestId('mobile-player-more');
+    const box = more.getBoundingClientRect();
     await expect(box.width).toBeGreaterThanOrEqual(44);
     await expect(box.height).toBeGreaterThanOrEqual(44);
 
     await userEvent.click(canvas.getByTestId('player-play-button'));
+    await expect(canvas.queryByTestId('mobile-player-more')).toBeNull();
     await expect(
-      canvas.queryByRole('button', { name: 'Close player' }),
-    ).toBeNull();
+      canvas.getByRole('button', { name: 'Minimize player' }),
+    ).toBeVisible();
     await userEvent.click(await canvas.findByTestId('player-pause-button'));
 
+    await userEvent.click(await canvas.findByTestId('mobile-player-more'));
     await userEvent.click(
-      await canvas.findByRole('button', { name: 'Close player' }),
+      await page.findByRole('button', { name: 'Close player' }),
     );
     await waitFor(() =>
       expect(canvas.queryByTestId('mobile-player-bar')).toBeNull(),
@@ -321,6 +335,46 @@ export const PhoneCloseWhenPaused: Story = {
     await expect(await canvas.findByTestId('mobile-player-bar')).toBeVisible();
   },
 };
+
+/** Paused at 360 and 390 px: play, queue and ⋯ leave the title most of the
+ * row. */
+function phoneTitleRoomStory(width: 360 | 390): Story {
+  return {
+    parameters: { viewport: { defaultViewport: 'mobile1' } },
+    decorators: [
+      (Story) => (
+        <div style={{ width }}>
+          <Story />
+        </div>
+      ),
+      withSeededPlayerBar({ status: 'paused' }),
+    ],
+    beforeEach: () => {
+      const undoPhone = stubPhoneViewport();
+      const undoMinimized = forgetPhoneMinimized(false)();
+      return () => {
+        undoMinimized();
+        undoPhone();
+      };
+    },
+    play: async ({ canvasElement }) => {
+      const canvas = within(canvasElement);
+      const bar = await canvas.findByTestId('mobile-player-bar');
+      const title = canvas.getByTestId('mobile-player-title');
+      await expect(bar.getBoundingClientRect().width).toBe(width);
+      await expect(title.getBoundingClientRect().width).toBeGreaterThanOrEqual(
+        width === 360 ? 90 : 120,
+      );
+      await expect(
+        canvas.queryByRole('button', { name: 'Close player' }),
+      ).toBeNull();
+      await expect(canvas.getByTestId('mobile-player-more')).toBeVisible();
+    },
+  };
+}
+
+export const PhonePausedTitleRoom360 = phoneTitleRoomStory(360);
+export const PhonePausedTitleRoom390 = phoneTitleRoomStory(390);
 
 const longTitleQueue: QueueItem[] = [
   mockQueueItem(
@@ -498,6 +552,14 @@ export const PhoneMinimized: Story = {
     await expect(
       canvas.queryByRole('button', { name: 'Minimize player' }),
     ).toBeNull();
+    const fill = canvas.getByTestId('mini-player-progress-fill');
+    const track = canvas.getByTestId('mini-player-progress');
+    await expect(track.getBoundingClientRect().height).toBeGreaterThan(0);
+    const scale = () =>
+      Number(/scaleX\(([\d.]+)\)/.exec(fill.style.transform)?.[1]);
+    await expect(scale()).toBeCloseTo(62 / 245, 3);
+    usePlayerStore.getState().setProgress(122.5, 245);
+    await expect(scale()).toBeCloseTo(0.5, 3);
     await userEvent.click(canvas.getByTestId('expand-mobile-player-bar'));
     await expect(
       await canvas.findByRole('button', { name: 'Minimize player' }),

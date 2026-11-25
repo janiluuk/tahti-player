@@ -10,6 +10,7 @@ import { AnimatePresence, useReducedMotion } from 'motion/react';
 import { ReactNode, useEffect, useState } from 'react';
 
 import { cn } from '../../utils';
+import { useMediaQuery } from '../../utils/mediaQuery';
 import { Badge } from '../Badge';
 import { Button } from '../Button';
 import { Card, CardLayoutContext } from '../Card';
@@ -96,24 +97,7 @@ function ListItemBody({ item }: { item: CardsRowItem }) {
 }
 
 function usePrefersListOnMobile(): boolean {
-  const [prefersList, setPrefersList] = useState(() =>
-    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-      ? window.matchMedia(MOBILE_QUERY).matches
-      : false,
-  );
-
-  useEffect(() => {
-    if (typeof window.matchMedia !== 'function') {
-      return;
-    }
-    const mql = window.matchMedia(MOBILE_QUERY);
-    const onChange = () => setPrefersList(mql.matches);
-    onChange();
-    mql.addEventListener('change', onChange);
-    return () => mql.removeEventListener('change', onChange);
-  }, []);
-
-  return prefersList;
+  return useMediaQuery(MOBILE_QUERY);
 }
 
 const OFFSCREEN_CARD_CLASS =

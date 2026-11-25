@@ -12,12 +12,15 @@ export type SectionTabsItem = {
   active?: boolean;
 };
 
-export const PHONE_SCROLL_TAB_LIST = [
-  'tahti-hide-scrollbar w-full min-w-0 flex-nowrap overflow-x-auto pb-1',
+/** Edge fades for a tab list driven by `useSelectedTabInView`'s
+ * `data-fade`. */
+export const TAB_STRIP_FADE = [
   'data-[fade=end]:[mask-image:linear-gradient(to_right,#000_calc(100%-2rem),transparent)]',
   'data-[fade=start]:[mask-image:linear-gradient(to_left,#000_calc(100%-2rem),transparent)]',
   'data-[fade=both]:[mask-image:linear-gradient(to_right,transparent,#000_2rem,#000_calc(100%-2rem),transparent)]',
 ].join(' ');
+
+export const PHONE_SCROLL_TAB_LIST = `tahti-hide-scrollbar w-full min-w-0 flex-nowrap overflow-x-auto pb-1 ${TAB_STRIP_FADE}`;
 
 const TAB_EDGE_PADDING_PX = 32;
 

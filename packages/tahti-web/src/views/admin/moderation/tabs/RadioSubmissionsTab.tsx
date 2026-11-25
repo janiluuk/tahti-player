@@ -146,7 +146,7 @@ export function RadioSubmissionsTab() {
                   <p className="text-foreground-secondary text-sm">
                     {active.sound.artistName ??
                       active.submitter?.displayName ??
-                      'Unknown artist'}{' '}
+                      t('listenAdminStringsBatch37.unknownArtist')}{' '}
                     · {fmtDuration(active.sound.durationSec)}
                   </p>
                   <Button

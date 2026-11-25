@@ -46,7 +46,6 @@ vi.mock('../../../api/artist-settings', () => ({
   deletePressKitImage,
   setPressKitGalleryPublic,
   updatePressKitImage,
-  removeProfileAvatar: vi.fn(),
   patchPressKitBio: vi.fn(),
 }));
 

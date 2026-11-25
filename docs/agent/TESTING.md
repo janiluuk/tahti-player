@@ -135,9 +135,21 @@ prints the story selection without running it; `--chunk` and `--jobs` tune
 the session size and parallelism.
 
 tahti-web runs Vitest with `isolate: false`: test files share a worker and
-`src/test/setup.ts` resets the DOM, storage, stubs, spies, URL, animation
-frames and module registry after each file. A `vi.mock` still carries over
-to later files in the same worker.
+`src/test/setup.ts` resets the DOM, storage, stubs, spies, URL,
+`window.location`, getters shadowed on `document` (`hidden`,
+`visibilityState`), animation frames and module registry after each file.
+`vi.mock` does not carry over: Vitest 4 keeps one mock registry per test
+file, and the setup's `vi.resetModules()` drops modules that an earlier file
+evaluated against its mocks. What does carry over is anything outside the
+module registry: globals and prototypes patched by hand (use
+`vi.stubGlobal` / `vi.spyOn`, which the setup undoes, not
+`Object.defineProperty` or plain assignment), and state inside externalized
+`node_modules` packages, which `vi.resetModules()` does not reload (motion
+keeps the `requestAnimationFrame` it saw first, so `src/test/animationFrames.ts`
+installs a real-timer one before motion loads). To hunt a
+leak, shuffle the file order:
+`pnpm exec vitest run --exclude 'e2e/**' --sequence.shuffle.files --sequence.seed=<n>`,
+then rerun the failing file with candidates and `--maxWorkers=1`.
 
 ### Storybook play tests (headless Chromium)
 

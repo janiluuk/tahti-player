@@ -11,7 +11,6 @@ import {
   PartyPopperIcon,
   PlayIcon,
   Trash2Icon,
-  UploadIcon,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -27,7 +26,6 @@ import {
   Tabs,
   Textarea,
   Tooltip,
-  TrackTable,
 } from '@tahti-player/ui';
 
 import { deleteStudioRelease } from '../../api/studio';
@@ -38,7 +36,6 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../../components/EntitySocialHeader';
-import { FingerprintTrackPanel } from '../../components/FingerprintTrackPanel';
 import { ImageUrlForm } from '../../components/ImageUrlForm';
 import { MusicBrainzRegisterPrompt } from '../../components/MusicBrainzRegisterPrompt';
 import { MusicBrainzSubmissionAssistant } from '../../components/MusicBrainzSubmissionAssistant';
@@ -53,7 +50,6 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { resolveArtworkVisualizerPreset } from '../../lib/artworkVisualizer';
 import { releaseDescriptionLines } from '../../lib/releaseDescription';
 import { releaseStateLabel, releaseTypeLabel } from '../../lib/releaseLabels';
-import { trackTableLabels } from '../../lib/trackTableLabels';
 import { useDominantColor } from '../../lib/useDominantColor';
 import {
   RELEASE_DETAIL_TABS,
@@ -61,11 +57,13 @@ import {
   releaseTrackRowId,
   type ReleaseDetailTabId,
 } from './release-detail/releaseDetailTabs';
+import { ReleaseFingerprintPanel } from './release-detail/ReleaseFingerprintPanel';
 import { ReleasePoweredByFooterToggle } from './release-detail/ReleasePoweredByFooterToggle';
 import { ReleaseSmartLinksPanel } from './release-detail/ReleaseSmartLinksPanel';
 import { ReleaseSmartLinkStats } from './release-detail/ReleaseSmartLinkStats';
 import { ReleaseStatsPanel } from './release-detail/ReleaseStatsPanel';
 import { ReleaseTrackCreditsPanel } from './release-detail/ReleaseTrackCreditsPanel';
+import { ReleaseTracksTable } from './release-detail/ReleaseTracksTable';
 import { ReleaseTrackStemsPanel } from './release-detail/ReleaseTrackStemsPanel';
 import { ReleaseTrackVersionsPanel } from './release-detail/ReleaseTrackVersionsPanel';
 import { useReleaseDetail } from './release-detail/useReleaseDetail';
@@ -74,11 +72,6 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   const { t } = useTranslation('web');
   const {
     user,
-    currentId,
-    playbackStatus,
-    setPlaybackStatus,
-    play,
-    enqueue,
     release,
     setRelease,
     description,
@@ -435,123 +428,11 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                               title={t('studioReleaseDetail.tracksTitle')}
                             >
                               <div className="min-h-[200px]">
-                                <TrackTable
-                                  tracks={releaseTracks}
-                                  labels={trackTableLabels}
-                                  getItemId={(_t, index) =>
-                                    release.tracks?.[index]?.id ?? String(index)
-                                  }
-                                  features={{
-                                    header: true,
-                                    reorderable: false,
-                                    filterable: true,
-                                    sortable: false,
-                                  }}
-                                  display={{
-                                    displayPosition: false,
-                                    displayArtist: false,
-                                    displayDuration: true,
-                                    displayDeleteButton: false,
-                                    displayThumbnail: true,
-                                    displayQueueControls: true,
-                                  }}
-                                  actions={{
-                                    onPlayNow: (t) => {
-                                      const rt = release.tracks?.find(
-                                        (candidate) =>
-                                          candidate.id === t.source.id,
-                                      );
-                                      if (!rt) {
-                                        return;
-                                      }
-                                      const playableId = `sound:${rt.soundId}`;
-                                      if (currentId === playableId) {
-                                        setPlaybackStatus(
-                                          playbackStatus === 'playing' ||
-                                            playbackStatus === 'loading'
-                                            ? 'paused'
-                                            : 'playing',
-                                        );
-                                      } else {
-                                        void buildPlayable(rt).then(
-                                          (playable) => {
-                                            if (playable) {
-                                              play(playable);
-                                            }
-                                          },
-                                        );
-                                      }
-                                    },
-                                    onAddToQueue: (t) => {
-                                      const rt = release.tracks?.find(
-                                        (candidate) =>
-                                          candidate.id === t.source.id,
-                                      );
-                                      if (rt) {
-                                        void buildPlayable(rt).then(
-                                          (playable) => {
-                                            if (playable) {
-                                              enqueue(playable);
-                                            }
-                                          },
-                                        );
-                                      }
-                                    },
-                                    onEdit: (t) => {
-                                      const rt = release.tracks?.find(
-                                        (candidate) =>
-                                          candidate.id === t.source.id,
-                                      );
-                                      if (rt?.soundId) {
-                                        void navigate({
-                                          to: '/studio/sounds/$id/editor',
-                                          params: { id: rt.soundId },
-                                        });
-                                      }
-                                    },
-                                    onOpenDetail: (t) => {
-                                      void navigate({
-                                        to: '/studio/insights/$kind/$id',
-                                        params: {
-                                          kind: 'release-tracks',
-                                          id: t.source.id,
-                                        },
-                                        search: { release: release.id },
-                                      });
-                                    },
-                                  }}
-                                  meta={{
-                                    canEditTrack: (track) =>
-                                      Boolean(
-                                        release.tracks?.find(
-                                          (candidate) =>
-                                            candidate.id === track.source.id,
-                                        )?.soundId,
-                                      ),
-                                    canOpenDetail: () => true,
-                                    isCurrentTrack: (track) => {
-                                      const rt = release.tracks?.find(
-                                        (candidate) =>
-                                          candidate.id === track.source.id,
-                                      );
-                                      return Boolean(
-                                        rt?.soundId &&
-                                        currentId === `sound:${rt.soundId}`,
-                                      );
-                                    },
-                                    isTrackPlaying: (track) => {
-                                      const rt = release.tracks?.find(
-                                        (candidate) =>
-                                          candidate.id === track.source.id,
-                                      );
-                                      return Boolean(
-                                        rt?.soundId &&
-                                        currentId === `sound:${rt.soundId}` &&
-                                        (playbackStatus === 'playing' ||
-                                          playbackStatus === 'loading'),
-                                      );
-                                    },
-                                  }}
+                                <ReleaseTracksTable
+                                  releaseId={release.id}
+                                  releaseTracks={release.tracks}
+                                  rows={releaseTracks}
+                                  buildPlayable={buildPlayable}
                                 />
                               </div>
                             </StudioPanel>
@@ -731,56 +612,12 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                           }
                         />
                       }
-                      {
-                        <StudioPanel
-                          title={t('studioReleaseDetail.fingerprintTitle')}
-                          description={t(
-                            'studioReleaseDetail.fingerprintDescription',
-                          )}
-                        >
-                          {(() => {
-                            const fingerprintable = (
-                              release.tracks ?? []
-                            ).filter((t) => t.sourceKey);
-                            if (fingerprintable.length === 0) {
-                              return (
-                                <PageEmpty
-                                  title={t(
-                                    'studioReleaseDetail.fingerprintNoAudioTitle',
-                                  )}
-                                  description={t(
-                                    'studioReleaseDetail.fingerprintNoAudioDescription',
-                                  )}
-                                  action={
-                                    <Button
-                                      size="sm"
-                                      variant="secondary"
-                                      onClick={openTrackNeedingAudio}
-                                    >
-                                      <UploadIcon size={16} aria-hidden />
-                                      {t('emptyActions.uploadAudio')}
-                                    </Button>
-                                  }
-                                />
-                              );
-                            }
-                            return (
-                              <div className="flex flex-col gap-3">
-                                {fingerprintable.map((t) => (
-                                  <FingerprintTrackPanel
-                                    key={t.id}
-                                    releaseId={id}
-                                    track={t}
-                                    onUpdated={(match) =>
-                                      updateTrackFingerprint(t.id, match)
-                                    }
-                                  />
-                                ))}
-                              </div>
-                            );
-                          })()}
-                        </StudioPanel>
-                      }
+                      <ReleaseFingerprintPanel
+                        releaseId={id}
+                        tracks={release.tracks ?? []}
+                        onUploadAudio={openTrackNeedingAudio}
+                        onTrackFingerprintUpdated={updateTrackFingerprint}
+                      />
                     </div>
                   ),
                 },

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -24,14 +24,20 @@ import {
   type ScheduleCard,
 } from './schedule-helpers';
 
-const VIEW_OPTIONS = [
-  {
-    id: 'cards',
-    label: 'Card view',
-    icon: <CalendarDaysIcon size={14} aria-hidden />,
-  },
-  { id: 'list', label: 'List view', icon: <ListIcon size={14} aria-hidden /> },
-] as const;
+function viewOptions(t: TFunction<'web'>) {
+  return [
+    {
+      id: 'cards',
+      label: t('studioStringsBatch37.cardView'),
+      icon: <CalendarDaysIcon size={14} aria-hidden />,
+    },
+    {
+      id: 'list',
+      label: t('studioStringsBatch37.listView'),
+      icon: <ListIcon size={14} aria-hidden />,
+    },
+  ] as const;
+}
 
 export function ScheduledTimes({
   items,
@@ -64,7 +70,7 @@ export function ScheduledTimes({
           <SegmentedControl
             aria-label={t('scheduledTimes.scheduleView')}
             iconOnly
-            options={VIEW_OPTIONS}
+            options={viewOptions(t)}
             value={viewMode}
             onChange={setViewMode}
           />
@@ -195,9 +201,12 @@ export function ScheduledTimes({
             </div>
             <Dialog.Title>{selectedShow.title}</Dialog.Title>
             <Dialog.Description>
-              {selectedShow.tagline ?? 'Upcoming broadcast'}
+              {selectedShow.tagline ??
+                t('studioStringsBatch37.upcomingBroadcast')}
               {selectedShow.episodeNumber != null
-                ? ` · Episode ${selectedShow.episodeNumber}`
+                ? t('studioStringsBatch37.episodeNumberSuffix', {
+                    number: selectedShow.episodeNumber,
+                  })
                 : ''}
             </Dialog.Description>
             <div className="mt-4 flex flex-col gap-4">

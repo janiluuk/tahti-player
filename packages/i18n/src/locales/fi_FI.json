@@ -614,6 +614,73 @@
     }
   },
   "web": {
+    "studioStringsBatch37": {
+      "surfaceChannelPage": "Kanavasivu",
+      "surfaceArtistProfile": "Artistiprofiili",
+      "surfaceDiscover": "Löydä",
+      "surfaceLibrary": "Kirjasto",
+      "surfaceEmbeds": "Upotukset",
+      "surfaceElsewhere": "Muualla Tahdissa",
+      "searchSmartlinksPlaceholder": "Hae älylinkkejä…",
+      "searchSmartlinks": "Hae älylinkkejä",
+      "movedToPrivateStash": "Siirretty yksityiseen stashiisi.",
+      "noNewSilenceToTrim": "Alussa tai lopussa ei ole uutta hiljaisuutta poistettavaksi.",
+      "recurringScheduleSaved": "Toistuva aikataulu tallennettu. Tulevia jaksoja luodaan parhaillaan.",
+      "recurringScheduleStopped": "Toistuva aikataulu lopetettu. Jo ajastetut tulevat jaksot säilyvät.",
+      "nextLiveSession": "Seuraava livelähetys",
+      "allTypes": "Kaikki tyypit",
+      "cardView": "Korttinäkymä",
+      "listView": "Listanäkymä",
+      "upcomingBroadcast": "Tuleva lähetys",
+      "episodeNumberSuffix": " · Jakso {{number}}",
+      "sourcesFillIn": "Lähteet täyttyvät kuuntelujen myötä.",
+      "noSoundsSelected": "Yhtään ääntä ei ole valittu.",
+      "recordedEpisode": "Tallennettu jakso",
+      "couldNotLoadOverview": "Studion yleiskatsausta ei voitu ladata.",
+      "showInfoUnavailable": "Ohjelman tiedot eivät ole saatavilla.",
+      "backdropUploaded": "Taustakuva ladattu. Julkaise se tallentamalla tiedot.",
+      "backdropsUploaded": "{{count}} taustakuvaa ladattu. Julkaise ne tallentamalla tiedot.",
+      "trackNoLongerInTracklist": "Kappale ei ole enää kappalelistassa.",
+      "searchTracks": "Hae kappaleita…",
+      "searchCloudcasts": "Hae cloudcasteja…",
+      "processing": "Käsitellään…",
+      "processingFailed": "Käsittely epäonnistui",
+      "noImagesUploaded": "Kuvia ei ladattu.",
+      "currentLogo": "Nykyinen logo",
+      "currentProfileBackdrop": "Nykyinen profiilin taustakuva",
+      "episodeNeedsApproval": "Odottaa hyväksyntää",
+      "episodeApproved": "Hyväksytty",
+      "episodeScheduled": "Ajastettu",
+      "episodeLive": "Livenä",
+      "episodeDraft": "Luonnos"
+    },
+    "listenAdminStringsBatch37": {
+      "yourStation": "Oma asemasi",
+      "streamPending": "Striimi odottaa",
+      "offAir": "Ei lähetyksessä",
+      "internetRadio": "Nettiradio",
+      "allGenres": "Kaikki tyylilajit",
+      "unknownSubmitter": "Tuntematon lähettäjä",
+      "unknownArtist": "Tuntematon artisti",
+      "featureRequestStatus": "Ominaisuustoiveen tila",
+      "noMembership": "Ei jäsenyyttä",
+      "reorderFailed": "Järjestyksen muuttaminen epäonnistui",
+      "allRoles": "Kaikki roolit",
+      "listens": "Kuuntelut",
+      "minutesListened": "Kuunnellut minuutit",
+      "signedInListeners": "Kirjautuneet kuuntelijat",
+      "chooseTranslatedCsv": "Valitse CSV, joka on käännetty englanninkielisestä pohjasta.",
+      "agendaCallToOrder": "Kokouksen avaus",
+      "agendaQuorumCheck": "Päätösvaltaisuuden toteaminen",
+      "agendaAdoption": "Esityslistan hyväksyminen",
+      "agendaPreviousMinutes": "Edellisen kokouksen pöytäkirjan tarkastus",
+      "agendaBoardReport": "Hallituksen katsaus",
+      "agendaFinancialReport": "Talouskatsaus",
+      "agendaMotions": "Aloitteet",
+      "agendaBoardElection": "Hallituksen valinta (tarvittaessa)",
+      "agendaOtherBusiness": "Muut asiat",
+      "agendaClose": "Kokouksen päättäminen"
+    },
     "visualizerModeMenu": {
       "ambience": "Tunnelma",
       "ambientGlow": "Pois (kansikuvan hehku)",
@@ -6989,6 +7056,14 @@
       "effectsArenTHeardIn": "Efektit eivät vielä kuulu tässä esikuuntelussa: tiedoston palvelin ei salli selaimen käsitellä sitä. Kuulet sen käsittelemättömänä, kunnes editorilla on oma kopio; renderöinnit käyttävät silti kaikkia efektejä.",
       "wavesurferFailed": "Yksityiskohtaista aaltomuotoa ei voitu käynnistää tässä selaimessa. Lataa editori uudelleen."
     },
+    "profileHeader": {
+      "label": "Profiilikuva ja taustakuva",
+      "changeBackdrop": "Vaihda taustakuva",
+      "changeProfilePicture": "Vaihda profiilikuva",
+      "removeProfilePicture": "Poista profiilikuva",
+      "removeProfilePictureDescription": "Tilalla näkyy avatarin väri tai oletuskuva.",
+      "remove": "Poista"
+    },
     "profileBackdropSection": {
       "removeBackdrop": "Poista taustakuva",
       "profileBackdrop": "Profiilin taustakuva",
@@ -9231,9 +9306,9 @@
       "defaultArtworkStyleForNew": "Uusien julkaisujen oletuskansityyli.",
       "howYourChannelPageLooks": "Miltä kanavasivusi näyttää: asettelu, lohkot ja värit.",
       "yourChannelAddressAndA": "Kanavasi osoite ja oma verkkotunnus.",
-      "identityDescription": "Artistinimesi, kuvasi, roolisi, esittelysi ja projektin takana olevat ihmiset.",
+      "identityDescription": "Artistinimesi, kuvasi, taustakuvasi, roolisi, esittelysi ja projektin takana olevat ihmiset.",
       "linkPageDescription": "Yksi sivu kaikille linkeillesi, valmiina jaettavaksi esittelyssäsi.",
-      "brandingDescription": "Profiilikuva, yläkuva, logo ja uusien julkaisujen oletusilme.",
+      "brandingDescription": "Logosi ja uusien julkaisujen oletusilme.",
       "galleryAndPressKit": "Galleria ja pressikitti",
       "galleryDescription": "Kuvat, jotka fanit näkevät profiilissasi, ja pressikitti, jonka järjestäjät lataavat.",
       "design": "Ulkoasu",
@@ -10803,7 +10878,8 @@
       "unavailable": "Ei saatavilla"
     },
     "legalDocShellText": {
-      "helpCenter": "Ohjekeskus"
+      "helpCenter": "Ohjekeskus",
+      "aboutAndLegal": "Tietoa ja ehdot"
     },
     "fullScreenPlayerText": {
       "error": "Virhe"
@@ -15072,7 +15148,14 @@
       "backToEvents": "Takaisin tapahtumiin",
       "bannerAlt": "Tapahtuman {{title}} banneri",
       "edit": "Muokkaa tapahtumaa",
-      "venue": "Tapahtumapaikka"
+      "venue": "Tapahtumapaikka",
+      "browse": "Selaa tapahtumia",
+      "previousEvent": "Edellinen tapahtuma: {{title}}",
+      "nextEvent": "Seuraava tapahtuma: {{title}}",
+      "noPreviousEvent": "Ei edellistä tapahtumaa",
+      "noNextEvent": "Ei seuraavaa tapahtumaa",
+      "position": "{{position}}/{{total}}",
+      "sidePanel": "Tapahtuman toiminnot ja kommentit"
     },
     "eventComments": {
       "title": "Kommentit",

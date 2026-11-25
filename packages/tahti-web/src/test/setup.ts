@@ -1,3 +1,4 @@
+import './animationFrames';
 import '@testing-library/jest-dom';
 
 import { Blob as NodeBlob } from 'node:buffer';
@@ -9,6 +10,7 @@ import { DEFAULT_LOCALE, i18n } from '@tahti-player/i18n';
 import { setupDomMocks } from '@tahti-player/ui/test';
 
 import { clearSnapshots } from '../lib/useSnapshotFetch';
+import { installAnimationFrames } from './animationFrames';
 
 // jsdom's Blob polyfill has no arrayBuffer()/text()/stream() — use Node's.
 globalThis.Blob = NodeBlob as unknown as typeof Blob;
@@ -58,19 +60,15 @@ const pristineHref = ((
   globalThis as { __tahtiTestPristineHref?: string }
 ).__tahtiTestPristineHref ??= window.location.href);
 
-// jsdom drives every requestAnimationFrame from one shared setInterval that it
-// creates on the first pending callback. Created under a file's fake timers,
-// that interval never fires once real timers return, and frames stay dead
-// for every later file in the worker (motion values stuck at their initial
-// style, rAF-awaiting tests time out). One timeout per frame has no shared
-// state to strand.
-function installAnimationFrames() {
-  window.requestAnimationFrame = (callback) =>
-    setTimeout(() => callback(performance.now()), 16) as unknown as number;
-  window.cancelAnimationFrame = (handle) => clearTimeout(handle);
-}
-
-installAnimationFrames();
+// A file that swaps `window.location` with Object.defineProperty (not
+// vi.stubGlobal) would leave every later file reading a frozen fake URL while
+// history.replaceState moves the real one.
+const pristineLocation = ((
+  globalThis as { __tahtiTestPristineLocation?: PropertyDescriptor }
+).__tahtiTestPristineLocation ??= Object.getOwnPropertyDescriptor(
+  window,
+  'location',
+)!);
 
 // Dialog exits are springs: without this every close waits out the real
 // animation before the dialog leaves the DOM.
@@ -95,6 +93,20 @@ afterAll(async () => {
   vi.unstubAllEnvs();
   vi.restoreAllMocks();
   installAnimationFrames();
+  const location = Object.getOwnPropertyDescriptor(window, 'location');
+  if (
+    location?.get !== pristineLocation.get ||
+    location?.value !== pristineLocation.value
+  ) {
+    Object.defineProperty(window, 'location', pristineLocation);
+  }
+  // A test that shadows one of these Document.prototype getters with
+  // Object.defineProperty would leave every later file with its value.
+  for (const name of ['hidden', 'visibilityState']) {
+    if (Object.getOwnPropertyDescriptor(document, name)?.configurable) {
+      delete (document as unknown as Record<string, unknown>)[name];
+    }
+  }
   if (window.location.href !== pristineHref) {
     window.history.replaceState(null, '', pristineHref);
   }

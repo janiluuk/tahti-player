@@ -47,9 +47,8 @@ Further options, not done: running journeys against a `vite build` + `vite previ
 
 ## Left
 
-- [ ] One full unsharded tahti-web run in five failed all of `SettingsView.test.tsx` once (not reproduced since); find the leaking file if it recurs.
 
-- [ ] Watch a few CI runs with `isolate: false` (0.0.485): local shards went from ~85-93 s to ~15 s. A `vi.mock` registered in one file still applies to later files in the same worker; revert to isolated if a shard turns flaky.
+- [ ] Watch a few CI runs with `isolate: false` (0.0.485): local shards went from ~85-93 s to ~15 s. Leaks come from hand-patched globals and `node_modules` state, not `vi.mock` (per-file registry in Vitest 4.1); hunt with `--sequence.shuffle.files --sequence.seed=<n>` (see `docs/agent/TESTING.md`).
 - [ ] Product call: run the e2e journeys in their own workflow so beta/Storybook deploys don't wait for them.
 - [ ] Turbo remote cache for tahti-player needs a `TURBO_TOKEN` secret (ops).
 - [ ] Optional: a 5th tahti-org test shard (renames the `(n/4)` checks).

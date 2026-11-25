@@ -6,6 +6,7 @@ import { Card, MediaArtwork } from '@tahti-player/ui';
 
 import type { UpcomingEvent } from '../../api/upcoming-events';
 import { currentLocale } from '../../lib/locale';
+import { useRememberEventRow } from './EventBrowseRow';
 
 export function formatEventStart(
   value: string,
@@ -40,7 +41,9 @@ export function upcomingEventPlace(event: UpcomingEvent): string {
  * artwork), title, start time, host and place. Opens the event page. */
 export function UpcomingEventCard({ event }: { event: UpcomingEvent }) {
   const navigate = useNavigate();
+  const rememberRow = useRememberEventRow();
   const open = () => {
+    rememberRow();
     void navigate({ to: '/events/$eventId', params: { eventId: event.id } });
   };
   const place = upcomingEventPlace(event);

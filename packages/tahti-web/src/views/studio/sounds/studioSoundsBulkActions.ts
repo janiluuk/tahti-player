@@ -66,7 +66,7 @@ export function createStudioSoundsBulkActions(deps: BulkDeps) {
     }
     const ids = [...deps.selectedIds];
     if (ids.length === 0) {
-      return { error: 'No sounds selected.' };
+      return { error: i18n.t('web:studioStringsBatch37.noSoundsSelected') };
     }
     if (ids.length > STUDIO_SOUND_BULK_MAX_IDS) {
       return {

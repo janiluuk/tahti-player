@@ -215,7 +215,7 @@ export function useSoundEditor(id: string) {
     try {
       await patchAndReport(
         { isPublic: false },
-        'Moved to your private stash.',
+        t('studioStringsBatch37.movedToPrivateStash'),
         () => setVisibility('PRIVATE'),
       );
     } finally {
@@ -305,7 +305,7 @@ export function useSoundEditor(id: string) {
         ),
     );
     if (cuts.length === 0) {
-      setQuickMsg('No new leading/trailing silence to trim.');
+      setQuickMsg(t('studioStringsBatch37.noNewSilenceToTrim'));
       return;
     }
     void runQuickRender(

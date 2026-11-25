@@ -31,15 +31,17 @@ function dimensions(
   ];
 }
 
-const SURFACE_LABELS: Record<string, string> = {
-  CHANNEL_PAGE: 'Channel page',
-  TAHTI_RADIO: 'Tahti Radio',
-  ARTIST_PROFILE: 'Artist profile',
-  DISCOVER: 'Discover',
-  LIBRARY: 'Library',
-  EMBED: 'Embeds',
-  OTHER: 'Elsewhere on Tahti',
-};
+function surfaceLabels(t: TFunction<'web'>): Record<string, string> {
+  return {
+    CHANNEL_PAGE: t('studioStringsBatch37.surfaceChannelPage'),
+    TAHTI_RADIO: 'Tahti Radio',
+    ARTIST_PROFILE: t('studioStringsBatch37.surfaceArtistProfile'),
+    DISCOVER: t('studioStringsBatch37.surfaceDiscover'),
+    LIBRARY: t('studioStringsBatch37.surfaceLibrary'),
+    EMBED: t('studioStringsBatch37.surfaceEmbeds'),
+    OTHER: t('studioStringsBatch37.surfaceElsewhere'),
+  };
+}
 
 const DEVICE_ICONS: Record<string, ReactNode> = {
   Desktop: <MonitorIcon size={14} />,
@@ -138,7 +140,7 @@ export function AudienceBreakdown({
                 id: item.name,
                 label:
                   id === 'surface'
-                    ? (SURFACE_LABELS[item.name] ?? item.name)
+                    ? (surfaceLabels(t)[item.name] ?? item.name)
                     : item.name,
                 share: item.share,
                 icon: id === 'deviceType' ? DEVICE_ICONS[item.name] : undefined,

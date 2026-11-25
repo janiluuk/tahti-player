@@ -145,7 +145,7 @@ export function SpotifyImportPanel({
               placeholder={
                 mode === 'artist'
                   ? 'https://open.spotify.com/artist/…'
-                  : 'Search tracks…'
+                  : t('studioStringsBatch37.searchTracks')
               }
             />
             <Button type="submit" disabled={busy || !query.trim()}>

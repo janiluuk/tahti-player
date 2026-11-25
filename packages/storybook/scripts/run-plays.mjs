@@ -141,8 +141,10 @@ function listStoryFiles({ changed, filters }) {
       '--project',
       'storybook',
       '--filesOnly',
-      '--json',
       ...filters,
+      // --json takes an optional output path, so it must not precede the
+      // filters or the first filter becomes the file it overwrites.
+      '--json',
     ],
     { cwd: packageDir, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
   );

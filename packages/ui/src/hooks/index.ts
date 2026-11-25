@@ -10,3 +10,8 @@ export {
   PHONE_SELECTION_QUERY,
   useOnDemandSelection,
 } from './useOnDemandSelection';
+export {
+  getMediaQueryMatches,
+  subscribeMediaQuery,
+  useMediaQuery,
+} from '../utils/mediaQuery';

@@ -273,7 +273,7 @@ export function useAdminAddons() {
         setInstallsError(
           (!a.ok ? a.error : null) ??
             (!b.ok ? b.error : null) ??
-            'Reorder failed',
+            i18n.t('web:listenAdminStringsBatch37.reorderFailed'),
         );
         return;
       }

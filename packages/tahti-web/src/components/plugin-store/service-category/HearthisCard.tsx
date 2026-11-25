@@ -1,32 +1,21 @@
 import { useNavigate } from '@tanstack/react-router';
-import {
-  CheckSquareIcon,
-  DownloadIcon,
-  FolderDownIcon,
-  ListPlus,
-  SearchIcon,
-} from 'lucide-react';
+import { CheckSquareIcon, FolderDownIcon, SearchIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
-  ExternalLink,
   Input,
-  MediaArtwork,
   PluginStoreItem,
   TabLabel,
   Tabs,
-  Toggle,
-  Tooltip,
 } from '@tahti-player/ui';
 
 import { installMeIntegration } from '../../../api/integrations';
 import {
   fetchHearthisArtistTracks,
   hearthisProfileFromQuery,
-  playableFromHearthis,
   type HearthisLibrary,
   type HearthisTrack,
 } from '../../../api/sources';
@@ -41,12 +30,15 @@ import type { StudioCollection } from '../../../api/studio-types';
 import { toastWithUndo } from '../../../lib/undoToast';
 import { hearthisSourceAdapter } from '../../../plugins/import-sources';
 import { useAuthStore } from '../../../stores/authStore';
-import { usePlayerStore } from '../../../stores/playerStore';
 import { usePluginInstallStore } from '../../../stores/pluginInstallStore';
 import { PageEmpty, PageError } from '../../PageStates';
 import { SourceServiceIcon } from '../../SourceServiceIcon';
 import type { ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
+import {
+  HearthisCollectionList,
+  type HearthisCollection,
+} from './HearthisCollectionList';
 import { HearthisConnectForm } from './HearthisConnectForm';
 import {
   HearthisImportDestination,
@@ -57,6 +49,7 @@ import {
   playlistImportMessage,
 } from './hearthisImportMessages';
 import { readImportedIds, writeImportedIds } from './hearthisImports';
+import { HearthisTrackList } from './HearthisTrackList';
 
 const LIBRARY_TABS = ['tracks', 'sets', 'collections', 'search'] as const;
 
@@ -64,8 +57,6 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
-  const play = usePlayerStore((s) => s.play);
-  const enqueue = usePlayerStore((s) => s.enqueue);
 
   const [handle, setHandle] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -400,9 +391,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
     }
   };
 
-  const importCollection = async (
-    collection: NonNullable<HearthisLibrary>['collections'][number],
-  ) => {
+  const importCollection = async (collection: HearthisCollection) => {
     setBusy(true);
     try {
       const tracks = await hearthisSourceAdapter.collectionTracks(
@@ -591,154 +580,33 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
               onRetry={loadLibrary}
             />
           ) : tab === 'collections' ? (
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {(library?.collections ?? []).map((collection) => (
-                <li
-                  key={collection.id}
-                  className="border-border flex items-center gap-3 rounded-lg border p-3"
-                >
-                  <Toggle
-                    label={t('hearthisCardBatch34.selectItem', {
-                      title: collection.title,
-                    })}
-                    checked={selected.has(collection.id)}
-                    onChange={() => toggleSelected(collection.id)}
-                  />
-                  <MediaArtwork
-                    size="thumb"
-                    src={collection.coverUrl}
-                    alt={collection.title}
-                    imageReveal={false}
-                    className="border-border shrink-0 rounded border"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">
-                      {collection.title}
-                    </p>
-                    <p className="text-foreground-secondary text-xs">
-                      {t('hearthisCardBatch34.itemCount', {
-                        count: collection.trackCount,
-                      })}
-                    </p>
-                  </div>
-                  <Tooltip
-                    content={t('hearthisCardStates.importAsCollection')}
-                    side="top"
-                  >
-                    <Button
-                      size="icon-sm"
-                      variant="secondary"
-                      disabled={busy}
-                      onClick={() => void importCollection(collection)}
-                      aria-label={t(
-                        'hearthisCardBatch34.importAsCollectionNamed',
-                        {
-                          title: collection.title,
-                        },
-                      )}
-                    >
-                      <FolderDownIcon size={15} />
-                    </Button>
-                  </Tooltip>
-                </li>
-              ))}
-              {(library?.collections.length ?? 0) > 0 && (
-                <li className="flex flex-wrap justify-end gap-2 sm:col-span-2">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() =>
-                      setSelected(
-                        new Set(library?.collections.map((c) => c.id)),
-                      )
-                    }
-                  >
-                    <CheckSquareIcon size={15} className="mr-1.5" aria-hidden />
-                    {t('hearthisCardStates.selectAll')}
-                  </Button>
-                  <Button
-                    size="sm"
-                    disabled={busy || selected.size === 0}
-                    onClick={() => void importSelection()}
-                  >
-                    <FolderDownIcon size={15} className="mr-1.5" aria-hidden />
-                    {t('hearthisCardBatch34.importSelected', {
-                      count: selected.size,
-                    })}
-                  </Button>
-                </li>
-              )}
-            </ul>
+            <HearthisCollectionList
+              collections={library?.collections ?? []}
+              selected={selected}
+              busy={busy}
+              onToggle={toggleSelected}
+              onImportCollection={(collection) =>
+                void importCollection(collection)
+              }
+              onSelectAll={() =>
+                setSelected(new Set(library?.collections.map((c) => c.id)))
+              }
+              onImportSelected={() => void importSelection()}
+            />
           ) : (
-            <ul className="flex flex-col gap-2">
-              {visibleTracks.map((track) => (
-                <li
-                  key={track.id}
-                  className="border-border flex flex-wrap items-center gap-3 rounded-lg border px-3 py-2"
-                >
-                  <Toggle
-                    label={t('hearthisCardBatch34.selectItem', {
-                      title: track.title,
-                    })}
-                    checked={selected.has(track.id)}
-                    disabled={importedIds.has(track.id)}
-                    onChange={() => toggleSelected(track.id)}
-                  />
-                  <MediaArtwork
-                    size="thumb"
-                    src={track.coverUrl}
-                    alt={track.title}
-                    imageReveal={false}
-                    onPlay={() => play(playableFromHearthis(track))}
-                    playLabel={t('hearthisCardBatch34.preview')}
-                    className="border-border shrink-0 rounded border"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-medium">
-                      {track.title}
-                    </div>
-                    <div className="text-foreground-secondary truncate text-xs">
-                      {track.username}
-                    </div>
-                  </div>
-                  <Tooltip content={t('actions.queue')} side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="secondary"
-                      aria-label={t('hearthisCardBatch34.queueTrack', {
-                        title: track.title,
-                      })}
-                      onClick={() => enqueue(playableFromHearthis(track))}
-                    >
-                      <ListPlus size={15} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    disabled={
-                      busy ||
-                      !destinationId ||
-                      (destinationId === NEW_PLAYLIST_DESTINATION &&
-                        !newDestinationName.trim()) ||
-                      importedIds.has(track.id)
-                    }
-                    onClick={() => void importTracksToDestination([track])}
-                  >
-                    <DownloadIcon size={15} className="mr-1.5" aria-hidden />
-                    {importedIds.has(track.id)
-                      ? t('hearthisCardStates.imported')
-                      : t('hearthisCardStates.import')}
-                  </Button>
-                  <ExternalLink
-                    href={track.url}
-                    className="text-foreground-secondary shrink-0 text-xs no-underline hover:underline"
-                  >
-                    hearthis.at ↗
-                  </ExternalLink>
-                </li>
-              ))}
-            </ul>
+            <HearthisTrackList
+              tracks={visibleTracks}
+              selected={selected}
+              importedIds={importedIds}
+              importDisabled={
+                busy ||
+                !destinationId ||
+                (destinationId === NEW_PLAYLIST_DESTINATION &&
+                  !newDestinationName.trim())
+              }
+              onToggle={toggleSelected}
+              onImport={(track) => void importTracksToDestination([track])}
+            />
           )}
           {!libraryBusy &&
             !showLibraryError &&

@@ -118,8 +118,9 @@ export function RadioRowCard({
               }}
               fallback={
                 station.streamUrl
-                  ? (station.genre ?? 'Your station')
-                  : 'Stream pending'
+                  ? (station.genre ??
+                    t('listenAdminStringsBatch37.yourStation'))
+                  : t('listenAdminStringsBatch37.streamPending')
               }
             />
           )
@@ -197,8 +198,10 @@ export function RadioRowCard({
           subtitle={
             unavailable ??
             (!preset.streamUrl
-              ? 'Off air'
-              : (nowPlaying ?? preset.genre ?? 'Internet radio'))
+              ? t('listenAdminStringsBatch37.offAir')
+              : (nowPlaying ??
+                preset.genre ??
+                t('listenAdminStringsBatch37.internetRadio')))
           }
           playLabel={failedPlayLabel}
           itemName={preset.name}
@@ -245,7 +248,7 @@ export function RadioRowCard({
               fallback={
                 streamUrl
                   ? `${station.language} · ${station.bitrateKbps}kbps`
-                  : 'Off air'
+                  : t('listenAdminStringsBatch37.offAir')
               }
             />
           )
@@ -254,7 +257,8 @@ export function RadioRowCard({
         src={station.logoUrl}
         isPlaying={isPlaying}
         playLabel={
-          failedPlayLabel ?? (streamUrl ? undefined : 'Stream pending')
+          failedPlayLabel ??
+          (streamUrl ? undefined : t('listenAdminStringsBatch37.streamPending'))
         }
         playDisabled={!streamUrl}
         onPlay={streamUrl ? onPlay : undefined}

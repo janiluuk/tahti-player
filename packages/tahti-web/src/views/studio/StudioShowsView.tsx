@@ -31,6 +31,7 @@ import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { webT } from '../../lib/webT';
 
 export function StudioShowsView() {
   const { t } = useTranslation('web');
@@ -363,15 +364,15 @@ function ShowRow({
 export function episodeStatusLabel(ep: StudioEpisode): string {
   switch (ep.status) {
     case 'PENDING_APPROVAL':
-      return 'Needs approval';
+      return webT()('studioStringsBatch37.episodeNeedsApproval');
     case 'APPROVED':
-      return 'Approved';
+      return webT()('studioStringsBatch37.episodeApproved');
     case 'SCHEDULED':
-      return 'Scheduled';
+      return webT()('studioStringsBatch37.episodeScheduled');
     case 'LIVE':
-      return 'Live';
+      return webT()('studioStringsBatch37.episodeLive');
     default:
-      return 'Draft';
+      return webT()('studioStringsBatch37.episodeDraft');
   }
 }
 

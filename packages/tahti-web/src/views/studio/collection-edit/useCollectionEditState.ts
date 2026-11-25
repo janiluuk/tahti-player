@@ -170,7 +170,10 @@ export function useCollectionEditState(slug: string) {
     const fresh = await refreshItems();
     const item = fresh?.filter((entry) => entry.sound?.id === soundId).at(-1);
     if (!item) {
-      return { ok: false, error: 'That track is no longer in the tracklist.' };
+      return {
+        ok: false,
+        error: i18n.t('web:studioStringsBatch37.trackNoLongerInTracklist'),
+      };
     }
     const result = await removeStudioCollectionItem(slug, item.id);
     if (result.ok) {

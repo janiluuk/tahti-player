@@ -9,6 +9,7 @@ import { cn } from '../../lib/cn';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
 import { useAuthModalStore } from '../../stores/authModalStore';
 import { useAuthStore } from '../../stores/authStore';
+import { EventBrowseRow, useRememberEventRow } from '../events/EventBrowseRow';
 import { EventCalendar } from '../events/EventCalendar';
 import { upcomingEventPlace } from '../events/UpcomingEventCard';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
@@ -26,6 +27,7 @@ export function DiscoverEventCard({
 }) {
   const { t } = useTranslation('web');
   const place = upcomingEventPlace(event);
+  const rememberRow = useRememberEventRow();
   return (
     <article
       data-testid="discover-event-card"
@@ -57,6 +59,7 @@ export function DiscoverEventCard({
           <Link
             to="/events/$eventId"
             params={{ eventId: event.id }}
+            onClick={rememberRow}
             className="after:absolute after:inset-0 hover:underline"
           >
             {event.title}
@@ -166,16 +169,18 @@ export function DiscoverEventsPanel({
           />
         )
       ) : (
-        <ul
-          data-testid="discover-events-list"
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {visible.map((event) => (
-            <li key={event.id} className="min-w-0">
-              <DiscoverEventCard event={event} past={current.past} />
-            </li>
-          ))}
-        </ul>
+        <EventBrowseRow events={visible}>
+          <ul
+            data-testid="discover-events-list"
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {visible.map((event) => (
+              <li key={event.id} className="min-w-0">
+                <DiscoverEventCard event={event} past={current.past} />
+              </li>
+            ))}
+          </ul>
+        </EventBrowseRow>
       )}
     </div>
   );

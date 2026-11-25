@@ -236,7 +236,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'Studio pages',
         body: [
           'Subtabs for a Studio page sit under the Studio navigation row and above the page title — the same layout as Stats (Overview / Plays / Top lists).',
-          'Tracks holds your archive and files. Branding covers profile picture, gallery, and press kit under Studio → Profile, next to the Channel Designer (Channel design). Updates is posts and newsletter. Channel covers stream keys, radio settings, and multicast.',
+          'Tracks holds your archive and files. Studio → Profile → Identity holds the profile picture and backdrop; Branding (logo), gallery, and press kit are the other Studio → Profile tabs, next to the Channel Designer (Channel design). Updates is posts and newsletter. Channel covers stream keys, radio settings, and multicast.',
           'Admin Moderation queues (support, beta, radio, reports) use the same pattern under Admin nav.',
         ],
       },

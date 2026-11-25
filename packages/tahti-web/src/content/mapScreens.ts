@@ -2171,11 +2171,9 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Studio branding',
         viewName: 'Studio Branding',
         caption:
-          'Profile picture (animated GIFs allowed), avatar colour when there is no picture, backdrop and logo. The same panel is Studio → Profile → Branding.',
+          'Logo and its placement. The profile picture and backdrop are edited in the header of Studio → Profile → Identity. The same panel is Studio → Profile → Branding.',
         actions: [
-          'Upload a profile picture, including an animated GIF',
-          'Pick an avatar colour when there is no picture',
-          'Set the profile backdrop and logo',
+          'Set the logo and where it shows',
           'Switch Branding / Gallery / Press kit / Channel Designer tabs',
         ],
         old: {

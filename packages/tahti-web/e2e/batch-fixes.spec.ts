@@ -40,7 +40,7 @@ test('Branding has no second "Artist branding" heading', async ({ page }) => {
   await page.goto('/studio/profile/branding');
   const settings = page.getByRole('main');
   await expect(
-    settings.getByRole('heading', { name: 'Profile picture' }),
+    settings.getByRole('heading', { name: 'Logo', exact: true }),
   ).toBeVisible();
   await expect(
     settings.getByRole('heading', { name: 'Artist branding' }),

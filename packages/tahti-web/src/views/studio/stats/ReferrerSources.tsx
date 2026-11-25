@@ -96,7 +96,7 @@ export function ReferrerSources({
               ? t('referrerSources.referringPages')
               : t('referrerSources.referringSites')
           }
-          emptyLabel="Sources fill in as people listen."
+          emptyLabel={t('studioStringsBatch37.sourcesFillIn')}
           items={items.map((item) => {
             const label = referrerSourceLabel(
               item.name,

@@ -40,14 +40,14 @@ export const Default: Story = {
     await expect(
       canvas.getByRole('heading', { name: 'What AGPL-3.0 means', level: 2 }),
     ).toBeVisible();
-    const hubLinks = canvas
-      .getAllByRole('list')
-      .find((list) =>
-        within(list).queryByRole('link', { name: 'About Tahti' }),
-      );
-    await expect(hubLinks).toBeDefined();
+    const hubLinks = canvas.getByRole('navigation', {
+      name: 'About and legal',
+    });
     await expect(
-      within(hubLinks!).getByRole('link', { name: 'Privacy policy' }),
+      within(hubLinks).getByRole('link', { name: 'About Tahti' }),
+    ).toBeVisible();
+    await expect(
+      within(hubLinks).getByRole('link', { name: 'Privacy policy' }),
     ).toBeVisible();
   },
 };

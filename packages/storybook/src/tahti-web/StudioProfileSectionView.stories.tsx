@@ -19,7 +19,7 @@ const meta: Meta<typeof StudioProfileSectionView> = {
     docs: {
       description: {
         component:
-          '`/studio/profile/$section`: one Studio → Profile tab, reached from the Profile sub-tab row (Identity · Links · Link page · Branding · Gallery & press kit) that StudioNav draws under the Studio tabs. Identity holds the basics, story and people with one Save; Branding includes the release visual defaults; Gallery & press kit share a page. The title hides on phones, where the sub-tab row already names the page. Old `/studio/profile/story`, `people`, `release-visuals` and `press-kit` addresses land on the merged tab at the matching anchor; channel pages moved to Studio → Channel.',
+          '`/studio/profile/$section`: one Studio → Profile tab, reached from the Profile sub-tab row (Identity · Links · Link page · Branding · Gallery & press kit) that StudioNav draws under the Studio tabs. Identity opens with the backdrop and profile picture header, then holds the basics, story and people with one Save; Branding holds the logo and the release visual defaults; Gallery & press kit share a page. The title hides on phones, where the sub-tab row already names the page. Old `/studio/profile/story`, `people`, `release-visuals` and `press-kit` addresses land on the merged tab at the matching anchor; channel pages moved to Studio → Channel.',
       },
     },
   },
@@ -50,6 +50,13 @@ export const Identity: Story = {
     await expectVisible(
       await canvas.findByRole('textbox', { name: 'Display name' }),
     );
+    const header = canvas.getByTestId('profile-identity-header');
+    await expect(
+      within(header).getByRole('button', { name: 'Change backdrop' }),
+    ).toBeInTheDocument();
+    await expect(
+      within(header).getByRole('button', { name: 'Change profile picture' }),
+    ).toBeInTheDocument();
     await expectVisible(canvas.getByRole('heading', { name: 'Basics' }));
     await expectVisible(canvas.getByRole('heading', { name: 'Story' }));
     await expectVisible(canvas.getByRole('heading', { name: 'People' }));
@@ -109,10 +116,13 @@ export const Branding: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = await expectPage(canvasElement, 'Branding');
-    await expectVisible(
-      await canvas.findByRole('heading', { name: 'Profile picture' }),
-    );
-    await expectVisible(canvas.getByRole('heading', { name: 'Logo' }));
+    await expectVisible(await canvas.findByRole('heading', { name: 'Logo' }));
+    await expect(
+      canvas.queryByRole('heading', { name: 'Profile picture' }),
+    ).toBeNull();
+    await expect(
+      canvas.queryByRole('heading', { name: 'Profile backdrop' }),
+    ).toBeNull();
     await expect(
       canvas.getByRole('heading', { name: 'Release visuals' }),
     ).toBeInTheDocument();

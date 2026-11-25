@@ -16,8 +16,8 @@ vi.mock('../NameplateFields', () => ({
   NameplateFields: () => null,
   nameplatePatch: () => ({}),
 }));
-vi.mock('../../../components/ArtistImagePurposePicker', () => ({
-  ArtistImagePurposePicker: () => null,
+vi.mock('../../studio/branding/ProfileIdentityHeader', () => ({
+  ProfileIdentityHeader: () => null,
 }));
 vi.mock('../../../components/MentionTextarea', () => ({
   MentionTextarea: () => null,

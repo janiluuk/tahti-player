@@ -8,9 +8,7 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { StudioPanel } from '../../components/StudioPanel';
 import { GallerySection } from './branding/GallerySection';
 import { PressKitSection } from './branding/PressKitSection';
-import { ProfileBackdropSection } from './branding/ProfileBackdropSection';
 import { ProfileLogoSection } from './branding/ProfileLogoSection';
-import { ProfilePictureSection } from './branding/ProfilePictureSection';
 import { usePressKit } from './branding/usePressKit';
 
 export type StudioBrandingSection =
@@ -45,31 +43,15 @@ export const StudioBrandingPanel: FC<{
   return (
     <div className="flex flex-col gap-6">
       {section === 'branding' ? (
-        <>
-          <div
-            className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]"
-            data-testid="branding-profile-row"
-          >
-            <ProfilePictureSection kit={kit} />
-            <ProfileBackdropSection
-              backdropUrl={profile?.backdropUrl ?? null}
-              onChange={(backdropUrl) =>
-                kit.setProfile((current) =>
-                  current ? { ...current, backdropUrl } : current,
-                )
-              }
-            />
-          </div>
-          <ProfileLogoSection
-            logoUrl={profile?.logoUrl ?? null}
-            logoPlacement={profile?.logoPlacement ?? null}
-            onChange={(logo) =>
-              kit.setProfile((current) =>
-                current ? { ...current, ...logo } : current,
-              )
-            }
-          />
-        </>
+        <ProfileLogoSection
+          logoUrl={profile?.logoUrl ?? null}
+          logoPlacement={profile?.logoPlacement ?? null}
+          onChange={(logo) =>
+            kit.setProfile((current) =>
+              current ? { ...current, ...logo } : current,
+            )
+          }
+        />
       ) : null}
       {section === 'channel-designer' ? (
         profile ? (

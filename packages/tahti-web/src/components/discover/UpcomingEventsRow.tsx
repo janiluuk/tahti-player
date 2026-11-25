@@ -6,6 +6,7 @@ import {
   type UpcomingEvent,
 } from '../../api/upcoming-events';
 import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
+import { EventBrowseRow } from '../events/EventBrowseRow';
 import { UpcomingEventCard } from '../events/UpcomingEventCard';
 import { UpcomingEventsCarousel } from '../events/UpcomingEventsCarousel';
 
@@ -53,18 +54,20 @@ export function DiscoverNextEvents() {
     event,
   }));
   return (
-    <CardsRow
-      defaultLayout="cards"
-      data-testid="discover-next-events"
-      title={t('discoverEvents.nextTitle')}
-      items={items}
-      labels={{
-        filterPlaceholder: t('listen.filterEvents'),
-        nothingFound: t('listen.nothingFound'),
-      }}
-      renderItem={({ event }: NextEventItem) => (
-        <UpcomingEventCard event={event} />
-      )}
-    />
+    <EventBrowseRow events={events}>
+      <CardsRow
+        defaultLayout="cards"
+        data-testid="discover-next-events"
+        title={t('discoverEvents.nextTitle')}
+        items={items}
+        labels={{
+          filterPlaceholder: t('listen.filterEvents'),
+          nothingFound: t('listen.nothingFound'),
+        }}
+        renderItem={({ event }: NextEventItem) => (
+          <UpcomingEventCard event={event} />
+        )}
+      />
+    </EventBrowseRow>
   );
 }

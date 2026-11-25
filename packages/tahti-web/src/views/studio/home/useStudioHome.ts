@@ -131,7 +131,7 @@ export function useStudioHome() {
         if (cancelled) {
           return;
         }
-        const message = 'Could not load your studio overview.';
+        const message = t('studioStringsBatch37.couldNotLoadOverview');
         setStatsError(message);
         setScheduleError(message);
         setBroadcastsError(message);
