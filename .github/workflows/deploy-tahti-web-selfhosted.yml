@@ -110,6 +110,7 @@ jobs:
         # /tahti-api (proxied to https://api.tahti.live by nginx on vimage).
         run: |
           env -u VITE_TAHTI_API_URL -u VITE_FORCE_MOCK -u VITE_ALLOW_MOCK_FALLBACK -u VITE_ENABLE_DIAGNOSTICS \
+            TAHTI_WEB_DEPLOY_PROFILE=prod \
             VITE_CENTRIFUGO_WS="${VITE_CENTRIFUGO_WS:-wss://chat.tahti.live/connection/websocket}" \
             VITE_HCAPTCHA_SITEKEY="${{ vars.HCAPTCHA_SITEKEY }}" \
             pnpm --filter @tahti-player/tahti-web build
@@ -117,6 +118,7 @@ jobs:
       - name: Verify build output
         run: |
           test -f packages/tahti-web/dist/index.html
+          test ! -e packages/tahti-web/dist/map
           if grep -R --include='*.js' -E '"https?://[^"]+"\.startsWith\("http"\)' packages/tahti-web/dist; then
             echo "Prod build inlined an absolute VITE_TAHTI_API_URL. The client must use same-origin /tahti-api."
             exit 1
@@ -145,7 +147,7 @@ jobs:
 
           # Swap the whole dist/ tree in by rename instead of rsync'ing into
           # the live one in place. Some subdirectories under the live dist/
-          # (map/, mock/, radio-logos/ — static public/ assets copied
+          # (mock/, radio-logos/ — static public/ assets copied
           # verbatim by every build) have host-side permissions rsync's
           # mkstemp can't write into, so every deploy hit "Permission
           # denied" re-copying them (a fresh `pnpm build` stamps every

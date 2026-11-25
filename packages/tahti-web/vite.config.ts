@@ -8,6 +8,7 @@ import svgr from 'vite-plugin-svgr';
 
 import { generateAdvancedThemeCSS } from '../themes/src/advanced/generator';
 import pkg from './package.json';
+import { pruneDiagnosticsAssets } from './scripts/lib/diagnosticsAssets';
 import { validateProductionBuildEnvironment } from './src/lib/buildPolicy';
 import { sandboxDocumentHtml } from './src/lib/disco-widget-sandbox';
 import {
@@ -29,6 +30,26 @@ function defaultThemeBootStylePlugin(): Plugin {
         injectTo: 'head-prepend',
       },
     ],
+  };
+}
+
+function diagnosticsAssetsPlugin(diagnostics: boolean): Plugin {
+  let outDir = '';
+  return {
+    name: 'tahti-diagnostics-assets',
+    apply: 'build',
+    configResolved(config) {
+      outDir = config.build.outDir;
+    },
+    closeBundle() {
+      const result = pruneDiagnosticsAssets(outDir, diagnostics);
+      const removed = (result.removedBytes / 1024 / 1024).toFixed(1);
+      const output = (result.outputBytes / 1024 / 1024).toFixed(1);
+      if (result.removedBytes > 0) {
+        console.log(`pruned ${removed} MiB diagnostics atlas`);
+      }
+      console.log(`tahti-web output: ${output} MiB`);
+    },
   };
 }
 
@@ -151,6 +172,7 @@ export default defineConfig(({ command, mode }) => {
   }
   const env = loadEnv(mode, process.cwd(), '');
   validateProductionBuildEnvironment(command, env);
+  const buildDiagnostics = env.VITE_ENABLE_DIAGNOSTICS === '1';
   const deployVersion =
     env.VITE_DEPLOY_VERSION ?? new Date().toISOString().replace(/\D/g, '');
   const tahtiApi =
@@ -175,6 +197,7 @@ export default defineConfig(({ command, mode }) => {
       reviewStateApiPlugin(),
       discoWidgetSandboxPlugin(),
       defaultThemeBootStylePlugin(),
+      diagnosticsAssetsPlugin(buildDiagnostics),
     ],
     clearScreen: false,
     server: {

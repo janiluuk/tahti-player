@@ -27,6 +27,12 @@ This container serves production on every tahti.live host. `beta.tahti.live` 301
 | **prod** (default; CI deploys) | `pnpm deploy:tahti-beta` | Off - `/more` and Screen atlas redirect to `/` |
 | **beta** | `TAHTI_WEB_DEPLOY_PROFILE=beta pnpm deploy:tahti-beta` | On - for review builds only, never on the production host |
 
+Production builds remove `public/map/` after Vite copies public assets. The
+Screen atlas remains available in beta/diagnostics builds via
+`pnpm --filter @tahti-player/tahti-web build:diagnostics`. This keeps roughly
+166 MB of review screenshots out of the CI artifact, Docker context and live
+container while preserving the rest of `public/`.
+
 hCaptcha: CI passes the repository variable `HCAPTCHA_SITEKEY` as `VITE_HCAPTCHA_SITEKEY`; the manual script forwards `VITE_HCAPTCHA_SITEKEY` from the shell. Set the site key **before** the API gets a real `HCAPTCHA_SECRET`, or signup, password reset and chat join fail. With the API's placeholder secret, hCaptcha is not enforced.
 
 ## What gets installed
