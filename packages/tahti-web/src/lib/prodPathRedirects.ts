@@ -49,7 +49,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   'settings/discovery': '/studio/channel/visibility',
   'settings/internet-radio': '/settings/plugin-store?category=radio',
   'settings/themes': '/settings/themes',
-  'settings/announcements': '/studio/schedule#channel-programme',
+  'settings/announcements': '/studio/channel/settings',
   'settings/green-room': '/studio/go-live?step=green-room',
   // Tahti Radio opt-in and submissions (incl. board rejection notes) live on
   // Studio → Channel → Radio, not the royalties Distribution page.

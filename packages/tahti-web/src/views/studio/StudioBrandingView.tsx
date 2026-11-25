@@ -86,8 +86,8 @@ export const StudioBrandingPanel: FC<{
               help={t('studioBrandingView.programmeHint')}
               action={
                 <ButtonLink
-                  to="/studio/schedule"
-                  hash="channel-programme"
+                  to="/studio/channel/$section"
+                  params={{ section: 'settings' }}
                   size="sm"
                   variant="secondary"
                   data-testid="channel-designer-programme-link"

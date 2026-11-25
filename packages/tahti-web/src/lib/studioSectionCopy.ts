@@ -42,6 +42,10 @@ export const STUDIO_SECTION_COPY = {
     title: 'studioChannelViewStates.radio',
     description: 'studioProfileView.radioDescription',
   },
+  settings: {
+    title: 'studioChannelView.settings',
+    description: 'studioChannelView.settingsDescription',
+  },
   visibility: {
     title: 'studioProfileView.visibility',
     description: 'studioProfileView.visibilityDescription',

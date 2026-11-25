@@ -438,6 +438,10 @@ export const StudioChannelView = lazyRouteComponent(
   () => import('../views/studio/StudioChannelView'),
   'StudioChannelView',
 );
+export const StudioChannelClipsView = lazyRouteComponent(
+  () => import('../views/studio/StudioChannelClipsView'),
+  'StudioChannelClipsView',
+);
 export const StudioCollectionsView = lazyRouteComponent(
   () => import('../views/studio/StudioCollectionsView'),
   'StudioCollectionsView',

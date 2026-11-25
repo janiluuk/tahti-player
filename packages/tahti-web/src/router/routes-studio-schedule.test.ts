@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import { scheduleTab } from '../views/studio/StudioScheduleView';
 import { studioEventsRoute, studioScheduleRoute } from './routes-studio';
 
 type Validate = (search: Record<string, unknown>) => unknown;
@@ -18,7 +17,7 @@ describe('studioScheduleRoute search', () => {
     });
   });
 
-  it('keeps the Broadcasts programme tab and drops unknown tabs', () => {
+  it('keeps the legacy programme value for the redirect and drops unknown tabs', () => {
     expect(validateSchedule({ tab: 'programme' })).toEqual({
       tab: 'programme',
     });
@@ -42,14 +41,5 @@ describe('studioScheduleRoute search', () => {
       to: '/studio/schedule',
       search: { show: 'events', tab: 'past' },
     });
-  });
-});
-
-describe('scheduleTab', () => {
-  it('opens the programme tab from its anchors as well as ?tab=', () => {
-    expect(scheduleTab('programme')).toBe('programme');
-    expect(scheduleTab(undefined, 'channel-programme')).toBe('programme');
-    expect(scheduleTab(undefined, 'channel-clips')).toBe('programme');
-    expect(scheduleTab(undefined, '')).toBe('slots');
   });
 });

@@ -21,8 +21,8 @@ export function RotationEmptyWarning({ slug }: { slug: string }) {
             members looking at someone else's channel get the warning alone. */}
         {ownsChannel ? (
           <ButtonLink
-            to="/studio/schedule"
-            search={{ tab: 'programme' }}
+            to="/studio/channel/$section"
+            params={{ section: 'settings' }}
             size="sm"
             variant="secondary"
           >

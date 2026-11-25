@@ -14,6 +14,7 @@ import {
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, ButtonLink, Tabs } from '@tahti-player/ui';
 
+import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
 import { PinnedAnnouncementsPanel } from '../../components/PinnedAnnouncementsPanel';
 import { ProfileVisibilitySection } from '../../components/ProfileVisibilitySection';
 import { StreamManagerPanel } from '../../components/StreamManagerPanel';
@@ -67,17 +68,17 @@ function ChannelHomeLinks() {
   const username = useAuthStore((s) => s.user?.username);
   return (
     <StudioPanel
-      title={t('studioChannelView.programmeOnSchedule')}
-      description={t('studioChannelView.programmeOnScheduleDescription')}
+      title={t('studioChannelView.programmeInChannelSettings')}
+      description={t('studioChannelView.programmeInChannelSettingsDescription')}
       action={
         <ButtonLink
-          to="/studio/schedule"
-          search={{ tab: 'programme' }}
+          to="/studio/channel/$section"
+          params={{ section: 'settings' }}
           size="sm"
           variant="secondary"
         >
           <ListMusicIcon size={14} aria-hidden className="mr-1.5" />
-          {t('studioChannelView.openSchedule')}
+          {t('studioChannelView.openSettings')}
         </ButtonLink>
       }
     >
@@ -198,11 +199,14 @@ function ChannelSectionBody({ section }: { section: StudioChannelSection }) {
       </>
     );
   }
+  if (section === 'settings') {
+    return <ChannelRadioPlaylistPanel />;
+  }
   return <ChannelPanel section={section} />;
 }
 
-/** Studio → Channel: the channel page's design, its 24/7 radio, who finds it
- * and what they see, and its address. */
+/** Studio → Channel: design, radio, automatic programme settings,
+ * visibility and address. */
 export function StudioChannelView({
   section,
 }: {
@@ -211,7 +215,9 @@ export function StudioChannelView({
   return (
     <StudioSectionPage
       section={section}
-      requireChannel={section === 'design' || section === 'address'}
+      requireChannel={
+        section === 'design' || section === 'settings' || section === 'address'
+      }
       data-testid={`studio-channel-section-${section}`}
     >
       <ChannelSectionBody section={section} />

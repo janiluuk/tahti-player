@@ -6,6 +6,16 @@ import * as announcements from '../api/announcements';
 import { ChannelAnnouncementsPanel } from './ChannelAnnouncementsPanel';
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
+vi.mock('./channel-clips/VoiceRecorder', () => ({
+  VoiceRecorder: ({ onUse }: { onUse: (file: File) => void }) => (
+    <button
+      type="button"
+      onClick={() => onUse(new File(['voice'], 'Voice clip.wav'))}
+    >
+      Use recorded voice
+    </button>
+  ),
+}));
 
 describe('ChannelAnnouncementsPanel', () => {
   afterEach(() => {
@@ -29,5 +39,39 @@ describe('ChannelAnnouncementsPanel', () => {
     fetch.mockResolvedValue({ data: [], meta: { source: 'api' } } as never);
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText('No announcement clips yet')).toBeTruthy();
+  });
+
+  it('uploads a recorded voice from the record modal', async () => {
+    vi.spyOn(announcements, 'fetchAnnouncementClips').mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    } as never);
+    const upload = vi
+      .spyOn(announcements, 'uploadAnnouncementClip')
+      .mockResolvedValue({
+        ok: true,
+        clip: {
+          id: 'voice-1',
+          title: 'Voice clip',
+          isEnabled: false,
+          renderStatus: 'READY',
+        },
+      } as never);
+    vi.spyOn(announcements, 'deleteAnnouncementClip').mockResolvedValue({
+      ok: true,
+    } as never);
+
+    render(<ChannelAnnouncementsPanel />);
+    await screen.findByText('No announcement clips yet');
+    fireEvent.click(
+      screen.getAllByRole('button', { name: 'Record voice' })[0]!,
+    );
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Use recorded voice' }),
+    );
+
+    expect(upload).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'Voice clip.wav' }),
+    );
   });
 });

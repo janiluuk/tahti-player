@@ -1984,7 +1984,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/studio-channel-announcements.png',
-          route: '/studio/schedule#channel-programme',
+          route: '/studio/channel/settings',
           caption: 'Announcements editor',
         },
         storybookUrl: storybookStory(

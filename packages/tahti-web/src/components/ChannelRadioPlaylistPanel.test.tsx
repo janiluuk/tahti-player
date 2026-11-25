@@ -67,21 +67,60 @@ describe('ChannelRadioPlaylistPanel', () => {
       'Could not load that playlist, so the rotation was left unchanged.',
     );
   });
+
+  it('disables Manage clips while clips between programs are off', async () => {
+    mockPanelData();
+    await renderWithRouter(<ChannelRadioPlaylistPanel />);
+    expect(
+      await screen.findByRole('link', { name: 'Manage clips' }),
+    ).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('disables Use playlist when the selected playlist is the active rotation', async () => {
+    mockPanelData({
+      rotation: [
+        { id: 'sound-1', isFallback: true, fallbackOrder: 0 },
+        { id: 'sound-2', isFallback: true, fallbackOrder: 1 },
+      ],
+      playlistItems: [
+        { id: 'item-1', position: 0, soundId: 'sound-1' },
+        { id: 'item-2', position: 1, soundId: 'sound-2' },
+      ],
+    });
+
+    await renderWithRouter(<ChannelRadioPlaylistPanel />);
+    expect(
+      await screen.findByRole('button', { name: 'Use playlist' }),
+    ).toBeDisabled();
+  });
 });
 
-function mockPanelData() {
+function mockPanelData({
+  rotation = [],
+  playlistItems = [],
+}: {
+  rotation?: Array<Record<string, unknown>>;
+  playlistItems?: Array<Record<string, unknown>>;
+} = {}) {
   vi.spyOn(extras, 'fetchProgramme').mockResolvedValue({
     data: {
       fallbackEnabled: true,
       fallbackMode: 'SHUFFLE',
       fallbackAutoEnroll: false,
       announcementsEnabled: false,
-      items: [],
+      items: rotation,
     },
     meta: { source: 'api' },
   } as never);
   vi.spyOn(studio, 'fetchStudioCollections').mockResolvedValue({
-    data: [{ slug: 'night', name: 'Night Mix', style: 'PLAYLIST' }],
+    data: [
+      {
+        slug: 'night',
+        name: 'Night Mix',
+        style: 'PLAYLIST',
+        items: playlistItems,
+      },
+    ],
     meta: { source: 'api' },
   } as never);
   vi.spyOn(studio, 'fetchStudioSounds').mockResolvedValue({

@@ -47,8 +47,6 @@ export const CATALOG_SUBNAV_ITEMS = [
   { to: '/studio/groups', labelKey: 'studio.groups' as const },
 ] as const;
 
-/** Events and listening parties are filters of Schedule, and the 24/7 radio
- * is a page of the Channel tab, so Broadcast has three pages. */
 export const BROADCAST_SUBNAV_ITEMS = [
   { to: '/studio/go-live', labelKey: 'studio.onAir' as const },
   { to: '/studio/schedule', labelKey: 'studio.schedule' as const },
@@ -199,7 +197,10 @@ function SectionSubNav({
         id: item.to,
         to: item.to,
         label: t(item.labelKey),
-        active: pathMatches(pathname, item.to),
+        active:
+          pathMatches(pathname, item.to) ||
+          (item.to === '/studio/channel/settings' &&
+            pathname === '/studio/channel/clips'),
       }))}
     />
   );

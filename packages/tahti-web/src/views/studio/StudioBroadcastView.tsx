@@ -6,8 +6,6 @@ import {
   DiscIcon,
   MicIcon,
   PartyPopperIcon,
-  PauseIcon,
-  PlayIcon,
   RadioIcon,
   RadioTowerIcon,
   RepeatIcon,
@@ -17,7 +15,6 @@ import { useEffect, useState } from 'react';
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Badge,
-  Button,
   ButtonLink,
   FilterChips,
   HubCards,
@@ -75,7 +72,7 @@ export function studioBroadcastItems(t: TFunction<'web'>): HubCardItem[] {
     },
     {
       id: 'radio',
-      href: '/studio/schedule#channel-programme',
+      href: '/studio/channel/settings',
       icon: RepeatIcon,
       title: t('studioBroadcastView.radio247'),
       description: t('studioBroadcastViewMore.whatYourChannelPlaysWhen'),
@@ -237,42 +234,7 @@ export function StudioBroadcastView() {
             </ButtonLink>
           </div>
           {channel?.slug ? (
-            <section
-              aria-labelledby="broadcast-channel-manager-title"
-              data-testid="broadcast-channel-manager"
-              className="flex flex-col gap-3"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h2
-                    id="broadcast-channel-manager-title"
-                    className="font-display text-lg font-bold tracking-tight"
-                  >
-                    {t('studioBroadcastView.channelManager')}
-                  </h2>
-                  <p className="text-foreground-secondary mt-1 text-sm">
-                    {t('studioBroadcastView.liveStatusRotationAndStream')}
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="secondary"
-                  className="gap-1.5"
-                  data-testid="broadcast-listen-in-player"
-                  aria-pressed={listeningInPlayer}
-                  onClick={toggleListenInPlayer}
-                >
-                  {listeningInPlayer ? (
-                    <PauseIcon size={16} aria-hidden />
-                  ) : (
-                    <PlayIcon size={16} aria-hidden />
-                  )}
-                  {listeningInPlayer
-                    ? t('studioBroadcastView.pauseInPlayer')
-                    : t('studioBroadcastView.listenInPlayer')}
-                </Button>
-              </div>
+            <section data-testid="broadcast-stream-manager">
               <StreamManagerPanel
                 slug={channel.slug}
                 channelState={channel.state ?? 'OFFLINE'}

@@ -1,7 +1,7 @@
 /** Studio → Channel → Radio is the 24/7 stream (Stream · Pinned).
  * Programme, stats, green room, live destinations and Tahti Radio live as
  * links to their homes. Old `/studio/channel?tab=` / `?radio=` / `#radio`
- * addresses redirect to a Channel tab or to Schedule / Go live. */
+ * addresses redirect to a Channel tab or to Go live. */
 export const CHANNEL_RADIO_TABS = ['stream', 'pinned'] as const;
 
 export type ChannelRadioTab = (typeof CHANNEL_RADIO_TABS)[number];
@@ -12,18 +12,13 @@ export const isChannelRadioTab = (value: unknown): value is ChannelRadioTab =>
 export type ChannelTabRedirect =
   | {
       to: '/studio/channel/$section';
-      params: { section: 'design' | 'radio' };
+      params: { section: 'design' | 'radio' | 'settings' };
       search: { tab?: ChannelRadioTab };
       replace: true;
     }
   | {
       to: '/studio/profile/$section';
       params: { section: 'branding' };
-      replace: true;
-    }
-  | {
-      to: '/studio/schedule';
-      search: { tab: 'programme' };
       replace: true;
     }
   | {
@@ -61,8 +56,9 @@ function channelTabRedirect(tab: string): ChannelTabRedirect {
   }
   if (tab === 'announcements' || tab === 'rotation') {
     return {
-      to: '/studio/schedule',
-      search: { tab: 'programme' },
+      to: '/studio/channel/$section',
+      params: { section: 'settings' },
+      search: {},
       replace: true,
     };
   }

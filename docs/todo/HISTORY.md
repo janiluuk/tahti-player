@@ -6811,3 +6811,19 @@ Up next and Just played now use the shared striped TrackTable with edge-to-edge 
 ## 2026-11-24 — Settings and Profile cleanup (0.0.480)
 
 Account now offers account-management shortcuts and an artist Profile edit link. Statuses use badges, security has one 2FA section with an off-state warning retained through enrollment, redundant Visibility navigation is removed, and Profile forms use section tabs and help icons. Validated with web/UI tests, 42 Storybook checks, and the member/artist/board governance navigation journey. Listen loading improvements are included; cold-cache CLS measurement remains in front-page-smooth-loading.md.
+
+## 2026-11-25 — One Broadcast stream manager (0.0.483)
+
+Studio → Broadcast no longer wraps Stream manager in a duplicate Channel
+manager heading or shows a second playback action. The remaining right-side
+play/pause control uses the same idle and active colors as PlayerBar.
+
+## 2026-11-25 — Broadcast navigation and Channel programme settings (0.0.483)
+
+Go live keeps the normal Studio navigation. The 24/7 automatic programme moved
+from Schedule to Channel → Settings, with clearer English and Finnish fallback
+copy, no duplicate rotation-source section, and no active-playlist reapply action.
+Clips between programmes now have a separate manager with upload and working
+voice-recording dialogs; Manage clips sits beside its playback switch and stays
+disabled while playback is off. Routes, redirects, Storybook, the view catalog,
+and focused tests cover the new flow.

@@ -2876,8 +2876,8 @@
         "radioLoadError": "Radioasetuksia ei voitu ladata",
         "announcementsLabel": "Tiedotteet käytössä",
         "announcementsDescription": "Salli alustan ja radion tiedotteet kanavasi ohjelmassa.",
-        "fallbackLabel": "Varasoitto / automaattisoitto offline-tilassa",
-        "autoEnrollLabel": "Lisää uusi arkisto automaattisesti varasoittoon",
+        "fallbackLabel": "Soita automaattiohjelmaa, kun en ole livessä",
+        "autoEnrollLabel": "Lisää uudet lataukset automaattiohjelmaan",
         "openSchedule": "Avaa aikataulu / ohjelma",
         "greenRoomLoadError": "Green room -asetuksia ei voitu ladata",
         "greenRoomDefaultLabel": "Avaa green room, kun menen liveen",
@@ -2893,7 +2893,7 @@
         "invitePoolSubsOnly": "Vain fanitilaajat",
         "invitePoolEveryone": "Kaikki kirjautuneet",
         "invitePoolManualOnly": "Vain kutsumani henkilöt",
-        "programmeMoved": "Ilmoituksia, offline-varaohjelmaa ja 24/7-rotaatiota hallitaan kohdassa Studio → Lähetys → Aikataulu."
+        "programmeMoved": "Klippejä ja automaattista 24/7-ohjelmaa hallitaan kohdassa Studio → Kanava → Asetukset."
       },
       "artist": {
         "loadError": "Artistiprofiilia ei voitu ladata",
@@ -5149,15 +5149,16 @@
       "episodes": "Jaksot"
     },
     "radioPlaylist": {
-      "onePlaceForEverythingThat": "Yksi paikka kaikelle, mikä soi livelähetysten välissä.",
+      "automaticProgramme": "24/7-automaattiohjelma",
+      "onePlaceForEverythingThat": "Valitse, mitä kanavallasi soi silloin, kun et ole livessä.",
       "programme": "Ohjelmisto",
       "activeRotation": "Aktiivinen kierto",
       "playlistSource": "Soittolistan lähde",
       "chooseAPlaylistThenPublish": "Valitse soittolista ja julkaise sen arkistokappaleet kiertoon.",
       "usePlaylist": "Käytä soittolistaa",
       "create": "Luo",
-      "offlineProgrammeSettings": "Lähetysten välisen ohjelmiston asetukset",
-      "keepTheRotationPredictableOr": "Pidä kierto ennustettavana tai anna Tahdin tasapainottaa se.",
+      "offlineProgrammeSettings": "Automaattiohjelman asetukset",
+      "keepTheRotationPredictableOr": "Valitse soitetaanko kappaleet järjestyksessä vai sekoitettuna ja mitä Tahti saa lisätä automaattisesti.",
       "addTracksToActiveRotation": "Lisää kappaleita aktiiviseen kiertoon",
       "appendKeepsTheCurrentRotation": "Lisää loppuun säilyttää nykyisen kierron ja lisää valitut kappaleet.",
       "overwriteReplacesTheActiveRotation": "Korvaa vaihtaa aktiivisen kierron tähän valintaan.",
@@ -5172,7 +5173,8 @@
       "autoAddUploads": "Lisää lataukset automaattisesti",
       "addNewReadyUploadsTo": "Lisää uudet valmiit lataukset kiertoon automaattisesti",
       "playClipsBetweenPrograms": "Soita klippejä ohjelmien välissä",
-      "includeActiveClipsFromThe": "Ota mukaan aktiiviset klipit alla olevasta editorista",
+      "includeActiveClipsFromThe": "Lisää käytössä olevat kanavatunnukset, spiikit ja tiedotteet ohjelmien väliin.",
+      "manageClips": "Hallitse klippejä",
       "saveSettings": "Tallenna asetukset"
     },
     "studioHomeGrid": {
@@ -7831,15 +7833,11 @@
       "order": "Järjestys"
     },
     "studioBroadcastView": {
-      "channelManager": "Kanavan hallinta",
-      "liveStatusRotationAndStream": "Kanavasi livetila, rotaatio ja lähetyksen säätimet.",
       "broadcast": "Lähetys",
       "comingUp": "Tulossa",
       "showsEventsAndListeningParties": "Ohjelmat, tapahtumat ja kuuntelujuhlat, lähimmät ensin.",
       "agendaFilter": "Ohjelman suodatin",
       "broadcastTools": "Lähetystyökalut",
-      "listenInPlayer": "Kuuntele soittimessa",
-      "pauseInPlayer": "Tauko",
       "kindShow": "Ohjelma",
       "kindEvent": "Tapahtuma",
       "kindParty": "Kuuntelujuhla",
@@ -8002,9 +8000,12 @@
       "overallStatistics": "Kokonaistilastot",
       "channelSetup": "Kanavan asetukset",
       "streamManager": "Lähetyksen hallinta",
-      "programmeOnSchedule": "24/7-ohjelma on Aikataulussa",
-      "programmeOnScheduleDescription": "Rotaatiota, offline-varaohjelmaa ja ilmoituksia hallitaan Aikataulussa ohjelmiesi vieressä.",
-      "openSchedule": "Avaa Aikataulu",
+      "settings": "Asetukset",
+      "settingsDescription": "Valitse, mitä kanavallasi soi automaattisesti silloin, kun et ole livessä.",
+      "programmeInChannelSettings": "Automaattiohjelmasi",
+      "programmeInChannelSettingsDescription": "Rotaatiota, soittolistoja ja klippejä hallitaan Kanavan asetuksissa.",
+      "openSettings": "Avaa asetukset",
+      "backToChannelSettings": "Takaisin Kanavan asetuksiin",
       "multistreamDestinations": "Live-kohteet"
     },
     "releaseStatsPanel": {
@@ -8426,7 +8427,11 @@
       "pageMusic": "Sivun musiikki",
       "loadingPreview": "Ladataan esikatselua…",
       "cancel": "Peruuta",
-      "clipsBetweenPrograms": "Leikkeet ohjelmien välissä"
+      "clipsBetweenPrograms": "Klipit ohjelmien välissä",
+      "managerTitle": "Anna kanavallesi oma ääni",
+      "managerDescription": "Lisää kanavatunnuksia, lyhyitä spiikkejä ja tiedotteita ja valitse, milloin ne soivat automaattiohjelmassa.",
+      "uploadAudio": "Lataa ääni",
+      "recordVoice": "Nauhoita spiikki"
     },
     "studioUploadView": {
       "uploadFirstAndWeLl": "Lataa ensin, niin luemme tiedostoon upotetun nimen ja artistin. Jos niitä ei ole, käytetään tiedostonimeä, ja voit nimetä sen editorissa myöhemmin. Voit poistua sivulta käsittelyn aikana; jos käsittely ei onnistu, ilmoitamme sinulle.",
@@ -8444,7 +8449,7 @@
       "signInToDesignYour": "Kirjaudu sisään suunnitellaksesi julkista kanavaasi.",
       "channelDesigner": "Kanavan suunnittelu",
       "programmeTitle": "Kanavan ohjelma",
-      "programmeHint": "Mitä kanavasi soittaa live-lähetysten ympärillä, kuten 24/7-rotaatio, offline-varaohjelma ja tiedotteet, asetetaan Aikataulu-sivulla.",
+      "programmeHint": "Mitä kanavallasi soi automaattisesti silloin, kun et ole livessä, asetetaan Kanavan asetuksissa.",
       "openProgramme": "Avaa kanavan ohjelma"
     },
     "topListsTab": {

@@ -28,6 +28,9 @@ vi.mock('../../components/PinnedAnnouncementsPanel', () => ({
 vi.mock('../../components/StreamManagerPanel', () => ({
   StreamManagerPanel: () => null,
 }));
+vi.mock('../../components/ChannelRadioPlaylistPanel', () => ({
+  ChannelRadioPlaylistPanel: () => <div data-testid="programme-settings" />,
+}));
 vi.mock('../../components/StudioRadioSubmissionPanel', () => ({
   StudioRadioSubmissionPanel: () => null,
 }));
@@ -148,9 +151,9 @@ describe('StudioChannelView sections', () => {
     expect(screen.getByRole('tab', { name: 'Pinned' })).toBeInTheDocument();
     expect(screen.queryByRole('tab', { name: 'Multicast' })).toBeNull();
     expect(screen.queryByRole('tab', { name: 'Tahti Selects' })).toBeNull();
-    expect(screen.getByRole('link', { name: 'Open Schedule' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Open settings' })).toHaveAttribute(
       'href',
-      '/studio/schedule?tab=programme',
+      '/studio/channel/settings',
     );
     expect(
       screen.getByRole('link', { name: 'Live destinations' }),
@@ -179,6 +182,11 @@ describe('StudioChannelView sections', () => {
     expect(screen.getByTestId('profile-visibility')).toBeInTheDocument();
   });
 
+  it('keeps the automatic programme on Channel settings', async () => {
+    await renderChannel('/studio/channel/settings');
+    expect(screen.getByTestId('programme-settings')).toBeInTheDocument();
+  });
+
   it.each(['design', 'address'])(
     'shows the channel %s settings on their own page',
     async (section) => {
@@ -201,12 +209,8 @@ describe('StudioChannelView sections', () => {
       { tab: 'pinned' },
     ],
     ['/studio/channel?tab=profile', '/studio/profile/branding', {}],
-    ['/studio/channel?tab=rotation', '/studio/schedule', { tab: 'programme' }],
-    [
-      '/studio/channel?radio=rotation',
-      '/studio/schedule',
-      { tab: 'programme' },
-    ],
+    ['/studio/channel?tab=rotation', '/studio/channel/settings', {}],
+    ['/studio/channel?radio=rotation', '/studio/channel/settings', {}],
     [
       '/studio/channel?tab=multicast',
       '/studio/go-live',

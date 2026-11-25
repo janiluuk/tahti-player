@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { PlusIcon } from 'lucide-react';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
@@ -7,20 +7,14 @@ import {
   ButtonLink,
   FilterChips,
   ImageReveal,
-  Tabs,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
-import { ChannelAnnouncementsPanel } from '../../components/ChannelAnnouncementsPanel';
-import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { ProgrammeToggles } from '../../components/ProgrammeToggles';
 import { RestrictionNotice } from '../../components/RestrictionNotice';
-import { RotationSourcePicker } from '../../components/RotationSourcePicker';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
-import { useAuthStore } from '../../stores/authStore';
 import {
   endAtFor,
   formatDate,
@@ -34,19 +28,8 @@ import { StudioEventsSection } from './StudioEventsSection';
 import { StudioListeningPartiesSection } from './StudioListeningPartiesSection';
 
 export type ScheduleShow = 'broadcasts' | 'events' | 'parties';
-export type ScheduleTab = 'slots' | 'programme';
-
 export const scheduleShow = (value: unknown): ScheduleShow =>
   value === 'events' || value === 'parties' ? value : 'broadcasts';
-
-/** Programme panels live on the second tab, so links that only carry their
- * anchor (`#channel-programme`, `#channel-clips`) open that tab too. */
-export const scheduleTab = (value: unknown, hash = ''): ScheduleTab =>
-  value === 'programme' ||
-  hash === 'channel-programme' ||
-  hash === 'channel-clips'
-    ? 'programme'
-    : 'slots';
 
 function showFilters(t: TFunction<'web'>) {
   return [
@@ -65,7 +48,7 @@ const CREATE_LINKS = {
 } as const;
 
 /** Broadcasts, events and listening parties on one page, one filter at a
- * time (`?show=events|parties`). Broadcasts use `?tab=slots|programme`. */
+ * time (`?show=events|parties`). */
 export function StudioScheduleView() {
   const { t } = useTranslation('web');
   const navigate = useNavigate();
@@ -74,8 +57,6 @@ export function StudioScheduleView() {
     tab?: string;
   };
   const show = scheduleShow(search.show);
-  const hash = useLocation({ select: (location) => location.hash });
-  const tab = scheduleTab(search.tab, hash);
   const form = useScheduleForm();
 
   return (
@@ -132,7 +113,7 @@ export function StudioScheduleView() {
           ) : show === 'parties' ? (
             <StudioListeningPartiesSection />
           ) : (
-            <ScheduleBroadcasts form={form} tab={tab} />
+            <ScheduleBroadcasts form={form} />
           )}
         </ViewShell>
       </div>
@@ -142,14 +123,10 @@ export function StudioScheduleView() {
 
 function ScheduleBroadcasts({
   form,
-  tab,
 }: {
   form: ReturnType<typeof useScheduleForm>;
-  tab: ScheduleTab;
 }) {
   const { t } = useTranslation('web');
-  const navigate = useNavigate();
-  const channelSlug = useAuthStore((state) => state.user?.channel?.slug);
   const {
     shows,
     scheduledShows,
@@ -161,7 +138,7 @@ function ScheduleBroadcasts({
     setEditorOpen,
   } = form;
 
-  const slots = (
+  return (
     <>
       <RestrictionNotice type="LIVE_SHOW_BOOKING" />
       <ScheduledTimes
@@ -249,48 +226,5 @@ function ScheduleBroadcasts({
       <ScheduleAnalytics />
       <ScheduleEditorDialog form={form} />
     </>
-  );
-
-  const programme = (
-    <>
-      <StudioPanel
-        id="channel-programme"
-        title={t('studioScheduleView.channelProgramme')}
-        description={t('studioScheduleView.channelProgrammeDescription')}
-      >
-        <ProgrammeToggles />
-      </StudioPanel>
-
-      {channelSlug ? <RotationSourcePicker slug={channelSlug} /> : null}
-      <ChannelRadioPlaylistPanel />
-      <ChannelAnnouncementsPanel />
-    </>
-  );
-
-  return (
-    <Tabs
-      selectedIndex={tab === 'programme' ? 1 : 0}
-      onChange={(index) => {
-        void navigate({
-          to: '/studio/schedule',
-          search: index === 1 ? { tab: 'programme' } : {},
-          replace: true,
-        });
-      }}
-      listClassName="flex-wrap"
-      panelClassName="pt-2"
-      items={[
-        {
-          id: 'slots',
-          label: t('studioScheduleView.filterBroadcasts'),
-          content: slots,
-        },
-        {
-          id: 'programme',
-          label: t('studioScheduleView.channelProgramme'),
-          content: programme,
-        },
-      ]}
-    />
   );
 }

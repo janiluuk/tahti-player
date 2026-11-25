@@ -70,7 +70,7 @@ describe('RotationEmptyWarning', () => {
 
     expect(screen.getByText('The 24/7 rotation is empty')).toBeTruthy();
     const link = screen.getByRole('link', { name: 'Manage 24/7 rotation' });
-    expect(link.getAttribute('href')).toBe('/studio/schedule?tab=programme');
+    expect(link.getAttribute('href')).toBe('/studio/channel/settings');
   });
 
   it("warns without a studio link on someone else's channel", async () => {

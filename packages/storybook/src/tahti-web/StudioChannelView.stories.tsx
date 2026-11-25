@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { StudioChannelView } from '@tahti-web/views/studio/StudioChannelView';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { withToaster } from './_fixtures/track-release';
 import {
@@ -19,7 +19,7 @@ const meta: Meta<typeof StudioChannelView> = {
     docs: {
       description: {
         component:
-          '`/studio/channel/$section`: Studio → Channel, its own top-level Studio tab with a sub-tab row (Design · Radio · Visibility · Address) drawn by StudioNav. Radio is the 24/7 stream (Stream · Pinned) with links to the programme on Schedule, stats, chat, the green room and live destinations on Go live. Visibility merges how fans find the channel with what profile visitors see. Bare `/studio/channel` and its old `?tab=` / `?radio=` / `#radio` links redirect to a tab, Schedule or Go live.',
+          '`/studio/channel/$section`: Studio → Channel, with Design · Radio · Settings · Visibility · Address. Settings owns the automatic 24/7 programme; Radio is the stream manager. Visibility merges how fans find the channel with what profile visitors see.',
       },
     },
   },
@@ -48,7 +48,7 @@ export const Design: Story = {
     const canvas = await expectPage(canvasElement, 'Design');
     await expect(
       await canvas.findByTestId('channel-designer-programme-link'),
-    ).toHaveAttribute('href', '/studio/schedule#channel-programme');
+    ).toHaveAttribute('href', '/studio/channel/settings');
   },
 };
 
@@ -65,6 +65,31 @@ export const Radio: Story = {
     await expect(
       canvas.getByRole('link', { name: 'Live destinations' }),
     ).toHaveAttribute('href', '/studio/go-live?step=destinations');
+  },
+};
+
+export const Settings: Story = {
+  args: { section: 'settings' },
+  decorators: [withTahtiRouter('/studio/channel/settings')],
+  play: async ({ canvasElement }) => {
+    const canvas = await expectPage(canvasElement, 'Settings');
+    await expect(
+      await canvas.findByRole('heading', {
+        name: '24/7 automatic programme',
+      }),
+    ).toBeInTheDocument();
+    const clipsToggle = canvas.getByRole('switch', {
+      name: 'Play clips between programs',
+    });
+    if (clipsToggle.getAttribute('aria-checked') === 'true') {
+      await userEvent.click(clipsToggle);
+    }
+    await expect(
+      canvas.getByRole('link', { name: 'Manage clips' }),
+    ).toHaveAttribute('aria-disabled', 'true');
+    await expect(
+      canvas.queryByRole('heading', { name: 'Rotation source' }),
+    ).not.toBeInTheDocument();
   },
 };
 

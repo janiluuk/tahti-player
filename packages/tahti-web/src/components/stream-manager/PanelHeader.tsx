@@ -62,7 +62,7 @@ export function PanelHeader({
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-3">
       <div className="order-1 min-w-0 flex-1">
-        <div className="font-display flex items-center gap-2 text-sm font-bold tracking-tight sm:text-base">
+        <h2 className="font-display flex items-center gap-2 text-sm font-bold tracking-tight sm:text-base">
           {rotationPlaying ? (
             <ListMusicIcon
               size={18}
@@ -73,7 +73,7 @@ export function PanelHeader({
             <RadioIcon size={18} className="text-primary-strong" aria-hidden />
           )}
           {t('panelHeaderText.streamManager')}
-        </div>
+        </h2>
         <div
           className="mt-1 flex flex-wrap items-center text-xs"
           data-testid="stream-manager-output"
@@ -238,13 +238,18 @@ export function PanelHeader({
           >
             <Button
               size="icon-sm"
-              variant="secondary"
+              className={cn(
+                'active:bg-accent-green rounded-full shadow-md active:text-black',
+                isPlaying && 'bg-accent-green text-black',
+              )}
               onClick={onPlaybackToggle}
               aria-label={
                 isPlaying
                   ? t('streamManagerPanelHeaderStates.pauseStream')
                   : t('streamManagerPanelHeaderStates.playStream')
               }
+              aria-pressed={isPlaying}
+              data-testid="stream-manager-playback-toggle"
             >
               {isPlaying ? <PauseIcon size={15} /> : <PlayIcon size={15} />}
             </Button>

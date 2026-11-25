@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
+  ButtonLink,
   Dialog,
   EditIconLink,
   FilterChips,
@@ -208,6 +209,13 @@ export const ChannelRadioPlaylistPanel: FC = () => {
   const selectedPlaylist = playlists.find(
     (playlist) => playlist.slug === selectedSlug,
   );
+  const selectedPlaylistSoundIds = (selectedPlaylist?.items ?? [])
+    .map((item) => item.soundId)
+    .filter((id): id is string => Boolean(id));
+  const selectedPlaylistActive =
+    selectedPlaylistSoundIds.length > 0 &&
+    selectedPlaylistSoundIds.length === rotation.length &&
+    selectedPlaylistSoundIds.every((id, index) => rotation[index]?.id === id);
   const settingsDirty = Boolean(
     programme &&
     (fallbackEnabled !== programme.fallbackEnabled ||
@@ -386,7 +394,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
           </span>
           <div className="min-w-0">
             <SectionTitle
-              title="24/7 & offline programme"
+              title={t('radioPlaylist.automaticProgramme')}
               wrap
               className="font-display tracking-tight"
             />
@@ -472,7 +480,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
             <div className="flex flex-wrap gap-2">
               <Button
                 size="sm"
-                disabled={busy || !selectedSlug}
+                disabled={busy || !selectedSlug || selectedPlaylistActive}
                 onClick={() => void applySelected()}
               >
                 {t('radioPlaylist.usePlaylist')}
@@ -562,15 +570,26 @@ export const ChannelRadioPlaylistPanel: FC = () => {
               onChange={setFallbackAutoEnroll}
             />
 
-            <Toggle
-              label={t('radioPlaylist.playClipsBetweenPrograms')}
-              description={t('radioPlaylist.includeActiveClipsFromThe')}
-              showLabel
-              labelPosition="start"
-              checked={announcementsEnabled}
-              disabled={busy || !programme}
-              onChange={setAnnouncementsEnabled}
-            />
+            <div className="flex flex-wrap items-center gap-3">
+              <Toggle
+                label={t('radioPlaylist.playClipsBetweenPrograms')}
+                description={t('radioPlaylist.includeActiveClipsFromThe')}
+                showLabel
+                labelPosition="start"
+                labelClassName="min-w-0 flex-1"
+                checked={announcementsEnabled}
+                disabled={busy || !programme}
+                onChange={setAnnouncementsEnabled}
+              />
+              <ButtonLink
+                to="/studio/channel/clips"
+                size="sm"
+                variant="secondary"
+                disabled={busy || !programme || !announcementsEnabled}
+              >
+                {t('radioPlaylist.manageClips')}
+              </ButtonLink>
+            </div>
 
             <div className="flex justify-end">
               <SaveButton
