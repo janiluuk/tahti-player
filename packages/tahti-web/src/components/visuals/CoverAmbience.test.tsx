@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { setBackdropFrameVerdict } from '../../lib/backdropMotion';
 import { CoverAmbience } from './CoverAmbience';
 
 const webgl = vi.hoisted(() => ({ software: false }));
@@ -81,6 +82,16 @@ describe('CoverAmbience', () => {
       'data-still',
       'true',
     );
+  });
+
+  it('stops moving once the frame monitor sees frames drop', () => {
+    mockReducedMotion(false);
+    render(<CoverAmbience coverUrl="/cover.jpg" variant="glow" />);
+    const ambience = screen.getByTestId('cover-ambience');
+    expect(ambience).not.toHaveAttribute('data-still');
+    act(() => setBackdropFrameVerdict('slow'));
+    expect(ambience).toHaveAttribute('data-still', 'true');
+    act(() => setBackdropFrameVerdict('pending'));
   });
 
   it('animates on a GPU', () => {

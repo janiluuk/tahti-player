@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { EnabledInternetRadioPreset } from '../../api/client';
+import { DEFAULT_ENABLED_STATION_IDS } from '../../content/radioStations';
 import { useListenerWidgetsStore } from '../../stores/listenerWidgetsStore';
 import { renderWithRouter } from '../../test/renderWithRouter';
 import { AddStationUrlDialog } from '../plugin-store/radio-category/AddStationUrlDialog';
@@ -54,6 +55,7 @@ describe('RadioStationsRow', () => {
   beforeEach(() => {
     useListenerWidgetsStore.setState({
       savedBrowserStations: [],
+      enabledStationIds: [...DEFAULT_ENABLED_STATION_IDS],
     });
   });
 
@@ -61,6 +63,21 @@ describe('RadioStationsRow', () => {
     await renderRow({ data: [], status: 'loading' });
     expect(
       screen.queryByRole('button', { name: 'Play YleX' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('reserves the filter line while loading when enough stations are enabled', async () => {
+    await renderRow({ data: [], status: 'loading' });
+    expect(
+      screen.getByTestId('listen-section-filter-skeleton'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not reserve the filter line for a short station list', async () => {
+    useListenerWidgetsStore.setState({ enabledStationIds: ['ylex'] });
+    await renderRow({ data: [], status: 'loading' });
+    expect(
+      screen.queryByTestId('listen-section-filter-skeleton'),
     ).not.toBeInTheDocument();
   });
 

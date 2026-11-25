@@ -58,6 +58,7 @@ export function ChannelFallbackHeader({
           className={editing ? 'cursor-pointer rounded-lg' : undefined}
         >
           <EntitySocialHeader
+            compactOnPhone
             leading={editing ? undefined : backButton}
             title={channel.user.displayName}
             isMember={channel.user.isMember}

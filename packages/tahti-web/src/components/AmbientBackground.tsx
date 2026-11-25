@@ -92,6 +92,7 @@ export function AmbientBackground() {
           visualSettingsJson={`{"${preset}":{"speed":${speed},"intensity":${intensity}}}`}
           audioReactive={audioReactive}
           backdrop
+          stillWhenFramesDrop={false}
           showModeButtons={false}
           className="h-full w-full"
         />

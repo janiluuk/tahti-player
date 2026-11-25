@@ -89,7 +89,9 @@ export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
       } catch (err) {
         if (!cancelled) {
           setError(
-            err instanceof Error ? err.message : 'Mermaid render failed',
+            err instanceof Error
+              ? err.message
+              : t('mermaidDiagramText.renderFailed'),
           );
         }
       }
@@ -101,7 +103,7 @@ export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
         hostRef.current.innerHTML = '';
       }
     };
-  }, [chart, reactId]);
+  }, [chart, reactId, t]);
 
   return (
     <div
@@ -134,7 +136,11 @@ export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
           {Math.round(zoom * 100)}%
         </Button>
         <Tooltip
-          content={isFullscreen ? 'Exit fullscreen' : 'View fullscreen'}
+          content={
+            isFullscreen
+              ? t('mermaidDiagramText.exitFullscreen')
+              : t('mermaidDiagramText.viewFullscreen')
+          }
           side="top"
         >
           <Button
@@ -145,8 +151,8 @@ export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
             onClick={toggleFullscreen}
             aria-label={
               isFullscreen
-                ? 'Exit fullscreen diagram'
-                : 'View diagram fullscreen'
+                ? t('mermaidDiagramText.exitFullscreenDiagram')
+                : t('mermaidDiagramText.viewDiagramFullscreen')
             }
           >
             {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}

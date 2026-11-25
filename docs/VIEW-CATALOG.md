@@ -147,7 +147,7 @@ Keep for Storybook / future placement; do not delete without a product home.
 | [Show Detail](#show-detail)           | `/studio/shows/$id`                                             | `src/views/studio/StudioShowDetailView.tsx`                       | Has Story                        | Button, Dialog, FilePicker, Input, SaveButton, Tabs, Textarea, Toggle, Tooltip — episode-source pill pair at ~line 736-761 duplicates `FilterChips`, see sweep section below                                                                   |
 | [Playlists](#playlists-studio)        | `/studio/playlists/$slug`                                       | `src/views/studio/playlists/StudioPlaylistEditorView.tsx`         | Story (ReadOnly, Editing)         | TrackTable, DragReorder                                                                                                                                                                                                                        |
 | [Updates](#updates)                   | `/studio/updates`                                               | `src/views/studio/StudioUpdatesView.tsx`                          | Has Story                         | MentionTextarea                                                                                                                                                                                                                                |
-| [Audience](#audience)                 | `/studio/audience`                                              | `src/views/studio/StudioRevenueView.tsx`                          | No Story                         | FanSubscriptionStats                                                                                                                                                                                                                           |
+| [Audience](#audience)                 | `/studio/audience` (`?tab=tiers`, `?tab=store`; `/studio/revenue` redirects here) | `src/views/studio/StudioRevenueView.tsx`                          | Has Story (`StudioRevenueView.stories.tsx`) | FanSubscriptionStats                                                                                                                                                                                                                           |
 | Broadcast | `/studio/broadcast` | `src/views/studio/StudioBroadcastView.tsx` | Has Story | One `StreamManagerPanel`, HubCards, FilterChips agenda (`lib/broadcastAgenda.ts`), `Tahti/Studio/Hubs` → Broadcast. |
 | Fans | `/studio/fans` | `src/views/studio/StudioFansView.tsx` | Has Story | HubCards: Posts, Newsletter, Chat → `/studio/chat`, Memberships, Store, Earnings. |
 | Studio Chat | `/studio/chat` | `src/views/studio/StudioChatView.tsx` | — | Channel chat settings + moderation (`ChannelChatSettings`). `/studio/fans?tab=chat` redirects here. |
@@ -211,11 +211,12 @@ Every extracted Studio panel now has a story: the branding sections under `Tahti
 | View                          | Route                                     | File                         | Storybook | Candidate For              |
 | ----------------------------- | ----------------------------------------- | ---------------------------- | --------- | -------------------------- |
 | [Help Hub](#help-hub)         | `/help`                                   | `src/views/HelpView.tsx`     | Has Story | LegalDocShell, Card layout |
-| [Legal / About](#legal-about) | `/about`, `/how-it-works`, `/for-artists` | `src/views/LegalView.tsx`    | No Story  | LegalDocShell              |
+| [Legal / About](#legal-about) | `/about`, `/how-it-works`                 | `src/views/LegalView.tsx`    | Has Story (`LegalView.stories.tsx`) | PageHeader, LegalHubLinks |
+| For Artists                   | `/for-artists`                            | `src/views/ForArtistsView.tsx` | Has Story (`ForArtistsView.stories.tsx`) | PageHeader, LegalHubLinks |
 | [What Is It](#what-is-it)     | `/what-is-it`                             | `src/views/WhatIsItView.tsx` | Has Story | Marketing / For Artists    |
-| [Terms](#terms)               | `/terms`                                  | `src/views/TermsView.tsx`    | No Story  | LegalDocShell              |
-| [Privacy](#privacy)           | `/privacy`                                | `src/views/PrivacyView.tsx`  | No Story  | LegalDocShell              |
-| [AGPL](#agpl)                 | `/agpl`                                   | `src/views/AgplView.tsx`     | No Story  | LegalDocShell              |
+| [Terms](#terms)               | `/terms`                                  | `src/views/TermsView.tsx`    | Has Story (`TermsView.stories.tsx`) | LegalDocShell              |
+| [Privacy](#privacy)           | `/privacy`                                | `src/views/PrivacyView.tsx`  | Has Story (`PrivacyView.stories.tsx`) | LegalDocShell              |
+| [AGPL](#agpl)                 | `/agpl`                                   | `src/views/AgplView.tsx`     | Has Story (`AgplView.stories.tsx`) | LegalDocShell              |
 | [Status](#status)             | `/status`                                 | `src/views/StatusView.tsx`   | Has Story  | StatChip, Table            |
 | [News](#news)                 | `/news`                                   | `src/views/NewsView.tsx`     | Has Story (PlatformNewsDialog) | StoryRow, StoryCard, FeedStoryDialog          |
 | [What's New](#whats-new-web)  | `/whats-new`                              | `src/views/WhatsNewView.tsx` | Has Story | Timeline + Dialog (full cycle) |
@@ -243,9 +244,9 @@ Every extracted Studio panel now has a story: the branding sections under `Tahti
 
 | View                                  | Route              | File                       | Storybook | Candidate For                           |
 | ------------------------------------- | ------------------ | -------------------------- | --------- | --------------------------------------- |
-| [Embed Channel](#embed-channel)       | `/embed/c/$slug`   | `src/views/EmbedViews.tsx` | No Story  | ChannelBackdropCard, ConnectedPlayerBar |
-| [Embed Release](#embed-release)       | `/embed/r/$id`     | `src/views/EmbedViews.tsx` | No Story  | GlowMediaTile, PlayableTrackTable       |
-| [Embed Collection](#embed-collection) | `/embed/col/$slug` | `src/views/EmbedViews.tsx` | No Story  | PlayableTrackTable                      |
+| [Embed Channel](#embed-channel)       | `/embed/c/$slug`   | `src/views/EmbedViews.tsx` | Has Story (`EmbedViews.stories.tsx`) | ConnectedPlayerBar, PageStates |
+| [Embed Release](#embed-release)       | `/embed/r/$id`     | `src/views/EmbedViews.tsx` | Has Story (`EmbedViews.stories.tsx`) | ConnectedPlayerBar, PlayableTrackTable |
+| [Embed Collection](#embed-collection) | `/embed/col/$slug` | `src/views/EmbedViews.tsx` | Has Story (`EmbedViews.stories.tsx`) | ConnectedPlayerBar, PlayableTrackTable |
 
 ### Admin Views (board-only)
 

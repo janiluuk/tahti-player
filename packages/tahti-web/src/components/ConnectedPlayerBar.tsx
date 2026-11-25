@@ -1,5 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
+  ChevronDownIcon,
+  ChevronUpIcon,
   ListMusicIcon,
   Maximize2Icon,
   PauseIcon,
@@ -16,6 +18,7 @@ import {
   cn,
   InlineError,
   Loader,
+  MarqueeText,
   MediaArtwork,
   PlayerBar,
   Tooltip,
@@ -24,6 +27,7 @@ import {
 import { TAHTI_RADIO_SLUG } from '../api/client';
 import { radioStationIdForPlayable } from '../content/radioStations';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { usePhonePlayerMinimized } from '../hooks/usePhonePlayerMinimized';
 import { usePlaybackErrorToast } from '../hooks/usePlaybackErrorToast';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { soundIdFromPlayableId } from '../lib/soundId';
@@ -41,6 +45,7 @@ export function ConnectedPlayerBar() {
   const { t } = useTranslation('web');
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [phoneMinimized, setPhoneMinimized] = usePhonePlayerMinimized();
   const userId = useAuthStore((s) => s.user?.id);
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
@@ -382,6 +387,80 @@ export function ConnectedPlayerBar() {
     );
   }
 
+  if (isMobile && phoneMinimized) {
+    return (
+      <div
+        className={cn(
+          barShellClass,
+          'bg-background-secondary border-border border-t',
+        )}
+        data-testid="mobile-player-bar"
+        data-minimized=""
+      >
+        <div className="flex h-12 w-full items-center gap-2 pr-1 pl-3">
+          <Button
+            variant="plain"
+            size="flexible"
+            className="flex h-full min-w-0 flex-1 items-center gap-2.5 text-left active:scale-100"
+            onClick={() => setPhoneMinimized(false)}
+            aria-label={`${t('player.restorePlayer')}: ${title}`}
+            data-testid="restore-mobile-player-bar"
+          >
+            <MediaArtwork
+              src={coverUrl}
+              seed={playable.id}
+              size="sm"
+              className="size-8 min-w-8 shrink-0 rounded-sm"
+            />
+            <MarqueeText className="min-w-0 flex-1 text-sm font-semibold">
+              {title}
+            </MarqueeText>
+            {isRealLive ? <PlayerLiveBadge /> : null}
+          </Button>
+          <Button
+            size="icon"
+            variant="text"
+            onClick={onPlayPause}
+            className={cn(
+              'size-11 shrink-0 rounded-full',
+              isPlaying && 'text-accent-green',
+            )}
+            aria-label={playPauseLabel}
+            aria-pressed={isPlaying}
+            aria-busy={isLoading || undefined}
+            data-testid={
+              isPlaying ? 'player-pause-button' : 'player-play-button'
+            }
+          >
+            {isLoading ? (
+              <Loader
+                shape="circle"
+                size={18}
+                data-testid="player-loading-spinner"
+              />
+            ) : isPlaying ? (
+              <PauseIcon size={20} />
+            ) : (
+              <PlayIcon size={20} className="ml-0.5" />
+            )}
+          </Button>
+          <Tooltip content={t('player.restorePlayer')} side="top">
+            <Button
+              size="icon"
+              variant="text"
+              onClick={() => setPhoneMinimized(false)}
+              aria-label={t('player.restorePlayer')}
+              className="text-foreground-secondary size-11 shrink-0"
+              data-testid="expand-mobile-player-bar"
+            >
+              <ChevronUpIcon size={18} aria-hidden />
+            </Button>
+          </Tooltip>
+        </div>
+      </div>
+    );
+  }
+
   if (isMobile) {
     return (
       <div
@@ -399,30 +478,42 @@ export function ConnectedPlayerBar() {
             type="button"
             className="flex min-w-0 flex-1 items-center gap-3 text-left hover:bg-transparent"
             onClick={() => setFullScreenPlayerOpen(true)}
-            aria-label={t('player.openFullScreen')}
+            aria-label={`${t('player.openFullScreen')}: ${title}`}
             data-testid="expand-full-screen-player"
           >
-            {coverUrl ? (
-              <MediaArtwork src={coverUrl} size="thumb" className="shrink-0" />
-            ) : null}
-            <span className="min-w-0">
-              <span
-                className="block truncate text-sm font-semibold"
-                title={title}
+            <MediaArtwork
+              src={coverUrl}
+              seed={playable.id}
+              size="thumb"
+              className="shrink-0"
+            />
+            <span className="min-w-0 flex-1">
+              <MarqueeText
+                className="text-sm font-semibold"
+                data-testid="mobile-player-title"
               >
                 {title}
-              </span>
-              <span
-                className="text-foreground-secondary block truncate text-xs"
-                title={artist}
-              >
+              </MarqueeText>
+              <MarqueeText className="text-foreground-secondary text-xs">
                 {artist}
-              </span>
+              </MarqueeText>
             </span>
             {isRealLive ? <PlayerLiveBadge /> : null}
           </Button>
           {embed ? null : mobilePlayPauseButton}
           {queueButton}
+          <Tooltip content={t('player.minimizePlayer')} side="top">
+            <Button
+              size="icon"
+              variant="text"
+              onClick={() => setPhoneMinimized(true)}
+              aria-label={t('player.minimizePlayer')}
+              className="text-foreground-secondary -mx-1 size-11 shrink-0"
+              data-testid="minimize-mobile-player-bar"
+            >
+              <ChevronDownIcon size={18} aria-hidden />
+            </Button>
+          </Tooltip>
           {isPlaying ? null : (
             <Tooltip content={t('player.closePlayer')} side="top">
               <Button
@@ -451,6 +542,7 @@ export function ConnectedPlayerBar() {
               title={title}
               artist={artist}
               coverUrl={coverUrl}
+              artworkSeed={playable.id}
               action={isRealLive ? <PlayerLiveBadge /> : undefined}
               onTitleClick={
                 playable ? () => setFullScreenPlayerOpen(true) : undefined

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { submitRadioStationSuggestion } from './admin-radio';
+import { submitRadioStationSuggestion } from './admin-radio-submissions';
 
 const INPUT = {
   name: 'Basso FM',

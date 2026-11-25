@@ -1,7 +1,7 @@
 import type {
   AdminGrantHistoryDetail,
   AdminGrantYearSummary,
-} from './admin-governance';
+} from './admin-grants';
 
 export function mockGrantHistory(): AdminGrantYearSummary[] {
   const year = new Date().getUTCFullYear();

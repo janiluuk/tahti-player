@@ -136,6 +136,27 @@ describe('GuidelinesBanner', () => {
     expect(localStorage.getItem(STICKY_NOTICE_KEY)).toBeNull();
   });
 
+  it('links the late toast to the guidelines when the notice has a URL', () => {
+    signIn('u1');
+    render(<GuidelinesBanner />);
+    act(() => {
+      useNotificationInboxStore.setState({
+        items: [{ ...guidelines, url: 'https://tahti.live/guidelines' }],
+        loaded: true,
+      });
+    });
+    expect(showNotificationToast).toHaveBeenLastCalledWith(
+      'Community guidelines updated',
+      expect.objectContaining({
+        sticky: true,
+        link: {
+          label: 'Read guidelines',
+          href: 'https://tahti.live/guidelines',
+        },
+      }),
+    );
+  });
+
   it('draws the title in the theme foreground, not the info-blue link colour', () => {
     useNotificationInboxStore.setState({
       items: [

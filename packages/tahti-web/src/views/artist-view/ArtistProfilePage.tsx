@@ -52,6 +52,7 @@ import {
 import { ArtistSoundCloudTracks } from '../../components/artist-view/ArtistSoundCloudTracks';
 import { ArtistGalleryPanel } from '../../components/ArtistGalleryPanel';
 import { ArtistStoryFeed } from '../../components/ArtistStoryFeed';
+import { CHANNEL_SCHEME_TEXT_CLASS } from '../../components/channel-view/channelSchemeText';
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
 import { type EntitySocialStat } from '../../components/EntitySocialHeader';
 import { ImageLightbox } from '../../components/ImageLightbox';
@@ -408,7 +409,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
     <ContentReveal
       // Cancels AppShell's content padding so the artist's colors reach the
       // pane edges, like the track page.
-      className={`relative isolate flex min-h-full flex-col gap-4 overflow-hidden ${FULL_BLEED_TOP_CANCEL}`}
+      className={`relative isolate flex min-h-full flex-col gap-4 overflow-hidden ${FULL_BLEED_TOP_CANCEL} ${CHANNEL_SCHEME_TEXT_CLASS}`}
       style={{
         ...colorSchemeCssVars(pageScheme),
         color: pageScheme.text,

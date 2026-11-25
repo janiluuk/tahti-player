@@ -94,6 +94,7 @@ function UserGuidelinesBanner({ userId }: { userId: string | undefined }) {
   const lateId = late?.id;
   const lateTitle = late?.title;
   const lateBody = late?.body;
+  const lateUrl = late?.url;
   useEffect(() => {
     if (!lateId || !lateTitle) {
       return;
@@ -104,11 +105,17 @@ function UserGuidelinesBanner({ userId }: { userId: string | undefined }) {
       sticky: true,
       actionLabel: i18n.t('web:guidelinesBanner.acknowledge'),
       onAction: () => onAcknowledge(lateId),
+      link: lateUrl
+        ? {
+            label: i18n.t('web:guidelinesBanner.readGuidelines'),
+            href: lateUrl,
+          }
+        : undefined,
     });
     return () => {
       toast.dismiss(lateId);
     };
-  }, [lateId, lateTitle, lateBody, onAcknowledge]);
+  }, [lateId, lateTitle, lateBody, lateUrl, onAcknowledge]);
 
   if (!sticky || late) {
     return null;

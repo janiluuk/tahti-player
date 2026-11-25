@@ -52,6 +52,26 @@ if (typeof globalThis.sessionStorage === 'undefined') {
 
 setupDomMocks();
 
+// Captured once per worker: with `isolate: false` a later file would
+// otherwise read whatever URL an earlier file left behind.
+const pristineHref = ((
+  globalThis as { __tahtiTestPristineHref?: string }
+).__tahtiTestPristineHref ??= window.location.href);
+
+// jsdom drives every requestAnimationFrame from one shared setInterval that it
+// creates on the first pending callback. Created under a file's fake timers,
+// that interval never fires once real timers return, and frames stay dead
+// for every later file in the worker (motion values stuck at their initial
+// style, rAF-awaiting tests time out). One timeout per frame has no shared
+// state to strand.
+function installAnimationFrames() {
+  window.requestAnimationFrame = (callback) =>
+    setTimeout(() => callback(performance.now()), 16) as unknown as number;
+  window.cancelAnimationFrame = (handle) => clearTimeout(handle);
+}
+
+installAnimationFrames();
+
 // Dialog exits are springs: without this every close waits out the real
 // animation before the dialog leaves the DOM.
 MotionGlobalConfig.skipAnimations = true;
@@ -73,6 +93,11 @@ afterAll(async () => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
   vi.unstubAllEnvs();
+  vi.restoreAllMocks();
+  installAnimationFrames();
+  if (window.location.href !== pristineHref) {
+    window.history.replaceState(null, '', pristineHref);
+  }
   // user-event and Object.assign leave a getter-only navigator.clipboard
   // behind, which makes the next file's Object.assign(navigator, …) throw.
   if (Object.getOwnPropertyDescriptor(navigator, 'clipboard')?.configurable) {
@@ -82,8 +107,11 @@ afterAll(async () => {
   sessionStorage.clear();
   document.head.innerHTML = '';
   document.body.innerHTML = '';
-  document.documentElement.removeAttribute('style');
-  document.documentElement.removeAttribute('class');
+  for (const element of [document.documentElement, document.body]) {
+    for (const name of element.getAttributeNames()) {
+      element.removeAttribute(name);
+    }
+  }
   document.title = '';
   await i18n.changeLanguage(DEFAULT_LOCALE);
   vi.resetModules();

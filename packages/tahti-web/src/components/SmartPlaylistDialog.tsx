@@ -81,7 +81,9 @@ export function SmartPlaylistDialog({
           if (!cancelled) {
             setMatches(null);
             setProblem(
-              failure instanceof Error ? failure.message : 'Invalid rule.',
+              failure instanceof Error
+                ? failure.message
+                : t('smartPlaylistDialogStates.invalidRule'),
             );
           }
         });
@@ -90,7 +92,7 @@ export function SmartPlaylistDialog({
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [library, draft, editing, changeTick]);
+  }, [library, draft, editing, changeTick, t]);
 
   const setRule = (index: number, rule: NativeSmartRule) =>
     setDraft((current) => ({

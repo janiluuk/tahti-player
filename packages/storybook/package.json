@@ -10,6 +10,8 @@
     "preview": "storybook preview",
     "type-check": "tsc -p tsconfig.tahti.json --noEmit",
     "test": "vitest run --project storybook",
+    "test:plays": "node scripts/run-plays.mjs",
+    "test:plays:changed": "node scripts/run-plays.mjs --changed",
     "clean": "rm -rf storybook-static .turbo node_modules/.cache",
     "deploy:vimage": "./deploy/deploy-vimage.sh"
   },

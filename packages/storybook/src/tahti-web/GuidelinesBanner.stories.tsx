@@ -112,6 +112,9 @@ export const ArrivesAfterFirstPaint: Story = {
       await expect(
         page.getByRole('button', { name: 'Acknowledge' }),
       ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: 'Read guidelines' }),
+      ).toHaveAttribute('href', NOTICE.url);
       await expect(canvas.queryByTestId('guidelines-banner')).toBeNull();
       await expect(sections.getBoundingClientRect().top).toBe(topBefore);
     });

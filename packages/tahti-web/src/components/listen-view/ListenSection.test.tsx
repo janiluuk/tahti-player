@@ -37,6 +37,36 @@ describe('ListenSection', () => {
     expect(heading.closest('.min-h-10')).not.toBeNull();
   });
 
+  it('reserves the phone filter line only when the ready row will have a filter', () => {
+    const { rerender } = render(
+      <ListenSection
+        title="Radio"
+        status="loading"
+        empty
+        emptyTitle="No stations"
+        onRetry={vi.fn()}
+        expectFilter
+      >
+        <div>ready</div>
+      </ListenSection>,
+    );
+    expect(
+      screen.getByTestId('listen-section-filter-skeleton').className,
+    ).toContain('sm:hidden');
+    rerender(
+      <ListenSection
+        title="Radio"
+        status="loading"
+        empty
+        emptyTitle="No stations"
+        onRetry={vi.fn()}
+      >
+        <div>ready</div>
+      </ListenSection>,
+    );
+    expect(screen.queryByTestId('listen-section-filter-skeleton')).toBeNull();
+  });
+
   it('reserves a track-table panel with the title inside when skeleton=list', () => {
     render(
       <ListenSection

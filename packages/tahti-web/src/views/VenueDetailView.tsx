@@ -154,6 +154,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
     <PageFrame maxWidth="3xl">
       {backLink}
       <EntitySocialHeader
+        compactOnPhone
         title={venue.name}
         imageUrl={thumb}
         location={placeLabel || null}

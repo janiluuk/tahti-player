@@ -1,7 +1,11 @@
 import type { ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { SectionTitle, type CardsRowBadgeColor } from '@tahti-player/ui';
+import {
+  SectionTitle,
+  Skeleton,
+  type CardsRowBadgeColor,
+} from '@tahti-player/ui';
 
 import {
   CardsRowSkeleton,
@@ -29,6 +33,10 @@ export type ListenSectionProps = {
   actions?: ReactNode;
 
   skeleton?: ListenSectionSkeleton;
+  /** The ready `CardsRow` will have enough items for its filter, which
+   * wraps onto its own line under the title on phones: loading reserves
+   * that line too. */
+  expectFilter?: boolean;
   /** Rendered once the section is ready and has content; usually a
    * `CardsRow` or table that brings its own heading and `data-testid`. */
   children: ReactNode;
@@ -50,6 +58,7 @@ export function ListenSection({
   'data-testid': testId,
   actions,
   skeleton = 'cards',
+  expectFilter = false,
   children,
 }: ListenSectionProps) {
   const { t } = useTranslation('web');
@@ -78,6 +87,12 @@ export function ListenSection({
           {heading}
           {actions ? (
             <div className="flex items-center gap-2">{actions}</div>
+          ) : null}
+          {status === 'loading' && expectFilter ? (
+            <Skeleton
+              data-testid="listen-section-filter-skeleton"
+              className="h-10 basis-full rounded-md sm:hidden"
+            />
           ) : null}
         </div>
       )}

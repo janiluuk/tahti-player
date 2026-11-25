@@ -46,6 +46,52 @@ async function findHero(canvasElement: HTMLElement) {
   return canvas;
 }
 
+/** Any CSS colour (rgb, oklch, …) as sRGB 0-255 plus alpha, via a 1×1 canvas. */
+function toRgba(color: string): [number, number, number, number] {
+  const context = document.createElement('canvas').getContext('2d')!;
+  context.fillStyle = color;
+  context.fillRect(0, 0, 1, 1);
+  const [r, g, b, a] = context.getImageData(0, 0, 1, 1).data;
+  return [r!, g!, b!, a! / 255];
+}
+
+function luminance(color: string): number {
+  const [r, g, b] = toRgba(color)
+    .slice(0, 3)
+    .map((part) => {
+      const channel = part / 255;
+      return channel <= 0.03928
+        ? channel / 12.92
+        : ((channel + 0.055) / 1.055) ** 2.4;
+    });
+  return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
+}
+
+/** The first opaque background behind `element`. The page paints its scheme
+ * colour on an aria-hidden layer under the content, not on the page root,
+ * so reaching the root means that layer's colour. */
+function surfaceOf(element: Element): string {
+  for (let node: Element | null = element; node; node = node.parentElement) {
+    if (node.hasAttribute('data-channel-scheme')) {
+      const layer = node.querySelector(':scope > [aria-hidden]') ?? node;
+      return getComputedStyle(layer).backgroundColor;
+    }
+    const background = getComputedStyle(node).backgroundColor;
+    if (toRgba(background)[3] > 0.99) {
+      return background;
+    }
+  }
+  return getComputedStyle(document.body).backgroundColor;
+}
+
+async function expectReadable(element: Element) {
+  const [high, low] = [
+    luminance(getComputedStyle(element).color),
+    luminance(surfaceOf(element)),
+  ].sort((x, y) => y - x);
+  await expect((high! + 0.05) / (low! + 0.05)).toBeGreaterThanOrEqual(4.5);
+}
+
 export const Visitor: Story = {
   decorators: [withMockAuth(MOCK_USERS.listener), withMotionAllowed],
   play: async ({ canvasElement, step }) => {
@@ -79,6 +125,9 @@ export const Visitor: Story = {
       await expect(
         tiers.getByRole('list', { name: 'Patron perks' }),
       ).toHaveTextContent('Monthly thank-you mix');
+      for (const price of tiers.getAllByText(/^€\d+\/mo$/)) {
+        await expectReadable(price);
+      }
       const tipJar = canvas.getByRole('link', {
         name: 'Tip jar (opens in a new tab)',
       });
@@ -86,6 +135,19 @@ export const Visitor: Story = {
       await expect(tipJar).toHaveAttribute('target', '_blank');
       await expect(tipJar).toHaveAttribute('rel', 'noopener noreferrer');
     });
+
+    await step(
+      'the dark scheme keeps the On SoundCloud heading readable',
+      async () => {
+        await expectReadable(
+          await canvas.findByRole(
+            'heading',
+            { name: 'On SoundCloud' },
+            { timeout: 5000 },
+          ),
+        );
+      },
+    );
 
     await step('background music toggles on and off', async () => {
       const playLabel = `Play ${ARTIST_NAME}'s background music`;

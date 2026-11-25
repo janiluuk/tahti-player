@@ -1,4 +1,4 @@
-export { CardsRow } from './CardsRow';
+export { CardsRow, CARDS_ROW_FILTER_MIN_ITEMS } from './CardsRow';
 export type {
   CardsRowBadgeColor,
   CardsRowItem,

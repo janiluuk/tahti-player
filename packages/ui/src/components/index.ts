@@ -25,6 +25,7 @@ export * from './DonutChart';
 export * from './FavoriteButton';
 export * from './FilePicker';
 export * from './MediaArtwork';
+export * from './MarqueeText';
 export * from './CardGrid';
 export * from './CatalogTable';
 export * from './DataTable';

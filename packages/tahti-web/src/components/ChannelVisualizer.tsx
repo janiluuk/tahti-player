@@ -9,6 +9,10 @@ import {
 
 import { artworkVisualizerScheme } from '../lib/artworkVisualizerScheme';
 import {
+  useBackdropFrameMonitor,
+  useBackdropFramesSlow,
+} from '../lib/backdropMotion';
+import {
   channelVizPackFromJson,
   vizPackModeAt,
   type ChannelVizPack,
@@ -50,6 +54,10 @@ type Props = {
   /** Cheap full-window ambient path (lower DPR / FPS, no antialias; a still
    * gradient when WebGL is software-rendered). */
   backdrop?: boolean;
+  /** With `backdrop`: drop to the still gradient when the live frame monitor
+   * finds the page dropping frames. Off where the user switched the
+   * animation on themselves. */
+  stillWhenFramesDrop?: boolean;
 };
 
 const ThreeVisualizer = lazy(() =>
@@ -199,6 +207,7 @@ export const ChannelVisualizer = ({
   showModeButtons = true,
   onEngineModeChange,
   backdrop = false,
+  stillWhenFramesDrop = true,
 }: Props) => {
   const [canAnimate, setCanAnimate] = useState(false);
   const [offscreen, setOffscreen] = useState(false);
@@ -232,6 +241,10 @@ export const ChannelVisualizer = ({
     () => parseSettings(visualSettingsJson, mode),
     [mode, visualSettingsJson],
   );
+  const adaptive = backdrop && stillWhenFramesDrop;
+  const framesSlow = useBackdropFramesSlow();
+  const heldStill = adaptive && framesSlow;
+  useBackdropFrameMonitor(adaptive && canAnimate && !heldStill);
   // A caller passing `audioReactive` explicitly (the global ambient
   // background's own on/off switch, unrelated to any one preset's saved
   // settings) always wins; otherwise fall back to this preset's own
@@ -281,7 +294,7 @@ export const ChannelVisualizer = ({
     />
   );
 
-  if (!canAnimate) {
+  if (!canAnimate || heldStill) {
     return fallback;
   }
 

@@ -12,7 +12,6 @@ import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
-  backButtonCornerClassName,
   BackButtonLink,
   Button,
   EditIconLink,
@@ -268,16 +267,6 @@ export function CollectionView({ slug }: { slug: string }) {
     // Full-bleed like the track page: cancel AppShell's content padding.
     <div className={`min-h-full ${FULL_BLEED_TOP_CANCEL}`}>
       <PageFrame maxWidth="full" className="relative">
-        <Tooltip
-          content={t('collectionView.backToListen')}
-          side="right"
-          wrapperClassName={backButtonCornerClassName}
-        >
-          <BackButtonLink
-            to="/"
-            aria-label={t('collectionView.backToListen')}
-          />
-        </Tooltip>
         {loadError ? (
           <PageErrorBanner
             title={t('pageStates.refreshFailed')}
@@ -287,6 +276,15 @@ export function CollectionView({ slug }: { slug: string }) {
         ) : null}
 
         <EntitySocialHeader
+          compactOnPhone
+          leading={
+            <Tooltip content={t('collectionView.backToListen')} side="right">
+              <BackButtonLink
+                to="/"
+                aria-label={t('collectionView.backToListen')}
+              />
+            </Tooltip>
+          }
           title={collection.name}
           imageUrl={coverUrl}
           imageAlt=""

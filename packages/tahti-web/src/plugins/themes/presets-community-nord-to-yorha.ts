@@ -293,7 +293,8 @@ const PIXEL_VARS: Record<string, string> = {
   'shadow-y': '2px',
   'shadow-blur': '0px',
   'default-font-family': "'Able 5', 'Noto Sans', system-ui, sans-serif",
-  'font-family-heading': "'Pixel Digivolve Italic', 'Bricolage Grotesque'",
+  'font-family-heading':
+    "'Pixel Digivolve Italic', 'Bricolage Grotesque', 'Bricolage Grotesque Fallback'",
   'font-weight-normal': '400',
   'font-weight-bold': '700',
   'font-weight-extra-bold': '800',

@@ -40,9 +40,14 @@
     },
     "lint": {},
     "lint:fix": {},
+    "transit": {
+      "dependsOn": [
+        "^transit"
+      ]
+    },
     "test": {
       "dependsOn": [
-        "^build"
+        "transit"
       ],
       "outputs": [
         "coverage/**"
@@ -50,7 +55,7 @@
     },
     "test:coverage": {
       "dependsOn": [
-        "^build"
+        "transit"
       ],
       "outputs": [
         "coverage/**"

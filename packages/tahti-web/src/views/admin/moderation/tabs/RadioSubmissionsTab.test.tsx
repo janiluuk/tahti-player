@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { MediaArtworkDefaultProvider } from '@tahti-player/ui';
 
-import * as radio from '../../../../api/admin/admin-radio';
+import * as radio from '../../../../api/admin/admin-radio-submissions';
 import { RadioSubmissionsTab } from './RadioSubmissionsTab';
 
 describe('RadioSubmissionsTab', () => {

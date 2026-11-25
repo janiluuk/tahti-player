@@ -8,7 +8,7 @@ import {
 import { act, cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import * as governance from '../../../../api/admin/admin-governance';
+import * as governance from '../../../../api/admin/admin-grants';
 import { GrantsTab } from './GrantsTab';
 
 async function renderGrantsTab() {

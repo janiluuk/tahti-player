@@ -239,7 +239,7 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
                 setMsg(r.error);
                 return;
               }
-              setMsg('Tier created.');
+              setMsg(t('purchaseTiersEditorStates.tierCreated'));
               closeCreate();
               reload();
             });

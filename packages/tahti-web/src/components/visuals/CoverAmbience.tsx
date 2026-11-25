@@ -2,6 +2,10 @@ import { useId, useState, type CSSProperties } from 'react';
 
 import { cn, usePrefersReducedMotion } from '@tahti-player/ui';
 
+import {
+  useBackdropFrameMonitor,
+  useBackdropFramesSlow,
+} from '../../lib/backdropMotion';
 import { hasSoftwareWebGL } from '../../lib/webgl';
 
 export type CoverAmbienceVariant = 'glow' | 'water';
@@ -24,15 +28,18 @@ function rgba(rgb: [number, number, number] | null | undefined, alpha: number) {
  * Background built only from the cover art, for when the visualizer is off.
  * `glow`: the blurred cover with slowly drifting colour light. `water`: the
  * cover's upper part as a slowly panning landscape over its own reflection,
- * which ripples. Motion stops under prefers-reduced-motion and when the
- * browser renders without a GPU.
+ * which ripples. Motion stops under prefers-reduced-motion, when the
+ * browser renders without a GPU and when the frame monitor sees it drop
+ * frames.
  */
 export function CoverAmbience({ coverUrl, rgb, variant, className }: Props) {
   const filterId = `cover-ripple-${useId().replace(/:/g, '')}`;
   const reducedMotion = usePrefersReducedMotion();
   // Without a GPU every drift step re-blurs or re-filters the whole screen.
   const [softwareRendering] = useState(hasSoftwareWebGL);
-  const still = reducedMotion || softwareRendering;
+  const framesSlow = useBackdropFramesSlow();
+  const still = reducedMotion || softwareRendering || framesSlow;
+  useBackdropFrameMonitor(!still);
   const image = coverUrl ? `url("${coverUrl}")` : undefined;
 
   if (variant === 'glow') {
