@@ -17,6 +17,7 @@ function mockQueueItem(
   title: string,
   artist: string,
   durationMs?: number,
+  artworkUrl?: string,
 ): QueueItem {
   return {
     id,
@@ -43,7 +44,10 @@ function mockQueueItem(
       ],
       artwork: {
         items: [
-          { url: `https://picsum.photos/seed/${id}/512`, purpose: 'cover' },
+          {
+            url: artworkUrl ?? `https://picsum.photos/seed/${id}/512`,
+            purpose: 'cover',
+          },
         ],
       },
     },
@@ -119,6 +123,7 @@ const longTitleQueue = [
     'The Northern Lights Keep Moving Long After the Last Train Has Gone Home',
     'The Intercontinental Society of Midnight Radio Astronomers',
     245000,
+    '/artwork-presets/artwork-05.webp',
   ),
   mockQueueItem('archive:next-title', 'Polar Static', 'DJ Moonlight', 198000),
 ];
@@ -144,9 +149,11 @@ export const LivingArtworkAndFade: Story = {
       'data-variant',
       'glow',
     );
-    await expect(
-      player.getByTestId('full-screen-player-cover-panel'),
-    ).toHaveAttribute('data-cover-glow', 'true');
+    await waitFor(() =>
+      expect(
+        player.getByTestId('full-screen-player-cover-panel'),
+      ).toHaveAttribute('data-cover-glow', 'true'),
+    );
     await expect(
       player.getByTestId('full-screen-player-title'),
     ).toHaveAttribute('data-transition', 'fade');
