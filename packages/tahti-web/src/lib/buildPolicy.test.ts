@@ -29,6 +29,36 @@ describe('validateProductionBuildEnvironment', () => {
     },
   );
 
+  it('keeps deploy profiles and diagnostics paired', () => {
+    expect(() =>
+      validateProductionBuildEnvironment('build', {
+        TAHTI_WEB_DEPLOY_PROFILE: 'prod',
+      }),
+    ).not.toThrow();
+    expect(() =>
+      validateProductionBuildEnvironment('build', {
+        TAHTI_WEB_DEPLOY_PROFILE: 'beta',
+        VITE_ENABLE_DIAGNOSTICS: '1',
+      }),
+    ).not.toThrow();
+    expect(() =>
+      validateProductionBuildEnvironment('build', {
+        TAHTI_WEB_DEPLOY_PROFILE: 'prod',
+        VITE_ENABLE_DIAGNOSTICS: '1',
+      }),
+    ).toThrow('Production deploys cannot enable diagnostics');
+    expect(() =>
+      validateProductionBuildEnvironment('build', {
+        TAHTI_WEB_DEPLOY_PROFILE: 'beta',
+      }),
+    ).toThrow('Beta deploys must enable diagnostics');
+    expect(() =>
+      validateProductionBuildEnvironment('build', {
+        TAHTI_WEB_DEPLOY_PROFILE: 'preview',
+      }),
+    ).toThrow('must be prod or beta');
+  });
+
   it('rejects known mock fixture markers in bundle text', () => {
     const sample = `export const routes = ['/party/${PRODUCTION_MOCK_MARKERS[0]}'];`;
     expect(() => assertProductionBundleFreeOfMockMarkers(sample)).toThrow(

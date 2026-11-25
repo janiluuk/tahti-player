@@ -37,11 +37,10 @@ remain below.
 Items marked **verify** were never confirmed done; check before closing them.
 
 - [ ] **Production build and container.** Production traffic runs on the
-  beta container (`tahti-beta-web`, `/srv/tahti-beta`), and the CI deploy
-  builds with `VITE_ENABLE_DIAGNOSTICS=1`, so `/more` and the Screen atlas
-  are on every public host. Decide: prod-profile build in CI
-  (`TAHTI_WEB_DEPLOY_PROFILE=prod` equivalent) and a production-named
-  container/path or image. Also decide whether vending the SPA into
+  beta container (`tahti-beta-web`, `/srv/tahti-beta`). CI, self-hosted and
+  SSH deploy builds now declare `TAHTI_WEB_DEPLOY_PROFILE=prod`; `/more` is
+  disabled and the 166.6 MB Screen atlas is removed from the artifact. Left:
+  decide on a production-named container/path or image and whether vending the SPA into
   tahti-org (Option A, decided 2026-08-17, never started) is still wanted.
 - [ ] **hCaptcha sitekey (verify).** The CI build does not pass
   `VITE_HCAPTCHA_SITEKEY`. If the API has `HCAPTCHA_SECRET` set, chat join

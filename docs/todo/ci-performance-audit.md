@@ -35,9 +35,15 @@ Measured on master pushes #2178, #2176 and 51abf41da (REST `actions/runs/<id>/jo
 
 Changes: CI `web-dist` job builds the production bundle on master pushes and uploads `tahti-web-dist`; the self-hosted deploy downloads it from the triggering CI run (`workflow_dispatch` still builds on the runner, without restoring the pnpm store from the Actions cache since it persists on vimage); journeys run in 6 shards instead of 4.
 
+Production artifact pass (2026-11-25): every CI/manual deploy build now declares
+`TAHTI_WEB_DEPLOY_PROFILE=prod`; Vite removes the 166.6 MB `public/map/`
+diagnostics atlas from `dist/` while preserving other public assets. CI and both
+deploy workflows fail if `dist/map` returns, and the CI summary records artifact
+bytes/files. `build:diagnostics` and the beta deploy profile retain the atlas.
+
 Watch after merge: the first master deploy (artifact download from vimage, its duration, the site serving the CI-built bundle); the slowest journey shard (shards are balanced by test count, not time: 3.7 vs 7.1 min at 4 shards).
 
-Further options, not done: `public/map/` (165 MB of Screen atlas screenshots) ships in every production bundle although the atlas is off in production - dropping it shrinks the artifact, the docker build context and the dist swap; running journeys against a `vite build` + `vite preview` bundle instead of the cold dev server; the per-commit 1 GB turbo caches can push the pnpm store and Playwright caches out of the 10 GB Actions cache.
+Further options, not done: running journeys against a `vite build` + `vite preview` bundle instead of the cold dev server; the per-commit 1 GB turbo caches can push the pnpm store and Playwright caches out of the 10 GB Actions cache.
 
 ## Left
 

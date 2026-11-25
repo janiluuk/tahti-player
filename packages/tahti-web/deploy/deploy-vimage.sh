@@ -22,7 +22,7 @@
 #   VITE_CENTRIFUGO_WS     chat websocket (default: wss://chat.tahti.live/...)
 #   VITE_HCAPTCHA_SITEKEY  optional; passed through to the Vite build when set
 #                          (required for chat join when the API has HCAPTCHA_SECRET)
-#   TAHTI_WEB_DEPLOY_PROFILE  beta|prod (default: beta)
+#   TAHTI_WEB_DEPLOY_PROFILE  beta|prod (default: prod)
 set -euo pipefail
 
 HOST="${DEPLOY_HOST:-vimage}"
@@ -81,6 +81,7 @@ if [[ "${PROFILE}" != "beta" ]]; then
 fi
 
 BUILD_ENV+=(
+  "TAHTI_WEB_DEPLOY_PROFILE=${PROFILE}"
   "VITE_CENTRIFUGO_WS=${CENTRIFUGO_WS}"
   "VITE_DEPLOY_VERSION=${DEPLOY_VERSION}"
 )
@@ -99,6 +100,13 @@ if [[ ! -f "$ROOT/dist/index.html" ]]; then
   echo "error: build did not produce dist/index.html" >&2
   exit 1
 fi
+
+if [[ "${PROFILE}" == "prod" && -e "$ROOT/dist/map" ]]; then
+  echo "error: production build contains the diagnostics atlas" >&2
+  exit 1
+fi
+
+echo "    Bundle: $(du -sh "$ROOT/dist" | cut -f1)"
 
 echo "==> Syncing → ${HOST}:${REMOTE_PATH}"
 ssh "$HOST" "mkdir -p '${REMOTE_PATH}/dist' '${REMOTE_PATH}/deploy'"

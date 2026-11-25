@@ -13,6 +13,18 @@ export function validateProductionBuildEnvironment(
   if (unsafeKey) {
     throw new Error(`${unsafeKey}=1 is not allowed in a production build`);
   }
+  const profile = env.TAHTI_WEB_DEPLOY_PROFILE;
+  if (profile && profile !== 'prod' && profile !== 'beta') {
+    throw new Error(
+      `TAHTI_WEB_DEPLOY_PROFILE must be prod or beta (got: ${profile})`,
+    );
+  }
+  if (profile === 'prod' && env.VITE_ENABLE_DIAGNOSTICS === '1') {
+    throw new Error('Production deploys cannot enable diagnostics');
+  }
+  if (profile === 'beta' && env.VITE_ENABLE_DIAGNOSTICS !== '1') {
+    throw new Error('Beta deploys must enable diagnostics');
+  }
 }
 
 export const diagnosticsEnabled =
