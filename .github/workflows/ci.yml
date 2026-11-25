@@ -419,18 +419,19 @@ jobs:
   # Role journeys (anonymous, listener, artist, admin) against the mock app.
   # Not a required check. Runs on master pushes and manual workflow_dispatch
   # only — skipped on pull requests to keep PR wall-clock on the gate jobs.
-  # The deploy workflows start when this whole workflow completes, so the
-  # journeys run in four shards: one job took ~20-28 min, longer than the gap
-  # between merges, and the next push cancelled it before any deploy.
+  # The deploy workflows start when this whole workflow completes and these
+  # shards finish last, so their count sets the merge-to-production time:
+  # at four shards the slowest took ~7 min against ~4.5 min for every other
+  # job.
   e2e-mock:
-    name: E2E journeys (mock app ${{ matrix.shard }}/4)
+    name: E2E journeys (mock app ${{ matrix.shard }}/6)
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
+        shard: [1, 2, 3, 4, 5, 6]
 
     steps:
       - name: Checkout code
@@ -477,7 +478,7 @@ jobs:
 
       - name: Role journeys
         working-directory: packages/tahti-web
-        run: pnpm exec playwright test e2e/roles-*.spec.ts e2e/use-cases-*.spec.ts e2e/routes-*.spec.ts e2e/view-before-edit.spec.ts e2e/batch-fixes*.spec.ts e2e/nav-chrome.spec.ts e2e/layout-stability.spec.ts e2e/studio-release-detail-chrome.spec.ts e2e/library-*.spec.ts e2e/viewport-studio-sounds.spec.ts e2e/a11y-play-controls.spec.ts e2e/event-calendar.spec.ts e2e/cutover-vital.spec.ts e2e/real-user-journeys.spec.ts e2e/plugin-store.spec.ts e2e/radio-cover.spec.ts e2e/channel-designer-elements.spec.ts e2e/channel-designer-artist-look.spec.ts e2e/channel-clips.spec.ts e2e/fullscreen-player-minimize.spec.ts e2e/mastering.spec.ts e2e/stash-and-subscriber-access.spec.ts e2e/listings-news.spec.ts e2e/channel-designer-parity.spec.ts e2e/listener-purchase-flow.spec.ts e2e/fan-sub-and-track-purchase.spec.ts e2e/artist-site-chrome.spec.ts --workers=2 --retries=1 --shard=${{ matrix.shard }}/4
+        run: pnpm exec playwright test e2e/roles-*.spec.ts e2e/use-cases-*.spec.ts e2e/routes-*.spec.ts e2e/view-before-edit.spec.ts e2e/batch-fixes*.spec.ts e2e/nav-chrome.spec.ts e2e/layout-stability.spec.ts e2e/studio-release-detail-chrome.spec.ts e2e/library-*.spec.ts e2e/viewport-studio-sounds.spec.ts e2e/a11y-play-controls.spec.ts e2e/event-calendar.spec.ts e2e/cutover-vital.spec.ts e2e/real-user-journeys.spec.ts e2e/plugin-store.spec.ts e2e/radio-cover.spec.ts e2e/channel-designer-elements.spec.ts e2e/channel-designer-artist-look.spec.ts e2e/channel-clips.spec.ts e2e/fullscreen-player-minimize.spec.ts e2e/mastering.spec.ts e2e/stash-and-subscriber-access.spec.ts e2e/listings-news.spec.ts e2e/channel-designer-parity.spec.ts e2e/listener-purchase-flow.spec.ts e2e/fan-sub-and-track-purchase.spec.ts e2e/artist-site-chrome.spec.ts --workers=2 --retries=1 --shard=${{ matrix.shard }}/6
         env:
           PLAYWRIGHT_BASE_URL: http://localhost:5196
           PLAYWRIGHT_CHROMIUM_PATH: ${{ env.PLAYWRIGHT_CHROMIUM_PATH }}
@@ -490,6 +491,49 @@ jobs:
           path: packages/tahti-web/test-results/
           if-no-files-found: warn
           retention-days: 14
+
+  # The production bundle for this commit, built while the tests run.
+  # deploy-tahti-web-selfhosted.yml downloads it from this run instead of
+  # rebuilding on the deploy host, so a deploy only ships what this run
+  # built and the whole run passed.
+  web-dist:
+    name: Build tahti-web (production bundle)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Build @tahti-player/tahti-web
+        # Leave VITE_TAHTI_API_URL unset so the client uses same-origin
+        # /tahti-api (proxied to https://api.tahti.live by nginx on vimage).
+        run: |
+          env -u VITE_TAHTI_API_URL -u VITE_FORCE_MOCK -u VITE_ALLOW_MOCK_FALLBACK -u VITE_ENABLE_DIAGNOSTICS \
+            VITE_CENTRIFUGO_WS="${VITE_CENTRIFUGO_WS:-wss://chat.tahti.live/connection/websocket}" \
+            VITE_HCAPTCHA_SITEKEY="${{ vars.HCAPTCHA_SITEKEY }}" \
+            pnpm --filter @tahti-player/tahti-web build
+
+      - name: Verify build output
+        run: |
+          test -f packages/tahti-web/dist/index.html
+          if grep -R --include='*.js' -E '"https?://[^"]+"\.startsWith\("http"\)' packages/tahti-web/dist; then
+            echo "Prod build inlined an absolute VITE_TAHTI_API_URL. The client must use same-origin /tahti-api."
+            exit 1
+          fi
+
+      - name: Upload production bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: tahti-web-dist
+          path: packages/tahti-web/dist/
+          if-no-files-found: error
+          include-hidden-files: true
+          compression-level: 1
+          retention-days: 3
 
   # Manual-only e2e run: dispatch the workflow with run_e2e=true. Runs the
   # Playwright suite against the deployed site (beta.tahti.live by default).

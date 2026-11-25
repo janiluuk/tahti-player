@@ -4,7 +4,9 @@
 # Unlike deploy-tahti-web.yml (GitHub-hosted runner + jumphost SSH), this
 # workflow needs no external SSH exposure at all: the runner is registered
 # directly on vimage (as the unprivileged `gha-runner` user, in the
-# `docker` group, owning /srv/tahti-beta) and builds + deploys locally.
+# `docker` group, owning /srv/tahti-beta) and deploys locally. After CI it
+# ships the `tahti-web-dist` artifact that CI's web-dist job built from the
+# same commit; a manual dispatch builds on the runner instead.
 # Chosen over the jumphost path specifically to avoid exposing SSH to the
 # public internet on a public repo — see the runner setup notes in
 # packages/tahti-web/deploy/README.md.
@@ -31,6 +33,7 @@ env:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   # Shared with deploy-tahti-web.yml's group name on purpose: only one of
@@ -76,30 +79,33 @@ jobs:
             echo "Tagged and pushed ${TAG}."
           fi
 
+      - name: Download the CI production bundle
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: tahti-web-dist
+          path: packages/tahti-web/dist
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      # The pnpm store persists on this host, so it is not restored from the
+      # Actions cache.
       - name: Setup Node.js
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/setup-node@v7
         with:
           node-version: '24'
 
       - name: Setup PNPM
+        if: github.event_name == 'workflow_dispatch'
         uses: pnpm/action-setup@v5
 
-      - name: Get PNPM store directory
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup PNPM cache
-        uses: actions/cache@v6
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
       - name: Install dependencies
+        if: github.event_name == 'workflow_dispatch'
         run: pnpm install --frozen-lockfile
 
       - name: Build @tahti-player/tahti-web
+        if: github.event_name == 'workflow_dispatch'
         # Leave VITE_TAHTI_API_URL unset so the client uses same-origin
         # /tahti-api (proxied to https://api.tahti.live by nginx on vimage).
         run: |

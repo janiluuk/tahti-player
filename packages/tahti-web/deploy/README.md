@@ -74,8 +74,10 @@ group (`deploy-tahti-web`) so only one can run at a time.
   dormant/unused as of 2026-09-02, kept as a documented alternative.
 - **`.github/workflows/deploy-tahti-web-selfhosted.yml`** — a
   self-hosted GitHub Actions runner registered directly on `vimage`
-  (label `tahti-deploy`) builds and deploys locally, no SSH/external
-  exposure needed at all. **This is the active path.** Set up
+  (label `tahti-deploy`) deploys locally, no SSH/external exposure
+  needed at all. After CI it ships the `tahti-web-dist` artifact that
+  CI's `web-dist` job built from the same commit (no rebuild on vimage);
+  a manual dispatch builds on the runner. **This is the active path.** Set up
   2026-09-02:
   - Runner runs as an unprivileged `gha-runner` user (member of the
     `docker` group), not root — `/srv/tahti-beta` is owned by
