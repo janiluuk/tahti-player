@@ -423,7 +423,7 @@ export function ConnectedPlayerBar() {
             onClick={onPlayPause}
             className={cn(
               'size-11 shrink-0 rounded-full',
-              isPlaying && 'text-accent-green',
+              isPlaying && 'text-accent-green-strong',
             )}
             aria-label={playPauseLabel}
             aria-pressed={isPlaying}
