@@ -360,12 +360,10 @@ jobs:
       fail-fast: false
       matrix:
         # One Chromium page serves a whole Vitest run, and its renderer gets
-        # killed ("Browser connection was closed") about 90 s in; at ~500
-        # story files, six shards of 85 crossed that line. Ten shards keep
-        # each run near 50 files. Each job runs three or four of them one
-        # after another (shards 1,4,7,10 / 2,5,8 / 3,6,9), because a job's
-        # checkout, install and Playwright setup cost about as much as a
-        # shard does.
+        # killed ("Browser connection was closed") during many-file runs.
+        # The shared play runner partitions the suite into three groups and
+        # starts a fresh browser for every chunk of at most 50 files. Three
+        # jobs amortize checkout, install and Playwright setup costs.
         group: [1, 2, 3]
 
     steps:
@@ -395,26 +393,7 @@ jobs:
         run: pnpm --filter @tahti-player/storybook exec playwright install-deps chromium
 
       - name: Run stories as tests
-        run: |
-          set -o pipefail
-          failed=0
-          # A Chromium renderer crash ("Browser connection was closed") aborts
-          # the shard without any story failing; that shard gets one retry.
-          # Real story failures are never retried.
-          for shard in $(seq "${{ matrix.group }}" 3 10); do
-            echo "::group::Stories shard $shard/10"
-            log="shard-$shard.log"
-            if ! pnpm --filter @tahti-player/storybook test --shard="$shard/10" 2>&1 | tee "$log"; then
-              if grep -q "Browser connection was closed" "$log" && ! grep -qE "FAIL.*\.stories\.tsx" "$log"; then
-                echo "::warning::Stories shard $shard/10: browser crashed, retrying once"
-                pnpm --filter @tahti-player/storybook test --shard="$shard/10" || failed=1
-              else
-                failed=1
-              fi
-            fi
-            echo "::endgroup::"
-          done
-          exit $failed
+        run: pnpm --filter @tahti-player/storybook test:plays --group "${{ matrix.group }}/3" --chunk 50 --jobs 1
 
   # Role journeys (anonymous, listener, artist, admin) against the mock app.
   # Not a required check. Runs on master pushes and manual workflow_dispatch

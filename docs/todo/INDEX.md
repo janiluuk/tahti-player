@@ -58,7 +58,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Stats on top, slow calls cached (tahti-org#1128), Grafana embed unblocked in tahti-web CSP (0.0.442); Grafana `root_url` set on vimage6 (2026-11-23); left: live check of the embed after the 0.0.442 deploy |
 | partial | [google-facebook-login.md](google-facebook-login.md) | Google/Facebook sign-in built (web + tahti-org#1124, #1125); left: provider apps, server secrets, deploy, live check |
 | partial | [navigation-performance.md](navigation-performance.md) | Snapshots/GET cache/shell cuts done; remount assert in `useSnapshotFetch.test`; left: real-browser check vs live API |
-| open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | Many-file Chromium drop; CI ~50-file shards; 406 tahti-web stories; no single-file culprit yet |
+| open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | Many-file Chromium drop; shared local/CI runner uses fresh Chromium per ~50 files + drop-only retry; no single-file culprit yet |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Every mock spec in the CI glob (2026-11-23); left: collection player placement, 2 product findings |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: cross-section trail on phones (design call) |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |

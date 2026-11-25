@@ -10,7 +10,7 @@
  *   node scripts/run-plays.mjs --changed origin/master   …or by the branch since a ref
  *   node scripts/run-plays.mjs src/tahti-web/Studio  path filters, as for vitest
  *   options: --chunk <files> (default 50), --jobs <parallel chunks> (default 2),
- *            --list (print the selected story files and stop)
+ *            --group <n/total>, --list (print selected story files and stop)
  */
 import { spawn, spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
@@ -23,26 +23,55 @@ function parseArgs(argv) {
   const options = {
     chunk: 50,
     jobs: 2,
+    group: null,
     changed: null,
     list: false,
     filters: [],
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
-    if (arg === '--chunk') options.chunk = Number(argv[++i]);
-    else if (arg === '--jobs') options.jobs = Number(argv[++i]);
-    else if (arg === '--list') options.list = true;
-    else if (arg === '--changed') {
+    if (arg === '--chunk') {
+      options.chunk = Number(argv[++i]);
+    } else if (arg === '--jobs') {
+      options.jobs = Number(argv[++i]);
+    } else if (arg === '--group') {
+      options.group = parseGroup(argv[++i]);
+    } else if (arg === '--list') {
+      options.list = true;
+    } else if (arg === '--changed') {
       const next = argv[i + 1];
       options.changed = next && !next.startsWith('-') ? argv[++i] : true;
-    } else options.filters.push(arg);
+    } else {
+      options.filters.push(arg);
+    }
   }
   return options;
 }
 
+function parseGroup(value) {
+  const match = /^(\d+)\/(\d+)$/.exec(value ?? '');
+  const index = Number(match?.[1]);
+  const total = Number(match?.[2]);
+  if (!match || index < 1 || total < 1 || index > total) {
+    throw new Error(
+      `--group must be n/total with 1 <= n <= total (got: ${value})`,
+    );
+  }
+  return { index, total };
+}
+
+function selectGroup(files, group) {
+  if (!group) {
+    return files;
+  }
+  return files.filter((_, index) => index % group.total === group.index - 1);
+}
+
 function git(args, cwd) {
   const result = spawnSync('git', args, { cwd, encoding: 'utf8' });
-  if (result.status !== 0) throw new Error(result.stderr);
+  if (result.status !== 0) {
+    throw new Error(result.stderr);
+  }
   return result.stdout.split('\n').filter(Boolean);
 }
 
@@ -72,11 +101,15 @@ function changedStoryFiles(ref, allStories) {
       picked.add(file.slice(storyPrefix.length));
       continue;
     }
-    if (/\.(test|stories)\.tsx?$/.test(file)) continue;
+    if (/\.(test|stories)\.tsx?$/.test(file)) {
+      continue;
+    }
     const parts = file.replace(/\.tsx?$/, '').split('/');
     const base = parts.at(-1);
     const name = base === 'index' ? parts.at(-2) : base;
-    if (name && !GENERIC_NAMES.has(name)) names.add(name);
+    if (name && !GENERIC_NAMES.has(name)) {
+      names.add(name);
+    }
   }
   if (names.size > 0) {
     const components = [...names].filter((name) => /^[A-Z]/.test(name));
@@ -87,7 +120,9 @@ function changedStoryFiles(ref, allStories) {
     ];
     const pattern = new RegExp(alternatives.join('|'));
     for (const story of allStories) {
-      if (picked.has(story)) continue;
+      if (picked.has(story)) {
+        continue;
+      }
       if (pattern.test(readFileSync(join(packageDir, story), 'utf8'))) {
         picked.add(story);
       }
@@ -120,7 +155,9 @@ function listStoryFiles({ changed, filters }) {
   const stories = [...new Set(entries.map((entry) => entry.file))]
     .map((file) => relative(packageDir, file))
     .sort();
-  if (!changed) return stories;
+  if (!changed) {
+    return stories;
+  }
   return changedStoryFiles(changed === true ? null : changed, stories);
 }
 
@@ -163,7 +200,7 @@ async function runWithRetry(files, label) {
 
 async function main() {
   const options = parseArgs(process.argv.slice(2));
-  const files = listStoryFiles(options);
+  const files = selectGroup(listStoryFiles(options), options.group);
   if (options.list) {
     process.stdout.write(`${files.join('\n')}\n`);
     return;
@@ -177,7 +214,7 @@ async function main() {
     chunks.push(files.slice(i, i + options.chunk));
   }
   process.stdout.write(
-    `${files.length} story files in ${chunks.length} chunk(s), ${options.jobs} at a time\n`,
+    `${files.length} story files in ${chunks.length} chunk(s), ${options.jobs} at a time${options.group ? `, group ${options.group.index}/${options.group.total}` : ''}\n`,
   );
   const started = Date.now();
   const failed = [];
@@ -202,7 +239,9 @@ async function main() {
   process.stdout.write(
     `${chunks.length - failed.length}/${chunks.length} chunks passed in ${seconds}s\n`,
   );
-  if (failed.length > 0) process.exitCode = 1;
+  if (failed.length > 0) {
+    process.exitCode = 1;
+  }
 }
 
 await main();
