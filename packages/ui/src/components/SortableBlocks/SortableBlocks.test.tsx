@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { useEffect } from 'react';
 
 import { SortableBlocks, type SortableBlock } from './SortableBlocks';
@@ -45,6 +51,9 @@ describe('SortableBlocks', () => {
     await waitFor(() =>
       expect(container.querySelector('[data-drag-ready]')).not.toBeNull(),
     );
+    // The drag layer's own mount effects can still be pending when its DOM
+    // shows up; flush them so only the toggles below are counted.
+    await act(async () => {});
     mounts.mockClear();
     rerender(
       <SortableBlocks blocks={blocks} reordering={false} onReorder={vi.fn()} />,
