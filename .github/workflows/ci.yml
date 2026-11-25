@@ -516,6 +516,7 @@ jobs:
           name: tahti-web-dist
           path: packages/tahti-web/dist/
           if-no-files-found: error
+          overwrite: true
           include-hidden-files: true
           compression-level: 1
           retention-days: 3

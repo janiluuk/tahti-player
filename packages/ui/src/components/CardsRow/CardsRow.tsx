@@ -7,7 +7,7 @@ import {
   ZoomOut,
 } from 'lucide-react';
 import { AnimatePresence, useReducedMotion } from 'motion/react';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 import { cn } from '../../utils';
 import { useMediaQuery } from '../../utils/mediaQuery';
@@ -117,6 +117,9 @@ export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   /** Shows the filter box beside the scroll buttons once the row has
    * `CARDS_ROW_FILTER_MIN_ITEMS` items. */
   filterable?: boolean;
+  /** Called with the items the filter leaves (all items while it is empty)
+   * whenever that list changes. */
+  onFilteredItemsChange?: (items: T[]) => void;
   /** Controlled cards/list layout. */
   layout?: CardsRowLayout;
   /** Uncontrolled start layout. On phones, list wins unless this or `layout` is set. */
@@ -138,6 +141,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
   'data-testid': testId = 'cards-row',
   renderItem,
   filterable = true,
+  onFilteredItemsChange,
   cardSurface = 'brand',
   layout: layoutProp,
   defaultLayout,
@@ -179,6 +183,12 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
     canScrollLeft,
     canScrollRight,
   } = useCardsRow(items);
+
+  const onFilteredItemsChangeRef = useRef(onFilteredItemsChange);
+  onFilteredItemsChangeRef.current = onFilteredItemsChange;
+  useEffect(() => {
+    onFilteredItemsChangeRef.current?.(filteredItems);
+  }, [filteredItems]);
 
   const uiLabels = useUiLabels();
   const layoutLabels: Record<CardsRowLayout, string> = {

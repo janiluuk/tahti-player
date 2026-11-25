@@ -1,3 +1,5 @@
+import { useMemo, useState } from 'react';
+
 import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, CardsRow } from '@tahti-player/ui';
 
@@ -45,21 +47,29 @@ export function DiscoverNextEvents() {
     async () => apiResult(await fetchUpcomingEvents(NEXT_EVENTS_LIMIT)),
   );
   const events = data ?? NO_EVENTS;
+  const items = useMemo<NextEventItem[]>(
+    () =>
+      events.map((event) => ({
+        id: event.id,
+        title: `${event.title} ${event.artistDisplayName} ${event.place}`,
+        event,
+      })),
+    [events],
+  );
+  const [shown, setShown] = useState<UpcomingEvent[] | null>(null);
   if (events.length === 0) {
     return null;
   }
-  const items: NextEventItem[] = events.map((event) => ({
-    id: event.id,
-    title: `${event.title} ${event.artistDisplayName} ${event.place}`,
-    event,
-  }));
   return (
-    <EventBrowseRow events={events}>
+    <EventBrowseRow events={shown ?? events}>
       <CardsRow
         defaultLayout="cards"
         data-testid="discover-next-events"
         title={t('discoverEvents.nextTitle')}
         items={items}
+        onFilteredItemsChange={(rows) =>
+          setShown(rows.map(({ event }) => event))
+        }
         labels={{
           filterPlaceholder: t('listen.filterEvents'),
           nothingFound: t('listen.nothingFound'),

@@ -110,7 +110,7 @@ Keep for Storybook / future placement; do not delete without a product home.
 | View                                        | Route                 | File                                  | Storybook | Candidate For                                                                                                                    |
 | ------------------------------------------- | --------------------- | ------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | [Library](#library)                         | `/library` (redirects to `/library/favorites`) | `src/views/LibraryView.tsx`           | Has Story | Listener tabs: Favorites · Playlists · History · Following · Files. The artist catalog is Studio → Music. Signed-out account tabs stay visible and disabled. `Tahti/Library/LibraryFollowingFiles`. |
-| Library Playlists | `/library/playlists` | `LibraryPlaylistsView` in `LibraryView` | No Story | Own PLAYLIST/DJ_SET_SERIES collections + saved `favoritePlaylists`. EmptyState + FilterBar. |
+| Library Playlists | `/library/playlists` | `LibraryPlaylistsView` in `LibraryView` | Has Story | `Tahti/Library/LibraryPlaylists` (own + saved, filtered, no matches, empty, signed out). Own PLAYLIST/DJ_SET_SERIES collections + saved `favoritePlaylists`. EmptyState + FilterBar. |
 | Library History | `/library/history` | `HistoryView` embedded in `LibraryView` | Has Story | `Tahti/Library/LibraryHistory`. |
 | Library Following | `/library/following` (`/settings/artist?tab=following` redirects) | `LibraryFollowingView` in `LibraryView` | Has Story | `Tahti/Library/LibraryFollowingFiles` Following. Empty state links to Discover. Missing states: empty (follows nothing), load error. |
 | Library Files | `/library/files?kind=media\|stash\|local` (`/library/media`, `/library/stash`, `/library/local` redirect) | `LibraryView` tab `files`: `FilterChips` over `LibraryMediaView`, `StudioStashView embedded`, `DesktopLibraryPanel` | Has Story | `Tahti/Library/LibraryFollowingFiles` FilesMedia / FilesStash. Local files only in the desktop app. |
@@ -299,7 +299,7 @@ need no story.
 | `packages/tahti-web` served by desktop (Jam remote) | 1 | 1 | 0 | 0 | — |
 | `packages/tahti-web` core (Listen/Discovery + Artist/Channel/Collection) | 25 | 25 | 0 | 0 | 8+ (AppShell, PageHeader, GlowMediaTile) |
 | `packages/tahti-web` auth | 11 | 10 | 0 | 1 | 3 (AuthDialog, Input, Button) |
-| `packages/tahti-web` library | 9 | 8 | 1 | 0 | 4 (CardGrid, Tabs, TrackTable) |
+| `packages/tahti-web` library | 9 | 9 | 0 | 0 | 4 (CardGrid, Tabs, TrackTable) |
 | `packages/tahti-web` studio | 40 | 40 | 0 | 0 | 12+ (StudioPanel, Form, ImageUploadField) |
 | `packages/tahti-web` governance | 14 | 14 | 0 | 0 | 2 (Tabs, Card layout) |
 | `packages/tahti-web` help/legal | 10 | 10 | 0 | 0 | 2 (LegalDocShell) |
@@ -307,9 +307,9 @@ need no story.
 | `packages/tahti-web` venues | 3 | 3 | 0 | 0 | 1 (Form) |
 | `packages/tahti-web` embeds | 3 | 3 | 0 | 0 | 2 (ConnectedPlayerBar, PlayableTrackTable) |
 | `packages/tahti-web` admin | 33 | 33 | 0 | 0 | 5 (Table, StatChip) |
-| **Total** | **155** | **151** | **1** | **3** | |
+| **Total** | **155** | **152** | **0** | **3** | |
 
-The one **No Story** row is Library Playlists (`LibraryPlaylistsView`).
+Every view row has a story.
 
 ---
 

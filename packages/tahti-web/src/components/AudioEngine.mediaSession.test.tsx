@@ -340,10 +340,7 @@ describe('AudioEngine MediaSession integration', () => {
       configurable: true,
       get: () => true,
     });
-    Object.defineProperty(document, 'visibilityState', {
-      configurable: true,
-      get: () => 'visible',
-    });
+    vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
     act(() => {
       document.dispatchEvent(new Event('visibilitychange'));
     });
