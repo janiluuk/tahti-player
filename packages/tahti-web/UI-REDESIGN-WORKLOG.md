@@ -7163,3 +7163,8 @@ Desktop main-pane padding is four pixels tighter at each breakpoint, full-bleed 
 
 - The player's artist link goes to the track owner's channel instead of `/u/<sound id>`; restored queues keep it.
 - Settings → Appearance → "Full-screen title change" lets listeners pick fade, slide up, soft scale or slide sideways (default fade).
+
+## 2026-11-25 — Leftovers: playlists story, filtered event row (0.0.492)
+
+- Library → Playlists has a Storybook story; filtering to nothing shows "No matching playlists" instead of the empty state.
+- Opening an event from a filtered Discover "Next events" row steps previous/next through the filtered events only.

@@ -247,6 +247,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Library/LibraryFollowingFiles` | `tahti-web/LibraryFollowingFiles.stories.tsx` |
 | `Tahti/Library/LibraryItemRow` | `tahti-web/LibraryItemRow.stories.tsx` |
 | `Tahti/Library/LibraryMediaView` | `tahti-web/LibraryMediaView.stories.tsx` |
+| `Tahti/Library/LibraryPlaylists` | `tahti-web/LibraryPlaylists.stories.tsx` |
 | `Tahti/Studio/LinkPageEditor` | `tahti-web/LinkPageEditor.stories.tsx` |
 | `Tahti/Artist/LinkPageView` | `tahti-web/LinkPageView.stories.tsx` |
 | `Tahti/Widgets/ListenAddonsPanel` | `tahti-web/ListenAddonsPanel.stories.tsx` |

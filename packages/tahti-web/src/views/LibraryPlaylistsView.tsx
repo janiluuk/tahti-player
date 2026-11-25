@@ -78,7 +78,11 @@ export function LibraryPlaylistsView() {
 
   const busy = Boolean(userId) && loading && ownRows === null;
   const failed = error !== null && ownRows === null;
-  const empty = !busy && !failed && own.length === 0 && saved.length === 0;
+  const empty =
+    !busy &&
+    !failed &&
+    (ownRows ?? []).length === 0 &&
+    favoritePlaylists.length === 0;
 
   return (
     <div className="mt-2 flex flex-col gap-6" data-testid="library-playlists">

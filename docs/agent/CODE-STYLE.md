@@ -183,3 +183,28 @@ tahti-web (`web` namespace) ships English and Finnish, and every English key nee
 - A sentence with a link, a bold name or `<em>` inside it: pass `SLOT` as the interpolation value and render with `withSlot(t(key, { name: SLOT }), node)` (`lib/slotText.tsx`). Backtick-quoted parts render as `<code>` with `withInlineCode` (`lib/inlineCode.tsx`).
 - Left in English by decision: legal pages (Terms, Privacy, AGPL), dev tools (ScreenAtlas, port inventory, flow and E2E galleries, More view), brand names and example placeholders.
 
+#### Finding untranslated strings
+
+Three greps cover most hard-coded English in tahti-web. Drop tests, stories and mocks from each, then skip whatever the list below keeps in English on purpose.
+
+```bash
+# JSX text: a capitalised phrase of three or more words alone on a line
+grep -rnE "^\s+[A-Z][a-z']+( [a-zA-Z',’-]+){2,}[^{}()=;<>]*$" packages/tahti-web/src --include=*.tsx \
+  | grep -vE "\.test\.|\.stories\.|mock"
+
+# Attribute literals: placeholder, aria-label, title, label
+grep -rnE "(placeholder|aria-label|title|label)=\"[A-Z][a-z]+ [a-z]" packages/tahti-web/src --include=*.tsx \
+  | grep -vE "\.test\.|\.stories\.|mock"
+
+# Toast messages (sonner): the literal sits on the line after `toast.x(`
+grep -rnE -A1 "toast(\.[a-z]+)?\($" packages/tahti-web/src --include=*.ts --include=*.tsx \
+  | grep -vE "\.test\.|\.stories\." | grep -E "^[^ ]+-[0-9]+-\s+['\"\`][A-Z]"
+```
+
+Stays English on purpose (do not translate):
+
+- Brand and product names, and the decided list above (legal pages, dev tools, example placeholders).
+- API-bound labels the server matches on, e.g. the render presets `Quick normalize` / `Quick auto-trim` (`useSoundEditor.ts`, `useTrackEditDialog.ts`).
+- Grouping keys that double as data, e.g. `Untitled recordings` (`views/studio/recordings/helpers.ts`).
+
+Batch convention: put a batch of new keys under one `web.<area>StringsBatchNN` block (next free `NN` after the highest existing one) in `en_US.json` and `fi_FI.json` only. The other locales have no `web` namespace.

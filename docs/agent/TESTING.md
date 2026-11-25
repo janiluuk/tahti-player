@@ -24,7 +24,7 @@ the expected nav is still mounted before asserting `aria-current` /
 
 Tests use Vitest + React Testing Library. Globals enabled (`describe`, `it`, `expect`, `vi`). Coverage is V8-based across packages and reported in CI. Run tests with `pnpm test` (or a package filter), not a separate IDE test-runner tool.
 
-**"Visual diff" / "screenshot diff" = the CI snapshot digest**, not Storybook. When a PR comment or a report says something like "N mismatch(es) already failing on master" or "Snapshot digest", that's the Vitest DOM-snapshot mismatch system (`scripts/ci/build-snapshot-digest.mjs`, `vitest-snapshot-reporter.mjs`, `publish-visual-snapshot-diffs.mjs`, posted to the PR by `comment-snapshot-digest.mjs`; artifact `snapshot-digest`, see the `test-core` job in `.github/workflows/ci.yml`). It covers the packages that register `scripts/ci/vitest-ci-reporters.mjs` (ui, player, themes, model, plugin-sdk, hifi; not tahti-web). It fires from that job's `Test` step failing, and only lists genuinely new mismatches vs. the base branch — a standing "already failing on master" count is pre-existing breakage, not something this PR caused. When the digest reports `newCount: 0` (only standing mismatches) and no non-snapshot failures, `test-core` soft-passes so PRs are not blocked on master debt (`scripts/ci/should-fail-core-tests.mjs`). **Confirm path:** unit coverage in `scripts/ci/should-fail-core-tests.test.mjs` (`node --test scripts/ci/should-fail-core-tests.test.mjs`); a PR with only standing mismatches should exit 0 from `should-fail-core-tests.mjs` when `snapshot-digest/digest.json` shows `newCount: 0`. A separate Storybook *build* failure (`storybook build` erroring during `pnpm turbo build`) is a different, unrelated CI step — don't conflate the two when triaging a red run.
+**"Visual diff" / "screenshot diff" = the CI snapshot digest**, not Storybook. When a PR comment or a report says something like "N mismatch(es) already failing on master" or "Snapshot digest", that's the Vitest DOM-snapshot mismatch system (`scripts/ci/build-snapshot-digest.mjs`, `vitest-snapshot-reporter.mjs`, `publish-visual-snapshot-diffs.mjs`, posted to the PR by `comment-snapshot-digest.mjs`; artifact `snapshot-digest`, see the `test-core` job in `.github/workflows/ci.yml`). It covers the packages that register `scripts/ci/vitest-ci-reporters.mjs` (ui, player, themes, model, plugin-sdk, hifi; not tahti-web). It fires from that job's `Test` step failing, and only lists genuinely new mismatches vs. the base branch — a standing "already failing on master" count is pre-existing breakage, not something this PR caused. When the digest reports `newCount: 0` (only standing mismatches) and no non-snapshot failures, `test-core` soft-passes so PRs are not blocked on master debt (`scripts/ci/should-fail-core-tests.mjs`). **Confirm path:** unit coverage in `scripts/ci/should-fail-core-tests.test.mjs` (`node --test scripts/ci/should-fail-core-tests.test.mjs`); a PR with only standing mismatches should exit 0 from `should-fail-core-tests.mjs` when `snapshot-digest/digest.json` shows `newCount: 0`. A separate Storybook _build_ failure (`storybook build` erroring during `pnpm turbo build`) is a different, unrelated CI step — don't conflate the two when triaging a red run.
 
 - Integration tests over unit tests for user-facing behavior. Render real components and assert on DOM content rather than verifying mock calls.
 - Unit tests for utilities - standalone data structures (RingBuffer, parsers) deserve isolated tests. Use them sparingly.
@@ -46,6 +46,7 @@ Don't start with unit tests for internal utilities (grouping functions, registri
 Some components (e.g. `packages/ui/src/components/CardsRow/CardsRow.test-wrapper.tsx`) use a `*.test-wrapper.tsx` file that creates a domain-specific abstraction layer over the DOM. This lets tests read like user stories, and if the implementation changes, only the wrapper needs updating.
 
 **Wrapper conventions:**
+
 - Use **getters** for element queries: `get emptyState()`, `get cards()` — not `getEmptyState()`
 - Use **nested objects** for interactive elements: `createButton: { get element(), async click() }`
 - Use **methods** for multi-step user actions: `async openContextMenu(title: string)`
@@ -94,7 +95,9 @@ We use builders to create test data and various entities cleanly. You can see th
 ```tsx
 // Playlists.test-wrapper.tsx
 export const PlaylistsWrapper = {
-  async mount(): Promise<RenderResult> { /* ... */ },
+  async mount(): Promise<RenderResult> {
+    /* ... */
+  },
 
   get emptyState() {
     return screen.queryByTestId('empty-state');
@@ -122,13 +125,13 @@ it('shows empty state when no playlists', async () => {
 
 ### Fast local runs
 
-| Command | What it runs | Wall time (Mac, 2026-11-25) |
-| ------- | ------------ | --------------------------- |
-| `pnpm test` | every package's Vitest, no Storybook plays; no dependency builds first | ~70 s cold, cached packages skip |
-| `pnpm test:changed` | only affected packages, and in each only tests related to files changed since `origin/master` (`TEST_BASE=<ref>` to change) | seconds |
-| `pnpm test:stories` | every story play, 50 story files per Chromium session, two sessions at a time | ~4 min |
-| `pnpm test:stories:changed` | plays for stories that changed or name a changed component / import a changed module | ~25 s for ~50 stories |
-| `pnpm test:all` | `pnpm test` plus `test:stories` | |
+| Command                     | What it runs                                                                                                                | Wall time (Mac, 2026-11-25)      |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| `pnpm test`                 | every package's Vitest, no Storybook plays; no dependency builds first                                                      | ~70 s cold, cached packages skip |
+| `pnpm test:changed`         | only affected packages, and in each only tests related to files changed since `origin/master` (`TEST_BASE=<ref>` to change) | seconds                          |
+| `pnpm test:stories`         | every story play, 50 story files per Chromium session, two sessions at a time                                               | ~4 min                           |
+| `pnpm test:stories:changed` | plays for stories that changed or name a changed component / import a changed module                                        | ~25 s for ~50 stories            |
+| `pnpm test:all`             | `pnpm test` plus `test:stories`                                                                                             |                                  |
 
 `node packages/storybook/scripts/run-plays.mjs --changed origin/master --list`
 prints the story selection without running it; `--chunk` and `--jobs` tune
@@ -179,4 +182,3 @@ CI shards (~50 files) plus one retry; Chromium launches with
 - **`e2e-mock`**: role / use-case journeys against the mock app on **master pushes and `workflow_dispatch` only** (not on PRs; not part of the required `CI` gate), in six Playwright shards ("mock app 1/6" … "6/6"). The beta and Storybook deploys wait for the whole CI workflow, journeys included; on master pushes `web-dist` builds the production bundle in parallel and the self-hosted beta deploy ships that artifact instead of rebuilding. Playwright Chromium is cached like the Storybook job.
 - **Coverage** (`coverage.yml`) runs on master pushes and by hand only.
 - Shared setup (Node 24, pnpm store cache, frozen install, optional turbo cache) is the composite action `.github/actions/setup`.
-

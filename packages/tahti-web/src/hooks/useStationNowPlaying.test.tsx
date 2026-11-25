@@ -23,10 +23,7 @@ const nova = {
 };
 
 function setVisibility(state: DocumentVisibilityState) {
-  Object.defineProperty(document, 'visibilityState', {
-    configurable: true,
-    get: () => state,
-  });
+  vi.spyOn(document, 'visibilityState', 'get').mockReturnValue(state);
   document.dispatchEvent(new Event('visibilitychange'));
 }
 
@@ -48,6 +45,7 @@ describe('usePlayerStationNowPlaying', () => {
   afterEach(() => {
     cleanup();
     vi.useRealTimers();
+    vi.restoreAllMocks();
     usePlayerStore.setState({ status: 'idle' });
   });
 
@@ -119,6 +117,7 @@ describe('useStationNowPlaying', () => {
   afterEach(() => {
     cleanup();
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   it('drops a slow answer for a station the caller has left', async () => {

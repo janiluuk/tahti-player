@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { fireEvent, screen, within } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { MediaArtworkDefaultProvider } from '@tahti-player/ui';
@@ -7,6 +7,7 @@ import { MediaArtworkDefaultProvider } from '@tahti-player/ui';
 import * as upcoming from '../../api/upcoming-events';
 import type { UpcomingEvent } from '../../api/upcoming-events';
 import { clearSnapshots } from '../../lib/useSnapshotFetch';
+import { useEventBrowseStore } from '../../stores/eventBrowseStore';
 import { renderWithRouter } from '../../test/renderWithRouter';
 import { DiscoverNextEvents, UpcomingEventsStrip } from './UpcomingEventsRow';
 import { WidgetCard } from './WidgetCard';
@@ -53,6 +54,7 @@ function withDefaultArtwork(ui: React.ReactNode) {
 afterEach(() => {
   vi.restoreAllMocks();
   clearSnapshots();
+  useEventBrowseStore.setState({ items: null, arrival: null });
 });
 
 describe('UpcomingEventsStrip', () => {
@@ -125,6 +127,61 @@ describe('DiscoverNextEvents', () => {
       .map((node) => node.textContent);
     expect(titles).toEqual(['Album release show', 'Boathouse session']);
     expect(fetchEvents).toHaveBeenCalledWith(12);
+  });
+
+  it('remembers only the filtered events as the row to step through', async () => {
+    const jazz = [
+      event('evt-a', 'Jazz brunch'),
+      event('evt-b', 'Techno night'),
+      event('evt-c', 'Jazz on the pier'),
+      event('evt-d', 'Folk evening'),
+      event('evt-e', 'Late jazz'),
+      event('evt-f', 'Ambient morning'),
+    ];
+    vi.spyOn(upcoming, 'fetchUpcomingEvents').mockResolvedValue({
+      data: jazz,
+      meta: { source: 'api' },
+    });
+
+    const { router } = await renderWithRouter(
+      withDefaultArtwork(<DiscoverNextEvents />),
+      { paths: ['/events/$eventId'] },
+    );
+
+    const row = await screen.findByTestId('discover-next-events');
+    fireEvent.change(within(row).getByTestId('cards-row-filter'), {
+      target: { value: 'jazz' },
+    });
+    await waitFor(() =>
+      expect(within(row).queryByText('Techno night')).toBeNull(),
+    );
+
+    fireEvent.click(within(row).getByText('Jazz on the pier'));
+    expect(router.state.location.pathname).toBe('/events/evt-c');
+    expect(useEventBrowseStore.getState().items).toEqual([
+      { id: 'evt-a', title: 'Jazz brunch' },
+      { id: 'evt-c', title: 'Jazz on the pier' },
+      { id: 'evt-e', title: 'Late jazz' },
+    ]);
+  });
+
+  it('remembers the whole row while the filter is empty', async () => {
+    const all = [event('evt-a', 'Jazz brunch'), event('evt-b', 'Techno night')];
+    vi.spyOn(upcoming, 'fetchUpcomingEvents').mockResolvedValue({
+      data: all,
+      meta: { source: 'api' },
+    });
+
+    await renderWithRouter(withDefaultArtwork(<DiscoverNextEvents />), {
+      paths: ['/events/$eventId'],
+    });
+
+    const row = await screen.findByTestId('discover-next-events');
+    fireEvent.click(within(row).getByText('Techno night'));
+    expect(useEventBrowseStore.getState().items).toEqual([
+      { id: 'evt-a', title: 'Jazz brunch' },
+      { id: 'evt-b', title: 'Techno night' },
+    ]);
   });
 
   it('renders nothing when no events are coming up', async () => {
