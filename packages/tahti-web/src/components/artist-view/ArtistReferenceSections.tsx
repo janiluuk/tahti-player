@@ -80,7 +80,8 @@ export function ArtistPopularTracks({
             playAll
             filterable
             allowGrid={false}
-            className="bg-background-secondary"
+            surfaceClassName="bg-background-secondary"
+            flushOnPhone
             getTrackMeta={getTrackMeta}
             emptyMessage={t('artistReferenceSections.noPlayableTracksOnThis')}
             onEdit={onEdit}
@@ -97,7 +98,8 @@ export function ArtistPopularTracks({
             playAll
             filterable
             allowGrid={false}
-            className="bg-background-secondary"
+            surfaceClassName="bg-background-secondary"
+            flushOnPhone
             emptyMessage={t('artistReferenceSections.noEmbedsOnThisProfile')}
             onEdit={onEdit}
           />

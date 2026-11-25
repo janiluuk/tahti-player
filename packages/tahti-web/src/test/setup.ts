@@ -1,9 +1,11 @@
 import '@testing-library/jest-dom';
 
 import { Blob as NodeBlob } from 'node:buffer';
+import { cleanup } from '@testing-library/react';
 import { MotionGlobalConfig } from 'motion/react';
-import { afterEach } from 'vitest';
+import { afterAll, afterEach, vi } from 'vitest';
 
+import { DEFAULT_LOCALE, i18n } from '@tahti-player/i18n';
 import { setupDomMocks } from '@tahti-player/ui/test';
 
 import { clearSnapshots } from '../lib/useSnapshotFetch';
@@ -55,6 +57,34 @@ setupDomMocks();
 MotionGlobalConfig.skipAnimations = true;
 MotionGlobalConfig.instantAnimations = true;
 
+// Testing Library registers its own auto-cleanup only when first imported,
+// so under `isolate: false` every later file would keep the previous tests'
+// DOM mounted.
 afterEach(() => {
+  cleanup();
   clearSnapshots();
+});
+
+// Runs once per test file. Under `isolate: false` files share a worker, so
+// undo what a file may leave behind and drop the module cache: otherwise the
+// next file reuses module state (stores, caches) and modules that were
+// evaluated against this file's `vi.mock` factories.
+afterAll(async () => {
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
+  // user-event and Object.assign leave a getter-only navigator.clipboard
+  // behind, which makes the next file's Object.assign(navigator, …) throw.
+  if (Object.getOwnPropertyDescriptor(navigator, 'clipboard')?.configurable) {
+    delete (navigator as { clipboard?: unknown }).clipboard;
+  }
+  localStorage.clear();
+  sessionStorage.clear();
+  document.head.innerHTML = '';
+  document.body.innerHTML = '';
+  document.documentElement.removeAttribute('style');
+  document.documentElement.removeAttribute('class');
+  document.title = '';
+  await i18n.changeLanguage(DEFAULT_LOCALE);
+  vi.resetModules();
 });

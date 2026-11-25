@@ -15,8 +15,17 @@ import * as client from '../../api/client';
 import { renderWithRouter } from '../../test/renderWithRouter';
 import { TahtiRadioPlaylistPanel } from './TahtiRadioPlaylistPanel';
 
+const editor = vi.hoisted(() => ({
+  nowPlayingItemId: undefined as string | null | undefined,
+}));
+
 vi.mock('../../components/TahtiRotationPlaylistEditor', () => ({
-  TahtiRotationPlaylistEditor: () => null,
+  TahtiRotationPlaylistEditor: (props: {
+    nowPlayingItemId?: string | null;
+  }) => {
+    editor.nowPlayingItemId = props.nowPlayingItemId;
+    return null;
+  },
 }));
 
 const browseItem = (id: string, title: string): AdminRadioBrowseItem => ({
@@ -66,6 +75,10 @@ describe('TahtiRadioPlaylistPanel picker', () => {
       playable: null,
       meta: { source: 'mock' },
     } as never);
+    vi.spyOn(client, 'fetchRadioRecentlyPlayed').mockResolvedValue({
+      data: [],
+      meta: { source: 'mock' },
+    });
     mockBrowse();
   });
 
@@ -129,7 +142,7 @@ describe('TahtiRadioPlaylistPanel picker', () => {
     fireEvent.click(await optionFor('Polar Night'));
     fireEvent.click(screen.getByRole('button', { name: 'Add 2 to rotation' }));
     expect(
-      await screen.findByText('Added 1 of 2 tracks. Track not ready'),
+      await screen.findByText('Added 1 of 2. Track not ready'),
     ).toBeTruthy();
     const dialog = within(screen.getByRole('dialog'));
     expect(dialog.getByText('1 selected')).toBeTruthy();
@@ -152,9 +165,70 @@ describe('TahtiRadioPlaylistPanel picker', () => {
     await renderPanel();
     fireEvent.click(await optionFor('Night Drive'));
     fireEvent.click(screen.getByRole('button', { name: 'Add 1 to rotation' }));
-    expect(
-      await screen.findByText('Added 1 track to the rotation.'),
-    ).toBeTruthy();
+    expect(await screen.findByText('Added 1 track.')).toBeTruthy();
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+  });
+});
+
+describe('TahtiRadioPlaylistPanel on-air row', () => {
+  const rotationItem = (id: string, soundId: string, title: string) => ({
+    id,
+    soundId,
+    title,
+    artistName: 'Aino',
+    durationSec: 180,
+    channelSlug: 'aino',
+    license: 'CC_BY',
+    addedBy: 'board',
+  });
+
+  const renderWith = async (
+    latest: { title: string; soundId: string | null } | null,
+  ) => {
+    vi.spyOn(admin, 'fetchAdminRadioRotation').mockResolvedValue({
+      data: [
+        rotationItem('r1', 's1', 'Aurora'),
+        rotationItem('r2', 's2', 'Aurora'),
+      ],
+      meta: { source: 'mock' },
+    });
+    vi.spyOn(client, 'fetchRadioStation').mockResolvedValue({
+      data: { hlsUrl: null, nowPlaying: { title: 'Aurora' } },
+      playable: null,
+      meta: { source: 'mock' },
+    } as never);
+    vi.spyOn(client, 'fetchRadioRecentlyPlayed').mockResolvedValue({
+      data: latest
+        ? [
+            {
+              id: 'log-1',
+              artistName: 'Aino',
+              artistUsername: null,
+              artworkUrl: null,
+              playedAt: '2026-11-25T10:00:00.000Z',
+              ...latest,
+            },
+          ]
+        : [],
+      meta: { source: 'mock' },
+    });
+    editor.nowPlayingItemId = undefined;
+    await renderWithRouter(<TahtiRadioPlaylistPanel />);
+    await screen.findByText('On air: Aurora');
+  };
+
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+  });
+
+  it('marks the entry whose sound is playing, not the first with the same title', async () => {
+    await renderWith({ title: 'Aurora', soundId: 's2' });
+    await waitFor(() => expect(editor.nowPlayingItemId).toBe('r2'));
+  });
+
+  it('falls back to the title when the play log names no sound', async () => {
+    await renderWith({ title: 'Aurora', soundId: null });
+    await waitFor(() => expect(editor.nowPlayingItemId).toBe('r1'));
   });
 });

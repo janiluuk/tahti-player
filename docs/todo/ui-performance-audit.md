@@ -20,5 +20,4 @@ Requested 2026-11-24. First pass in tahti-web 0.0.475 (#2165), measured in Chrom
 
 - [ ] Measure in Firefox with `layers.acceleration.disabled` / `gfx.webrender.software` (Playwright Firefox download timed out). The no-GPU check reads the WebGL renderer name, so it may not trigger when Firefox keeps hardware WebGL but paints in software.
 - [ ] Event page banner backdrop (no mock event page to measure).
-- [ ] Tooltip and reduced-motion hooks call `matchMedia` on every render; a shared cache broke a test that mocks `matchMedia`.
 - [ ] Optional: a live frame-time monitor that switches to the still backdrop when frames drop, instead of the one-time startup check.

@@ -6,6 +6,13 @@ import { RssFeedButton } from './RssFeedButton';
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
 
+function stubClipboard(writeText: ReturnType<typeof vi.fn>) {
+  Object.defineProperty(navigator, 'clipboard', {
+    configurable: true,
+    value: { writeText },
+  });
+}
+
 describe('RssFeedButton', () => {
   afterEach(() => {
     vi.clearAllMocks();
@@ -13,7 +20,7 @@ describe('RssFeedButton', () => {
 
   it('copies the feed URL', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
-    Object.assign(navigator, { clipboard: { writeText } });
+    stubClipboard(writeText);
     render(
       <RssFeedButton
         href="https://x/feed.xml"
@@ -32,9 +39,7 @@ describe('RssFeedButton', () => {
   });
 
   it('says so when the clipboard is unavailable', async () => {
-    Object.assign(navigator, {
-      clipboard: { writeText: vi.fn().mockRejectedValue(new Error('denied')) },
-    });
+    stubClipboard(vi.fn().mockRejectedValue(new Error('denied')));
     render(
       <RssFeedButton
         href="https://x/feed.xml"

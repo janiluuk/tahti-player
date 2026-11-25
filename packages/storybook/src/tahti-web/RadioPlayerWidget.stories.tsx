@@ -355,3 +355,49 @@ export const Offline: Story = {
     await expect(canvas.getByTestId('radio-just-played')).toBeVisible();
   },
 };
+
+export const PhoneCompact: Story = {
+  name: 'Phone: compact strip',
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  globals: { viewport: { value: 'mobile1', isRotated: false } },
+  render: () => (
+    <div className="w-[390px]">
+      <DemoWidget expanded={false} canEditPlaylist />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const widget = canvas.getByTestId('radio-player-widget');
+    await expect(widget.scrollWidth).toBeLessThanOrEqual(widget.clientWidth);
+    const play = canvas.getByRole('button', { name: 'Play Radio' });
+    const overlay = canvas.getByTestId('radio-now-playing-overlay');
+    await expect(overlay.getBoundingClientRect().right).toBeLessThanOrEqual(
+      play.getBoundingClientRect().left,
+    );
+    await expect(
+      canvas.getByRole('link', { name: 'Edit playlist' }),
+    ).toBeVisible();
+  },
+};
+
+export const PhoneExpanded: Story = {
+  name: 'Phone: expanded',
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  globals: { viewport: { value: 'mobile1', isRotated: false } },
+  render: () => (
+    <div className="w-[390px]">
+      <DemoWidget canEditPlaylist />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const widget = canvas.getByTestId('radio-player-widget');
+    await expect(widget.scrollWidth).toBeLessThanOrEqual(widget.clientWidth);
+    const controls = canvas.getByTestId('radio-hero-controls');
+    const hero = canvas.getByTestId('radio-visualizer-hero');
+    await expect(controls.getBoundingClientRect().right).toBeLessThanOrEqual(
+      hero.getBoundingClientRect().right,
+    );
+    await expect(canvas.getByRole('tab', { name: /Up next/ })).toBeVisible();
+  },
+};

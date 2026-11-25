@@ -209,6 +209,9 @@ export default defineConfig(({ command, mode }) => {
       // --localstorage-file; it shadows jsdom's Storage.
       execArgv: ['--no-experimental-webstorage'],
       setupFiles: ['./src/test/setup.ts'],
+      // setup.ts resets the DOM, storage, stubs and module registry after each
+      // file; vi.mock registrations still carry over between files.
+      isolate: false,
     },
   };
 });

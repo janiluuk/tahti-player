@@ -221,6 +221,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Discover/GroupsDirectory` | `tahti-web/GroupsDirectory.stories.tsx` |
 | `Tahti/Groups/GroupsDirectoryView` | `tahti-web/GroupsDirectoryView.stories.tsx` |
 | `Tahti/Studio/Distribution/GuideDetail` | `tahti-web/GuideDetail.stories.tsx` |
+| `Tahti/Listen/GuidelinesBanner` | `tahti-web/GuidelinesBanner.stories.tsx` |
 | `Tahti/Reference/Help center` | `tahti-web/HelpView.stories.tsx` |
 | `Tahti/History/HistoryListSection` | `tahti-web/HistoryListSection.stories.tsx` |
 | `Tahti/History/HistoryStatsSection` | `tahti-web/HistoryStatsSection.stories.tsx` |

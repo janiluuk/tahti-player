@@ -1,11 +1,9 @@
 # Radio playlist manager access and UX
 
-**Status:** partial
+**Status:** blocked
 
-Requested 2026-11-24. Shipped in tahti-web 0.0.481: board members get an edit-playlist pencil on the Tahti Radio widget (`/admin/radio?tab=playlist`, same `BOARD` gate as `AdminGate`); the Add tracks picker keeps tracks picked under an earlier search, forgets the selection on cancel, has Select all shown with a live count, reports partial failures (keeps only the failed tracks selected) and confirms what was added.
+Manager UX shipped in tahti-web 0.0.481 and 0.0.485 (see HISTORY). The admin rotation list matches the on-air row by `soundId` from `/api/v1/radio/recently-played` and falls back to the title.
 
-## Left
+## Left (tahti-org)
 
-- [ ] Ordering and current-track state in the rotation list (the on-air match is by title only).
-- [ ] Phone layout of the manager (list actions, picker dialog).
-- [ ] Concise labels pass on the Playlist tab.
+- [ ] The public Radio widget "Next:" line comes from `nowPlayingNext`, which `channels/get.ts` still finds by title. Store the now-playing sound id on the station so the API (and the admin page, without the recently-played lookup) can match by id.

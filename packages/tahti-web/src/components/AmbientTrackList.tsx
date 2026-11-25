@@ -56,6 +56,14 @@ export type AmbientTrackListProps = {
   /** Section title in place of the track count, with no panel around the
    * list, so it lines up with the `CardsRow` sections beside it. */
   heading?: ReactNode;
+  /** Opaque panel colour, e.g. `bg-background-secondary` on pages that
+   * paint their own colours behind the list. */
+  surfaceClassName?: string;
+  /** Phones drop the panel (border, padding and surface) so the rows sit
+   * straight on the page. The surface class goes with it rather than being
+   * overridden, because the channel colour scheme keys the theme's text
+   * colours off that class. */
+  flushOnPhone?: boolean;
   className?: string;
 };
 
@@ -74,6 +82,8 @@ export function AmbientTrackList({
   allowGrid = false,
   initialView,
   heading,
+  surfaceClassName,
+  flushOnPhone = false,
   className,
 }: AmbientTrackListProps) {
   const { t } = useTranslation('web');
@@ -96,6 +106,7 @@ export function AmbientTrackList({
     isPhone,
     hasList: Boolean(renderList),
   });
+  const flush = Boolean(heading) || (flushOnPhone && isPhone);
   const showList = view === 'list' && Boolean(renderList);
   const showGrid = view === 'grid' && allowGrid;
   const density: AmbientTrackRowDensity =
@@ -139,11 +150,17 @@ export function AmbientTrackList({
         'flex w-full min-w-0 flex-col',
         heading
           ? 'gap-3'
-          : 'border-border/40 bg-background-secondary/40 gap-2 rounded-[var(--radius-card)] border p-2 sm:p-3',
+          : flush
+            ? 'gap-2'
+            : cn(
+                'border-border/40 gap-2 rounded-[var(--radius-card)] border p-2 sm:p-3',
+                surfaceClassName ?? 'bg-background-secondary/40',
+              ),
         className,
       )}
       data-testid="ambient-track-list"
       data-density={activeView}
+      data-flush={flush && !heading ? '' : undefined}
     >
       <div
         className={cn(

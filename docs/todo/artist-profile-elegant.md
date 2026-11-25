@@ -1,5 +1,10 @@
 # Public artist page redesign
 
-**Status:** open
+**Status:** partial
 
-Queued in the interrupted 2026-11-24 session: the Yaniho public artist page banner overwhelms the content. Inspect `/u/yaniho` and the artist subdomain, contain the banner, improve hierarchy and phone layouts, and retain artist colours and section visibility. No code changes were saved by the interrupted artist-profile agent.
+Phone header (`EntitySocialHeader` `compactOnPhone`, ~470 → ~225 px on Yaniho) and phone order shipped in 0.0.485 (see HISTORY). Desktop unchanged.
+
+## Left
+
+- [ ] Turn on `compactOnPhone` for the collection, venue, radio show and channel fallback headers, each with a 390 px visual check.
+- [ ] Low-contrast text on the artist page dark scheme: the "On SoundCloud" heading and the Fan tiers price.

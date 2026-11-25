@@ -8,7 +8,7 @@ import {
   redirect,
   RouterProvider,
 } from '@tanstack/react-router';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -143,7 +143,9 @@ describe('StudioChannelView sections', () => {
   it('shows Radio as Stream · Pinned with links to the stream’s other homes', async () => {
     await renderChannel('/studio/channel/radio');
 
-    expect(screen.getByTestId('studio-channel-section-radio')).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByTestId('studio-channel-section-radio')).toBeVisible(),
+    );
     expect(screen.getByRole('tab', { name: 'Stream' })).toHaveAttribute(
       'aria-selected',
       'true',

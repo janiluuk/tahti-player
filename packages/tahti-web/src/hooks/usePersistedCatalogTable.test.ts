@@ -30,16 +30,8 @@ const columns: CatalogColumn<unknown>[] = [
   },
 ];
 
-const memory = new Map<string, string>();
 beforeEach(() => {
-  memory.clear();
-  Object.defineProperty(window, 'localStorage', {
-    configurable: true,
-    value: {
-      getItem: (key: string) => memory.get(key) ?? null,
-      setItem: (key: string, value: string) => void memory.set(key, value),
-    },
-  });
+  localStorage.clear();
 });
 
 describe('usePersistedCatalogTable', () => {
@@ -70,7 +62,7 @@ describe('usePersistedCatalogTable', () => {
   });
 
   it('survives a stored view from another version and ignores unsortable sorts', () => {
-    memory.set(
+    localStorage.setItem(
       'k',
       JSON.stringify({
         view: { order: ['gone', 'artist'], hidden: ['title'] },
@@ -84,7 +76,7 @@ describe('usePersistedCatalogTable', () => {
   });
 
   it('tolerates unreadable storage', () => {
-    memory.set('k', '{not json');
+    localStorage.setItem('k', '{not json');
     const { result } = renderHook(() => usePersistedCatalogTable('k', columns));
     expect(result.current.view.order).toEqual(['title', 'artist', 'year']);
   });

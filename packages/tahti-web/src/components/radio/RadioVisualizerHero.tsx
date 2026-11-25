@@ -65,7 +65,7 @@ export function RadioVisualizerHero({
         className={cn(
           'relative z-10 flex flex-1 p-4',
           compact
-            ? 'items-end gap-4 pr-32'
+            ? 'items-end gap-3 pr-20 sm:gap-4 sm:pr-32'
             : 'flex-col justify-end gap-5 sm:p-6',
         )}
       >

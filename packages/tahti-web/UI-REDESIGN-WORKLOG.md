@@ -7122,3 +7122,10 @@ Studio → Broadcast keeps one Stream manager and Go live now retains the ordina
 ## 2026-11-25 — Main-pane corner control spacing (0.0.484)
 
 Desktop main-pane padding is four pixels tighter at each breakpoint, full-bleed offsets stay paired with it, and the scrollport reserves four more pixels for edge shadows and focus rings. Phone gutters stay at 16px. A focused Storybook surface verifies both corner controls remain inside the pane and focusable at desktop and phone widths.
+
+## 2026-11-25 — Next 10 slices (0.0.485)
+
+- Radio: `radioRotationOnAir.ts` (on-air by `soundId`, up next, position sort); `TahtiRotationPlaylistEditor` numbers rows, On air / Up next badges, row Move menu (`TrackContextMenu`); add-tracks dialog phone layout; shorter Playlist tab copy; `RadioVisualizerHero` compact strip keeps 80 px for play on phones.
+- Artist page: `EntitySocialHeader` `compactOnPhone` (64 px avatar beside the name, actions row, swipeable stats) on `ArtistPageHero`; `AmbientTrackList` `surfaceClassName` + `flushOnPhone` on channel and artist track/embed lists.
+- Listen: late `GuidelinesBanner` notice shows as a sticky toast; inline only when known at first paint.
+- ui: `utils/mediaQuery.ts` `useMediaQuery` shared per query; tahti-web vitest `isolate: false`.

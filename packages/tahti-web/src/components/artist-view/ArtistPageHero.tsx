@@ -11,7 +11,7 @@ export function ArtistPageHero({
   ...props
 }: EntitySocialHeaderProps & { hidden: boolean }) {
   if (!hidden) {
-    return <EntitySocialHeader {...props} />;
+    return <EntitySocialHeader compactOnPhone {...props} />;
   }
   return (
     <div

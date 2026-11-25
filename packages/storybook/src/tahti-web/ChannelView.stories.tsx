@@ -22,6 +22,7 @@ const meta: Meta<typeof ChannelView> = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+type StoryStep = Parameters<NonNullable<Story['play']>>[0]['step'];
 
 export const Visitor: Story = {
   decorators: [withMockAuth(MOCK_USERS.listener)],
@@ -141,30 +142,63 @@ async function expectReadable(element: Element) {
 export const DarkSchemeOnLightTheme: Story = {
   globals: { themeId: 'nuclear:aurora', themeMode: 'light' },
   decorators: [withMockAuth(MOCK_USERS.listener)],
+  play: async ({ canvasElement, step }) =>
+    expectReadableDarkScheme(canvasElement, step, { countShown: true }),
+};
+
+/** The same dark scheme on a phone, where the track list drops its card and
+ * its surface class, so the toolbar sits on the scheme background with the
+ * scheme's text colour. Phones open the plain list, which prints its own
+ * count, so the toolbar count is only checked when it is there. */
+export const PhoneDarkSchemeOnLightTheme: Story = {
+  globals: { themeId: 'nuclear:aurora', themeMode: 'light' },
+  parameters: { viewport: { defaultViewport: 'mobile2' } },
+  decorators: [withMockAuth(MOCK_USERS.listener)],
   play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const scheme = canvasElement.querySelector('[data-channel-scheme]')!;
-    await expect(
-      luminance(getComputedStyle(scheme).backgroundColor),
-    ).toBeLessThan(0.05);
-
-    await step('track titles', async () => {
-      await expectReadableTrackTitles(canvasElement);
+    await expectReadableDarkScheme(canvasElement, step, {
+      countShown: window.innerWidth >= 640,
     });
-
-    await step('section heading, tabs and track count', async () => {
-      await expectReadable(
-        await canvas.findByRole('heading', { name: 'Tracks' }),
-      );
-      for (const tab of within(
-        canvas.getByTestId('channel-page-tabs'),
-      ).getAllByRole('tab')) {
-        await expectReadable(tab);
-      }
-      const count = within(
-        canvas.getAllByTestId('ambient-track-list-toolbar')[0]!,
-      ).getByText(/\d+ tracks?/);
-      await expectReadable(count);
-    });
+    if (window.innerWidth < 640) {
+      const list =
+        within(canvasElement).getAllByTestId('ambient-track-list')[0]!;
+      await expect(list).toHaveAttribute('data-flush');
+      await expect(list).not.toHaveClass('bg-background-secondary');
+    }
   },
 };
+
+async function expectReadableDarkScheme(
+  canvasElement: HTMLElement,
+  step: StoryStep,
+  { countShown }: { countShown: boolean },
+) {
+  const canvas = within(canvasElement);
+  const scheme = canvasElement.querySelector('[data-channel-scheme]')!;
+  await expect(
+    luminance(getComputedStyle(scheme).backgroundColor),
+  ).toBeLessThan(0.05);
+
+  await step('track titles', async () => {
+    await expectReadableTrackTitles(canvasElement);
+  });
+
+  await step('section heading, tabs and track count', async () => {
+    await expectReadable(
+      await canvas.findByRole('heading', { name: 'Tracks' }),
+    );
+    for (const tab of within(
+      canvas.getByTestId('channel-page-tabs'),
+    ).getAllByRole('tab')) {
+      await expectReadable(tab);
+    }
+    const count = within(
+      canvas.getAllByTestId('ambient-track-list-toolbar')[0]!,
+    ).queryByText(/\d+ tracks?/);
+    if (countShown) {
+      await expect(count).not.toBeNull();
+    }
+    if (count) {
+      await expectReadable(count);
+    }
+  });
+}

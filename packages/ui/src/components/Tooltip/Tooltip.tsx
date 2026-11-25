@@ -5,16 +5,11 @@ import {
   shift,
   useFloating,
 } from '@floating-ui/react-dom';
-import {
-  FC,
-  PropsWithChildren,
-  ReactNode,
-  useState,
-  useSyncExternalStore,
-} from 'react';
+import { FC, PropsWithChildren, ReactNode, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '../../utils';
+import { useMediaQuery } from '../../utils/mediaQuery';
 
 const TOOLTIP_OFFSET_PX = 12;
 const VIEWPORT_PADDING_PX = 8;
@@ -23,54 +18,13 @@ const COARSE_POINTER_QUERY = '(pointer: coarse)';
 type TooltipSide = 'top' | 'right' | 'bottom' | 'left';
 
 /**
- * Safe wrapper around `window.matchMedia` — some jsdom-based test setups
- * leave `matchMedia` undefined, others stub it with a function that
- * returns `undefined` rather than a real `MediaQueryList`. Never let a
- * missing/broken implementation crash the component that calls this.
- */
-function safeMatchMedia(query: string): MediaQueryList | null {
-  if (
-    typeof window === 'undefined' ||
-    typeof window.matchMedia !== 'function'
-  ) {
-    return null;
-  }
-  try {
-    return window.matchMedia(query) ?? null;
-  } catch {
-    return null;
-  }
-}
-
-/**
  * True on touch-primary devices. Tooltip only opens/closes on
  * mouseenter/mouseleave/focus/blur — a touch tap fires mouseenter (and
  * focus) with no matching mouseleave, so tooltips get stuck open after a
  * tap on coarse-pointer devices. Suppress hover-tooltips there entirely
  * rather than trying to fake a close event.
- *
- * One shared media-query subscription for every tooltip on the page (a
- * table row can mount several), read through useSyncExternalStore.
  */
-function subscribeCoarsePointer(onChange: () => void): () => void {
-  const mql = safeMatchMedia(COARSE_POINTER_QUERY);
-  if (!mql) {
-    return () => undefined;
-  }
-  mql.addEventListener('change', onChange);
-  return () => mql.removeEventListener('change', onChange);
-}
-
-const isCoarsePointer = () =>
-  safeMatchMedia(COARSE_POINTER_QUERY)?.matches ?? false;
-
-function useCoarsePointer(): boolean {
-  return useSyncExternalStore(
-    subscribeCoarsePointer,
-    isCoarsePointer,
-    () => false,
-  );
-}
+const useCoarsePointer = () => useMediaQuery(COARSE_POINTER_QUERY);
 
 export type TooltipProps = PropsWithChildren<{
   content: ReactNode;
