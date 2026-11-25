@@ -1,3 +1,9 @@
+## 2026-11-25 - Artist backdrop load race (0.0.486)
+
+Artist profiles wait for their channel visual request before using the profile
+backdrop as a fallback, preventing Yaniho's image from taking over the hero
+while its saved gradient header style is still loading.
+
 ## 2026-11-24 - Crawler canonicals and phone leftovers (0.0.474)
 
 Crawlers that do not run JS now see each page's own canonical and `og:url`

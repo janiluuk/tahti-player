@@ -81,6 +81,7 @@ export function useArtistChannelLook(
 ) {
   const [channelVisual, setChannelVisual] =
     useState<ArtistChannelVisual | null>(null);
+  const [channelVisualLoaded, setChannelVisualLoaded] = useState(!slug);
   const [lookExtras, setLookExtras] = useState<ChannelLookExtras>({});
   const [discoWidgets, setDiscoWidgets] = useState<DiscoWidgetRenderItem[]>([]);
   const [channelPosts, setChannelPosts] = useState<ArtistPost[]>([]);
@@ -119,10 +120,12 @@ export function useArtistChannelLook(
 
   useEffect(() => {
     setChannelVisual(null);
+    setChannelVisualLoaded(false);
     setDiscoWidgets([]);
     setChannelPosts([]);
     setChannelNews([]);
     if (!slug) {
+      setChannelVisualLoaded(true);
       setLookExtras({});
       setLookVisibility(loadArtistLookVisibility(username));
       return;
@@ -139,7 +142,8 @@ export function useArtistChannelLook(
         }
         applyChannel(slug, res.data);
       })
-      .catch(() => undefined);
+      .catch(() => undefined)
+      .finally(() => !cancelled && setChannelVisualLoaded(true));
     void fetchChannelDiscoWidgets(slug)
       .then((r) => !cancelled && setDiscoWidgets(r.data))
       .catch(() => undefined);
@@ -184,6 +188,7 @@ export function useArtistChannelLook(
 
   return {
     channelVisual,
+    channelVisualLoaded,
     lookExtras,
     discoWidgets,
     channelPosts,
