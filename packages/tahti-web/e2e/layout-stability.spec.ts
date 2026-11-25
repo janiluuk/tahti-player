@@ -133,28 +133,26 @@ test('Studio shell stays full-width and keeps navigation geometry stable', async
   );
 });
 
-test('Go live hides Studio nav as a chrome takeover', async ({ page }) => {
+test('Go live keeps the Studio nav and sidebar', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await signIn(page);
   await page.goto('/studio/go-live');
   await expect(page.locator('[data-studio-shell]').first()).toBeVisible();
-  await expect(page.locator('[data-studio-navigation]')).toHaveCount(0);
-  await expect(page.locator('[data-testid="sidebar-navigation"]')).toHaveCount(
-    0,
-  );
+  await expect(page.locator('[data-studio-navigation]').first()).toBeVisible();
+  await expect(
+    page.locator('[data-testid="sidebar-navigation"]').first(),
+  ).toBeVisible();
 });
 
-test('Go live hides mobile bottom nav as a chrome takeover', async ({
-  page,
-}) => {
+test('Go live keeps the mobile bottom nav', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await signIn(page);
   await page.goto('/studio/go-live');
   await expect(page.locator('[data-studio-shell]').first()).toBeVisible();
-  await expect(page.locator('[data-studio-navigation]')).toHaveCount(0);
-  await expect(page.locator('[data-testid="mobile-bottom-nav"]')).toHaveCount(
-    0,
-  );
+  await expect(page.locator('[data-studio-navigation]').first()).toBeVisible();
+  await expect(
+    page.locator('[data-testid="mobile-bottom-nav"]').first(),
+  ).toBeVisible();
 });
 
 test('Admin shell stays full-width and keeps navigation geometry stable', async ({

@@ -12,12 +12,17 @@ test.use({
   },
 });
 
-test('Schedule clip editor previews, activates, and deletes clips with Studio chrome mounted', async ({
+test('Manage clips opens the clip editor that previews, activates, and deletes clips with Studio chrome mounted', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/studio/schedule#channel-programme');
+  await page.goto('/studio/channel/settings');
+  await page.getByRole('link', { name: 'Manage clips' }).click();
+  await expect(page).toHaveURL(/\/studio\/channel\/clips$/);
   await expect(page.getByTestId('studio-navigation')).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Clips between programs' }),
+  ).toBeVisible();
   const section = page.locator('#channel-clips');
   await section
     .getByRole('button', { name: /^Edit / })
@@ -54,18 +59,21 @@ test('records voice as WAV and opens the take as an inactive clip', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/studio/schedule#channel-programme');
+  await page.goto('/studio/channel/clips');
   const section = page.locator('#channel-clips');
   await section
     .getByRole('button', { name: 'Record voice', exact: true })
+    .first()
     .click();
-  await section
+  const recorder = page.getByRole('dialog', { name: 'Record voice' });
+  await recorder
     .getByRole('button', { name: 'Record voice', exact: true })
     .click();
-  await expect(section.getByText(/[12] s · recording WAV/)).toBeVisible();
-  await section.getByRole('button', { name: 'Stop recording' }).click();
-  await expect(section.getByLabel('Recorded voice preview')).toBeVisible();
-  await section.getByRole('button', { name: 'Use recording' }).click();
+  await expect(recorder.getByText(/[12] s · recording WAV/)).toBeVisible();
+  await recorder.getByRole('button', { name: 'Stop recording' }).click();
+  await expect(recorder.getByLabel('Recorded voice preview')).toBeVisible();
+  await recorder.getByRole('button', { name: 'Use recording' }).click();
+  await expect(recorder).toBeHidden();
   const dialog = page.getByRole('dialog', { name: 'Edit clip' });
   await expect(dialog.getByLabel('Clip title')).toHaveValue('Voice clip');
   await dialog.getByRole('button', { name: 'Generate preview' }).click();
