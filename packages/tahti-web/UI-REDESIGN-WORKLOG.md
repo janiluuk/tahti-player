@@ -7118,3 +7118,7 @@ Expanded Tahti Radio shows larger artwork with the now-playing text beside it, t
 ## 2026-11-25 — Broadcast navigation and automatic programme settings (0.0.483)
 
 Studio → Broadcast keeps one Stream manager and Go live now retains the ordinary Studio chrome. The 24/7 automatic programme moved from Schedule to Channel → Settings; the duplicate rotation-source control was removed, the active playlist cannot be applied again, and the fallback copy is clearer in English and Finnish. Clips between programmes have a dedicated Channel view with upload and voice-recording dialogs, reached from a Manage clips button beside the playback switch and disabled while clip playback is off. Routes, redirects, navigation, the view catalog, focused tests, and Storybook plays follow the new structure.
+
+## 2026-11-25 — Main-pane corner control spacing (0.0.484)
+
+Desktop main-pane padding is four pixels tighter at each breakpoint, full-bleed offsets stay paired with it, and the scrollport reserves four more pixels for edge shadows and focus rings. Phone gutters stay at 16px. A focused Storybook surface verifies both corner controls remain inside the pane and focusable at desktop and phone widths.

@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.483',
+    version: '0.0.484',
     sections: [
       {
         id: 'listen',
@@ -66,6 +66,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
           'An artist’s own site (name.tahti.live) no longer has a tahti.live link in its top bar, so the header is just the artist.',
           'Tracks in your queue, favourites or history keep playing after a long break: when a saved link to the audio has expired, the player fetches a fresh one and carries on from the same spot.',
           'Cards stay put when you hover them: a soft outline shows instead of the card jumping sideways, so the edge of a row no longer gets cut off.',
+          'Pages use slightly tighter edge spacing on computers, giving corner buttons enough room for their shadows and keyboard focus outlines without clipping them.',
           'Collections whose name starts with “Set” land under DJ sets on the artist page, and ones naming an LP, EP or album under Albums, even when they were saved as plain playlists.',
           'Setting your password from an invite link no longer flashes a false “invalid or expired link” error after it worked. A link that really is used up or expired now says so clearly and offers Log in or a new link.',
           'Upcoming events now live only on Discover, where you go to find things to do, so Home stays about music you can play right away.',

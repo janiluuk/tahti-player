@@ -6827,3 +6827,11 @@ Clips between programmes now have a separate manager with upload and working
 voice-recording dialogs; Manage clips sits beside its playback switch and stays
 disabled while playback is off. Routes, redirects, Storybook, the view catalog,
 and focused tests cover the new flow.
+
+## 2026-11-25 — Main-container corner controls (0.0.484)
+
+Desktop page insets are four pixels tighter and scrollports reserve four more
+pixels for edge shadows and focus rings. Full-bleed page offsets remain paired
+with the shared inset, while phone gutters remain unchanged. Focused Storybook
+plays verify left and right corner controls stay inside the pane and focusable at
+desktop and phone widths.
