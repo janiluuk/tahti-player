@@ -3,7 +3,11 @@ import { toast } from 'sonner';
 import type { QueueItem } from '@tahti-player/model';
 
 import type { TahtiPlayable } from '../api/types';
-import { streamUrlFromQueueItem, usePlayerStore } from '../stores/playerStore';
+import {
+  channelSlugFromQueueItem,
+  streamUrlFromQueueItem,
+  usePlayerStore,
+} from '../stores/playerStore';
 import { getNativeLibrary } from './nativeLibrary';
 
 const KEY = 'tahti-queue-v1';
@@ -25,6 +29,8 @@ export type PersistedQueueItem = {
   /** Stream URL for Tahti tracks; omitted for local files (resolved on restore). */
   streamUrl?: string;
   sourceProvider?: string;
+  /** The owner's channel slug, for the artist link. */
+  channelSlug?: string;
   durationSec?: number;
   /** Waveform peaks when the track had played (bounded by the peaks cache). */
   peaks?: number[];
@@ -70,6 +76,7 @@ export function serializeQueue(
       coverUrl: qi.track.artwork?.items[0]?.url,
       streamUrl: url,
       sourceProvider: qi.track.source.provider,
+      channelSlug: channelSlugFromQueueItem(qi),
       durationSec:
         qi.track.durationMs != null ? qi.track.durationMs / 1000 : undefined,
       peaks: peaksById[qi.id]?.length ? peaksById[qi.id] : undefined,
@@ -101,11 +108,17 @@ export function parsePersistedQueue(raw: string | null): PersistedQueue | null {
           (isLocal(item.id) || isSound(item.id)),
       )
       .slice(0, MAX_ITEMS)
-      .map((item) =>
-        item.peaks === undefined || isPeaks(item.peaks)
-          ? item
-          : { ...item, peaks: undefined },
-      );
+      .map((item) => ({
+        ...item,
+        peaks:
+          item.peaks === undefined || isPeaks(item.peaks)
+            ? item.peaks
+            : undefined,
+        channelSlug:
+          typeof item.channelSlug === 'string' && item.channelSlug
+            ? item.channelSlug
+            : undefined,
+      }));
     return {
       v: 1,
       currentId:
@@ -130,6 +143,7 @@ function toPlayable(item: PersistedQueueItem): TahtiPlayable {
     streamUrl: item.streamUrl ?? '',
     protocol: 'https',
     sourceProvider: item.sourceProvider,
+    channelSlug: item.channelSlug,
     durationSec: item.durationSec ?? null,
     peaks: item.peaks ?? null,
   };

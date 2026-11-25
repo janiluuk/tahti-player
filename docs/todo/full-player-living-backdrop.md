@@ -32,4 +32,4 @@ In the full-screen player (`packages/tahti-web/src/components/FullScreenPlayer.t
 
 ## Left
 
-- [ ] Pick the final default title transition after comparing the four Storybook states. `fade` is the conservative temporary default.
+- [ ] Pick the final default title transition. Listeners can choose it themselves in Settings → Appearance → "Full-screen title change" (0.0.491, `playbackPrefsStore.fullPlayerTitleTransition`); the default stays `fade` until the user picks.

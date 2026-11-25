@@ -3,9 +3,23 @@ import type { ArtistCredit, Track } from '@tahti-player/model';
 import type { TahtiPlayable } from '../api/types';
 import { placeholderArtworkUrl } from './placeholderArt';
 
+/** Provider of the artist credit that carries the owner's channel slug, so
+ * the queue keeps it: a sound's queue id holds the sound id, not the slug. */
+export const CHANNEL_CREDIT_PROVIDER = 'tahti-channel';
+
 export function playableToTrack(item: TahtiPlayable): Track {
   const provider = item.sourceProvider?.trim() || 'tahti';
-  const artists: ArtistCredit[] = [{ name: item.artist, roles: ['performer'] }];
+  const artists: ArtistCredit[] = [
+    {
+      name: item.artist,
+      roles: ['performer'],
+      ...(item.channelSlug
+        ? {
+            source: { provider: CHANNEL_CREDIT_PROVIDER, id: item.channelSlug },
+          }
+        : {}),
+    },
+  ];
   const tags = provider === 'tahti' ? undefined : [provider];
   return {
     title: item.title,

@@ -121,12 +121,15 @@ function DeferredDialogs() {
  * first open so the close animation can finish, same as DeferredDialogs. */
 function DeferredFullScreenPlayer({ open }: { open: boolean }) {
   const opened = useOpenedOnce(open);
+  const titleTransition = usePlaybackPrefsStore(
+    (s) => s.fullPlayerTitleTransition,
+  );
   if (!opened) {
     return null;
   }
   return (
     <Suspense fallback={null}>
-      <FullScreenPlayer />
+      <FullScreenPlayer titleTransition={titleTransition} />
     </Suspense>
   );
 }

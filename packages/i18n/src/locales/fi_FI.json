@@ -810,6 +810,15 @@
       "description": "Valikot, painikkeet ja päivämäärät näytetään tällä kielellä. Nimet ja otsikot pysyvät tekijöidensä kirjoittamina.",
       "auto": "Selaimen kieli ({{language}})"
     },
+    "fullPlayerTitleTransition": {
+      "label": "Koko näytön nimen vaihtuminen",
+      "helpLabel": "Tietoa koko näytön nimen vaihtumisesta",
+      "description": "Miten kappaleen nimi vaihtuu koko näytön soittimessa. Kun liikettä on vähennetty, nimi vaihtuu ilman liikettä.",
+      "fade": "Häivytys",
+      "slideUp": "Liuku ylös",
+      "softScale": "Pehmeä skaalaus",
+      "slideSide": "Liuku sivulle"
+    },
     "actions": {
       "play": "Toista",
       "pause": "Tauko",
