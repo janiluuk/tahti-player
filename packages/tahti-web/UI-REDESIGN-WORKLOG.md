@@ -7142,3 +7142,9 @@ Desktop main-pane padding is four pixels tighter at each breakpoint, full-bleed 
 - Headers: `compactOnPhone` on CollectionView (back button in `leading`), VenueDetailView, RadioShowView, ChannelFallbackHeader; `ArtistProfilePage` gets `CHANNEL_SCHEME_TEXT_CLASS`.
 - Motion/perf: `lib/backdropMotion.ts` frame monitor (`stillWhenFramesDrop`), EventBannerBackdrop still path, ui `fontFallbacks.css`, `ListenSection` `expectFilter`, toast `link`.
 - Stories for Legal/Terms/Privacy/AGPL/ForArtists/Embed/StudioRevenue views; e2e `use-cases-admin-radio-playlist`, `use-cases-anonymous-artist-phone`.
+
+## 2026-11-25 — Living full-screen player (0.0.488)
+
+- Static cover ambience gets a slower, smaller drift; the cover glass panel moves independently and radiates the sampled cover colour.
+- Long show, title and artist names measure their overflow and scroll gently back and forth instead of looping.
+- Title changes expose four cheap opacity/transform options in Storybook: fade, slide up, soft scale and slide side. Reduced motion holds every moving layer still.

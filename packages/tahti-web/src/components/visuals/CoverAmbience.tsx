@@ -16,6 +16,7 @@ type Props = {
   rgb?: [number, number, number] | null;
   variant: CoverAmbienceVariant;
   className?: string;
+  subtleMotion?: boolean;
 };
 
 function rgba(rgb: [number, number, number] | null | undefined, alpha: number) {
@@ -32,7 +33,13 @@ function rgba(rgb: [number, number, number] | null | undefined, alpha: number) {
  * browser renders without a GPU and when the frame monitor sees it drop
  * frames.
  */
-export function CoverAmbience({ coverUrl, rgb, variant, className }: Props) {
+export function CoverAmbience({
+  coverUrl,
+  rgb,
+  variant,
+  className,
+  subtleMotion = false,
+}: Props) {
   const filterId = `cover-ripple-${useId().replace(/:/g, '')}`;
   const reducedMotion = usePrefersReducedMotion();
   // Without a GPU every drift step re-blurs or re-filters the whole screen.
@@ -52,11 +59,22 @@ export function CoverAmbience({ coverUrl, rgb, variant, className }: Props) {
         className={cn('absolute inset-0 overflow-hidden', className)}
       >
         <div
-          className="tahti-event-backdrop-drift absolute -inset-[15%] bg-cover bg-center opacity-70 blur-3xl saturate-150"
+          className={cn(
+            subtleMotion
+              ? 'tahti-full-player-backdrop-drift'
+              : 'tahti-event-backdrop-drift',
+            'absolute -inset-[15%] bg-cover bg-center opacity-70 blur-3xl saturate-150',
+          )}
           style={{ backgroundImage: image }}
         />
         <div
-          className="tahti-event-backdrop-drift absolute inset-0 mix-blend-screen"
+          className={cn(
+            subtleMotion
+              ? 'tahti-full-player-backdrop-drift'
+              : 'tahti-event-backdrop-drift',
+            'absolute inset-0',
+            subtleMotion ? undefined : 'mix-blend-screen',
+          )}
           style={{
             backgroundImage: `radial-gradient(circle at 30% 30%, ${rgba(rgb, 0.45)}, transparent 55%), radial-gradient(circle at 75% 70%, ${rgba(rgb, 0.3)}, transparent 50%)`,
             animationDuration: '52s',
