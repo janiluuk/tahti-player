@@ -137,8 +137,10 @@ export function StudioSmartLinksView() {
                   className="mb-4"
                   query={query}
                   onQueryChange={setQuery}
-                  searchPlaceholder="Search smartlinks…"
-                  searchLabel="Search smartlinks"
+                  searchPlaceholder={t(
+                    'studioStringsBatch37.searchSmartlinksPlaceholder',
+                  )}
+                  searchLabel={t('studioStringsBatch37.searchSmartlinks')}
                 >
                   {dspChips.length > 2 ? (
                     <FilterChips

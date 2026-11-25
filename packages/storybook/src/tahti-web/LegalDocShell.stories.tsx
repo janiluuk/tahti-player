@@ -3,6 +3,7 @@ import {
   LegalDocSection,
   LegalDocShell,
 } from '@tahti-web/components/LegalDocShell';
+import { expect, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
@@ -36,6 +37,14 @@ export const Default: Story = {
         </LegalDocSection>
       </>
     ),
+  },
+  play: async ({ canvasElement }) => {
+    const nav = within(canvasElement).getByRole('navigation', {
+      name: 'About and legal',
+    });
+    await expect(
+      within(nav).getByRole('link', { name: 'Terms of service' }),
+    ).toHaveAttribute('href', '/terms');
   },
 };
 

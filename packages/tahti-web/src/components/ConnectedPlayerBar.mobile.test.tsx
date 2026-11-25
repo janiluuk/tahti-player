@@ -56,6 +56,12 @@ async function renderBar() {
 
 const closeButton = () =>
   screen.queryByRole('button', { name: 'Close player' });
+const moreButton = () => screen.queryByTestId('mobile-player-more');
+
+async function closeFromMenu() {
+  fireEvent.click(moreButton()!);
+  fireEvent.click(await screen.findByRole('button', { name: 'Close player' }));
+}
 
 describe('ConnectedPlayerBar close on a phone', () => {
   beforeEach(() => {
@@ -75,19 +81,20 @@ describe('ConnectedPlayerBar close on a phone', () => {
     await renderBar();
     expect(screen.getByTestId('mobile-player-bar')).toBeInTheDocument();
     expect(closeButton()).toBeNull();
+    expect(moreButton()).toBeNull();
 
     act(() => usePlayerStore.setState({ status: 'loading' }));
     expect(closeButton()).toBeNull();
+    expect(moreButton()).toBeNull();
   });
 
   it('hides the bar when closed while paused and keeps the queue', async () => {
     usePlayerStore.setState({ status: 'paused' });
     await renderBar();
-    const close = closeButton()!;
-    expect(close).toBeInTheDocument();
-    expect(close.className).toContain('size-11');
+    expect(closeButton()).toBeNull();
+    expect(moreButton()!.className).toContain('size-11');
 
-    fireEvent.click(close);
+    await closeFromMenu();
     expect(screen.queryByTestId('mobile-player-bar')).toBeNull();
     const state = usePlayerStore.getState();
     expect(state.queue.map((q) => q.id)).toEqual(['sound:abc', 'sound:def']);
@@ -98,7 +105,13 @@ describe('ConnectedPlayerBar close on a phone', () => {
     usePlayerStore.setState({ status: 'idle' });
     await renderBar();
     const user = userEvent.setup();
-    const close = closeButton()!;
+    const more = moreButton()!;
+    for (let i = 0; i < 10 && document.activeElement !== more; i++) {
+      await user.tab();
+    }
+    expect(document.activeElement).toBe(more);
+    await user.keyboard('{Enter}');
+    const close = await screen.findByRole('button', { name: 'Close player' });
     for (let i = 0; i < 10 && document.activeElement !== close; i++) {
       await user.tab();
     }
@@ -110,7 +123,7 @@ describe('ConnectedPlayerBar close on a phone', () => {
   it('comes back when playback resumes', async () => {
     usePlayerStore.setState({ status: 'paused' });
     await renderBar();
-    fireEvent.click(closeButton()!);
+    await closeFromMenu();
     expect(screen.queryByTestId('mobile-player-bar')).toBeNull();
 
     act(() => usePlayerStore.getState().setStatus('playing'));
@@ -121,7 +134,7 @@ describe('ConnectedPlayerBar close on a phone', () => {
   it('comes back when another track is played', async () => {
     usePlayerStore.setState({ status: 'paused' });
     await renderBar();
-    fireEvent.click(closeButton()!);
+    await closeFromMenu();
 
     act(() => usePlayerStore.getState().playQueueIndex('sound:def'));
     expect(screen.getByTestId('mobile-player-bar')).toBeInTheDocument();

@@ -120,7 +120,7 @@ export function ArtistRelatedArtists({
       title={t('artistReferenceSections.relatedArtists')}
       data-testid="artist-related"
     >
-      <ul className="border-border bg-background-secondary/60 divide-border flex flex-col divide-y overflow-hidden rounded-lg border">
+      <ul className="border-border bg-background-secondary divide-border flex flex-col divide-y overflow-hidden rounded-lg border">
         {artists.map((related) => (
           <li key={related.username}>
             <Link

@@ -431,7 +431,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   AccTabs --> Gov["/governance"]
   ArtistS --> ArtTabs["Identity · Story · People · Connections · Branding · Gallery · Press kit · Releases"]
   ArtTabs --> Social["Connections: X and Instagram auto-post"]
-  ArtTabs --> Brand["Branding: profile picture incl. GIF · avatar colour · backdrop · logo"]
+  ArtTabs --> Brand["Identity header: profile picture incl. GIF · avatar colour · backdrop; Branding: logo"]
   Brand -.->|same panel| StudioBrand["/studio/branding"]
   ChannelS --> ChTabs["Channel Designer · Discovery · Username and domain · Moderation"]
   Bc --> BcTabs["Radio · green room · moderators · multistream"]

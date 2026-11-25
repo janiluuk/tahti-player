@@ -260,8 +260,9 @@ export function AdminI18nView() {
                       title: busy
                         ? t('adminI18nViewStates.importing')
                         : t('adminI18nViewStates.translationCsv'),
-                      description:
-                        'Choose a CSV translated from the English base.',
+                      description: t(
+                        'listenAdminStringsBatch37.chooseTranslatedCsv',
+                      ),
                       browse: busy
                         ? t('adminI18nViewStates.importing')
                         : t('adminI18nViewStates.chooseCsv'),

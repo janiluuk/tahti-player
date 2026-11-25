@@ -76,9 +76,15 @@ export function AdminListeningPanel() {
             <dl className="grid gap-3 sm:grid-cols-3">
               {(
                 [
-                  ['Listens', data.listens],
-                  ['Minutes listened', data.minutes],
-                  ['Signed-in listeners', data.signedInListeners],
+                  [t('listenAdminStringsBatch37.listens'), data.listens],
+                  [
+                    t('listenAdminStringsBatch37.minutesListened'),
+                    data.minutes,
+                  ],
+                  [
+                    t('listenAdminStringsBatch37.signedInListeners'),
+                    data.signedInListeners,
+                  ],
                 ] as const
               ).map(([label, value]) => (
                 <div key={label}>

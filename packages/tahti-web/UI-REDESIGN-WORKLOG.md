@@ -7148,3 +7148,9 @@ Desktop main-pane padding is four pixels tighter at each breakpoint, full-bleed 
 - Static cover ambience gets a slower, smaller drift; the cover glass panel moves independently and radiates the sampled cover colour.
 - Long show, title and artist names measure their overflow and scroll gently back and forth instead of looping.
 - Title changes expose four cheap opacity/transform options in Storybook: fade, slide up, soft scale and slide side. Reduced motion holds every moving layer still.
+
+## 2026-11-25 — Next 30 slices (0.0.489)
+
+- Events: `stores/eventBrowseStore.ts` + `EventBrowseRow` (`useRememberEventRow`), `useEventBrowse` (keys, swipe), EventView header nav + `aside` side panel.
+- Identity: `ProfileIdentityHeader` with `ProfileBackdropDialog` / `ProfilePictureDialog` (`useProfileAvatar`); `ProfilePictureSection`, `ProfileBackdropSection`, `ArtistImagePurposePicker` removed.
+- Player bar: `MiniStripProgress`, paused ⋯ menu; `AdminNav` `useSelectedTabInView` + `TAB_STRIP_FADE`; `LegalHubLinks` `<nav>`.

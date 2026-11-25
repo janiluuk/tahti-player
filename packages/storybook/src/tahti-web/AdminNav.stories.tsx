@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminNav } from '@tahti-web/components/AdminNav';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
@@ -108,5 +108,38 @@ export const MobileInbox: Story = {
   decorators: [withTahtiRouter('/admin/moderation/missed-shows')],
   play: async ({ canvasElement }) => {
     await expectSection(canvasElement, 'Inbox');
+  },
+};
+
+/** At 390 px the six sections scroll sideways: a deep section's tab is
+ * scrolled clear of the edge fade on load, and the fade marks the side
+ * that hides more tabs. */
+export const PhoneSectionStripInView: Story = {
+  args: {
+    current: '/admin/addons',
+  },
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 390 }}>
+        <Story />
+      </div>
+    ),
+    withTahtiRouter('/admin/addons'),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = await expectSection(canvasElement, 'Platform');
+    const list = canvas.getByRole('tablist', { name: 'Admin sections' });
+    const selected = within(list).getByRole('tab', { selected: true });
+    await expect(list.scrollWidth).toBeGreaterThan(list.clientWidth);
+    await waitFor(() => expect(list.scrollLeft).toBeGreaterThan(0));
+    const listRect = list.getBoundingClientRect();
+    const tabRect = selected.getBoundingClientRect();
+    await expect(tabRect.left).toBeGreaterThanOrEqual(listRect.left);
+    await expect(tabRect.right).toBeLessThanOrEqual(listRect.right + 1);
+    await expect(list.dataset.fade).toMatch(/^(start|both)$/);
+
+    list.scrollLeft = 0;
+    await waitFor(() => expect(list.dataset.fade).toBe('end'));
   },
 };

@@ -10,7 +10,6 @@ import {
   fetchPublicPressKitImages,
   MAX_PRESS_KIT_SELECTED_IMAGES,
   patchPressKitBio,
-  removeProfileAvatar,
   setPressKitGalleryPublic,
   updatePressKitImage,
   uploadPressKitImages,
@@ -31,7 +30,6 @@ export const selectedPressKitImages = (images: PressKitImageItem[]) =>
 /** Profile, gallery and press-kit state plus every action on them. */
 export function usePressKit() {
   const user = useAuthStore((state) => state.user);
-  const refreshAuth = useAuthStore((state) => state.refresh);
   const [profile, setProfile] = useState<ProfileFields | null>(null);
   const [images, setImages] = useState<PressKitImageItem[]>([]);
   const [pressKit, setPressKit] = useState<PressKitMeta | null>(null);
@@ -121,7 +119,10 @@ export function usePressKit() {
       // stored: a failed upload must never leave the gallery empty.
       const uploaded = await uploadPressKitImages(Array.from(files));
       if (uploaded.images.length === 0) {
-        toast.error(uploaded.errors.join('; ') || 'No images were uploaded.');
+        toast.error(
+          uploaded.errors.join('; ') ||
+            i18n.t('web:studioStringsBatch37.noImagesUploaded'),
+        );
         return;
       }
       const replaced = uploadMode === 'replace' ? images : [];
@@ -236,31 +237,6 @@ export function usePressKit() {
     }
   };
 
-  const removeAvatar = async () => {
-    if (!profile) {
-      return;
-    }
-    const result = await removeProfileAvatar();
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    setProfile({ ...profile, avatarUrl: null });
-    await refreshAuth();
-    toast.success(i18n.t('web:toasts.profilePictureRemoved'));
-  };
-
-  const handleAvatarChange = (url: string) => {
-    if (!url) {
-      void removeAvatar();
-      return;
-    }
-    setProfile((current) =>
-      current ? { ...current, avatarUrl: url } : current,
-    );
-    void refreshAuth();
-  };
-
   const pressImages = selectedPressKitImages(images);
   const avatarUrl = profile?.avatarUrl ?? user?.avatarUrl ?? null;
 
@@ -313,7 +289,6 @@ export function usePressKit() {
     reorderPressKitImages,
     togglePressKitImage,
     removeImage,
-    handleAvatarChange,
     saveBio,
     pressImages,
     avatarUrl,

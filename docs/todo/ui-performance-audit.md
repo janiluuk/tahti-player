@@ -16,8 +16,9 @@ Requested 2026-11-24. First pass in tahti-web 0.0.475 (#2165), measured in Chrom
 | Queued rows pulsing forever | 500 ms style work / 5 s | 4 ms |
 | Track table re-rendered every progress tick | 685 ms script / 5 s | 55 ms |
 
+Event page without a GPU (Storybook `evt-mock-guest`, SwiftShader, 4x CPU throttle): 60 fps idle and scrolling at desktop and 390 px, p95 16.8 ms; the banner goes still on SwiftShader (2026-11-25).
+
 ## Left
 
-- [ ] No-GPU fps on the event page (Storybook `EventView` mock `evt-mock-guest`).
 
-- [ ] Measure in Firefox with `layers.acceleration.disabled` / `gfx.webrender.software` (Playwright Firefox download timed out). The no-GPU check reads the WebGL renderer name, so it may not trigger when Firefox keeps hardware WebGL but paints in software.
+- [ ] Firefox software paint on a real low-end or software-WebGL machine. Headless Firefox 155 on an M1 with `layers.acceleration.disabled` / `gfx.webrender.software` runs ~120 fps on EventView, `/`, `/discover`, `/channel/yaniho`, but WebGL still reports "Apple M1", so the no-GPU check does not trigger and `/channel/yaniho` keeps a live WebGL canvas (2026-11-25).

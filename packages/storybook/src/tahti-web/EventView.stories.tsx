@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { setBackdropFrameVerdict } from '@tahti-web/lib/backdropMotion';
+import { useEventBrowseStore } from '@tahti-web/stores/eventBrowseStore';
 import { EventView } from '@tahti-web/views/EventView';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
@@ -49,6 +50,89 @@ export const StillBackdrop: Story = {
     await expect(backdrop).toHaveAttribute('data-still', 'true');
     const drift = backdrop.querySelector('.tahti-event-backdrop-drift');
     await expect(drift && getComputedStyle(drift).animationName).toBe('none');
+  },
+};
+
+const browseRow = [
+  { id: 'evt-row-before', title: 'Warm-up session' },
+  { id: 'evt-mock-guest', title: 'Guest set' },
+  { id: 'evt-row-after', title: 'Closing night' },
+];
+
+/** Opened from a row of events: the header steps to the previous and next
+ * event of that row (← / → and a sideways swipe do the same). The ends do
+ * not wrap. */
+export const BrowseRow: Story = {
+  beforeEach: () => {
+    useEventBrowseStore.setState({ items: browseRow, arrival: null });
+    return () => useEventBrowseStore.setState({ items: null, arrival: null });
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByTestId('event-page')).toBeVisible();
+    const nav = canvas.getByRole('navigation', { name: 'Browse events' });
+    await expect(
+      within(nav).getByRole('button', {
+        name: 'Previous event: Warm-up session',
+      }),
+    ).toBeEnabled();
+    await expect(within(nav).getByText('2 of 3')).toBeVisible();
+    await userEvent.click(
+      within(nav).getByRole('button', { name: 'Next event: Closing night' }),
+    );
+    await waitFor(() =>
+      expect(useEventBrowseStore.getState().arrival).toEqual({
+        eventId: 'evt-row-after',
+        direction: 'next',
+      }),
+    );
+  },
+};
+
+/** First event of its row: Previous is disabled rather than wrapping. */
+export const BrowseRowStart: Story = {
+  beforeEach: () => {
+    useEventBrowseStore.setState({
+      items: browseRow.slice(1),
+      arrival: null,
+    });
+    return () => useEventBrowseStore.setState({ items: null, arrival: null });
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByTestId('event-page')).toBeVisible();
+    await expect(
+      canvas.getByRole('button', { name: 'No previous event' }),
+    ).toBeDisabled();
+    await expect(
+      canvas.getByRole('button', { name: 'Next event: Closing night' }),
+    ).toBeEnabled();
+  },
+};
+
+/** Calendar links, share and comments sit in a side panel beside the
+ * details on wide screens and follow the details on phones. */
+export const SidePanel: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByTestId('event-page')).toBeVisible();
+    const panel = canvas.getByRole('complementary', {
+      name: 'Event actions and comments',
+    });
+    await expect(
+      within(panel).getByRole('link', { name: /Add to Google Calendar/ }),
+    ).toBeVisible();
+    await expect(await within(panel).findByTestId('event-comments')).toBe(
+      within(panel).getByTestId('event-comments'),
+    );
+    const main = canvas.getByTestId('event-main').getBoundingClientRect();
+    const side = panel.getBoundingClientRect();
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+      await expect(side.left).toBeGreaterThanOrEqual(main.right);
+      await expect(side.top).toBeLessThan(main.bottom);
+    } else {
+      await expect(side.top).toBeGreaterThanOrEqual(main.bottom);
+    }
   },
 };
 

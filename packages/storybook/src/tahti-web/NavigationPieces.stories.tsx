@@ -45,6 +45,12 @@ export const SkipLink: Story = {
 
 export const Legal: Story = {
   render: () => <LegalHubLinks />,
+  play: async ({ canvasElement }) => {
+    const nav = within(canvasElement).getByRole('navigation', {
+      name: 'About and legal',
+    });
+    await expect(within(nav).getAllByRole('link').length).toBeGreaterThan(3);
+  },
 };
 
 export const Post: Story = {

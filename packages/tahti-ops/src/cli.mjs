@@ -8,6 +8,7 @@ import {
   LINE_LIMIT,
   runCheckSize,
 } from './commands/check-size.mjs';
+import { runCiDigest } from './commands/ci-digest.mjs';
 import { deployTargets, runDeploy } from './commands/deploy.mjs';
 import { desktopModes, runDesktop } from './commands/desktop.mjs';
 import { runE2e } from './commands/e2e.mjs';
@@ -382,6 +383,35 @@ This command checks the files exist; it does not call the GitHub API.`,
       'dry-run': { type: 'boolean', default: false },
     },
     run: ({ values }) => runCheckCi({ dryRun: Boolean(values['dry-run']) }),
+  },
+  {
+    path: ['ci', 'digest'],
+    usage:
+      'tahti-ops ci digest [--baseline] [--gate] [--public-base-url <url>] [--dry-run]',
+    summary:
+      'Build the Vitest snapshot digest from the last test run (scripts/ci)',
+    details: `Runs the CI snapshot-digest scripts locally, from the repo root:
+  --baseline              First fetch master's digest into snapshot-baseline/
+                          (scripts/ci/fetch-snapshot-baseline.sh ci.yml snapshot-digest;
+                          needs gh and GH_TOKEN or gh auth)
+  (always)                node scripts/ci/build-snapshot-digest.mjs -> snapshot-digest/
+  --gate                  Then node scripts/ci/should-fail-core-tests.mjs
+                          (exit 0 only when every failure is a standing snapshot)
+  --public-base-url <url> Link PNGs under this URL (SNAPSHOT_DIFF_PUBLIC_BASE_URL)
+  --dry-run               Print each step without running it`,
+    options: {
+      baseline: { type: 'boolean', default: false },
+      gate: { type: 'boolean', default: false },
+      'public-base-url': { type: 'string', default: '' },
+      'dry-run': { type: 'boolean', default: false },
+    },
+    run: ({ values }) =>
+      runCiDigest({
+        baseline: Boolean(values.baseline),
+        gate: Boolean(values.gate),
+        publicBaseUrl: values['public-base-url'],
+        dryRun: Boolean(values['dry-run']),
+      }),
   },
   {
     path: ['check', 'size'],

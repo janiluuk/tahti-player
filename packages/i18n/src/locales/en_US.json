@@ -614,6 +614,73 @@
     }
   },
   "web": {
+    "studioStringsBatch37": {
+      "surfaceChannelPage": "Channel page",
+      "surfaceArtistProfile": "Artist profile",
+      "surfaceDiscover": "Discover",
+      "surfaceLibrary": "Library",
+      "surfaceEmbeds": "Embeds",
+      "surfaceElsewhere": "Elsewhere on Tahti",
+      "searchSmartlinksPlaceholder": "Search smartlinks…",
+      "searchSmartlinks": "Search smartlinks",
+      "movedToPrivateStash": "Moved to your private stash.",
+      "noNewSilenceToTrim": "No new leading/trailing silence to trim.",
+      "recurringScheduleSaved": "Recurring schedule saved. Upcoming episodes are being generated.",
+      "recurringScheduleStopped": "Recurring schedule stopped. Existing upcoming episodes remain scheduled.",
+      "nextLiveSession": "Next live session",
+      "allTypes": "All types",
+      "cardView": "Card view",
+      "listView": "List view",
+      "upcomingBroadcast": "Upcoming broadcast",
+      "episodeNumberSuffix": " · Episode {{number}}",
+      "sourcesFillIn": "Sources fill in as people listen.",
+      "noSoundsSelected": "No sounds selected.",
+      "recordedEpisode": "Recorded episode",
+      "couldNotLoadOverview": "Could not load your studio overview.",
+      "showInfoUnavailable": "Show info is unavailable.",
+      "backdropUploaded": "Backdrop uploaded. Save details to publish it.",
+      "backdropsUploaded": "{{count}} backdrop images uploaded. Save details to publish them.",
+      "trackNoLongerInTracklist": "That track is no longer in the tracklist.",
+      "searchTracks": "Search tracks…",
+      "searchCloudcasts": "Search cloudcasts…",
+      "processing": "Processing…",
+      "processingFailed": "Processing failed",
+      "noImagesUploaded": "No images were uploaded.",
+      "currentLogo": "Current logo",
+      "currentProfileBackdrop": "Current profile backdrop",
+      "episodeNeedsApproval": "Needs approval",
+      "episodeApproved": "Approved",
+      "episodeScheduled": "Scheduled",
+      "episodeLive": "Live",
+      "episodeDraft": "Draft"
+    },
+    "listenAdminStringsBatch37": {
+      "yourStation": "Your station",
+      "streamPending": "Stream pending",
+      "offAir": "Off air",
+      "internetRadio": "Internet radio",
+      "allGenres": "All genres",
+      "unknownSubmitter": "Unknown submitter",
+      "unknownArtist": "Unknown artist",
+      "featureRequestStatus": "Feature request status",
+      "noMembership": "No membership",
+      "reorderFailed": "Reorder failed",
+      "allRoles": "All roles",
+      "listens": "Listens",
+      "minutesListened": "Minutes listened",
+      "signedInListeners": "Signed-in listeners",
+      "chooseTranslatedCsv": "Choose a CSV translated from the English base.",
+      "agendaCallToOrder": "Call to order",
+      "agendaQuorumCheck": "Quorum check",
+      "agendaAdoption": "Adoption of agenda",
+      "agendaPreviousMinutes": "Review of previous minutes",
+      "agendaBoardReport": "Board report",
+      "agendaFinancialReport": "Financial report",
+      "agendaMotions": "Motions",
+      "agendaBoardElection": "Election of board (if applicable)",
+      "agendaOtherBusiness": "Any other business",
+      "agendaClose": "Close"
+    },
     "visualizerModeMenu": {
       "ambience": "Ambience",
       "ambientGlow": "Off (cover glow)",
@@ -6993,6 +7060,14 @@
       "effectsArenTHeardIn": "Effects aren’t heard in this preview yet: the file’s host doesn’t allow the browser to process it. You’re hearing it unprocessed until the editor has its own copy; renders still apply every effect.",
       "wavesurferFailed": "Couldn’t start the detailed waveform in this browser. Try reloading the editor."
     },
+    "profileHeader": {
+      "label": "Profile picture and backdrop",
+      "changeBackdrop": "Change backdrop",
+      "changeProfilePicture": "Change profile picture",
+      "removeProfilePicture": "Remove profile picture",
+      "removeProfilePictureDescription": "Your avatar colour or the default artwork shows instead.",
+      "remove": "Remove"
+    },
     "profileBackdropSection": {
       "removeBackdrop": "Remove backdrop",
       "profileBackdrop": "Profile backdrop",
@@ -9235,9 +9310,9 @@
       "defaultArtworkStyleForNew": "Default artwork style for new releases.",
       "howYourChannelPageLooks": "How your channel page looks: layout, blocks and colours.",
       "yourChannelAddressAndA": "Your channel address and a custom domain.",
-      "identityDescription": "Your artist name, picture, roles, bio and the people behind the project.",
+      "identityDescription": "Your artist name, picture, backdrop, roles, bio and the people behind the project.",
       "linkPageDescription": "One page with all your links, ready to share in your bio.",
-      "brandingDescription": "Profile picture, header image, logo and the default look of new releases.",
+      "brandingDescription": "Your logo and the default look of new releases.",
       "galleryAndPressKit": "Gallery & press kit",
       "galleryDescription": "Photos fans see on your profile and the press kit promoters download.",
       "design": "Design",
@@ -10807,7 +10882,8 @@
       "unavailable": "Unavailable"
     },
     "legalDocShellText": {
-      "helpCenter": "Help center"
+      "helpCenter": "Help center",
+      "aboutAndLegal": "About and legal"
     },
     "fullScreenPlayerText": {
       "error": "Error"
@@ -15076,7 +15152,14 @@
       "backToEvents": "Back to events",
       "bannerAlt": "Banner for {{title}}",
       "edit": "Edit event",
-      "venue": "Venue"
+      "venue": "Venue",
+      "browse": "Browse events",
+      "previousEvent": "Previous event: {{title}}",
+      "nextEvent": "Next event: {{title}}",
+      "noPreviousEvent": "No previous event",
+      "noNextEvent": "No next event",
+      "position": "{{position}} of {{total}}",
+      "sidePanel": "Event actions and comments"
     },
     "eventComments": {
       "title": "Comments",

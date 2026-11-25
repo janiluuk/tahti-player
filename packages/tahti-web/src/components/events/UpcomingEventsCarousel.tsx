@@ -17,6 +17,10 @@ import {
 } from '@tahti-player/ui';
 
 import type { UpcomingEvent } from '../../api/upcoming-events';
+import {
+  toEventBrowseItems,
+  useEventBrowseStore,
+} from '../../stores/eventBrowseStore';
 import { formatEventStart, upcomingEventPlace } from './UpcomingEventCard';
 
 const SWIPE_THRESHOLD_PX = 40;
@@ -33,6 +37,7 @@ export function UpcomingEventsCarousel({
 }) {
   const { t } = useTranslation('web');
   const navigate = useNavigate();
+  const rememberRow = useEventBrowseStore((state) => state.remember);
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<Direction | null>(null);
   const dragStart = useRef<{ x: number; y: number } | null>(null);
@@ -57,6 +62,7 @@ export function UpcomingEventsCarousel({
   };
 
   const open = () => {
+    rememberRow(toEventBrowseItems(events));
     void navigate({ to: '/events/$eventId', params: { eventId: current.id } });
   };
 

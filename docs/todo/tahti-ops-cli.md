@@ -98,7 +98,7 @@ Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` lab
 | build-and-run-*.sh / run-linux.sh | `desktop run` / `launch` / `android` | shipped (android script deleted) |
 | flatpak-*.sh / update-aur.sh | `package flatpak` / `package aur` | shipped (scripts deleted) |
 | deploy-production.sh | `release prepare` | shipped (script deleted) |
-| scripts/ci/* | keep CI-only; optional `ci digest` | planned |
+| scripts/ci/* | `ci digest [--baseline] [--gate] [--public-base-url] [--dry-run]` | shipped (CI still calls the scripts directly) |
 | check-file-size.mjs | `check size` | shipped (script deleted) |
 | generate-storybook-surfaces.mjs | `storybook surfaces` | shipped |
 | close-external-issue.cjs | `github close-external-issue` | shipped (validate locally; API in CI) |

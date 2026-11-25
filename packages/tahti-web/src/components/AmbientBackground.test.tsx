@@ -43,10 +43,7 @@ function mockReducedMotion(reduce: boolean) {
 
 describe('AmbientBackground', () => {
   beforeEach(() => {
-    Object.defineProperty(document, 'hidden', {
-      configurable: true,
-      get: () => false,
-    });
+    vi.spyOn(document, 'hidden', 'get').mockReturnValue(false);
     mockReducedMotion(false);
   });
 
@@ -115,10 +112,7 @@ describe('AmbientBackground', () => {
   });
 
   it('pauses when the document is hidden', () => {
-    Object.defineProperty(document, 'hidden', {
-      configurable: true,
-      get: () => true,
-    });
+    vi.spyOn(document, 'hidden', 'get').mockReturnValue(true);
     const { queryByTestId, container } = render(<AmbientBackground />);
     expect(queryByTestId('channel-visualizer')).not.toBeInTheDocument();
     expect(

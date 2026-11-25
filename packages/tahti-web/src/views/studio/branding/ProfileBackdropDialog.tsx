@@ -2,18 +2,22 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
-import { Button, FilePicker, ImageReveal } from '@tahti-player/ui';
+import { Button, Dialog, FilePicker, ImageReveal } from '@tahti-player/ui';
 
 import {
   removeProfileBackdrop,
   uploadProfileBackdrop,
 } from '../../../api/profile-backdrop';
-import { StudioPanel } from '../../../components/StudioPanel';
 
-export function ProfileBackdropSection({
+/** Upload, replace or remove the wide image behind the artist page header. */
+export function ProfileBackdropDialog({
+  isOpen,
+  onClose,
   backdropUrl,
   onChange,
 }: {
+  isOpen: boolean;
+  onClose: () => void;
   backdropUrl: string | null;
   onChange: (url: string | null) => void;
 }) {
@@ -34,6 +38,7 @@ export function ProfileBackdropSection({
     }
     onChange(result.data.backdropUrl);
     toast.success(i18n.t('web:toasts.backdropSaved'));
+    onClose();
   };
 
   const remove = async () => {
@@ -48,16 +53,21 @@ export function ProfileBackdropSection({
   };
 
   return (
-    <StudioPanel
-      title={t('profileBackdropSection.profileBackdrop')}
-      help={t('profileBackdropSection.aWideImageBehindYour')}
+    <Dialog.Root
+      isOpen={isOpen}
+      onClose={() => !busy && onClose()}
+      className="max-w-xl"
     >
-      <div className="flex flex-col gap-3">
+      <Dialog.Title>{t('profileBackdropSection.profileBackdrop')}</Dialog.Title>
+      <Dialog.Description>
+        {t('profileBackdropSection.aWideImageBehindYour')}
+      </Dialog.Description>
+      <div className="mt-4 flex flex-col gap-3">
         {backdropUrl ? (
           <div className="flex flex-col gap-2" data-testid="profile-backdrop">
             <ImageReveal
               src={backdropUrl}
-              alt="Current profile backdrop"
+              alt={t('studioStringsBatch37.currentProfileBackdrop')}
               className="aspect-[4/1] w-full rounded-lg object-cover"
             />
             <Button
@@ -86,6 +96,9 @@ export function ProfileBackdropSection({
           onFiles={(files) => void upload(files)}
         />
       </div>
-    </StudioPanel>
+      <Dialog.Actions>
+        <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
+      </Dialog.Actions>
+    </Dialog.Root>
   );
 }

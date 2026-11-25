@@ -91,7 +91,7 @@ export function ProfileLogoSection({
           <div className="flex flex-col gap-3" data-testid="profile-logo">
             <ImageReveal
               src={logoUrl}
-              alt="Current logo"
+              alt={t('studioStringsBatch37.currentLogo')}
               className="bg-background-secondary size-24 rounded-lg object-contain p-2"
             />
             <SegmentedControl

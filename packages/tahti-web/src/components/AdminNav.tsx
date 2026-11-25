@@ -35,7 +35,11 @@ import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import { Badge, ButtonLink, TabLabel, Tabs } from '@tahti-player/ui';
 
 import { matchesSectionRoute } from '../lib/sectionNavigation';
-import { SectionTabs } from './SectionTabs';
+import {
+  SectionTabs,
+  TAB_STRIP_FADE,
+  useSelectedTabInView,
+} from './SectionTabs';
 
 /**
  * Admin chrome (`PRIMARY` below) is not exhaustive. These paths are still
@@ -540,16 +544,16 @@ function useAdminNavParts(
   const selectedSectionIndex = ADMIN_SECTIONS.findIndex(
     (item) => item.id === section?.id,
   );
+  const sectionTabsRef = useSelectedTabInView(selectedSectionIndex);
   const tabs = (
     <div
-      // On phones the six sections scroll in one row; the fade shows there
-      // are more past the edge.
-      className="tahti-hide-scrollbar w-fit max-w-full overflow-x-auto max-sm:[mask-image:linear-gradient(to_right,#000_calc(100%-2rem),transparent)]"
+      ref={sectionTabsRef}
+      className="w-fit max-w-full min-w-0"
       data-admin-section-tabs
     >
       <Tabs.Root
         variant="segmented"
-        className="w-fit max-w-full gap-0 max-sm:max-w-none"
+        className="w-fit max-w-full gap-0"
         selectedIndex={Math.max(0, selectedSectionIndex)}
         onChange={(index) => {
           const target = ADMIN_SECTIONS[index];
@@ -566,7 +570,7 @@ function useAdminNavParts(
       >
         <Tabs.List
           aria-label={t('adminNav.sections')}
-          className="w-fit max-sm:max-w-none max-sm:flex-nowrap max-sm:[&>*]:shrink-0"
+          className={`tahti-hide-scrollbar flex-nowrap overflow-x-auto [&>*]:shrink-0 ${TAB_STRIP_FADE}`}
         >
           {ADMIN_SECTIONS.map((item) => (
             <Tabs.Tab key={item.id}>

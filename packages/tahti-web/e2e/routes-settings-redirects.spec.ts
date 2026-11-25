@@ -144,7 +144,7 @@ const movedToStudio: RouteVisit[] = [
   },
   {
     path: '/studio/branding',
-    heading: 'Profile picture',
+    heading: /^Logo$/,
     url: /\/studio\/profile\/branding$/,
   },
   {

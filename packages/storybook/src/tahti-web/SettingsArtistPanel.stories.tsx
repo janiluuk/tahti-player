@@ -56,16 +56,16 @@ export const Identity: Story = {
       await canvas.findByRole('textbox', { name: 'Display name' })
     ).closest('form');
     await expect(form).toBeTruthy();
-    const avatar = within(form!).getByTestId('identity-avatar');
-    await expect(avatar).toBeVisible();
+    const header = within(form!).getByTestId('profile-identity-header');
+    await expect(header).toBeVisible();
     await expect(
-      within(avatar).getByRole('button', { name: 'Change profile image' }),
+      within(header).getByRole('button', { name: 'Change profile picture' }),
     ).toBeInTheDocument();
     await expect(
-      within(avatar).queryByText('Click to change your profile image'),
-    ).toBeNull();
+      within(header).getByRole('button', { name: 'Change backdrop' }),
+    ).toBeInTheDocument();
     const formChildren = [...(form?.children ?? [])] as HTMLElement[];
-    await expect(formChildren[0]).toBe(avatar);
+    await expect(formChildren[0]).toBe(header);
     await expect(
       canvas.getByRole('textbox', { name: 'Display name' }),
     ).toHaveValue(MOCK_USERS.artist.displayName);

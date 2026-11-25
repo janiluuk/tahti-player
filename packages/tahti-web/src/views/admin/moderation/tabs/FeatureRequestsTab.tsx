@@ -288,7 +288,7 @@ export function FeatureRequestsTab() {
           ...item,
           icon: FILTER_TAB_ICONS[item.id],
         }))}
-        ariaLabel="Feature request status"
+        ariaLabel={t('listenAdminStringsBatch37.featureRequestStatus')}
         onChange={(id) => setFilter(id as AdminFeatureRequestStatus | 'all')}
       />
 

@@ -11,10 +11,10 @@ import { webT } from '../../../lib/webT';
 function notReadyLabel(status: string): string | null {
   const s = status.toUpperCase();
   if (s === 'PENDING' || s === 'PROCESSING') {
-    return 'Processing…';
+    return webT()('studioStringsBatch37.processing');
   }
   if (s === 'ERROR') {
-    return 'Processing failed';
+    return webT()('studioStringsBatch37.processingFailed');
   }
   return null;
 }

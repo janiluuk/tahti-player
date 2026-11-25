@@ -276,6 +276,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Desktop/MixableTracksSection` | `tahti-web/MixableTracksSection.stories.tsx` |
 | `Tahti/Chrome/MobileChrome` | `tahti-web/MobileChrome.stories.tsx` |
 | `Tahti/Listen/ModerateChannelView` | `tahti-web/ModerateChannelView.stories.tsx` |
+| `Tahti/Misc/MoreView` | `tahti-web/MoreView.stories.tsx` |
 | `Tahti/Broadcast/MulticastConfigureDialog` | `tahti-web/MulticastConfigureDialog.stories.tsx` |
 | `Tahti/Broadcast/MulticastSection` | `tahti-web/MulticastSection.stories.tsx` |
 | `Tahti/Studio/GoLive/MultistreamPanel` | `tahti-web/MultistreamPanel.stories.tsx` |
@@ -314,7 +315,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Pro editor/Mastering` | `tahti-web/ProEditorMastering.stories.tsx` |
 | `Tahti/Studio/Pro editor/Stems` | `tahti-web/ProEditorStems.stories.tsx` |
 | `Tahti/Studio/ProcessingFailedAlert` | `tahti-web/ProcessingFailedAlert.stories.tsx` |
-| `Tahti/Studio/Branding/ProfilePictureSection` | `tahti-web/ProfilePictureSection.stories.tsx` |
+| `Tahti/Studio/Profile/ProfileIdentityHeader` | `tahti-web/ProfileIdentityHeader.stories.tsx` |
 | `Tahti/Profile/ProfileSection` | `tahti-web/ProfileSection.stories.tsx` |
 | `Tahti/Studio/PromptScoreBridgePanel` | `tahti-web/PromptScoreBridgePanel.stories.tsx` |
 | `Tahti/Misc/ProviderSetImportDialog` | `tahti-web/ProviderSetImportDialog.stories.tsx` |

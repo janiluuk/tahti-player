@@ -1,7 +1,7 @@
 import { ArrowDownIcon, ArrowUpIcon, PlusIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   CopyButton,
@@ -12,33 +12,31 @@ import {
 
 import { StudioPanel } from '../../../../components/StudioPanel';
 
-export const DEFAULT_AGENDA = [
-  'Call to order',
-  'Quorum check',
-  'Adoption of agenda',
-  'Review of previous minutes',
-  'Board report',
-  'Financial report',
-  'Motions',
-  'Election of board (if applicable)',
-  'Any other business',
-  'Close',
-];
+export function defaultAgenda(t: TFunction<'web'>): string[] {
+  return [
+    t('listenAdminStringsBatch37.agendaCallToOrder'),
+    t('listenAdminStringsBatch37.agendaQuorumCheck'),
+    t('listenAdminStringsBatch37.agendaAdoption'),
+    t('listenAdminStringsBatch37.agendaPreviousMinutes'),
+    t('listenAdminStringsBatch37.agendaBoardReport'),
+    t('listenAdminStringsBatch37.agendaFinancialReport'),
+    t('listenAdminStringsBatch37.agendaMotions'),
+    t('listenAdminStringsBatch37.agendaBoardElection'),
+    t('listenAdminStringsBatch37.agendaOtherBusiness'),
+    t('listenAdminStringsBatch37.agendaClose'),
+  ];
+}
 
 type Item = { id: number; text: string };
 
 /** A scratch agenda the board copies into the meeting notice. Lines read as
  * text; one line at a time opens for editing. Nothing is saved. */
-export function AgendaBuilder({
-  initial = DEFAULT_AGENDA,
-}: {
-  initial?: string[];
-}) {
+export function AgendaBuilder({ initial }: { initial?: string[] }) {
   const { t } = useTranslation('web');
   const [items, setItems] = useState<Item[]>(() =>
-    initial.map((text, id) => ({ id, text })),
+    (initial ?? defaultAgenda(t)).map((text, id) => ({ id, text })),
   );
-  const [nextId, setNextId] = useState(initial.length);
+  const [nextId, setNextId] = useState(() => items.length);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [draft, setDraft] = useState('');
   const [draftIsNew, setDraftIsNew] = useState(false);

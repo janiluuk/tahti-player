@@ -128,6 +128,30 @@ describe('ConnectedPlayerBar minimize on a phone', () => {
     expect(bar()).toHaveAttribute('data-minimized');
   });
 
+  it('moves minimize and close into the more menu while paused', async () => {
+    usePlayerStore.setState({ status: 'paused' });
+    await renderBar();
+    expect(minimizeButton()).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Close player' })).toBeNull();
+
+    fireEvent.click(screen.getByTestId('mobile-player-more'));
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Minimize player' }),
+    );
+    expect(bar()).toHaveAttribute('data-minimized');
+  });
+
+  it('draws mini strip progress without re-rendering the bar', async () => {
+    localStorage.setItem(PHONE_PLAYER_MINIMIZED_KEY, '1');
+    resetPhonePlayerMinimizedCache();
+    usePlayerStore.setState({ currentTime: 30, duration: 120 });
+    await renderBar();
+    const fill = screen.getByTestId('mini-player-progress-fill');
+    expect(fill.style.transform).toBe('scaleX(0.25)');
+    act(() => usePlayerStore.getState().setProgress(60, 120));
+    expect(fill.style.transform).toBe('scaleX(0.5)');
+  });
+
   it('keeps the full bar on desktop even when minimized on a phone before', async () => {
     localStorage.setItem(PHONE_PLAYER_MINIMIZED_KEY, '1');
     resetPhonePlayerMinimizedCache();

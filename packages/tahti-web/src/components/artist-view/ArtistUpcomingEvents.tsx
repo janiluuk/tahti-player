@@ -6,6 +6,7 @@ import { Button, ExternalLink } from '@tahti-player/ui';
 
 import { eventsIcsUrl } from '../../api/event-calendar';
 import { fetchChannelEvents, type ArtistEvent } from '../../api/events';
+import { EventBrowseRow } from '../events/EventBrowseRow';
 import { EventCard } from '../events/EventCard';
 import { PageError } from '../PageStates';
 import { Eyebrow } from '../tahti/Eyebrow';
@@ -87,13 +88,15 @@ export function ArtistUpcomingEvents({
               {t('artistUpcomingEventsText.upcomingEvents')}
             </span>
           </Eyebrow>
-          <ul className="flex flex-col gap-3">
-            {upcoming.map((event) => (
-              <li key={event.id}>
-                <EventCard event={event} linkToPage showDescription={false} />
-              </li>
-            ))}
-          </ul>
+          <EventBrowseRow events={upcoming}>
+            <ul className="flex flex-col gap-3">
+              {upcoming.map((event) => (
+                <li key={event.id}>
+                  <EventCard event={event} linkToPage showDescription={false} />
+                </li>
+              ))}
+            </ul>
+          </EventBrowseRow>
           {username ? (
             <ExternalLink
               href={eventsIcsUrl(username)}
@@ -116,13 +119,15 @@ export function ArtistUpcomingEvents({
               {t('artistUpcomingEventsText.pastEvents')}
             </span>
           </Eyebrow>
-          <ul className="flex flex-col gap-3">
-            {visiblePast.map((event) => (
-              <li key={event.id}>
-                <EventCard event={event} linkToPage showDescription={false} />
-              </li>
-            ))}
-          </ul>
+          <EventBrowseRow events={visiblePast}>
+            <ul className="flex flex-col gap-3">
+              {visiblePast.map((event) => (
+                <li key={event.id}>
+                  <EventCard event={event} linkToPage showDescription={false} />
+                </li>
+              ))}
+            </ul>
+          </EventBrowseRow>
           {hiddenPastCount > 0 ? (
             <Button
               variant="text"

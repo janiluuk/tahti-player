@@ -21,15 +21,18 @@ describe('LastFmIntegrationRow own API key', () => {
       data: [],
       source: 'api',
     });
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: { ...window.location, assign, search: '', origin: 'https://x' },
+    vi.stubGlobal('location', {
+      ...window.location,
+      assign,
+      search: '',
+      origin: 'https://x',
     });
   });
 
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
     assign.mockReset();
   });
 

@@ -1,16 +1,18 @@
 import { ShuffleIcon, SlidersHorizontalIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, Button, Dialog, FilterChips } from '@tahti-player/ui';
 
 import { ALL_FILTER_ID, allOrSpecific } from '../../lib/allOrSpecific';
 import { PRESET_GENRES } from '../../lib/genres';
 
-const GENRE_ITEMS = [
-  { id: ALL_FILTER_ID, label: 'All genres' },
-  ...PRESET_GENRES.map((genre) => ({ id: genre, label: genre })),
-];
+function genreItems(t: TFunction<'web'>) {
+  return [
+    { id: ALL_FILTER_ID, label: t('listenAdminStringsBatch37.allGenres') },
+    ...PRESET_GENRES.map((genre) => ({ id: genre, label: genre })),
+  ];
+}
 
 /** The random-track widget's genre pills, genre dialog and re-roll. */
 export function RandomTrackGenres({
@@ -32,7 +34,10 @@ export function RandomTrackGenres({
         className="flex min-w-0 flex-wrap gap-1"
         aria-label={t('randomGenres.randomTrackGenres')}
       >
-        {(genres.length > 0 ? genres : ['All genres']).map((genre) => (
+        {(genres.length > 0
+          ? genres
+          : [t('listenAdminStringsBatch37.allGenres')]
+        ).map((genre) => (
           <li key={genre} className="list-none">
             <Badge variant="pill">{genre}</Badge>
           </li>
@@ -68,7 +73,7 @@ export function RandomTrackGenres({
           className="mt-4"
           aria-label={t('randomGenres.genres')}
           multiple
-          items={GENRE_ITEMS}
+          items={genreItems(t)}
           selected={genres.length > 0 ? genres : [ALL_FILTER_ID]}
           onChange={(selected) => onChange(allOrSpecific(selected, genres))}
         />

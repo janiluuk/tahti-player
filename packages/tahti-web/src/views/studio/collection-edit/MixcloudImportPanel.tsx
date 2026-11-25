@@ -145,7 +145,7 @@ export function MixcloudImportPanel({
               placeholder={
                 mode === 'profile'
                   ? 'https://www.mixcloud.com/artist/'
-                  : 'Search cloudcasts…'
+                  : t('studioStringsBatch37.searchCloudcasts')
               }
             />
             <Button type="submit" disabled={busy || !query.trim()}>
