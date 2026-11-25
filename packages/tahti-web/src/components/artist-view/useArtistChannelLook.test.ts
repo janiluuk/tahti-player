@@ -55,6 +55,27 @@ describe('useArtistChannelLook block visibility', () => {
     expect(uploadLocalArtistLookVisibilityOnce).not.toHaveBeenCalled();
   });
 
+  it('marks the channel visual loaded only after the request settles', async () => {
+    let resolveChannel:
+      ((value: Awaited<ReturnType<typeof fetchChannel>>) => void) | undefined;
+    vi.mocked(fetchChannel).mockReturnValue(
+      new Promise((resolve) => {
+        resolveChannel = resolve;
+      }),
+    );
+    const { result } = renderHook(() => useArtistChannelLook('nova', 'nova'));
+
+    expect(result.current.channelVisualLoaded).toBe(false);
+    resolveChannel?.({
+      data: {
+        slug: 'nova',
+        artistBlockVisibilityJson: null,
+      } as unknown as PublicChannel,
+    } as Awaited<ReturnType<typeof fetchChannel>>);
+
+    await waitFor(() => expect(result.current.channelVisualLoaded).toBe(true));
+  });
+
   it("uses the owner's local copy while the channel has none and uploads it", async () => {
     saveArtistLookVisibility('nova', {
       ...loadArtistLookVisibility('nova'),

@@ -141,6 +141,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
 
   const {
     channelVisual,
+    channelVisualLoaded,
     lookExtras,
     discoWidgets,
     channelPosts,
@@ -392,7 +393,11 @@ export function ArtistProfilePage({ username }: { username: string }) {
     backgroundVisualPreset,
     brandGradient,
     overlay,
-  } = artistLookSchemes(channelVisual, lookExtras, artist);
+  } = artistLookSchemes(
+    channelVisual,
+    lookExtras,
+    channelVisualLoaded ? artist : undefined,
+  );
   const backToListen = (
     <Tooltip content={t('collectionView.backToListen')} side="right">
       <BackButtonLink to="/" aria-label={t('collectionView.backToListen')} />
