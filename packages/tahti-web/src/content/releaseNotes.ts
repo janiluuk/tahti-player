@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.482',
+    version: '0.0.483',
     sections: [
       {
         id: 'listen',
@@ -82,8 +82,9 @@ export const RELEASE_NOTES: ReleaseNote[] = [
           'Studio → Broadcast shows the red, blinking On air only while you are actually live; when just your 24/7 rotation plays it says Off air.',
           'Import on the Sounds page opens a step-by-step import: pick SoundCloud, hearthis.at, Spotify or Mixcloud, and if your profile already links to it, Tahti uses that link and goes straight to choosing tracks.',
           'Schedule → Events stays on the Upcoming, Past or Invites tab you pick, and an event invite notification opens straight on Invites.',
-          'Links to your channel programme, from Broadcast, Channel design or an old bookmark, open Schedule on the Programme tab instead of the time slots.',
-          'Studio → Channel shows the Tahti Radio panel once, with its own description, instead of a doubled panel.',
+          'Your 24/7 automatic programme now lives in Channel → Settings, with clearer English and Finnish guidance. Choosing the playlist already in use no longer offers to apply it again.',
+          'Clips between programmes have their own manager, with focused upload and voice-recording dialogs. The Manage clips shortcut stays unavailable until clip playback is turned on.',
+          'Go live keeps the normal Studio and Broadcast navigation visible, and Studio → Broadcast shows one Stream manager with a play button that matches the player bar.',
           'Sections you hide on your artist page (bio, gallery, feed and the rest) now stay hidden for every visitor and on your other devices, not just in the browser you hid them in.',
           'If the board’s daily check sees unusual download activity on your channel, you get a notification saying so, in Finnish or English, before anything about your units changes.',
         ],

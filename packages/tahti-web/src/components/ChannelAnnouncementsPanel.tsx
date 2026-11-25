@@ -1,4 +1,10 @@
-import { MicIcon, PlayIcon, Trash2Icon } from 'lucide-react';
+import {
+  AudioLinesIcon,
+  MicIcon,
+  PlayIcon,
+  Trash2Icon,
+  UploadIcon,
+} from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -11,6 +17,7 @@ import {
   InlineError,
   SectionTitle,
   Toggle,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -36,7 +43,9 @@ export function ChannelAnnouncementsPanel() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [recording, setRecording] = useState(false);
+  const [actionModal, setActionModal] = useState<'upload' | 'record' | null>(
+    null,
+  );
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [editor, setEditor] = useState<AnnouncementClip | null>(null);
@@ -106,7 +115,7 @@ export function ChannelAnnouncementsPanel() {
     }
     const created = result.clip;
     setClips((current) => [created, ...current]);
-    setRecording(false);
+    setActionModal(null);
     toastWithUndo(i18n.t('web:batch56.clipUploadedInactive'), {
       undo: () => deleteAnnouncementClip(created.id),
       undoneMessage: i18n.t('web:batch56.clipRemoved'),
@@ -182,54 +191,52 @@ export function ChannelAnnouncementsPanel() {
   };
 
   return (
-    <section
-      id="channel-clips"
-      className="border-border bg-background-secondary/40 flex flex-col gap-5 rounded-xl border p-4 sm:p-5"
-    >
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <SectionTitle
-            title={t('channelAnnouncementsPanel.clipsBetweenPrograms')}
-            wrap
-          />
-          <p className="text-foreground-secondary mt-1 text-sm">
-            {t('channelAnnouncementsPanelBatch30.intro')}
-          </p>
+    <section id="channel-clips" className="flex flex-col gap-5">
+      <div className="border-primary/30 bg-primary/10 flex flex-wrap items-center justify-between gap-4 rounded-xl border p-4 sm:p-5">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="bg-primary text-primary-foreground flex size-11 shrink-0 items-center justify-center rounded-lg shadow-sm">
+            <AudioLinesIcon size={22} aria-hidden />
+          </span>
+          <div className="min-w-0">
+            <SectionTitle
+              title={t('channelAnnouncementsPanel.managerTitle')}
+              wrap
+            />
+            <p className="text-foreground-secondary mt-1 max-w-2xl text-sm">
+              {t('channelAnnouncementsPanel.managerDescription')}
+            </p>
+          </div>
         </div>
-        <Button
-          variant="secondary"
-          disabled={uploading}
-          onClick={() => setRecording((v) => !v)}
-        >
-          {recording
-            ? t('channelAnnouncementsPanelStates.closeRecorder')
-            : t('channelAnnouncementsPanelStates.recordVoice')}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Tooltip
+            content={t('channelAnnouncementsPanel.uploadAudio')}
+            side="top"
+          >
+            <Button
+              size="icon"
+              variant="secondary"
+              disabled={uploading}
+              onClick={() => setActionModal('upload')}
+              aria-label={t('channelAnnouncementsPanel.uploadAudio')}
+            >
+              <UploadIcon size={18} aria-hidden />
+            </Button>
+          </Tooltip>
+          <Tooltip
+            content={t('channelAnnouncementsPanel.recordVoice')}
+            side="top"
+          >
+            <Button
+              size="icon"
+              disabled={uploading}
+              onClick={() => setActionModal('record')}
+              aria-label={t('channelAnnouncementsPanel.recordVoice')}
+            >
+              <MicIcon size={18} aria-hidden />
+            </Button>
+          </Tooltip>
+        </div>
       </div>
-      {recording && (
-        <VoiceRecorder
-          disabled={uploading}
-          onUse={(file) => void upload(file)}
-        />
-      )}
-      <FilePicker
-        accept="audio/*,.wav,.flac,.aiff,.aif"
-        disabled={uploading}
-        labels={{
-          title: uploading
-            ? t('channelAnnouncementsPanelStates.uploadingClip')
-            : t('channelAnnouncementsPanelStates.uploadAudio'),
-          description: i18n.t('web:batch52.clipAudioHint'),
-          browse: uploading
-            ? t('channelAnnouncementsPanelStates.uploading')
-            : t('channelAnnouncementsPanelStates.chooseAudio'),
-        }}
-        onFiles={(files) => {
-          if (files[0]) {
-            void upload(files[0]);
-          }
-        }}
-      />
       {loading ? (
         <PageLoading label={t('loading.loadingAnnouncements')} />
       ) : loadError && clips.length === 0 ? (
@@ -243,21 +250,18 @@ export function ChannelAnnouncementsPanel() {
           title={t('empties.noAnnouncementClipsYet')}
           description={t('empties.giveYourChannelAVoiceRecord')}
           action={
-            recording ? undefined : (
-              <Button
-                size="sm"
-                variant="secondary"
-                disabled={uploading}
-                onClick={() => setRecording(true)}
-              >
-                <MicIcon size={16} aria-hidden />
-                {t('emptyActions.recordVoice')}
-              </Button>
-            )
+            <Button
+              size="sm"
+              disabled={uploading}
+              onClick={() => setActionModal('record')}
+            >
+              <MicIcon size={16} aria-hidden />
+              {t('emptyActions.recordVoice')}
+            </Button>
           }
         />
       ) : (
-        <ul className="border-border divide-border divide-y rounded-lg border">
+        <ul className="border-border divide-border bg-background divide-y rounded-xl border">
           {clips.map((clip) => (
             <li key={clip.id} className="flex flex-wrap items-center gap-3 p-3">
               <div className="min-w-40 flex-1">
@@ -370,6 +374,53 @@ export function ChannelAnnouncementsPanel() {
           ))}
         </ul>
       )}
+      <Dialog.Root
+        isOpen={actionModal === 'upload'}
+        onClose={() => !uploading && setActionModal(null)}
+        className="max-w-lg"
+      >
+        <Dialog.Title>
+          {t('channelAnnouncementsPanel.uploadAudio')}
+        </Dialog.Title>
+        <Dialog.Description>
+          {i18n.t('web:batch52.clipAudioHint')}
+        </Dialog.Description>
+        <div className="mt-4">
+          <FilePicker
+            accept="audio/*,.wav,.flac,.aiff,.aif"
+            disabled={uploading}
+            labels={{
+              title: uploading
+                ? t('channelAnnouncementsPanelStates.uploadingClip')
+                : t('channelAnnouncementsPanelStates.uploadAudio'),
+              description: i18n.t('web:batch52.clipAudioHint'),
+              browse: uploading
+                ? t('channelAnnouncementsPanelStates.uploading')
+                : t('channelAnnouncementsPanelStates.chooseAudio'),
+            }}
+            onFiles={(files) => {
+              if (files[0]) {
+                void upload(files[0]);
+              }
+            }}
+          />
+        </div>
+      </Dialog.Root>
+      <Dialog.Root
+        isOpen={actionModal === 'record'}
+        onClose={() => !uploading && setActionModal(null)}
+        className="max-w-xl"
+      >
+        <Dialog.Title>
+          {t('channelAnnouncementsPanel.recordVoice')}
+        </Dialog.Title>
+        <div className="mt-4">
+          <VoiceRecorder
+            disabled={uploading}
+            onUse={(file) => void upload(file)}
+          />
+        </div>
+      </Dialog.Root>
       {editor && (
         <ClipEditorDialog
           key={editor.id}

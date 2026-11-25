@@ -79,7 +79,7 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
           {
             id: 'studio-go-live-radio',
             label: '24/7 radio',
-            path: '/studio/schedule#channel-programme',
+            path: '/studio/channel/settings',
           },
           {
             id: 'studio-go-live-recordings',
@@ -97,6 +97,11 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
             id: 'studio-channel-design',
             label: 'Design',
             path: '/studio/channel/design',
+          },
+          {
+            id: 'studio-channel-settings',
+            label: 'Settings',
+            path: '/studio/channel/settings',
           },
           {
             id: 'studio-channel-radio',

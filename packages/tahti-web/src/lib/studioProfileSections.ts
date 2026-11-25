@@ -14,6 +14,7 @@ export const STUDIO_PROFILE_SECTIONS = [
 export const STUDIO_CHANNEL_SECTIONS = [
   'design',
   'radio',
+  'settings',
   'visibility',
   'address',
 ] as const;

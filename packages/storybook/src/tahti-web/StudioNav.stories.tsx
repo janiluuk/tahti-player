@@ -88,7 +88,7 @@ export const ChannelSubNav: Story = {
       within(channel)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Design', 'Radio', 'Visibility', 'Address']);
+    ).toEqual(['Design', 'Radio', 'Settings', 'Visibility', 'Address']);
     await expect(
       within(channel).getByRole('link', { name: 'Visibility' }),
     ).toHaveAttribute('aria-current', 'page');

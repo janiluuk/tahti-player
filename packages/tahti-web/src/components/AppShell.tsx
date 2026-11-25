@@ -28,7 +28,6 @@ import { hasStudioAccess } from '../lib/accountRoles';
 import { isAudioEditorPath } from '../lib/audioEditorPath';
 import { artistSubdomainLabel } from '../lib/channelSubdomain';
 import { cn } from '../lib/cn';
-import { isGoLiveTakeoverPath } from '../lib/goLivePath';
 import {
   deferOnboardingPrompt,
   hasDeferredOnboardingPrompt,
@@ -221,8 +220,7 @@ export function AppShell() {
     hideBottomBar: hideSiteBottomBar,
     showRightRail,
   } = useArtistSiteChrome(pathname);
-  const goLiveTakeover = isGoLiveTakeoverPath(pathname);
-  const hideSiteSidebar = hideArtistSidebar || goLiveTakeover;
+  const hideSiteSidebar = hideArtistSidebar;
   const navigationLocation = useRouterState({
     select: (state) => state.location.pathname + state.location.searchStr,
   });
@@ -529,9 +527,7 @@ export function AppShell() {
               )}
               data-studio-shell
             >
-              {studioAccess &&
-              !goLiveTakeover &&
-              getStudioPrimaryRoute(pathname) ? (
+              {studioAccess && getStudioPrimaryRoute(pathname) ? (
                 <StudioNav current={navigationLocation} />
               ) : null}
               <RouteContent>
@@ -546,7 +542,7 @@ export function AppShell() {
             {!fullScreenPlayerOpen && !hideSiteBottomBar && (
               <ConnectedPlayerBar />
             )}
-            {!hideSiteBottomBar && !goLiveTakeover && (
+            {!hideSiteBottomBar && (
               <MobileBottomNav
                 onOpenMore={() => setMobileNavOpen(true)}
                 moreOpen={mobileNavOpen}
@@ -587,9 +583,7 @@ export function AppShell() {
                 )}
                 data-studio-shell
               >
-                {studioAccess &&
-                !goLiveTakeover &&
-                getStudioPrimaryRoute(pathname) ? (
+                {studioAccess && getStudioPrimaryRoute(pathname) ? (
                   <StudioNav current={navigationLocation} />
                 ) : null}
                 <RouteContent>

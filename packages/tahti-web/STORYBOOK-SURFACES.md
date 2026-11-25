@@ -369,6 +369,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Misc/StatusView` | `tahti-web/StatusView.stories.tsx` |
 | `Tahti/Player/StemMixer` | `tahti-web/StemMixer.stories.tsx` |
 | `Tahti/Studio/StreamManagerPanel` | `tahti-web/StreamManagerPanel.stories.tsx` |
+| `Tahti/Studio/StudioChannelClipsView` | `tahti-web/StudioChannelClipsView.stories.tsx` |
 | `Tahti/Studio/StudioChannelView` | `tahti-web/StudioChannelView.stories.tsx` |
 | `Tahti/Studio/StudioCollectionEditView` | `tahti-web/StudioCollectionEditView.stories.tsx` |
 | `Tahti/Studio/StudioCollectionsView` | `tahti-web/StudioCollectionsView.stories.tsx` |

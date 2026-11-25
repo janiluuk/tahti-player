@@ -52,4 +52,23 @@ describe('PanelHeader', () => {
       screen.getByRole('button', { name: 'Edit playlist' }),
     ).toBeInTheDocument();
   });
+
+  it('matches the player bar play and pause colors', () => {
+    const { rerender } = render(
+      <PanelHeader state={stateFor('Offline')} onPlaybackToggle={vi.fn()} />,
+    );
+    const idle = screen.getByTestId('stream-manager-playback-toggle');
+    expect(idle).toHaveAttribute('aria-pressed', 'false');
+    expect(idle).not.toHaveClass('bg-accent-green');
+
+    rerender(
+      <PanelHeader
+        state={{ ...stateFor('Playing'), isPlaying: true }}
+        onPlaybackToggle={vi.fn()}
+      />,
+    );
+    const playing = screen.getByTestId('stream-manager-playback-toggle');
+    expect(playing).toHaveAttribute('aria-pressed', 'true');
+    expect(playing).toHaveClass('bg-accent-green', 'text-black');
+  });
 });

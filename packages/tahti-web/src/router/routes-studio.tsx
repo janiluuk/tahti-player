@@ -26,6 +26,7 @@ import { StudioSetupChannelRedirect } from '../views/studio/StudioSetupChannelRe
 import { appLayoutRoute } from './router-core';
 import {
   StudioBroadcastView,
+  StudioChannelClipsView,
   StudioChannelView,
   StudioChatView,
   StudioCollectionEditView,
@@ -291,6 +292,19 @@ export const studioScheduleRoute = createRoute({
       : {}),
     ...(isScheduleSearchTab(search.tab) ? { tab: search.tab } : {}),
   }),
+  beforeLoad: ({ search, location }) => {
+    if (
+      search.tab === 'programme' ||
+      location.hash === 'channel-programme' ||
+      location.hash === 'channel-clips'
+    ) {
+      throw redirect({
+        to: '/studio/channel/$section',
+        params: { section: 'settings' },
+        replace: true,
+      });
+    }
+  },
   component: StudioScheduleView,
 });
 
@@ -389,6 +403,12 @@ export const studioChannelSectionRoute = createRoute({
       <StudioChannelView section={section} />
     ) : null;
   },
+});
+
+export const studioChannelClipsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/channel/clips',
+  component: StudioChannelClipsView,
 });
 
 export const studioBrandingRoute = createRoute({

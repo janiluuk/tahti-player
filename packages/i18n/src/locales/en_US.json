@@ -2876,8 +2876,8 @@
         "radioLoadError": "Could not load your radio settings",
         "announcementsLabel": "Announcements enabled",
         "announcementsDescription": "Allow platform/radio announcements on your channel programme.",
-        "fallbackLabel": "Fallback / autoplay when offline",
-        "autoEnrollLabel": "Auto-enroll new archive into fallback",
+        "fallbackLabel": "Play the automatic programme when I am not live",
+        "autoEnrollLabel": "Add new uploads to the automatic programme",
         "openSchedule": "Open schedule / programme",
         "greenRoomLoadError": "Could not load your green room settings",
         "greenRoomDefaultLabel": "Open the green room when I go live",
@@ -2893,7 +2893,7 @@
         "invitePoolSubsOnly": "Fan subscribers only",
         "invitePoolEveryone": "Everyone signed in",
         "invitePoolManualOnly": "Only people I invite",
-        "programmeMoved": "Announcements, the offline fallback and the 24/7 rotation are managed in Studio → Broadcast → Schedule."
+        "programmeMoved": "Clips and the automatic 24/7 programme are managed in Studio → Channel → Settings."
       },
       "artist": {
         "loadError": "Could not load your artist profile",
@@ -5149,15 +5149,16 @@
       "episodes": "Episodes"
     },
     "radioPlaylist": {
-      "onePlaceForEverythingThat": "One place for everything that plays between live broadcasts.",
+      "automaticProgramme": "24/7 automatic programme",
+      "onePlaceForEverythingThat": "Choose what your channel plays whenever you are not live.",
       "programme": "Programme",
       "activeRotation": "Active rotation",
       "playlistSource": "Playlist source",
       "chooseAPlaylistThenPublish": "Choose a playlist, then publish its archive tracks to rotation.",
       "usePlaylist": "Use playlist",
       "create": "Create",
-      "offlineProgrammeSettings": "Offline programme settings",
-      "keepTheRotationPredictableOr": "Keep the rotation predictable or let Tahti balance it.",
+      "offlineProgrammeSettings": "Automatic programme settings",
+      "keepTheRotationPredictableOr": "Choose whether tracks play in order or shuffled, and what Tahti may add automatically.",
       "addTracksToActiveRotation": "Add tracks to active rotation",
       "appendKeepsTheCurrentRotation": "Append keeps the current rotation and adds the selected tracks.",
       "overwriteReplacesTheActiveRotation": "Overwrite replaces the active rotation with this selection.",
@@ -5172,7 +5173,8 @@
       "autoAddUploads": "Auto-add uploads",
       "addNewReadyUploadsTo": "Add new ready uploads to the rotation automatically",
       "playClipsBetweenPrograms": "Play clips between programs",
-      "includeActiveClipsFromThe": "Include active clips from the editor below",
+      "includeActiveClipsFromThe": "Add enabled station IDs, voice links and announcements between programme items.",
+      "manageClips": "Manage clips",
       "saveSettings": "Save settings"
     },
     "studioHomeGrid": {
@@ -7835,15 +7837,11 @@
       "order": "Order"
     },
     "studioBroadcastView": {
-      "channelManager": "Channel manager",
-      "liveStatusRotationAndStream": "Live status, rotation and stream controls for your channel.",
       "broadcast": "Broadcast",
       "comingUp": "Coming up",
       "showsEventsAndListeningParties": "Shows, events and listening parties, soonest first.",
       "agendaFilter": "Agenda filter",
       "broadcastTools": "Broadcast tools",
-      "listenInPlayer": "Listen in player",
-      "pauseInPlayer": "Pause",
       "kindShow": "Show",
       "kindEvent": "Event",
       "kindParty": "Party",
@@ -8006,9 +8004,12 @@
       "overallStatistics": "Overall statistics",
       "channelSetup": "Channel setup",
       "streamManager": "Stream manager",
-      "programmeOnSchedule": "The 24/7 programme is on Schedule",
-      "programmeOnScheduleDescription": "Rotation, offline fallback and announcements are managed on Schedule, next to your shows.",
-      "openSchedule": "Open Schedule",
+      "settings": "Settings",
+      "settingsDescription": "Choose what your channel plays automatically when you are not live.",
+      "programmeInChannelSettings": "Your automatic programme",
+      "programmeInChannelSettingsDescription": "Rotation, playlists and clips are managed in Channel settings.",
+      "openSettings": "Open settings",
+      "backToChannelSettings": "Back to Channel settings",
       "multistreamDestinations": "Live destinations"
     },
     "releaseStatsPanel": {
@@ -8430,7 +8431,11 @@
       "pageMusic": "Page music",
       "loadingPreview": "Loading preview…",
       "cancel": "Cancel",
-      "clipsBetweenPrograms": "Clips between programs"
+      "clipsBetweenPrograms": "Clips between programs",
+      "managerTitle": "Give your channel a voice",
+      "managerDescription": "Add station IDs, short links and announcements, then choose when each one joins your automatic programme.",
+      "uploadAudio": "Upload audio",
+      "recordVoice": "Record voice"
     },
     "studioUploadView": {
       "uploadFirstAndWeLl": "Upload first and we’ll read the embedded title and artist metadata. If the file has none, its filename is used and you can name it in the editor afterwards. You can leave this page while it processes; if it can't be processed, we notify you.",
@@ -8448,7 +8453,7 @@
       "signInToDesignYour": "Sign in to design your public channel.",
       "channelDesigner": "Channel Designer",
       "programmeTitle": "Channel programme",
-      "programmeHint": "What your channel plays around live shows, such as the 24/7 rotation, the offline fallback and announcements, is set on Schedule.",
+      "programmeHint": "What your channel plays automatically when you are not live is set in Channel settings.",
       "openProgramme": "Open the channel programme"
     },
     "topListsTab": {

@@ -18,7 +18,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, channel manager, one agenda of shows, events and parties, and tool cards) and **Fans** (hub cards, including Chat, which opens its own page at `/studio/chat`) Each card opens a focused page. Profile and Channel use a row of sub-tabs instead (see StudioProfileSectionView and StudioChannelView).',
+          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, stream manager, one agenda of shows, events and parties, and tool cards) and **Fans** (hub cards, including Chat, which opens its own page at `/studio/chat`) Each card opens a focused page. Profile and Channel use a row of sub-tabs instead (see StudioProfileSectionView and StudioChannelView).',
       },
     },
   },
@@ -95,14 +95,17 @@ export const Broadcast: Story = {
       /Off air|On air/,
     );
     await expect(
-      canvas.getByRole('heading', { name: 'Channel manager' }),
+      canvas.getByRole('heading', { name: 'Stream Manager' }),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByTestId('broadcast-channel-manager'),
+      canvas.getByTestId('broadcast-stream-manager'),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByTestId('broadcast-listen-in-player'),
-    ).toHaveTextContent('Listen in player');
+      canvas.getByTestId('stream-manager-playback-toggle'),
+    ).toHaveAttribute('aria-pressed', 'false');
+    await expect(
+      canvas.queryByRole('heading', { name: 'Channel manager' }),
+    ).not.toBeInTheDocument();
     const agenda = await canvas.findByRole('list', { name: 'Coming up' });
     const all = within(agenda).getAllByTestId('broadcast-agenda-row').length;
     await userEvent.click(canvas.getByRole('radio', { name: 'Events' }));

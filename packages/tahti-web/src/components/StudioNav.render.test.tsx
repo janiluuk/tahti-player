@@ -85,6 +85,8 @@ describe('StudioNav', () => {
     for (const [current, page] of [
       ['/studio/channel/design', 'Design'],
       ['/studio/channel/radio?tab=pinned', 'Radio'],
+      ['/studio/channel/settings', 'Settings'],
+      ['/studio/channel/clips', 'Settings'],
       ['/studio/channel/address', 'Address'],
     ] as const) {
       const { unmount } = await renderWithRouter(
@@ -97,7 +99,7 @@ describe('StudioNav', () => {
         within(channel)
           .getAllByRole('link')
           .map((link) => link.textContent),
-      ).toEqual(['Design', 'Radio', 'Visibility', 'Address']);
+      ).toEqual(['Design', 'Radio', 'Settings', 'Visibility', 'Address']);
       expect(
         within(channel).getByRole('link', { name: page }),
         current,
