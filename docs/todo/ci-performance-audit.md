@@ -45,6 +45,10 @@ Watch after merge: the first master deploy (artifact download from vimage, its d
 
 Further options, not done: running journeys against a `vite build` + `vite preview` bundle instead of the cold dev server; the per-commit 1 GB turbo caches can push the pnpm store and Playwright caches out of the 10 GB Actions cache.
 
+## E2E shard balance (2026-11-26)
+
+Playwright shards by file unless tests are fully parallel, so the 6 journey shards took 3-7 min (whole master run 6-7 min). The journeys step now passes `--fully-parallel`, which shards by test. Local check: all 306 journey tests pass fully parallel (4 workers, no flaky retries, 11.4 min). Watch the per-shard spread on the next master runs.
+
 ## Left
 
 
