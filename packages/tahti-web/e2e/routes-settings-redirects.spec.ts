@@ -112,26 +112,30 @@ const oldStudioBookmarks: RouteVisit[] = [
 // Artist, Channel & chat and Broadcast left Settings for Studio pages; their
 // bookmarks and the old Studio branding links land there.
 const movedToStudio: RouteVisit[] = [
-  { path: '/settings/artist', heading: /^Profile$/, url: /\/studio\/profile$/ },
+  {
+    path: '/settings/artist',
+    heading: /^Identity$/,
+    url: /\/studio\/profile\/identity$/,
+  },
   {
     path: '/settings/artist?tab=story',
     heading: /^Story$/,
-    url: /\/studio\/profile\/story$/,
+    url: /\/studio\/profile\/identity#story$/,
   },
   {
     path: '/settings/channel',
-    heading: 'Channel design',
-    url: /\/studio\/profile\/appearance$/,
+    heading: /^Design$/,
+    url: /\/studio\/channel\/design$/,
   },
   {
     path: '/settings/channel?tab=domain',
-    heading: 'Address and domain',
-    url: /\/studio\/profile\/domain$/,
+    heading: 'Custom domain',
+    url: /\/studio\/channel\/address$/,
   },
   {
     path: '/settings/broadcast',
-    heading: /^Channel$/,
-    url: /\/studio\/channel$/,
+    heading: 'Stream Manager',
+    url: /\/studio\/channel\/radio$/,
   },
   {
     path: '/settings/broadcast?tab=radio',
@@ -150,8 +154,8 @@ const movedToStudio: RouteVisit[] = [
   },
   {
     path: '/studio/branding?tab=channel-designer',
-    heading: 'Channel design',
-    url: /\/studio\/profile\/appearance$/,
+    heading: /^Design$/,
+    url: /\/studio\/channel\/design$/,
   },
 ];
 
