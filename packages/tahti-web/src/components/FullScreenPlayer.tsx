@@ -34,7 +34,11 @@ import {
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useDominantColor } from '../lib/useDominantColor';
 import { useLayoutStore } from '../stores/layoutStore';
-import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
+import {
+  DEFAULT_FULL_PLAYER_TITLE_TRANSITION,
+  usePlaybackPrefsStore,
+  type FullPlayerTitleTransition,
+} from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { ChannelVisualizer } from './ChannelVisualizer';
 import { useHearthisEmbedClaimed } from './HearthisEmbedHost';
@@ -47,8 +51,7 @@ import { CoverAmbience } from './visuals/CoverAmbience';
 
 const ANIMATION_MS = 280;
 
-export type FullPlayerTitleTransition =
-  'fade' | 'slide-up' | 'soft-scale' | 'slide-side';
+export type { FullPlayerTitleTransition };
 
 /** Matches the back button: a light frosted circle that reads on any
  * artwork or visualizer behind it. */
@@ -134,7 +137,7 @@ function LoveButton({
  * hidden. Touch swipe left/right always changes track while this overlay
  * is open. */
 export function FullScreenPlayer({
-  titleTransition = 'fade',
+  titleTransition = DEFAULT_FULL_PLAYER_TITLE_TRANSITION,
 }: {
   titleTransition?: FullPlayerTitleTransition;
 }) {

@@ -7158,3 +7158,8 @@ Desktop main-pane padding is four pixels tighter at each breakpoint, full-bleed 
 ## 2026-11-25 — Keep playing on the artist page (0.0.490)
 
 - The Link page's "Open profile" and set links open in the app (`/u/<slug>?full=1`) instead of reloading onto `<slug>.tahti.live`, so the current track keeps playing; the set artwork no longer covers the page.
+
+## 2026-11-25 — Player artist link, full-screen title change setting (0.0.491)
+
+- The player's artist link goes to the track owner's channel instead of `/u/<sound id>`; restored queues keep it.
+- Settings → Appearance → "Full-screen title change" lets listeners pick fade, slide up, soft scale or slide sideways (default fade).

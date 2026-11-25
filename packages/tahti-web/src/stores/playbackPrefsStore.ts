@@ -17,6 +17,28 @@ export function clampSkipSeconds(value: number): number {
   );
 }
 
+export const FULL_PLAYER_TITLE_TRANSITIONS = [
+  'fade',
+  'slide-up',
+  'soft-scale',
+  'slide-side',
+] as const;
+
+export type FullPlayerTitleTransition =
+  (typeof FULL_PLAYER_TITLE_TRANSITIONS)[number];
+
+export const DEFAULT_FULL_PLAYER_TITLE_TRANSITION: FullPlayerTitleTransition =
+  'fade';
+
+export function toFullPlayerTitleTransition(
+  value: unknown,
+): FullPlayerTitleTransition {
+  return (
+    FULL_PLAYER_TITLE_TRANSITIONS.find((item) => item === value) ??
+    DEFAULT_FULL_PLAYER_TITLE_TRANSITION
+  );
+}
+
 type PlaybackPrefsState = {
   /** Seconds moved by seek forward/backward (Shift+Arrow, OS media keys). */
   skipSeconds: number;
@@ -31,6 +53,9 @@ type PlaybackPrefsState = {
   /** Hold a screen wake lock while the full-screen player is playing; off by default. */
   keepScreenOn: boolean;
   setKeepScreenOn: (value: boolean) => void;
+  /** How the full-screen player's title animates when the track changes. */
+  fullPlayerTitleTransition: FullPlayerTitleTransition;
+  setFullPlayerTitleTransition: (value: FullPlayerTitleTransition) => void;
 };
 
 export const usePlaybackPrefsStore = create<PlaybackPrefsState>()(
@@ -44,7 +69,22 @@ export const usePlaybackPrefsStore = create<PlaybackPrefsState>()(
       setChannelAutoplay: (channelAutoplay) => set({ channelAutoplay }),
       keepScreenOn: false,
       setKeepScreenOn: (keepScreenOn) => set({ keepScreenOn }),
+      fullPlayerTitleTransition: DEFAULT_FULL_PLAYER_TITLE_TRANSITION,
+      setFullPlayerTitleTransition: (value) =>
+        set({ fullPlayerTitleTransition: toFullPlayerTitleTransition(value) }),
     }),
-    { name: 'tahti-playback-prefs' },
+    {
+      name: 'tahti-playback-prefs',
+      merge: (persisted, current) => {
+        const saved = (persisted ?? {}) as Partial<PlaybackPrefsState>;
+        return {
+          ...current,
+          ...saved,
+          fullPlayerTitleTransition: toFullPlayerTitleTransition(
+            saved.fullPlayerTitleTransition,
+          ),
+        };
+      },
+    },
   ),
 );

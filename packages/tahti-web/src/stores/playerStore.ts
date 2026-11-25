@@ -6,7 +6,10 @@ import type { QueueItem, RepeatMode } from '@tahti-player/model';
 import type { EmbedPlaybackProvider, TahtiPlayable } from '../api/types';
 import { isInternetRadioPlayableId } from '../content/radioStations';
 import { FADE_IN_MS, FADE_OUT_MS, rampLevel } from '../lib/audioFade';
-import { playableToTrack } from '../lib/playableToTrack';
+import {
+  CHANNEL_CREDIT_PROVIDER,
+  playableToTrack,
+} from '../lib/playableToTrack';
 import type { StreamFailure } from '../lib/streamFailure';
 import { webT } from '../lib/webT';
 import { useLayoutStore } from './layoutStore';
@@ -202,11 +205,21 @@ export function playableFromQueueItem(qi: QueueItem): TahtiPlayable | null {
     protocol,
     embed,
     sourceProvider: provider,
-    // An internet radio id ends in a station id, not a channel slug: treating
-    // it as one linked the station name to an artist page that doesn't exist.
-    channelSlug:
-      !internetRadio && qi.id.includes(':') ? qi.id.split(':')[1] : undefined,
+    channelSlug: internetRadio ? undefined : channelSlugFromQueueItem(qi),
   };
+}
+
+/** Only `live:` and `radio:` ids end in a channel slug; a `sound:` id ends in
+ * the sound id, and an internet radio id in a station id. */
+export function channelSlugFromQueueItem(qi: QueueItem): string | undefined {
+  const credited = qi.track.artists.find(
+    (artist) => artist.source?.provider === CHANNEL_CREDIT_PROVIDER,
+  )?.source?.id;
+  if (credited) {
+    return credited;
+  }
+  const [prefix, slug] = qi.id.split(':');
+  return (prefix === 'live' || prefix === 'radio') && slug ? slug : undefined;
 }
 
 const REPEAT_CYCLE: RepeatMode[] = ['off', 'all', 'one'];

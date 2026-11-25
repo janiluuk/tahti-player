@@ -81,6 +81,7 @@ export function RadioJustPlayedPanel({
                   peaks: item.peaks ?? null,
                   streamUrl: item.audioUrl,
                   protocol: 'https',
+                  channelSlug: item.artistUsername ?? undefined,
                 }
               : null;
           const current = Boolean(

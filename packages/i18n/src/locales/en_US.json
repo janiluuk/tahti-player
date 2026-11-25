@@ -810,6 +810,15 @@
       "description": "Menus, buttons and dates use this language. Titles and names stay as their creators wrote them.",
       "auto": "Browser language ({{language}})"
     },
+    "fullPlayerTitleTransition": {
+      "label": "Full-screen title change",
+      "helpLabel": "About the full-screen title change",
+      "description": "How the track name changes in the full-screen player. With reduced motion on, it changes without movement.",
+      "fade": "Fade",
+      "slideUp": "Slide up",
+      "softScale": "Soft scale",
+      "slideSide": "Slide sideways"
+    },
     "actions": {
       "play": "Play",
       "pause": "Pause",
