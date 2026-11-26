@@ -4,8 +4,8 @@ description: The themes that come with Tahti Player.
 
 # Built-in themes
 
-**Gruvbox Light** is the default: warm cream backgrounds with earthy accents. The others are in **Settings → Themes → Browse**, among them Nuclear Green (a deep green-black with a teal accent), Tahti Blue, Tahti Dark, Aurora, Ember, Lagoon and Arctic Moss, plus community themes that ship with the app.
+**Gruvbox Light** is the default: warm cream backgrounds with earthy accents. The focused built-in list in **Settings → Themes → Browse** also includes Default, Tahti, Aurora, Ember, Lagoon and Moss. You can still import your own theme in the editor.
 
-Most have a light and a dark version; the switch at the top of Settings → Themes picks one. Tahti Dark and Nuclear Green are dark only.
+The switch at the top of **Settings → Themes** picks light or dark mode.
 
 Click a theme to apply it.

@@ -19,7 +19,6 @@ import {
   Tabs,
   ThemeController,
   ThemeStoreItem,
-  Toggle,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -49,7 +48,6 @@ export function ThemesPanel() {
     customThemes,
     themeId,
     dark,
-    colorMode,
     setTheme,
     setColorMode,
     renameCustomTheme,
@@ -60,7 +58,6 @@ export function ThemesPanel() {
       customThemes: s.customThemes,
       themeId: s.themeId,
       dark: s.dark,
-      colorMode: s.colorMode,
       setTheme: s.setTheme,
       setColorMode: s.setColorMode,
       renameCustomTheme: s.renameCustomTheme,
@@ -113,7 +110,6 @@ export function ThemesPanel() {
   const activeThemeName =
     themes.find((theme) => theme.id === themeId)?.name ??
     customThemes[themeId]?.name;
-  const dynamicEnabled = colorMode === 'dynamic';
 
   const exportTheme = (id: string, theme: (typeof customThemes)[string]) => {
     const blob = new Blob([JSON.stringify(theme, null, 2)], {
@@ -152,26 +148,6 @@ export function ThemesPanel() {
             }
             showLabels
           />
-          <div className="flex items-center gap-2">
-            <Toggle
-              checked={dynamicEnabled}
-              onChange={(enabled) => {
-                if (enabled) {
-                  setColorMode('dynamic');
-                  return;
-                }
-                setColorMode(dark ? 'dark' : 'light');
-              }}
-              label={t('settingsThemes.dynamicTheme')}
-            />
-            <span className="text-sm font-medium">
-              {t('settingsThemes.dynamic')}
-            </span>
-            <HelpTip
-              label={t('settingsThemes.dynamicHelp')}
-              content={t('settingsThemes.dynamicTooltip')}
-            />
-          </div>
         </div>
       </div>
 

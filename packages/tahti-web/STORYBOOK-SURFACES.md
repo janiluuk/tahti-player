@@ -358,6 +358,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Settings/BroadcastPanel` | `tahti-web/SettingsBroadcastPanel.stories.tsx` |
 | `Tahti/Settings/ChannelPanel` | `tahti-web/SettingsChannelPanel.stories.tsx` |
 | `Tahti/Settings/FullPlayerTitleTransition` | `tahti-web/SettingsFullPlayerTitleTransition.stories.tsx` |
+| `Tahti/Settings/GeneralPanel` | `tahti-web/SettingsGeneralPanel.stories.tsx` |
 | `Tahti/Settings/IntegrationsPanel` | `tahti-web/SettingsIntegrationsPanel.stories.tsx` |
 | `Tahti/Settings/LanguagePanel` | `tahti-web/SettingsLanguagePanel.stories.tsx` |
 | `Tahti/Settings/PlaybackPanel` | `tahti-web/SettingsPlaybackPanel.stories.tsx` |

@@ -10,7 +10,7 @@ const meta: Meta<typeof ThemeEditor> = {
     docs: {
       description: {
         component:
-          'Settings → Themes → Editor. Compact grouped tokens; click a swatch to expand Storybook Slider HSL controls. Appearance (light/dark/dynamic) lives on the Themes main page via ThemeController + Toggle — not inside this form.',
+          'Settings → Themes → Editor. Compact grouped tokens; click a swatch to expand Storybook Slider HSL controls. Light and dark mode live on the Themes main page, not inside this form.',
       },
     },
   },

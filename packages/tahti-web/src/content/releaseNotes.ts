@@ -40,7 +40,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
     id: '2026-12-06',
     period: '23 Nov – 6 Dec 2026',
     date: '2026-12-06',
-    version: '0.0.484',
+    version: '0.0.493',
     sections: [
       {
         id: 'listen',
@@ -94,6 +94,7 @@ export const RELEASE_NOTES: ReleaseNote[] = [
         id: 'settings',
         label: 'Settings',
         highlights: [
+          'App preferences are easier to scan: General holds language and the full-screen title animation, Themes offers light or dark with a shorter palette list, and Add-ons opens straight on available choices when nothing is installed. Web Playback no longer lists desktop-only controls.',
           'Settings → Security is one page: change your password or email from a small edit button that opens the form in a window, with clear messages when an address looks wrong or the new password matches the old one. Two-factor authentication sits on the same page, and while it is off a friendly note suggests turning it on.',
           'Settings → Appearance is quieter: explanations sit behind a small question-mark icon. What visitors see on your profile (counts, connections, top lists, comments) moved to Studio → Profile → Visibility, and sub-pages have a round back arrow instead of a text link.',
           'Settings → Account is easier to read at a glance: your subscriptions and purchases share one tab with totals on top, each subscription shows a coloured status, and Storage shows used and free space as a ring chart.',

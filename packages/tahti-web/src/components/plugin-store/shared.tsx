@@ -1,4 +1,4 @@
-import { SettingsIcon } from 'lucide-react';
+import { AudioWaveformIcon, SettingsIcon } from 'lucide-react';
 import { createContext, useContext, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -15,6 +15,7 @@ import {
 import { webT } from '../../lib/webT';
 import { usePluginInstallStore } from '../../stores/pluginInstallStore';
 import { PageEmpty } from '../PageStates';
+import { ColorfulAddonIcon } from './ColorfulAddonIcon';
 
 /** Set by a page that wants a plugin's configure dialog on its own, without
  * the store card around it: the card then renders only its dialog, already
@@ -115,6 +116,11 @@ export function AudioPluginToggleRow({
   const { t } = useTranslation('web');
   return (
     <PluginStoreItem
+      icon={
+        <ColorfulAddonIcon tone="yellow">
+          <AudioWaveformIcon size={22} />
+        </ColorfulAddonIcon>
+      }
       name={name}
       author={author}
       description={description}
@@ -156,9 +162,11 @@ export function InstalledAvailableTabs({
 }) {
   const { t } = useTranslation('web');
   const installedMap = usePluginInstallStore((s) => s.installed);
-  const [tab, setTab] = useState<'installed' | 'available'>('installed');
   const installedIds = ids.filter((id) => installedMap[id]);
   const availableIds = ids.filter((id) => !installedMap[id]);
+  const [tab, setTab] = useState<'installed' | 'available'>(() =>
+    installedIds.length > 0 ? 'installed' : 'available',
+  );
   const visibleIds = tab === 'installed' ? installedIds : availableIds;
 
   return (

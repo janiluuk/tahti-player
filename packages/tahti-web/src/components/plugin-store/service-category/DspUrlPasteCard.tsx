@@ -7,6 +7,7 @@ import { Button, Input, PluginStoreItem } from '@tahti-player/ui';
 
 import { toolSourceAdapter } from '../../../plugins/import-sources';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
+import { SourceServiceIcon } from '../../SourceServiceIcon';
 import { ConfigurableCard } from '../shared';
 
 /** Paste a DSP URL (Spotify/Bandcamp/etc.) to seed a smart-link target on a
@@ -25,6 +26,7 @@ export function DspUrlPasteCard() {
       title={urlTool?.name ?? 'URL / DSP paste'}
       header={(open) => (
         <PluginStoreItem
+          icon={<SourceServiceIcon id="url" />}
           name={urlTool?.name ?? 'URL / DSP paste'}
           author="Tool"
           description={

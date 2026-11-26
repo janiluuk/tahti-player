@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ListenAddonsPanel } from '@tahti-web/components/ListenAddonsPanel';
 import { useListenerWidgetsStore } from '@tahti-web/stores/listenerWidgetsStore';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -25,7 +25,6 @@ type Story = StoryObj<typeof meta>;
 
 export const StoreCategory: Story = {};
 
-// Nothing installed: Browse add-ons switches to the Available tab.
 export const NothingInstalled: Story = {
   beforeEach: () => {
     const previous = useListenerWidgetsStore.getState();
@@ -39,9 +38,6 @@ export const NothingInstalled: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(
-      await canvas.findByRole('button', { name: 'Browse add-ons' }),
-    );
     await expect(
       canvas.getByRole('tab', { name: /Available/ }),
     ).toHaveAttribute('aria-selected', 'true');

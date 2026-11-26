@@ -12,9 +12,16 @@ export function LanguagePanel() {
   const options = [
     {
       id: 'auto',
-      label: t('language.auto', { language: browser?.nativeLabel ?? '' }),
+      label: `🌐 ${t('language.auto', {
+        language: browser
+          ? `${browser.code === 'fi_FI' ? '🇫🇮' : '🇬🇧'} ${browser.nativeLabel}`
+          : '',
+      })}`,
     },
-    ...WEB_LOCALES.map((item) => ({ id: item.code, label: item.nativeLabel })),
+    ...WEB_LOCALES.map((item) => ({
+      id: item.code,
+      label: `${item.code === 'fi_FI' ? '🇫🇮' : '🇬🇧'} ${item.nativeLabel}`,
+    })),
   ];
 
   return (

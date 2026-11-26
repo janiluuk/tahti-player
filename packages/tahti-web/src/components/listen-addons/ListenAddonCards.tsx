@@ -11,6 +11,7 @@ import { Box, Button, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { NEWS_WIDGET_TYPE_ID } from '../../stores/listenerWidgetsStore';
+import { ColorfulAddonIcon } from '../plugin-store/ColorfulAddonIcon';
 import { SourceServiceIcon } from '../SourceServiceIcon';
 
 export function ConfigureGear({
@@ -81,16 +82,32 @@ export function ConfigurableCard({
 
 export function listenAddonIcon(typeId: string): ReactNode {
   if (typeId === 'favorites') {
-    return <Heart className="size-6" aria-hidden />;
+    return (
+      <ColorfulAddonIcon tone="red">
+        <Heart className="size-6" />
+      </ColorfulAddonIcon>
+    );
   }
   if (typeId === NEWS_WIDGET_TYPE_ID) {
-    return <Newspaper className="size-6" aria-hidden />;
+    return (
+      <ColorfulAddonIcon tone="blue">
+        <Newspaper className="size-6" />
+      </ColorfulAddonIcon>
+    );
   }
   if (typeId === 'youtube') {
-    return <Youtube className="size-6" aria-hidden />;
+    return (
+      <ColorfulAddonIcon tone="red">
+        <Youtube className="size-6" />
+      </ColorfulAddonIcon>
+    );
   }
   if (typeId === 'mikseri') {
-    return <ListMusic className="size-6" aria-hidden />;
+    return (
+      <ColorfulAddonIcon tone="orange">
+        <ListMusic className="size-6" />
+      </ColorfulAddonIcon>
+    );
   }
   if (
     typeId === 'soundcloud' ||

@@ -18,6 +18,7 @@ import { oauthAdapterFor } from '../../../plugins/import-sources';
 import { usePluginInstallStore } from '../../../stores/pluginInstallStore';
 import { ConfirmDialog } from '../../ConfirmDialog';
 import { PageEmpty } from '../../PageStates';
+import { SourceServiceIcon } from '../../SourceServiceIcon';
 import type { ServiceAction, ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
 import { GoogleDriveImport } from './GoogleDriveImport';
@@ -263,6 +264,7 @@ export function OAuthServiceCard({
       title={plugin.name}
       header={(openConfigure) => (
         <PluginStoreItem
+          icon={<SourceServiceIcon id={adapter.id} />}
           name={plugin.name}
           author={plugin.author}
           description={plugin.description}

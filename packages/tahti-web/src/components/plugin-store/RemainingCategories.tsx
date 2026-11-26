@@ -1,4 +1,10 @@
-import { Cast, InfoIcon, SettingsIcon, XIcon } from 'lucide-react';
+import {
+  Cast,
+  InfoIcon,
+  LayoutGridIcon,
+  SettingsIcon,
+  XIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
@@ -32,6 +38,7 @@ import {
   type MulticastConfiguring,
 } from '../MulticastConfigureDialog';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
+import { ColorfulAddonIcon, type AddonIconTone } from './ColorfulAddonIcon';
 import { AudioPluginToggleRow } from './shared';
 
 // ── Multicast / Audio tools ─────────────────────────────────────────────────
@@ -70,13 +77,22 @@ export function MulticastCategory() {
         />
       ) : (
         <ul className="flex flex-col gap-2">
-          {multicastProviders.map((destination) => {
+          {multicastProviders.map((destination, index) => {
             const target = targets.find((t) => t.provider === destination.id);
             const configured = Boolean(target);
             return (
               <PluginStoreItem
                 key={destination.id}
-                icon={<Cast size={22} aria-hidden />}
+                icon={
+                  <ColorfulAddonIcon
+                    tone={
+                      (['red', 'purple', 'orange', 'blue'][index % 4] ??
+                        'red') as AddonIconTone
+                    }
+                  >
+                    <Cast size={22} />
+                  </ColorfulAddonIcon>
+                }
                 name={destination.label}
                 author="Multicast"
                 description={
@@ -346,9 +362,20 @@ function DiscoverWidgetPlugins() {
         </Box>
       ) : null}
       <div className="flex flex-col gap-3">
-        {ALL_WIDGET_IDS.map((id) => (
+        {ALL_WIDGET_IDS.map((id, index) => (
           <PluginStoreItem
             key={id}
+            icon={
+              <ColorfulAddonIcon
+                tone={
+                  (['blue', 'green', 'purple', 'yellow', 'cyan', 'orange'][
+                    index % 6
+                  ] ?? 'blue') as AddonIconTone
+                }
+              >
+                <LayoutGridIcon size={22} />
+              </ColorfulAddonIcon>
+            }
             name={t(WIDGET_LABEL_KEYS[id])}
             author="Tahti"
             description={t(DISCOVER_WIDGET_DETAIL_KEYS[id])}

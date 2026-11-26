@@ -18,7 +18,7 @@ const meta: Meta<typeof ThemesPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Themes: light / dark switch and the Dynamic theme toggle, then Browse (built-in and imported themes, with Apply and Configure) and Editor. Import JSON lives inside the editor. The plays only read and type, so they never change the theme the rest of Storybook runs in.',
+          'Settings → Themes: light / dark mode and a focused theme list, with Gruvbox as the default. Browse includes Apply and Configure; import JSON lives inside the editor.',
       },
     },
   },
@@ -35,7 +35,9 @@ type Story = StoryObj<typeof meta>;
 export const Browse: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expectVisible(canvas.getByRole('switch', { name: 'Dynamic theme' }));
+    await expect(
+      canvas.queryByRole('switch', { name: 'Dynamic theme' }),
+    ).toBeNull();
     await expect(canvas.getByRole('tab', { name: 'Browse' })).toHaveAttribute(
       'aria-selected',
       'true',

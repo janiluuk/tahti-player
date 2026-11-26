@@ -6,7 +6,6 @@ import {
   PaletteIcon,
   Settings2Icon,
   SunIcon,
-  SunMoonIcon,
   UserIcon,
   UsersIcon,
 } from 'lucide-react';
@@ -62,12 +61,6 @@ function appearanceOptions(t: TFunction<'web'>): SelectableTile[] {
       label: t('onboardingViewMore.dark'),
       description: t('onboardingViewMore.dimBackgroundAlwaysOn'),
       icon: <MoonIcon size={18} aria-hidden />,
-    },
-    {
-      id: 'dynamic',
-      label: t('onboardingViewMore.dynamic'),
-      description: t('onboardingViewMore.lightByDayDarkBy'),
-      icon: <SunMoonIcon size={18} aria-hidden />,
     },
   ];
 }

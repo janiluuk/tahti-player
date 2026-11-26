@@ -174,4 +174,3 @@ Checked 2026-11-26 against the `Role journeys` command in `.github/workflows/ci.
 ### Proposed CI glob
 
 Shipped; on 2026-11-23 the glob also gained `listings-news`, `channel-designer-parity`, `listener-purchase-flow`, `fan-sub-and-track-purchase` and `artist-site-chrome`, and `use-cases-discover-events.spec.ts` (Discover → Events next events, the Upcoming events widget) joined via `use-cases-*`. No spec in `e2e/` is kept out of the mock run any more.
-

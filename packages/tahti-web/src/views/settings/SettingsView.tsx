@@ -144,7 +144,7 @@ export function SettingsView() {
   const rawSectionId = pathname.match(/^\/settings\/([^/]+)/)?.[1];
   const sectionId =
     rawSectionId === 'language'
-      ? 'themes'
+      ? 'general'
       : rawSectionId === 'integrations'
         ? 'playback'
         : rawSectionId;
@@ -192,9 +192,9 @@ export function SettingsView() {
       open('themes');
       return;
     }
-    // Language moved from Playback to Appearance.
+    // Language moved from Playback to General.
     if (section === 'playback' && tab === 'language') {
-      open('themes');
+      open('general');
       return;
     }
     // Security and Notifications left Account; old ?tab= bookmarks follow.
