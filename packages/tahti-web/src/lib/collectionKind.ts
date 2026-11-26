@@ -6,13 +6,14 @@ type KindFields = Pick<PublicProfileCollection, 'type' | 'style'> &
   Partial<Pick<PublicProfileCollection, 'name'>>;
 
 const ALBUM_STYLES = new Set(['ALBUM', 'EP', 'SINGLE']);
-const DJ_SET_NAME = /^sets?\b/i;
+const DJ_SET_NAME = /\bsets?\b/i;
 const ALBUM_NAME = /\b(LP|EP|album)\b/i;
 
 /** Which artist-page tab a collection belongs on. The type or style decides
  * when it says album / EP / single or mix / DJ set series; a generic playlist
- * falls back to its name: "Set…" is a DJ set, one naming an LP, EP or album
- * is an album, anything else stays in the playlists grid. */
+ * falls back to its name: one naming an LP, EP or album is an album, one
+ * with the word "set" or "sets" ("Sets", "2026 sets") is a DJ set, anything
+ * else stays in the playlists grid. */
 export function collectionKind(collection: KindFields): CollectionKind {
   const type = collection.type?.toUpperCase();
   const style = collection.style?.toUpperCase();
@@ -23,11 +24,11 @@ export function collectionKind(collection: KindFields): CollectionKind {
     return 'album';
   }
   const name = collection.name?.trim() ?? '';
-  if (DJ_SET_NAME.test(name)) {
-    return 'dj-set';
-  }
   if (ALBUM_NAME.test(name)) {
     return 'album';
+  }
+  if (DJ_SET_NAME.test(name)) {
+    return 'dj-set';
   }
   return 'other';
 }

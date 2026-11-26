@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import { Card } from '.';
+import { MediaArtworkDefaultProvider } from '../MediaArtwork';
 
 describe('Card', () => {
   it('(Snapshot) renders correctly', async () => {
@@ -84,5 +85,39 @@ describe('Card', () => {
     expect(
       screen.getByRole('button', { name: 'Play YleX', exact: true }),
     ).toBeInTheDocument();
+  });
+
+  it('shows the default artwork when the cover fails to load', () => {
+    const defaultSrc = (seed: string) => `/default/${seed}.webp`;
+    render(
+      <MediaArtworkDefaultProvider value={defaultSrc}>
+        <Card src="https://cdn.example/expired.png" seed="sets" title="Sets" />
+      </MediaArtworkDefaultProvider>,
+    );
+    const img = screen.getByRole('img', { name: 'Sets' });
+    expect(img).toHaveAttribute('src', 'https://cdn.example/expired.png');
+    fireEvent.error(img);
+    expect(screen.getByRole('img', { name: 'Sets' })).toHaveAttribute(
+      'src',
+      '/default/sets.webp',
+    );
+    expect(screen.queryByTestId('media-artwork-fallback')).toBeNull();
+  });
+
+  it('shows the default artwork for a card without a cover', () => {
+    render(
+      <MediaArtworkDefaultProvider value={(seed) => `/default/${seed}.webp`}>
+        <Card seed="tracks" title="Tracks" />
+      </MediaArtworkDefaultProvider>,
+    );
+    expect(screen.getByRole('img', { name: 'Tracks' })).toHaveAttribute(
+      'src',
+      '/default/tracks.webp',
+    );
+  });
+
+  it('keeps the cassette placeholder without a default provider', () => {
+    render(<Card title="No provider" />);
+    expect(screen.getByTestId('media-artwork-fallback')).toBeInTheDocument();
   });
 });

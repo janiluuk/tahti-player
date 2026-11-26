@@ -3,12 +3,19 @@ import { FC, ReactNode, useContext } from 'react';
 
 import { cn } from '../../utils';
 import { Box } from '../Box';
-import { MEDIA_ROW_GROUP, MediaArtwork } from '../MediaArtwork';
+import {
+  MEDIA_ROW_GROUP,
+  MediaArtwork,
+  useMediaArtworkDefaultSrc,
+} from '../MediaArtwork';
 import { trackRowMinHeightClass } from '../TrackTable/utils/rowClass';
 import { CardLayoutContext } from './CardLayoutContext';
 
 type CardProps = {
   src?: string;
+  /** Stable id (slug, track or release id) that picks the default cover
+   * when `src` is missing or fails to load; falls back to the title. */
+  seed?: string;
   image?: ReactNode;
   artworkOverlay?: ReactNode;
   title?: ReactNode;
@@ -37,6 +44,7 @@ type CardProps = {
 
 export const Card: FC<CardProps> = ({
   src,
+  seed,
   image,
   artworkOverlay,
   title,
@@ -70,11 +78,18 @@ export const Card: FC<CardProps> = ({
     ? 'text-foreground-secondary'
     : 'text-primary-foreground';
 
+  const artworkAlt = typeof title === 'string' ? title : '';
+  // Passing a placeholder turns off MediaArtwork's default-artwork fallback,
+  // so the cassette is only for apps without a MediaArtworkDefaultProvider.
+  const hasDefaultArtwork =
+    useMediaArtworkDefaultSrc(seed || artworkAlt) !== null;
+
   const artwork = image ?? (
     <MediaArtwork
       size={isRow ? 'md' : 'fill'}
       src={src}
-      alt={typeof title === 'string' ? title : ''}
+      seed={seed}
+      alt={artworkAlt}
       imageReveal={imageReveal}
       onPlay={onPlay}
       playLabel={playLabel ?? (named ? `Play ${named}` : undefined)}
@@ -92,11 +107,13 @@ export const Card: FC<CardProps> = ({
       unfavoriteLabel={named ? `Remove ${named} from favorites` : undefined}
       onArtworkClick={hasOverlays ? onClick : undefined}
       placeholder={
-        <CassetteTape
-          size={layout === 'row' ? 20 : 96}
-          absoluteStrokeWidth
-          className="opacity-20"
-        />
+        hasDefaultArtwork ? undefined : (
+          <CassetteTape
+            size={layout === 'row' ? 20 : 96}
+            absoluteStrokeWidth
+            className="opacity-20"
+          />
+        )
       }
     />
   );

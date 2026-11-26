@@ -203,6 +203,7 @@ export function ArtistReleasesGrid({
                 title={release.title}
                 subtitle={subtitle}
                 src={release.artworkUrl ?? placeholderArtworkUrl(release.id)}
+                seed={release.id}
                 onClick={
                   release.smartLinkSlug
                     ? () =>
@@ -271,6 +272,7 @@ export function ArtistPlaylistsGrid({
               src={
                 collection.coverUrl ?? placeholderArtworkUrl(collection.slug)
               }
+              seed={collection.slug}
               onClick={() =>
                 void navigate({
                   to: '/u/$username/c/$slug',

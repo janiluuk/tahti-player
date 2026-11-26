@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, fn, within } from 'storybook/test';
+import { expect, fn, waitFor, within } from 'storybook/test';
 
-import { Card } from '@tahti-player/ui';
+import { Card, MediaArtworkDefaultProvider } from '@tahti-player/ui';
 
 const meta = {
   title: 'Components/Card',
@@ -73,6 +73,38 @@ export const WithoutImage: Story = {
     src: '',
     title: 'No Image',
     subtitle: 'Some Artist',
+  },
+};
+
+const DEFAULT_ARTWORK = '/artwork-presets/artwork-05.webp';
+
+export const BrokenCoverShowsDefaultArtwork: Story = {
+  args: {
+    src: 'https://cdn.tahti.invalid/collections/sets/cover-expired.png',
+    seed: 'sets',
+    title: 'Sets',
+    subtitle: '6 items · Featured',
+  },
+  decorators: [
+    (Story) => (
+      <MediaArtworkDefaultProvider value={() => DEFAULT_ARTWORK}>
+        <div style={{ width: 200 }}>
+          <Story />
+        </div>
+      </MediaArtworkDefaultProvider>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await waitFor(() =>
+      expect(canvas.getByRole('img', { name: 'Sets' })).toHaveAttribute(
+        'src',
+        DEFAULT_ARTWORK,
+      ),
+    );
+    await expect(
+      canvasElement.querySelector('[data-testid="media-artwork-fallback"]'),
+    ).toBeNull();
   },
 };
 
