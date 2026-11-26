@@ -18,6 +18,7 @@ import {
   getMockVisualSettingsJson,
 } from './channel-design';
 import { mockVisual } from './channel-design/mock';
+import type { OnAirChannel } from './listen';
 import { mockChatStoreMessages } from './mock-chat-store';
 import { isMockChannelLive } from './mock-live-session';
 import { mockFixture } from './mock-overrides';
@@ -65,6 +66,12 @@ export const DEMO_MP3 =
  * artist you browse (archive/tracks), not a live station. Matches the
  * member relay in `mockRadio()`. */
 const LIVE_SLUGS = new Set([TAHTI_RADIO_SLUG, 'northern-lights']);
+
+/** Channels airing their 24/7 sound rotation without a live DJ (the
+ * Replay tier). Metsänpeitto has no rotation track playing, the way a
+ * production channel with no public sounds streams only silence. */
+const REPLAY_SLUGS = new Set(['tundra-static', 'metsanpeitto']);
+const SILENT_REPLAY_SLUGS = new Set(['metsanpeitto']);
 
 type StationRelease = {
   title: string;
@@ -490,6 +497,7 @@ function buildMockChannel(slug: string): PublicChannel {
   // Catalog radio + northern-lights stay live; artist go-live also lights
   // the session slug persisted in mock-live-session (survives reload).
   const live = LIVE_SLUGS.has(slug) || isMockChannelLive(slug);
+  const airing = live || REPLAY_SLUGS.has(slug);
   const usesOwnDesign = !isRadio && !isCuratedStation(contentKey);
   const ownColorScheme = getMockChannelColorScheme();
   return {
@@ -503,7 +511,7 @@ function buildMockChannel(slug: string): PublicChannel {
           artistBlockVisibilityJson: mockVisual.artistBlockVisibilityJson,
         }
       : {}),
-    state: live ? 'LIVE' : 'OFFLINE',
+    state: airing ? 'LIVE' : 'OFFLINE',
     channelKind: isRadio ? 'RADIO' : 'ARTIST',
     nextBroadcastNote: isRadio ? 'Weekly shows, all week long' : null,
     nextBroadcastAt: null,
@@ -512,7 +520,7 @@ function buildMockChannel(slug: string): PublicChannel {
     // (an ingest signal, not just channel state) so mock mode exercises
     // the same LIVE-badge distinction as production.
     signalConnected: live && slug !== TAHTI_RADIO_SLUG,
-    hlsUrl: live ? DEMO_HLS : null,
+    hlsUrl: airing ? DEMO_HLS : null,
     chatEnabled: true,
     visualPreset: isRadio
       ? 'REACTIVE_GRID'
@@ -588,14 +596,15 @@ function buildMockChannel(slug: string): PublicChannel {
       bio: content.bio,
       avatarUrl: isRadio ? null : (content.avatarUrl ?? null),
     },
-    nowPlaying: live
-      ? {
-          title: isRadio ? 'Aurora Drift' : content.nowPlayingTitle,
-          artistName: isRadio ? 'Northern Lights' : content.displayName,
-          artistUsername: isRadio ? 'northern-lights' : slug,
-          artworkUrl: isRadio ? null : (content.trackArtwork?.[0] ?? null),
-        }
-      : null,
+    nowPlaying:
+      airing && !SILENT_REPLAY_SLUGS.has(slug)
+        ? {
+            title: isRadio ? 'Aurora Drift' : content.nowPlayingTitle,
+            artistName: isRadio ? 'Northern Lights' : content.displayName,
+            artistUsername: isRadio ? 'northern-lights' : slug,
+            artworkUrl: isRadio ? null : (content.trackArtwork?.[0] ?? null),
+          }
+        : null,
     followerCount: content.followerCount,
   };
 }
@@ -1733,6 +1742,32 @@ function buildMockFeed(): FeedResponse {
       },
     ],
   };
+}
+
+/** The Replay tier of GET /api/v1/channels, built from the same channel
+ * fixtures the channel page reads. */
+export function mockReplayingChannels(): OnAirChannel[] {
+  return [...REPLAY_SLUGS].map((slug) => {
+    const channel = mockChannel(slug);
+    return {
+      slug,
+      state: channel.state,
+      fallbackEnabled: true,
+      hlsUrl: channel.hlsUrl,
+      nowPlaying: channel.nowPlaying
+        ? {
+            title: channel.nowPlaying.title,
+            artistName: channel.nowPlaying.artistName,
+            artworkUrl: channel.nowPlaying.artworkUrl ?? null,
+          }
+        : null,
+      user: {
+        username: channel.user.username,
+        displayName: channel.user.displayName,
+        avatarUrl: channel.user.avatarUrl,
+      },
+    };
+  });
 }
 
 export function mockDirectory(): ChannelDirectoryResponse {

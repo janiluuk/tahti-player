@@ -34,6 +34,7 @@ import {
   TrendingRow,
 } from '../components/listen-view/HomeHighlights';
 import { ListenSection } from '../components/listen-view/ListenSection';
+import { withoutFailedReplays } from '../components/listen-view/onAirChannels';
 import { RadioStationsRow } from '../components/listen-view/RadioStationsRow';
 import {
   latestTrackMeta,
@@ -62,6 +63,7 @@ import {
   useListenerWidgetsStore,
 } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
+import { useStationHealthStore } from '../stores/stationHealthStore';
 
 export type ListenTab = 'listen' | 'history';
 
@@ -134,6 +136,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const user = useAuthStore((s) => s.user);
   const signedIn = Boolean(user);
   const sections = useListenSections(signedIn, user?.id ?? '');
+  const streamHealth = useStationHealthStore((s) => s.byUrl);
   const listenOrder = useListenerWidgetsStore((s) => s.listenOrder);
   const setListenOrder = useListenerWidgetsStore((s) => s.setListenOrder);
   const hiddenListenBlockIds = useListenerWidgetsStore(
@@ -151,10 +154,13 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   useEffect(() => scheduleIdleRoutePrefetch(), []);
   useEffect(() => preloadPlayableTrackTable(), []);
 
-  const playNow = async (slug: string) => {
-    const { playable } = await fetchChannel(slug);
+  const markUnavailable = useStationHealthStore((s) => s.markUnavailable);
+  const playNow = async (channel: OnAirChannel) => {
+    const { playable } = await fetchChannel(channel.slug);
     if (playable) {
       play(playable);
+    } else if (channel.hlsUrl) {
+      markUnavailable(channel.hlsUrl, { reason: 'unreachable' });
     }
   };
 
@@ -172,12 +178,14 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
 
   const onAirItems = useMemo<OnAirRowItem[]>(
     () =>
-      sections.onAir.data.map((channel) => ({
-        id: channel.slug,
-        title: channel.user.displayName,
-        channel,
-      })),
-    [sections.onAir.data],
+      withoutFailedReplays(sections.onAir.data, streamHealth).map(
+        (channel) => ({
+          id: channel.slug,
+          title: channel.user.displayName,
+          channel,
+        }),
+      ),
+    [sections.onAir.data, streamHealth],
   );
   const liveItems = onAirItems.filter((item) => item.channel.state === 'LIVE');
   const replayItems = onAirItems.filter(
@@ -231,9 +239,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           }
           src={channel.user.avatarUrl ?? placeholderArtworkUrl(channel.slug)}
           isPlaying={playing}
-          onPlay={() =>
-            togglePlayback(playableId, () => void playNow(channel.slug))
-          }
+          onPlay={() => togglePlayback(playableId, () => void playNow(channel))}
           onClick={() => {
             void navigate({
               to: '/channel/$slug',
