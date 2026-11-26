@@ -18,7 +18,7 @@ const meta: Meta<typeof OnboardingView> = {
     docs: {
       description: {
         component:
-          'First-run setup (`/onboarding`) for a new artist account: Profile (photo, solo or band, display name, bio), Location & domain (country, city, Tahti domain with a live availability check), Genres, Appearance (light, dark, dynamic) and Defaults (show followers / following). Finish setup creates the channel if needed and saves; Skip for now just marks onboarding seen. Renders nothing when signed out.',
+          'First-run setup (`/onboarding`) for a new artist account: Profile (photo, solo or band, display name, bio), Location & domain (country, city, Tahti domain with a live availability check), Genres, Appearance (light or dark) and Defaults (show followers / following). Finish setup creates the channel if needed and saves; Skip for now just marks onboarding seen. Renders nothing when signed out.',
       },
     },
   },

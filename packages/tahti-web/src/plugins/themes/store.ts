@@ -12,52 +12,7 @@ import {
   type BasicThemeMeta,
 } from '@tahti-player/themes';
 
-import {
-  CLAUDE_THEME,
-  CLAUDE_THEME_ID,
-  COTTON_CANDY_THEME,
-  COTTON_CANDY_THEME_ID,
-  DAYDREAM_THEME,
-  DAYDREAM_THEME_ID,
-  DEEP_BLACK_THEME,
-  DEEP_BLACK_THEME_ID,
-  DRACULA_THEME,
-  DRACULA_THEME_ID,
-  EVERFOREST_THEME,
-  EVERFOREST_THEME_ID,
-  GREEN_MACHINE_THEME,
-  GREEN_MACHINE_THEME_ID,
-  GRUVBOX_THEME,
-  GRUVBOX_THEME_ID,
-  NEON_VIOLET_PINK_DUO_THEME,
-  NEON_VIOLET_PINK_DUO_THEME_ID,
-  NORD_THEME,
-  NORD_THEME_ID,
-  NUCLEAR_GREEN_THEME,
-  NUCLEAR_GREEN_THEME_ID,
-  OCEAN_GLOW_THEME,
-  OCEAN_GLOW_THEME_ID,
-  ONE_DARK_BLUE_THEME,
-  ONE_DARK_BLUE_THEME_ID,
-  ONE_DARK_THEME,
-  ONE_DARK_THEME_ID,
-  PIXEL_THEME,
-  PIXEL_THEME_ID,
-  PURPLE_VOID_THEME,
-  PURPLE_VOID_THEME_ID,
-  ROS_PINE_THEME,
-  ROS_PINE_THEME_ID,
-  RUBY_GLOW_THEME,
-  RUBY_GLOW_THEME_ID,
-  SOLARIZED_THEME,
-  SOLARIZED_THEME_ID,
-  SPOTIFY_DARK_THEME,
-  SPOTIFY_DARK_THEME_ID,
-  TAHTI_BLUE_THEME,
-  TAHTI_BLUE_THEME_ID,
-  YORHA_THEME,
-  YORHA_THEME_ID,
-} from './presets';
+import { GRUVBOX_THEME, GRUVBOX_THEME_ID } from './presets';
 
 const CUSTOM_THEME_PREFIX = 'custom:';
 
@@ -76,13 +31,7 @@ const BASE_THEME_ID = 'nuclear:default';
 /** New visitors get Gruvbox in light mode (the default `colorMode`). */
 const DEFAULT_THEME_ID = GRUVBOX_THEME_ID;
 
-export type ColorMode = 'light' | 'dark' | 'dynamic';
-
-/** Dark 19:00–06:59, light 07:00–18:59 local time. */
-export function isDynamicDark(date: Date = new Date()): boolean {
-  const hour = date.getHours();
-  return hour < 7 || hour >= 19;
-}
+export type ColorMode = 'light' | 'dark';
 
 export function systemPrefersDark(): boolean {
   try {
@@ -93,13 +42,7 @@ export function systemPrefersDark(): boolean {
 }
 
 function resolveDarkForMode(mode: ColorMode): boolean {
-  if (mode === 'light') {
-    return false;
-  }
-  if (mode === 'dark') {
-    return true;
-  }
-  return isDynamicDark();
+  return mode === 'dark';
 }
 
 function slugify(name: string): string {
@@ -121,30 +64,7 @@ function knownBasicThemeIds(): Set<string> {
  * id stays put), but removing one lets it reappear on the next load since
  * there's no persisted "user deleted this on purpose" flag. */
 const PRESET_CUSTOM_THEMES: Record<string, AdvancedTheme> = {
-  [TAHTI_BLUE_THEME_ID]: TAHTI_BLUE_THEME,
-  [NUCLEAR_GREEN_THEME_ID]: NUCLEAR_GREEN_THEME,
-  // Imported from the official Nuclear community theme store
-  // (github.com/NuclearPlayer/theme-registry).
-  [SPOTIFY_DARK_THEME_ID]: SPOTIFY_DARK_THEME,
-  [CLAUDE_THEME_ID]: CLAUDE_THEME,
-  [COTTON_CANDY_THEME_ID]: COTTON_CANDY_THEME,
-  [DAYDREAM_THEME_ID]: DAYDREAM_THEME,
-  [DEEP_BLACK_THEME_ID]: DEEP_BLACK_THEME,
-  [DRACULA_THEME_ID]: DRACULA_THEME,
-  [EVERFOREST_THEME_ID]: EVERFOREST_THEME,
-  [GREEN_MACHINE_THEME_ID]: GREEN_MACHINE_THEME,
   [GRUVBOX_THEME_ID]: GRUVBOX_THEME,
-  [NEON_VIOLET_PINK_DUO_THEME_ID]: NEON_VIOLET_PINK_DUO_THEME,
-  [NORD_THEME_ID]: NORD_THEME,
-  [OCEAN_GLOW_THEME_ID]: OCEAN_GLOW_THEME,
-  [ONE_DARK_THEME_ID]: ONE_DARK_THEME,
-  [ONE_DARK_BLUE_THEME_ID]: ONE_DARK_BLUE_THEME,
-  [PIXEL_THEME_ID]: PIXEL_THEME,
-  [PURPLE_VOID_THEME_ID]: PURPLE_VOID_THEME,
-  [ROS_PINE_THEME_ID]: ROS_PINE_THEME,
-  [RUBY_GLOW_THEME_ID]: RUBY_GLOW_THEME,
-  [SOLARIZED_THEME_ID]: SOLARIZED_THEME,
-  [YORHA_THEME_ID]: YORHA_THEME,
 };
 
 export function isPresetCustomThemeId(id: string): boolean {
@@ -255,17 +175,10 @@ type ThemeState = {
   customThemes: Record<string, AdvancedTheme>;
   themeId: string;
   dark: boolean;
-  /** User's chosen appearance preference. 'dynamic' re-resolves `dark`
-   * against the local clock (see `isDynamicDark`) on an interval so it
-   * keeps tracking day/night while the app stays open. */
   colorMode: ColorMode;
   hydrated: boolean;
   init: () => void;
-  tickDynamicMode: () => void;
   setTheme: (id: string) => void;
-  /** Low-level: applies a dark/light boolean without touching colorMode.
-   * Prefer `setColorMode` from UI — this exists for internal re-application
-   * (e.g. the dynamic-mode clock tick). */
   setDark: (dark: boolean) => void;
   setColorMode: (mode: ColorMode) => void;
   /** Parses and applies a theme JSON matching @tahti-player/themes'
@@ -287,19 +200,6 @@ type ThemeState = {
   removeCustomTheme: (id: string) => void;
 };
 
-let dynamicModeInterval: ReturnType<typeof setInterval> | undefined;
-
-function syncDynamicModeInterval(colorMode: ColorMode, tick: () => void): void {
-  if (colorMode !== 'dynamic') {
-    clearInterval(dynamicModeInterval);
-    dynamicModeInterval = undefined;
-    return;
-  }
-  if (typeof window !== 'undefined' && !dynamicModeInterval) {
-    dynamicModeInterval = setInterval(tick, 5 * 60 * 1000);
-  }
-}
-
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
@@ -317,15 +217,6 @@ export const useThemeStore = create<ThemeState>()(
         const dark = resolveDarkForMode(colorMode);
         applyThemeToDocument(id, dark, customThemes);
         set({ customThemes, themeId: id, dark, hydrated: true });
-        syncDynamicModeInterval(colorMode, get().tickDynamicMode);
-      },
-
-      tickDynamicMode: () => {
-        const state = get();
-        const nextDark = isDynamicDark();
-        if (state.colorMode === 'dynamic' && nextDark !== state.dark) {
-          state.setDark(nextDark);
-        }
       },
 
       setTheme: (rawId) => {
@@ -340,7 +231,6 @@ export const useThemeStore = create<ThemeState>()(
         const dark = resolveDarkForMode(mode);
         applyThemeToDocument(themeId, dark, customThemes);
         set({ colorMode: mode, dark });
-        syncDynamicModeInterval(mode, get().tickDynamicMode);
       },
 
       setDark: (dark) => {
@@ -435,7 +325,7 @@ export const useThemeStore = create<ThemeState>()(
         // Migrate from older localStorage keys if zustand bag is empty.
         let themeId = p.themeId;
         let dark = p.dark;
-        let colorMode = p.colorMode;
+        let colorMode = p.colorMode as ColorMode | 'dynamic' | undefined;
         try {
           if (themeId == null) {
             themeId = localStorage.getItem(THEME_KEY) ?? undefined;
@@ -453,6 +343,9 @@ export const useThemeStore = create<ThemeState>()(
           // Preserve an existing explicit dark/light choice as-is. A
           // first-ever load starts light: the default theme is Gruvbox Light.
           colorMode = dark == null ? 'light' : dark ? 'dark' : 'light';
+        }
+        if (colorMode === 'dynamic') {
+          colorMode = dark ? 'dark' : 'light';
         }
         const customThemes = refreshPresetCustomThemes(p.customThemes ?? {});
         return {

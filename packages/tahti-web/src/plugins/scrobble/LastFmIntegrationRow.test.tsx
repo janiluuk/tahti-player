@@ -44,9 +44,11 @@ describe('LastFmIntegrationRow own API key', () => {
     await act(async () => {
       render(<LastFmIntegrationRow />);
     });
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Use your own Last.fm API key' }),
-    );
+    const ownKeyButton = screen.getByRole('button', {
+      name: 'Use your own Last.fm API key',
+    });
+    expect(ownKeyButton).toHaveClass('bg-secondary');
+    fireEvent.click(ownKeyButton);
     fireEvent.change(screen.getByLabelText('Last.fm API key'), {
       target: { value: 'key' },
     });

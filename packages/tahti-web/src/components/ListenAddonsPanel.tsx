@@ -47,11 +47,13 @@ export function ListenAddonsPanel({
   compact?: boolean;
 }) {
   const { t } = useTranslation('web');
+  const installedTypeIds = useListenerWidgetsStore((s) => s.installedTypeIds);
   const [installTab, setInstallTab] = useState<'installed' | 'available'>(
-    initialTab,
+    initialTab === 'installed' && installedTypeIds.length === 0
+      ? 'available'
+      : initialTab,
   );
   const [configuringId, setConfiguringId] = useState<string | null>(null);
-  const installedTypeIds = useListenerWidgetsStore((s) => s.installedTypeIds);
   const instances = useListenerWidgetsStore((s) => s.instances);
   const installType = useListenerWidgetsStore((s) => s.installType);
   const uninstallType = useListenerWidgetsStore((s) => s.uninstallType);

@@ -85,13 +85,13 @@ describe('SettingsView', () => {
   });
 
   it.each(['/settings/language', '/settings/playback?tab=language'])(
-    'opens Appearance for the old Language address %s',
+    'opens General for the old Language address %s',
     (address) => {
       window.history.replaceState(null, '', address);
       render(<SettingsView />);
       const state = useSettingsModalStore.getState();
       expect(state.isOpen).toBe(true);
-      expect(state.activeTab).toBe('themes');
+      expect(state.activeTab).toBe('general');
     },
   );
 

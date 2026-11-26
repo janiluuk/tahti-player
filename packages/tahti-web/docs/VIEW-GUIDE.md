@@ -202,7 +202,7 @@ Manage tiers, subscriptions and grants.
 
 <picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/settings-themes--light.png" /><img src="./readme-shots/settings-themes.png" alt="Settings / Themes" width="1680" /></picture>
 
-Choose the visual language and appearance.
+Choose a focused theme palette and switch between light and dark mode. Language and full-screen title changes live under General.
 
 `/settings/themes`
 
@@ -943,4 +943,3 @@ Manage translated product content.
 Curate the platform-wide selection.
 
 `/admin/tahti-selects`
-

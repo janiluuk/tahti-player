@@ -5,6 +5,7 @@ import {
   Lock,
   Palette,
   PlayCircle,
+  Settings2,
   Sparkles,
   User,
   UserCircle2,
@@ -25,6 +26,7 @@ export type SettingsSectionId =
   | 'notifications'
   | 'artist'
   | 'playback'
+  | 'general'
   | 'themes'
   | 'plugin-store'
   | 'whats-new';
@@ -46,6 +48,7 @@ export type SettingsNavItem = {
   description?: string;
   descriptionKey?: WebKey;
   Icon: LucideIcon;
+  iconClassName: string;
   group: SettingsNavGroup;
 };
 
@@ -56,6 +59,7 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
       label: t('settingsNav.account'),
       labelKey: 'settings.account',
       Icon: User,
+      iconClassName: 'text-accent-blue-strong',
       group: 'Settings',
     },
     {
@@ -65,6 +69,7 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
       description: t('settings.securityDescription'),
       descriptionKey: 'settings.securityDescription',
       Icon: Lock,
+      iconClassName: 'text-accent-red-strong',
       group: 'Settings',
     },
     {
@@ -74,6 +79,7 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
       description: t('settings.notificationsDescription'),
       descriptionKey: 'settings.notificationsDescription',
       Icon: Bell,
+      iconClassName: 'text-accent-orange-strong',
       group: 'Settings',
     },
     {
@@ -81,6 +87,7 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
       label: t('settingsNav.profile'),
       labelKey: 'settings.profile',
       Icon: UserCircle2,
+      iconClassName: 'text-accent-purple-strong',
       group: 'Settings',
     },
     {
@@ -90,15 +97,27 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
       description: t('settings.playbackDescription'),
       descriptionKey: 'settings.playbackDescription',
       Icon: PlayCircle,
+      iconClassName: 'text-accent-green-strong',
       group: 'Settings',
     },
     {
+      id: 'general',
+      label: t('settings.general'),
+      labelKey: 'settings.general',
+      description: t('settings.generalDescription'),
+      descriptionKey: 'settings.generalDescription',
+      Icon: Settings2,
+      iconClassName: 'text-accent-cyan-strong',
+      group: 'App',
+    },
+    {
       id: 'themes',
-      label: t('settings.appearance'),
-      labelKey: 'settings.appearance',
-      description: t('settings.appearanceDescription'),
-      descriptionKey: 'settings.appearanceDescription',
+      label: t('settings.themes'),
+      labelKey: 'settings.themes',
+      description: t('settings.themesDescription'),
+      descriptionKey: 'settings.themesDescription',
       Icon: Palette,
+      iconClassName: 'text-accent-purple-strong',
       group: 'App',
     },
     {
@@ -108,15 +127,15 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
       description: t('settingsNav.listenerArtistAndAdminTools'),
       descriptionKey: 'settings.addOnsDescription',
       Icon: BlocksIcon,
+      iconClassName: 'text-accent-yellow-strong',
       group: 'App',
     },
     {
       id: 'whats-new',
       label: t('settings.about'),
       labelKey: 'settings.about',
-      description: t('settings.aboutDescription'),
-      descriptionKey: 'settings.aboutDescription',
       Icon: Sparkles,
+      iconClassName: 'text-accent-orange-strong',
       group: 'App',
     },
   ];
@@ -127,6 +146,7 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
  * Settings flows still prompt for sign-in themselves when clicked. */
 export const PUBLIC_SETTINGS_SECTION_IDS: readonly SettingsSectionId[] = [
   'playback',
+  'general',
   'themes',
   'plugin-store',
   'whats-new',

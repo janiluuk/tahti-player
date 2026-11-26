@@ -70,12 +70,12 @@ export const ThemesTab: Story = {
   decorators: [withMockAuth(MOCK_USERS.listener), withOpenSettings('themes')],
 };
 
-export const LanguageInAppearance: Story = {
-  name: 'Appearance, language above themes',
-  decorators: [withMockAuth(null), withOpenSettings('themes')],
+export const LanguageInGeneral: Story = {
+  name: 'General, language and full-screen player',
+  decorators: [withMockAuth(null), withOpenSettings('general')],
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
-    await body.findByRole('heading', { level: 1, name: 'Appearance' });
+    await body.findByRole('heading', { level: 1, name: 'General' });
     await expect(body.getByTestId('language-panel')).toBeVisible();
   },
 };

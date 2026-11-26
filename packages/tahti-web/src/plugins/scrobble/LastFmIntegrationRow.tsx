@@ -182,9 +182,9 @@ export function LastFmIntegrationRow() {
           </form>
         ) : (
           <Button
-            variant="text"
+            variant="secondary"
             size="sm"
-            className="mt-1"
+            className="mt-2 self-start"
             onClick={() => setOwnKeyOpen(true)}
           >
             {t('lastFmRow.useYourOwnLastFm')}

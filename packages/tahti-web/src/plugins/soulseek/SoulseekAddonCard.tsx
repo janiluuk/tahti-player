@@ -10,6 +10,8 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
+import { ColorfulAddonIcon } from '../../components/plugin-store/ColorfulAddonIcon';
+
 export function SoulseekAddonCard() {
   const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
@@ -18,7 +20,11 @@ export function SoulseekAddonCard() {
   return (
     <>
       <PluginStoreItem
-        icon={<SearchIcon size={22} aria-hidden />}
+        icon={
+          <ColorfulAddonIcon tone="purple">
+            <SearchIcon size={22} />
+          </ColorfulAddonIcon>
+        }
         name="Soulseek"
         author={t('soulseekAddonCardBatch33.author')}
         description={t('soulseekAddonCardBatch33.description')}

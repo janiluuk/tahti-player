@@ -1,4 +1,16 @@
-import { ChevronDownIcon } from 'lucide-react';
+import {
+  AudioWaveformIcon,
+  ChevronDownIcon,
+  DownloadIcon,
+  HistoryIcon,
+  LayoutGridIcon,
+  PaletteIcon,
+  RadioIcon,
+  RadioTowerIcon,
+  RocketIcon,
+  WrenchIcon,
+  type LucideIcon,
+} from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -17,6 +29,10 @@ import { SoulseekAddonCard } from '../plugins/soulseek/SoulseekAddonCard';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { ListenAddonsPanel } from './ListenAddonsPanel';
+import {
+  ColorfulAddonIcon,
+  type AddonIconTone,
+} from './plugin-store/ColorfulAddonIcon';
 import { ImportTutorial } from './plugin-store/ImportTutorial';
 import { RadioCategory } from './plugin-store/RadioCategory';
 import {
@@ -74,7 +90,17 @@ export function PluginStorePanel() {
           id: candidate.id,
           label: (
             <span className="flex min-w-0 items-center gap-2">
-              <candidate.icon size={14} aria-hidden className="shrink-0" />
+              <candidate.icon
+                size={14}
+                aria-hidden
+                className={`shrink-0 ${
+                  candidate.id === 'listener'
+                    ? 'text-accent-blue-strong'
+                    : candidate.id === 'artist'
+                      ? 'text-accent-purple-strong'
+                      : 'text-accent-orange-strong'
+                }`}
+              />
               <span className="truncate">
                 {t(`settingsAddOns.category${categoryKey(candidate.id)}`)}
               </span>
@@ -146,11 +172,15 @@ function AudienceBody({
 function AddonGroup({
   title,
   description,
+  Icon,
+  tone,
   defaultOpen = false,
   children,
 }: {
   title: string;
   description: string;
+  Icon: LucideIcon;
+  tone: AddonIconTone;
   defaultOpen?: boolean;
   children: ReactNode;
 }) {
@@ -171,6 +201,11 @@ function AddonGroup({
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
+        <span className="size-9 shrink-0 overflow-hidden rounded-md">
+          <ColorfulAddonIcon tone={tone}>
+            <Icon size={18} />
+          </ColorfulAddonIcon>
+        </span>
         <span className="min-w-0 flex-1">
           <span className="block text-sm font-semibold">{title}</span>
           <span className="text-foreground-secondary block text-xs">
@@ -208,6 +243,8 @@ function ListenerAddons({ target }: { target: PluginCategoryTarget | null }) {
       <AddonGroup
         title={t('settingsAddOns.radio')}
         description={t('settingsAddOns.radioDescription')}
+        Icon={RadioIcon}
+        tone="purple"
         defaultOpen={initial === 'radio'}
       >
         <RadioCategory />
@@ -215,6 +252,8 @@ function ListenerAddons({ target }: { target: PluginCategoryTarget | null }) {
       <AddonGroup
         title={t('settingsAddOns.listenWidgets')}
         description={t('settingsAddOns.listenWidgetsDescription')}
+        Icon={LayoutGridIcon}
+        tone="blue"
         defaultOpen={initial === 'listen'}
       >
         <ListenAddonsPanel />
@@ -222,6 +261,8 @@ function ListenerAddons({ target }: { target: PluginCategoryTarget | null }) {
       <AddonGroup
         title={t('settingsAddOns.discoverWidgets')}
         description={t('settingsAddOns.discoverWidgetsDescription')}
+        Icon={RocketIcon}
+        tone="orange"
         defaultOpen={initial === 'discovery'}
       >
         <DiscoveryCategory />
@@ -229,6 +270,8 @@ function ListenerAddons({ target }: { target: PluginCategoryTarget | null }) {
       <AddonGroup
         title={t('settingsAddOns.history')}
         description={t('settingsAddOns.historyDescription')}
+        Icon={HistoryIcon}
+        tone="green"
         defaultOpen={initial === 'history'}
       >
         <ScrobblingMovedNotice />
@@ -255,6 +298,8 @@ function ArtistAddons({ target }: { target: PluginCategoryTarget | null }) {
       <AddonGroup
         title={t('settingsAddOns.import')}
         description={t('settingsAddOns.importDescription')}
+        Icon={DownloadIcon}
+        tone="cyan"
         defaultOpen={initial === 'import'}
       >
         <ImportTutorial />
@@ -264,6 +309,8 @@ function ArtistAddons({ target }: { target: PluginCategoryTarget | null }) {
       <AddonGroup
         title={t('settingsAddOns.releasing')}
         description={t('settingsAddOns.releasingDescription')}
+        Icon={RocketIcon}
+        tone="orange"
         defaultOpen={initial === 'releasing'}
       >
         <DspUrlPasteCard />
@@ -273,6 +320,8 @@ function ArtistAddons({ target }: { target: PluginCategoryTarget | null }) {
       <AddonGroup
         title={t('settingsAddOns.broadcast')}
         description={t('settingsAddOns.broadcastDescription')}
+        Icon={RadioTowerIcon}
+        tone="red"
         defaultOpen={initial === 'broadcast'}
       >
         <MulticastCategory />
@@ -280,6 +329,8 @@ function ArtistAddons({ target }: { target: PluginCategoryTarget | null }) {
       <AddonGroup
         title={t('settingsAddOns.channel')}
         description={t('settingsAddOns.channelDescription')}
+        Icon={PaletteIcon}
+        tone="purple"
         defaultOpen={initial === 'channel'}
       >
         <VisualizersCategory />
@@ -288,6 +339,8 @@ function ArtistAddons({ target }: { target: PluginCategoryTarget | null }) {
       <AddonGroup
         title={t('settingsAddOns.production')}
         description={t('settingsAddOns.productionDescription')}
+        Icon={AudioWaveformIcon}
+        tone="yellow"
         defaultOpen={initial === 'production'}
       >
         <AudioPluginsCategory />
@@ -302,6 +355,8 @@ function AdminAddons() {
     <AddonGroup
       title={t('settingsAddOns.operations')}
       description={t('settingsAddOns.operationsDescription')}
+      Icon={WrenchIcon}
+      tone="blue"
       defaultOpen
     >
       <ToolsCategory />

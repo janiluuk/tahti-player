@@ -12,6 +12,7 @@ import {
 } from '../../../api/distribution';
 import type { SpotifyArtistProfile } from '../../../api/studio-types';
 import { usePluginInstallStore } from '../../../stores/pluginInstallStore';
+import { SourceServiceIcon } from '../../SourceServiceIcon';
 import type { ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
 
@@ -90,6 +91,7 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
       title={plugin.name}
       header={(open) => (
         <PluginStoreItem
+          icon={<SourceServiceIcon id="spotify" />}
           name={plugin.name}
           author={plugin.author}
           description={t('spotifyCard.linkYourSpotifyArtistProfile')}

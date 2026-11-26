@@ -7180,3 +7180,10 @@ Desktop main-pane padding is four pixels tighter at each breakpoint, full-bleed 
 - Phone: `e2e/helpers/phoneOverflow.ts` + `phone-overflow-*`; `AmbientTrackList` `flushOnPhone` default true; `E2eRunGallery` strip positioned.
 - Bundle: lazy Listen add-ons/store/news dialog, deferred sign-in dialog + page tour; `scripts/check-bundle-budget.mjs`.
 - Help: `HelpView` intro removed, `helpLinks.test.ts`, six new articles; Channel → Settings shows `BroadcastPanel` green room defaults.
+
+## 2026-11-26 — Settings General and Add-ons cleanup (0.0.493)
+
+- General now owns flagged language choices and the full-screen title-change preference; Themes is light/dark only with Gruvbox as the default and a shorter preinstalled list.
+- Web Playback hides desktop-only controls and no longer raises a parent integration error when listener status is unavailable; the Last.fm own-key action uses the standard secondary button.
+- Add-ons uses colorful navigation and item icons, and categories with nothing installed open directly on Available. About drops its duplicate shell explanation.
+- Verified with type-check, lint, 58 focused web tests, 14 focused Storybook browser tests, generated Storybook surfaces and size guards. Not deployed.

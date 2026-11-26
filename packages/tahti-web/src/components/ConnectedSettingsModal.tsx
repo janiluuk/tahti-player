@@ -167,7 +167,7 @@ export function ConnectedSettingsModal() {
     return {
       id: item.id,
       label: t(item.labelKey),
-      icon: <Icon size={16} />,
+      icon: <Icon size={16} className={item.iconClassName} />,
       group: t(SETTINGS_GROUP_LABEL_KEYS[item.group]),
       // Settings dialog is p-0; pad sections. `min-w-0` + slightly tighter
       // mobile padding keep wide Add-ons / Themes bodies inside the pane.

@@ -35,7 +35,6 @@ import { soundIdFromPlayableId } from '../lib/soundId';
 import { useDominantColor } from '../lib/useDominantColor';
 import { useLayoutStore } from '../stores/layoutStore';
 import {
-  DEFAULT_FULL_PLAYER_TITLE_TRANSITION,
   usePlaybackPrefsStore,
   type FullPlayerTitleTransition,
 } from '../stores/playbackPrefsStore';
@@ -137,10 +136,14 @@ function LoveButton({
  * hidden. Touch swipe left/right always changes track while this overlay
  * is open. */
 export function FullScreenPlayer({
-  titleTransition = DEFAULT_FULL_PLAYER_TITLE_TRANSITION,
+  titleTransition,
 }: {
   titleTransition?: FullPlayerTitleTransition;
 }) {
+  const savedTitleTransition = usePlaybackPrefsStore(
+    (state) => state.fullPlayerTitleTransition,
+  );
+  const resolvedTitleTransition = titleTransition ?? savedTitleTransition;
   const { t } = useTranslation('web');
   const isMobile = useIsMobile();
   const open = useLayoutStore((s) => s.fullScreenPlayerOpen);
@@ -499,7 +502,7 @@ export function FullScreenPlayer({
                 'tahti-full-player-title-change shrink-0',
                 driving ? 'px-7 py-5' : 'max-w-md',
               )}
-              data-transition={titleTransition}
+              data-transition={resolvedTitleTransition}
               data-testid="full-screen-player-title"
             >
               {showName ? (

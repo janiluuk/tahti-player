@@ -30,6 +30,7 @@ import {
 } from '../../plugins/visualizers/meta';
 import { useSettingsModalStore } from '../../stores/settingsModalStore';
 import { ChannelVisualizer } from '../ChannelVisualizer';
+import { ColorfulAddonIcon, type AddonIconTone } from './ColorfulAddonIcon';
 
 function visualizerDescription(id: string): string {
   return visualizerMetadata(id).description;
@@ -140,7 +141,7 @@ export function VisualizersCategory() {
       </Box>
 
       <div className="flex flex-col gap-2">
-        {VISUAL_PRESETS.map((id) => {
+        {VISUAL_PRESETS.map((id, index) => {
           const active = preset === id;
           const selected = previewPreset === id;
           const metadata = visualizerMetadata(id);
@@ -148,7 +149,16 @@ export function VisualizersCategory() {
           return (
             <PluginStoreItem
               key={id}
-              icon={<Icon size={22} aria-hidden />}
+              icon={
+                <ColorfulAddonIcon
+                  tone={
+                    (['purple', 'cyan', 'orange', 'blue', 'green'][index % 5] ??
+                      'purple') as AddonIconTone
+                  }
+                >
+                  <Icon size={22} />
+                </ColorfulAddonIcon>
+              }
               name={presetLabel(id)}
               author="Tahti"
               description={metadata.description}

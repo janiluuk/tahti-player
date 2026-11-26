@@ -6843,7 +6843,6 @@ Tahti Radio rotation list numbers its rows, marks On air (matched by `soundId` f
 ## 2026-11-25 — Next 20: player marquee and phone mini bar, compact entity headers, still backdrops on slow frames, faster local tests (0.0.487)
 
 Player bar titles that overflow scroll (`MarqueeText`, still under reduced motion, read once by screen readers); on phones the bar collapses to a 48 px strip that is remembered per browser. Collection, venue, radio show and channel fallback headers use `compactOnPhone`; the artist page dark scheme reads "On SoundCloud" and Fan tier prices at full contrast; e2e journeys cover the compact artist header at 390 px and the Tahti Radio rotation (numbering, On air, Up next, Move). Event banner backdrops go still under reduced motion, and a live frame monitor (`backdropMotion.ts`) stills channel, Discover, cover and event backdrops when frames drop. Font fallback metric overrides and a reserved phone filter row bring Listen CLS to 0.0000; the late guidelines toast links to the guidelines. Stories for the legal, For artists, embed and Audience views; `TrackTable` passes its `aria-label`. Local tests: `turbo test` without dependency builds, `test:changed`, chunked Storybook plays, rAF/spy/URL resets in the tahti-web setup. 26 more strings in Finnish; admin governance and radio API modules split under the size limit.
-
 ## 2026-11-25 — Next 30: event browsing, Identity header, phone player polish, test leaks (0.0.489)
 
 Event page: previous/next from the row the event was opened in (Discover rows, poster carousel, calendar, artist lists; upcoming events as fallback), with header buttons ("2 of 5"), ← / → keys and swipe; comments and calendar/share links sit in a sticky side panel from 1024 px. Studio → Profile → Identity opens with the backdrop banner and overlapping profile picture, each with a pencil to change it; Branding keeps the logo and release visuals. Phone player: progress line on the mini strip, minimize/close in one ⋯ menu while paused. Related artists contrast, a `nav` landmark for legal links, shared `useMediaQuery` in `useIsMobile`/`usePhoneViewport`/`CardsRow`, Admin section strip scrolls the current tab into view. 63 more Finnish strings; `HearthisCard` and `StudioReleaseDetailView` split; VIEW-CATALOG counts recomputed with a More story; `tahti-ops ci digest`. Test leaks fixed (`window.location`, `document.hidden`, motion's stranded rAF); e2e for event browsing, phone mini player and compact headers; event page holds 60 fps without a GPU.
@@ -6867,3 +6866,17 @@ Storybook `Tahti/Library/LibraryPlaylists` (own + saved, filtered, no matches, e
 ## 2026-11-26 — Next 30: axe a11y, phone overflow, full-width phone track lists, lighter first load, Help center audit (0.0.494)
 
 Axe-core e2e on Listen, Discover, Library, Studio, Settings and Admin at desktop and 390 px with no serious/critical violations: name/label fixes (account initial, "Add widget to Listen/Discover"), readable EmptyState text, themes raise `primary-strong`/`accent-*-strong` to 4.5:1, gruvbox light red badge contrast. A 360/390 px overflow sweep of 108 routes found one real offender (`/admin/map` gallery strip) and adds `phone-overflow-*` journeys; phone track lists are flush by default (`AmbientTrackList` `flushOnPhone`), Listen New tracks and Studio Sounds go edge to edge within the gutter. First load of `/`: 605 → 578 KB gzip (Listen add-ons, store, news dialog, sign-in dialog and page tour load on demand) with a non-blocking 600 KB budget in `web-dist`; only master saves turbo caches so pnpm/Playwright caches stay warm. Help center: the intro line under "How can we help?" is gone, 17 articles updated and 6 added (Discover, events and parties, radio, Studio Channel, artist profile, Settings), every in-app help link tested against the router. Green room default invite rules are back on Studio → Channel → Settings (lost in 0.0.445). 82 more Finnish strings, 315 unused `web.*` keys removed, `pnpm check:i18n-unused` report and an en/fi parity test. `api/client.ts` and two more files split (size baseline now empty), dead exports removed, `studio-dashboard-contrast` journey runs in CI via the e2e hook.
+
+## 2026-11-26 — Settings General, focused themes, clearer Add-ons (0.0.493)
+
+Settings gains an App → General section for flagged language choices and the
+full-screen player's four title-change styles. Themes is now a focused
+light/dark surface: Dynamic is removed, Gruvbox stays the default, and the
+preinstalled palette list is reduced to Gruvbox plus the distinct basic
+themes. Add-ons uses colorful audience, group, service, visualizer, widget,
+audio-tool and utility icons; empty Installed lists open on Available instead
+of an empty state. Web Playback hides desktop-only integration entries, no
+longer raises the parent “Couldn't load integrations” message when listener
+status is unavailable, and the Last.fm own-key action uses the standard
+secondary button. About drops its duplicate shell explanation. Unit, type,
+lint and focused Storybook browser checks passed.

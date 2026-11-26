@@ -1,10 +1,14 @@
 import { useNavigate } from '@tanstack/react-router';
+import { PackageIcon } from 'lucide-react';
 import { useEffect } from 'react';
 
 import { PluginStoreItem } from '@tahti-player/ui';
 
+import type { IntegrationId } from '../../api/sources';
 import { usePluginInstallStore } from '../../stores/pluginInstallStore';
 import { useSettingsModalStore } from '../../stores/settingsModalStore';
+import { SourceServiceIcon } from '../SourceServiceIcon';
+import { ColorfulAddonIcon } from './ColorfulAddonIcon';
 import { HearthisCard } from './service-category/HearthisCard';
 import { OAuthServiceCard } from './service-category/OAuthServiceCard';
 import { SpotifyCard } from './service-category/SpotifyCard';
@@ -16,6 +20,27 @@ import {
 import { InstalledAvailableTabs } from './shared';
 
 export { DspUrlPasteCard } from './service-category/DspUrlPasteCard';
+
+const SOURCE_ICON_IDS = new Set<IntegrationId>([
+  'bandcamp',
+  'soundcloud',
+  'google-drive',
+  'mixcloud',
+  'spotify',
+  'hearthis',
+  'musicbrainz',
+]);
+
+function serviceIcon(id: string) {
+  if (SOURCE_ICON_IDS.has(id as IntegrationId)) {
+    return <SourceServiceIcon id={id as IntegrationId} />;
+  }
+  return (
+    <ColorfulAddonIcon tone="orange">
+      <PackageIcon size={22} />
+    </ColorfulAddonIcon>
+  );
+}
 
 export function ServiceCategory({
   categoryId,
@@ -65,6 +90,7 @@ export function ServiceCard({ plugin }: { plugin: ServicePlugin }) {
 
   const header = (
     <PluginStoreItem
+      icon={serviceIcon(plugin.id)}
       name={plugin.name}
       author={plugin.author}
       description={plugin.description}

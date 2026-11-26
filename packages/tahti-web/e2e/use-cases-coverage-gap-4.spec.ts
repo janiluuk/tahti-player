@@ -104,13 +104,13 @@ test('artist: switches the app to Finnish in Settings and back', async ({
   await page.setViewportSize({ width: 1440, height: 900 });
   await signIn(page);
   await open(page, '/settings/playback?tab=language');
-  await expect(page).toHaveURL(/\/settings\/themes/);
+  await expect(page).toHaveURL(/\/settings\/general/);
   const settings = page.getByRole('dialog', { name: 'Settings' });
   await settings.getByRole('button', { name: 'Language', exact: true }).click();
-  await page.getByRole('option', { name: 'Suomi', exact: true }).click();
+  await page.getByRole('option', { name: /Suomi$/ }).click();
   const finnishHeading = page.getByRole('heading', {
     level: 1,
-    name: 'Ulkoasu',
+    name: 'Yleiset',
   });
   await expect(finnishHeading).toBeVisible();
   await page.reload();
@@ -120,8 +120,8 @@ test('artist: switches the app to Finnish in Settings and back', async ({
     .getByRole('dialog', { name: 'Asetukset' })
     .getByRole('button', { name: 'Kieli', exact: true })
     .click();
-  await page.getByRole('option', { name: 'English', exact: true }).click();
+  await page.getByRole('option', { name: /English$/ }).click();
   await expect(
-    page.getByRole('heading', { level: 1, name: 'Appearance' }),
+    page.getByRole('heading', { level: 1, name: 'General' }),
   ).toBeVisible();
 });

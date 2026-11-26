@@ -14,7 +14,7 @@ const meta: Meta<typeof LanguagePanel> = {
     docs: {
       description: {
         component:
-          'Settings → Language: the browser language (default), English or Suomi for menus, buttons and dates. Applies at once, sets `<html lang>` and is remembered in this browser. Missing states: loading/error (the Finnish catalog is a lazy chunk; a failed fetch keeps English).',
+          'Settings → General → Language: the browser language (default), English or Suomi with flags for quick scanning. Applies at once, sets `<html lang>` and is remembered in this browser.',
       },
     },
   },
@@ -35,7 +35,7 @@ export const Default: Story = {
     const canvas = within(canvasElement);
     await expect(
       canvas.getByRole('button', { name: /Language/ }),
-    ).toHaveTextContent('English');
+    ).toHaveTextContent('🇬🇧 English');
   },
 };
 
@@ -44,11 +44,11 @@ export const SwitchToFinnish: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: /Language/ }));
     await userEvent.click(
-      await withinBody(canvasElement).findByRole('option', { name: 'Suomi' }),
+      await withinBody(canvasElement).findByRole('option', { name: /Suomi/ }),
     );
     await waitFor(() =>
       expect(canvas.getByRole('button', { name: /Kieli/ })).toHaveTextContent(
-        'Suomi',
+        '🇫🇮 Suomi',
       ),
     );
     await expect(document.documentElement.lang).toBe('fi-FI');

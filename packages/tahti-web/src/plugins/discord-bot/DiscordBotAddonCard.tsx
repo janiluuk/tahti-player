@@ -20,6 +20,7 @@ import {
   type DiscordBotSettings,
 } from '../../api/discord-bot';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { ColorfulAddonIcon } from '../../components/plugin-store/ColorfulAddonIcon';
 import { hasAccountRole } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { usePluginInstallStore } from '../../stores/pluginInstallStore';
@@ -128,7 +129,11 @@ export function DiscordBotAddonCard() {
       <div className="flex items-center gap-2">
         <div className="min-w-0 flex-1">
           <PluginStoreItem
-            icon={<BotIcon size={22} aria-hidden />}
+            icon={
+              <ColorfulAddonIcon tone="blue">
+                <BotIcon size={22} />
+              </ColorfulAddonIcon>
+            }
             name={DISCORD_BOT_ADDON.name}
             author={DISCORD_BOT_ADDON.author}
             description={DISCORD_BOT_ADDON.description}

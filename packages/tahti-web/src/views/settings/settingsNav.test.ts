@@ -13,6 +13,7 @@ describe('settingsNavFor', () => {
   it('shows a visitor only the sections that need no account', () => {
     expect(ids({ signedIn: false, hasChannel: false })).toEqual([
       'playback',
+      'general',
       'themes',
       'plugin-store',
       'whats-new',
@@ -25,6 +26,7 @@ describe('settingsNavFor', () => {
       'security',
       'notifications',
       'playback',
+      'general',
       'themes',
       'plugin-store',
       'whats-new',
@@ -47,6 +49,7 @@ describe('settingsNavFor', () => {
       'notifications',
       'artist',
       'playback',
+      'general',
       'themes',
       'plugin-store',
       'whats-new',
@@ -78,10 +81,13 @@ describe('settingsNavFor', () => {
     ).toBeTruthy();
   });
 
-  it("labels Themes as Appearance and What's new as About", () => {
+  it("labels General, Themes and What's new clearly", () => {
     const nav = settingsNavFor({ signedIn: true, hasChannel: true });
+    expect(nav.find((item) => item.id === 'general')?.labelKey).toBe(
+      'settings.general',
+    );
     expect(nav.find((item) => item.id === 'themes')?.labelKey).toBe(
-      'settings.appearance',
+      'settings.themes',
     );
     expect(nav.find((item) => item.id === 'whats-new')?.labelKey).toBe(
       'settings.about',

@@ -7,7 +7,6 @@ import { IntegrationsPanel } from '@tahti-web/views/settings/panels/Integrations
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withPageSurface } from './_lib/decorators';
-import { mockData } from './_lib/mock-data';
 
 const meta: Meta<typeof IntegrationsPanel> = {
   title: 'Tahti/Settings/IntegrationsPanel',
@@ -17,7 +16,7 @@ const meta: Meta<typeof IntegrationsPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Integrations: ListenBrainz and Last.fm scrobble toggles (mock integrations API in Storybook), plus Jam, MCP, MPD and Discord Rich Presence listed as desktop-app only. In the desktop app Tahti Jam, MCP, MPD and Discord are working switches; the servers show their address, and Jam a pairing QR code.',
+          'Settings → Playback → Integrations: ListenBrainz and Last.fm scrobbling in the web app. Desktop controls appear only inside the desktop app.',
       },
     },
   },
@@ -27,23 +26,14 @@ const meta: Meta<typeof IntegrationsPanel> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-
-/** Mock fetchMeIntegrations throws via meIntegrations override (no ESM spyOn). */
-export const IntegrationsApiError: Story = {
-  parameters: {
-    mockData: mockData({
-      meIntegrations: () => {
-        throw new Error('Service unavailable');
-      },
-    }),
-  },
+export const WebApp: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitFor(() =>
-      expect(canvas.getByText("Couldn't load integrations")).toBeVisible(),
-    );
-    await expect(canvas.getByText('Service unavailable')).toBeVisible();
+    await expect(canvas.queryByText('Desktop app')).toBeNull();
+    await expect(canvas.queryByText("Couldn't load integrations")).toBeNull();
+    await expect(
+      canvas.getByRole('switch', { name: 'Last.fm scrobbling' }),
+    ).toBeVisible();
   },
 };
 

@@ -1,5 +1,5 @@
 ---
-description: A tour of Settings - account and security, artist profile, channel, broadcast, playback, integrations, language, themes and add-ons.
+description: A tour of Settings - account, playback, general preferences, themes and add-ons.
 ---
 
 # Settings
@@ -12,17 +12,16 @@ Open **Settings** at the bottom of the sidebar (on a phone: **More → Settings*
 | **Artist** | Profile (Identity, Story), Links & press, Artist branding | Your public artist profile. See [Your channel and profile](../studio/your-channel.md). |
 | **Channel & chat** | Channel Designer, Discovery, Username & domain, Chat, Moderators | Your channel page. Chat and Moderators link to **Studio → Fans**, where chat settings and moderation now live. |
 | **Broadcast** | Radio, Green room, Multistream | Defaults for going live. See [Broadcasting](../studio/broadcasting.md). |
-| **Playback** | — | Skip length for Shift + ←/→, your own internet radio stations, and other player preferences. |
-| **Integrations** | — | ListenBrainz and Last.fm scrobbling. In the desktop app also Tahti Jam, the MCP and MPD servers, Discord, and app updates. |
-| **Language** | - | At the top of **Appearance**: the language of menus, buttons and dates, **English** or **Suomi**. |
-| **Themes** | Browse, Editor, Import JSON | Pick a theme, light/dark/dynamic mode, or make your own. See [Themes](../../themes/themes.md). |
+| **Playback** | Playback, Integrations | Skip length, internet radio stations, player preferences and scrobbling. Desktop-only controls appear only in the desktop app. |
+| **General** | — | Language and the full-screen player's title-change animation. |
+| **Themes** | Browse, Editor, Import JSON | Pick a focused theme palette, switch between light and dark, or make your own. See [Themes](../../themes/themes.md). |
 | **Add-ons** | Listener, Artist | Visualizers, import sources, widgets and more. See [Add-ons](add-ons.md). |
 | **Logs** | — | Recent app activity, for troubleshooting. |
 | **What's new** | — | Release notes. |
 
 ## Language
 
-**Settings → Appearance → Language** switches menus, buttons and dates between **English** and **Suomi** (Finnish). Titles and names stay as their creators wrote them. The choice is kept in this browser. In Finnish, Jam is called **Bileet**.
+**Settings → General → Language** switches menus, buttons and dates between **English** and **Suomi** (Finnish). Flags make the choices easier to scan. Titles and names stay as their creators wrote them. The choice is kept in this browser.
 
 ## Security
 

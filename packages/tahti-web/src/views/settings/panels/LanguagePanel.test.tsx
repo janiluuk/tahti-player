@@ -37,7 +37,7 @@ describe('LanguagePanel', () => {
     expect(screen.getByRole('button', { name: /Language/ })).toBeTruthy();
 
     await userEvent.click(screen.getByRole('button', { name: /Language/ }));
-    await userEvent.click(await screen.findByRole('option', { name: 'Suomi' }));
+    await userEvent.click(await screen.findByRole('option', { name: /Suomi/ }));
 
     await waitFor(() =>
       expect(screen.getByRole('link', { name: 'Kuuntele' })).toBeTruthy(),
@@ -52,7 +52,7 @@ describe('LanguagePanel', () => {
     await renderWithRouter(<LanguagePanel />);
     await userEvent.click(screen.getByRole('button', { name: /Language/ }));
     await userEvent.click(
-      await screen.findByRole('option', { name: /^Browser language/ }),
+      await screen.findByRole('option', { name: /Browser language/ }),
     );
     await waitFor(() =>
       expect(useLanguageStore.getState().choice).toBe('auto'),
