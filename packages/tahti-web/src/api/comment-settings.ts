@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -46,7 +48,13 @@ export async function fetchCommentSettings(): Promise<
       },
     };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not load the setting') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotLoadSetting'),
+      ),
+    };
   }
 }
 
@@ -64,7 +72,13 @@ export async function setChannelCommentsEnabled(
     );
     return { ok: true, enabled: data.commentsEnabled };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not save the setting') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotSaveSetting'),
+      ),
+    };
   }
 }
 
@@ -79,7 +93,13 @@ async function patchCommentDefault(
     );
     return { ok: true, enabled: data[field] };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not save the setting') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotSaveSetting'),
+      ),
+    };
   }
 }
 

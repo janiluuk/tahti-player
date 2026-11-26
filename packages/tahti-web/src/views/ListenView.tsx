@@ -313,7 +313,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               heading={t('listen.newTracks')}
               initialView="list"
               filterable
-              className="border-border/40 bg-background-secondary/40 rounded-[var(--radius-card)] border p-2 sm:p-3"
+              className="sm:border-border/40 sm:bg-background-secondary/40 sm:rounded-[var(--radius-card)] sm:border sm:p-3"
               playAll
               getTrackMeta={latestTrackMeta}
             />

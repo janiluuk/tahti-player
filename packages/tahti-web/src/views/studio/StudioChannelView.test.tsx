@@ -37,6 +37,11 @@ vi.mock('../../components/StudioRadioSubmissionPanel', () => ({
 vi.mock('../../components/ProfileVisibilitySection', () => ({
   ProfileVisibilitySection: () => <div data-testid="profile-visibility" />,
 }));
+vi.mock('../settings/panels/BroadcastPanel', () => ({
+  BroadcastPanel: ({ section }: { section: string }) => (
+    <div data-testid={`broadcast-panel-${section}`} />
+  ),
+}));
 vi.mock('../settings/panels/ChannelPanel', () => ({
   ChannelPanel: ({ section }: { section: string }) => (
     <div data-testid={`channel-panel-${section}`} />
@@ -187,6 +192,9 @@ describe('StudioChannelView sections', () => {
   it('keeps the automatic programme on Channel settings', async () => {
     await renderChannel('/studio/channel/settings');
     expect(screen.getByTestId('programme-settings')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('broadcast-panel-green-room'),
+    ).toBeInTheDocument();
   });
 
   it.each(['design', 'address'])(

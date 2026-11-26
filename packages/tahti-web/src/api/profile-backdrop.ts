@@ -46,7 +46,13 @@ export async function uploadProfileBackdrop(
     }
     return { ok: true, data: { backdropUrl: data.backdropUrl } };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not upload the backdrop') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotUploadBackdrop'),
+      ),
+    };
   }
 }
 
@@ -63,6 +69,12 @@ export async function removeProfileBackdrop(): Promise<
     });
     return { ok: true };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not remove the backdrop') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotRemoveBackdrop'),
+      ),
+    };
   }
 }

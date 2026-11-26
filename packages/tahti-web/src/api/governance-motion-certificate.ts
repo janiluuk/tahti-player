@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 
@@ -90,7 +92,10 @@ export async function correctMotionResult(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const note = input.note.trim();
   if (!note) {
-    return { ok: false, error: 'Say what the correction is about' };
+    return {
+      ok: false,
+      error: i18n.t('web:adminStringsBatch40.correctionReasonRequired'),
+    };
   }
   if (isForceMock()) {
     const current = mockMotionCertificate(motionId);
@@ -104,7 +109,7 @@ export async function correctMotionResult(
     ) {
       return {
         ok: false,
-        error: 'The corrected tally has more votes than eligible members',
+        error: i18n.t('web:adminStringsBatch40.tallyExceedsEligible'),
       };
     }
     setMockMotionCertificate({
@@ -140,7 +145,9 @@ export async function correctMotionResult(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not save the correction',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotSaveCorrection'),
     };
   }
 }

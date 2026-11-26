@@ -17,7 +17,7 @@ type ToasterProps = {
   closeButton?: boolean;
 };
 
-export const STICKY_TOAST_DURATION = Number.POSITIVE_INFINITY;
+const STICKY_TOAST_DURATION = Number.POSITIVE_INFINITY;
 
 export { toast };
 export type { ExternalToast };

@@ -1,32 +1,21 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { profileTrackToPlayable } from '../lib/artistProfile';
-import { requestJson } from './client-request';
+import { errorOr, getJson, requestJson } from './client-request';
 import { apiBase } from './http';
 import {
   channelToPlayable,
   mockAnnouncements,
   mockChannel,
-  mockChatAccess,
-  mockChatHistory,
   mockCollection,
-  mockFanTiers,
   mockProfile,
   mockSmartLink,
   mockSoundItems,
   mockTrackComments,
   mockTrackDetail,
-  mockTransparencyGrants,
-  mockTransparencyLedger,
-  mockTransparencyResolutions,
-  mockTransparencyYtd,
-  mockVenueProfile,
-  mockVenues,
   soundItemToPlayable,
   TAHTI_RADIO_SLUG,
 } from './mock';
-import { mockFixture } from './mock-overrides';
-import { getMockSessionUser, mockActivateSubscription } from './mock-session';
 import { ensureMockUploadedSound, getMockUploadedSound } from './mock-uploads';
 import {
   allowMockFallback,
@@ -40,12 +29,7 @@ import { findMockPurchaseTier } from './purchase-tiers';
 import { withShareKey } from './share-key';
 import type {
   Announcement,
-  BoardResolution,
   ChannelSoundItem,
-  ChatAccess,
-  ChatMessage,
-  ChatTokenResponse,
-  FanTiersResponse,
   PlatformStatus,
   PublicChannel,
   PublicCollection,
@@ -54,11 +38,6 @@ import type {
   SmartLinkView,
   TahtiPlayable,
   TrackComment,
-  TransparencyGrantReport,
-  TransparencyLedgerEntry,
-  TransparencyYtd,
-  VenueDirectoryItem,
-  VenueProfile,
 } from './types';
 
 export type { FetchMeta };
@@ -67,11 +46,6 @@ export { TAHTI_RADIO_SLUG };
 /** Browser calls go through Vite proxy → Tahti API (avoids CORS). */
 export { apiBase };
 export { requestJson };
-
-async function getJson<T>(path: string): Promise<T> {
-  const { data } = await requestJson<T>(path);
-  return data;
-}
 
 export * from './listen';
 
@@ -300,10 +274,6 @@ export async function fetchTrackComments(
   }
 }
 
-function errorOr(err: unknown, message: string): Error {
-  return err instanceof Error ? err : new Error(message);
-}
-
 function messageOr(err: unknown, message: string): string {
   return err instanceof Error ? err.message : message;
 }
@@ -343,6 +313,8 @@ export async function postTrackComment(
 export { fetchPublicSoundDownload } from './public-sound-download';
 
 export * from './radio-public';
+
+export * from './venues-public';
 
 export async function fetchProfile(username: string): Promise<{
   data: PublicProfile;
@@ -469,405 +441,11 @@ export async function fetchSmartLink(smartLinkSlug: string): Promise<{
   }
 }
 
-export async function fetchVenues(): Promise<{
-  data: VenueDirectoryItem[];
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: mockVenues(),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<VenueDirectoryItem[]>('/api/v1/venues');
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return withMockFallback(
-      err,
-      allowMockFallback() ? mockVenues : null,
-      () => [],
-    );
-  }
-}
-
-export async function fetchVenueProfile(slug: string): Promise<{
-  data: VenueProfile | null;
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: mockVenueProfile(slug),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<VenueProfile>(
-      `/api/v1/venues/${encodeURIComponent(slug)}`,
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return withMockFallback(
-      err,
-      allowMockFallback() ? () => mockVenueProfile(slug) : null,
-      () => null,
-    );
-  }
-}
-
-export function venueCalendarFeedUrl(
-  slug: string,
-  origin = typeof window === 'undefined' ? '' : window.location.origin,
-): string {
-  const path = `${apiBase()}/api/v1/venues/${encodeURIComponent(slug)}/calendar.ics`;
-  return /^https?:\/\//.test(path) || !origin ? path : `${origin}${path}`;
-}
-
-export type RegisterVenueInput = {
-  slug: string;
-  name: string;
-  address: string;
-  city: string;
-  countryCode?: string;
-  capacity?: number;
-  description?: string;
-  imageUrl?: string;
-  coverUrl?: string;
-  pageUrl?: string;
-};
-
-export async function registerVenue(
-  input: RegisterVenueInput,
-): Promise<{ ok: true; slug: string } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    if (!getMockSessionUser()) {
-      return { ok: false, error: 'Log in first to register a venue.' };
-    }
-    if (input.slug.length < 2) {
-      return { ok: false, error: 'Slug too short' };
-    }
-    if (input.slug === 'taken') {
-      return { ok: false, error: 'Slug already taken' };
-    }
-    return { ok: true, slug: input.slug };
-  }
-  try {
-    const { data } = await requestJson<{ slug: string }>('/api/v1/venues', {
-      method: 'POST',
-      body: JSON.stringify({
-        slug: input.slug,
-        name: input.name,
-        address: input.address,
-        city: input.city,
-        countryCode: input.countryCode || 'FI',
-        ...(input.capacity != null && Number.isFinite(input.capacity)
-          ? { capacity: input.capacity }
-          : {}),
-        ...(input.description ? { description: input.description } : {}),
-        ...(input.imageUrl || input.coverUrl
-          ? { photos: [input.imageUrl ?? '', input.coverUrl ?? ''] }
-          : {}),
-        ...(input.pageUrl ? { externalLinks: { website: input.pageUrl } } : {}),
-      }),
-    });
-    return { ok: true, slug: data.slug ?? input.slug };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Registration failed',
-    };
-  }
-}
-
-export async function fetchChatAccess(slug: string): Promise<{
-  data: ChatAccess;
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: mockFixture('chatAccess', mockChatAccess(), slug),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<ChatAccess>(
-      `/api/chat/${encodeURIComponent(slug)}/access`,
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return withMockFallback(
-      err,
-      allowMockFallback() ? mockChatAccess : null,
-      () => ({
-        fanChatEnabled: false,
-        isSupporter: false,
-        canJoinFanChat: false,
-        subscribersOnly: false,
-        canPostInChat: false,
-      }),
-    );
-  }
-}
-
-export async function fetchChatHistory(slug: string): Promise<{
-  data: ChatMessage[];
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: mockChatHistory(slug),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const raw = await getJson<{
-      messages: Array<Omit<ChatMessage, 'id'> & { id?: string }>;
-    }>(`/api/chat/${encodeURIComponent(slug)}/history`);
-    const data = (raw.messages ?? []).map((m, i) => ({
-      ...m,
-      id: m.id ?? `history-${m.ts}-${i}`,
-    }));
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return withMockFallback(
-      err,
-      allowMockFallback() ? () => mockChatHistory(slug) : null,
-      () => [],
-    );
-  }
-}
-
-export async function requestChatToken(
-  slug: string,
-  handle: string,
-  hcaptchaToken?: string,
-): Promise<{ data: ChatTokenResponse; meta: FetchMeta }> {
-  if (isForceMock()) {
-    return {
-      data: mockFixture(
-        'chatToken',
-        {
-          token: 'mock-token',
-          handle,
-          supporter: false,
-          channelRole: null,
-          countryCode: null,
-        },
-        slug,
-        handle,
-      ),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const { data } = await requestJson<ChatTokenResponse>(
-      `/api/chat/${encodeURIComponent(slug)}/token`,
-      {
-        method: 'POST',
-        body: JSON.stringify({ handle, hcaptchaToken }),
-      },
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    throw errorOr(err, i18n.t('web:batch56.couldNotJoinChat'));
-  }
-}
-
-export async function requestChatViewerToken(
-  slug: string,
-): Promise<string | null> {
-  if (isForceMock()) {
-    return null;
-  }
-  try {
-    const { data } = await requestJson<{ token: string }>(
-      `/api/chat/${encodeURIComponent(slug)}/viewer-token`,
-      { method: 'POST' },
-    );
-    return data.token;
-  } catch {
-    return null;
-  }
-}
-
+export * from './chat-access';
 export * from './client-auth';
+export * from './fan-subscribe';
 
-export async function fetchFanTiers(username: string): Promise<{
-  data: FanTiersResponse;
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: mockFanTiers(username),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<FanTiersResponse>(
-      `/api/v1/u/${encodeURIComponent(username)}/tiers`,
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return withMockFallback(
-      err,
-      allowMockFallback() ? () => mockFanTiers(username) : null,
-      () => ({
-        artist: {
-          id: '',
-          displayName: username,
-          username,
-          bio: null,
-          avatarUrl: null,
-        },
-        tiers: [],
-        paymentsReady: false,
-      }),
-    );
-  }
-}
-
-export async function startFanSubscribe(
-  username: string,
-  tierId: string,
-): Promise<
-  | { ok: true; checkoutUrl: string }
-  | { ok: true; activated: true; message: string }
-  | { ok: false; error: string }
-> {
-  if (isForceMock()) {
-    if (!getMockSessionUser()) {
-      return { ok: false, error: 'Log in first to activate a fan sub.' };
-    }
-    const row = mockActivateSubscription(username, tierId);
-    return {
-      ok: true,
-      activated: true,
-      message: `Mock subscribed to ${row.tierName} — ${row.artist.displayName}`,
-    };
-  }
-  try {
-    const { data, status } = await requestJson<{
-      checkoutUrl?: string | null;
-      sessionId?: string;
-      activated?: boolean;
-      tierName?: string;
-    }>(`/api/v1/u/${encodeURIComponent(username)}/subscribe`, {
-      method: 'POST',
-      body: JSON.stringify({ tierId }),
-    });
-    if (status === 201 || data.activated) {
-      return {
-        ok: true,
-        activated: true,
-        message: `Subscribed to ${data.tierName ?? 'tier'} (dev activate)`,
-      };
-    }
-    if (data.checkoutUrl) {
-      return { ok: true, checkoutUrl: data.checkoutUrl };
-    }
-    return { ok: false, error: 'Unexpected subscribe response' };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Subscribe failed',
-    };
-  }
-}
-
-export async function fetchTransparencyYtd(): Promise<{
-  data: TransparencyYtd;
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: mockTransparencyYtd(),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<TransparencyYtd>('/api/v1/transparency/ytd');
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    if (allowMockFallback()) {
-      return { data: mockTransparencyYtd(), meta: mockFallbackMeta(err) };
-    }
-    throw errorOr(err, i18n.t('web:batch56.transparencyYtdFailed'));
-  }
-}
-
-export async function fetchTransparencyGrants(year?: number): Promise<{
-  data: TransparencyGrantReport;
-  meta: FetchMeta;
-}> {
-  const y = year ?? new Date().getFullYear();
-  if (isForceMock()) {
-    return {
-      data: mockTransparencyGrants(y),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<TransparencyGrantReport>(
-      `/api/v1/transparency/grants/${y}`,
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    if (allowMockFallback()) {
-      return { data: mockTransparencyGrants(y), meta: mockFallbackMeta(err) };
-    }
-    throw errorOr(err, i18n.t('web:batch56.transparencyGrantsFailed'));
-  }
-}
-
-export async function fetchTransparencyLedger(): Promise<{
-  data: TransparencyLedgerEntry[];
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: mockTransparencyLedger(),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<TransparencyLedgerEntry[]>(
-      '/api/v1/transparency/ledger/latest',
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return withMockFallback(
-      err,
-      allowMockFallback() ? mockTransparencyLedger : null,
-      () => [],
-    );
-  }
-}
-
-export async function fetchTransparencyResolutions(year?: number): Promise<{
-  data: BoardResolution[];
-  meta: FetchMeta;
-}> {
-  const y = year ?? new Date().getFullYear();
-  if (isForceMock()) {
-    return {
-      data: mockTransparencyResolutions(y),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<BoardResolution[]>(
-      `/api/v1/transparency/resolutions?year=${y}`,
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return withMockFallback(
-      err,
-      allowMockFallback() ? () => mockTransparencyResolutions(y) : null,
-      () => [],
-    );
-  }
-}
-
+export * from './transparency';
 export * from './follows';
 export * from './embeds';
 

@@ -36,7 +36,10 @@ export async function patchAssociationProfile(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not save the details',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotSaveDetails'),
     };
   }
 }

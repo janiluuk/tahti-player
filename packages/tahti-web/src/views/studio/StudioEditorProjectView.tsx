@@ -62,7 +62,7 @@ export function StudioEditorProjectView({ id }: { id: string }) {
         if (source.data.url) {
           resolved = [{ ...source.data, sourceKey: res.data.soundId }];
         } else {
-          setError('The archive source is unavailable.');
+          setError(t('studioStringsBatch38.archiveUnavailable'));
         }
       }
       setSources(resolved);

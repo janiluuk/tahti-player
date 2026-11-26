@@ -54,7 +54,10 @@ export async function patchAdminGovernanceDocument(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not save the document',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotSaveDocument'),
     };
   }
 }

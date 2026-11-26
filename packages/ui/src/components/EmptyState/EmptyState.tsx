@@ -52,7 +52,7 @@ export const EmptyState: FC<EmptyStateProps> = ({
         <h2 className="text-foreground text-lg font-bold">{title}</h2>
       )}
       {description && (
-        <p className="text-foreground text-sm opacity-60">{description}</p>
+        <p className="text-foreground-secondary text-sm">{description}</p>
       )}
     </div>
     {action && <div>{action}</div>}

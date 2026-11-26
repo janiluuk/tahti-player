@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { firstFramePng } from '../../lib/gifPoster';
 import { isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
@@ -57,7 +59,10 @@ export async function uploadProfileAvatar(
     try {
       poster = await firstFramePng(file);
     } catch {
-      return { ok: false, error: 'Could not read the first frame of that GIF' };
+      return {
+        ok: false,
+        error: i18n.t('web:accountStringsBatch39.gifFirstFrameFailed'),
+      };
     }
   }
   if (isForceMock()) {
@@ -87,7 +92,10 @@ export async function uploadProfileAvatar(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Avatar upload failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:accountStringsBatch39.avatarUploadFailed'),
     };
   }
 }
@@ -108,7 +116,10 @@ export async function removeProfileAvatar(): Promise<
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Avatar removal failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:accountStringsBatch39.avatarRemovalFailed'),
     };
   }
 }

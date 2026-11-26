@@ -37,7 +37,10 @@ export async function changePassword(
     );
     return { ok: true, message: data.message };
   } catch (err) {
-    return failure(err, 'Could not change the password');
+    return failure(
+      err,
+      i18n.t('web:accountStringsBatch39.couldNotChangePassword'),
+    );
   }
 }
 
@@ -71,7 +74,10 @@ export async function setFirstPassword(
     return {
       ok: false,
       alreadySet: err instanceof RequestJsonError && err.status === 409,
-      error: err instanceof Error ? err.message : 'Could not set the password',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:accountStringsBatch39.couldNotSetPassword'),
     };
   }
 }
@@ -89,7 +95,9 @@ export async function requestEmailChange(
     };
     return {
       ok: true,
-      message: `We sent a link to ${newEmail}. Open it to finish.`,
+      message: i18n.t('web:accountStringsBatch39.emailChangeLinkSent', {
+        email: newEmail,
+      }),
     };
   }
   try {
@@ -99,7 +107,10 @@ export async function requestEmailChange(
     });
     return { ok: true, message: data.message };
   } catch (err) {
-    return failure(err, 'Could not start the email change');
+    return failure(
+      err,
+      i18n.t('web:accountStringsBatch39.couldNotStartEmailChange'),
+    );
   }
 }
 

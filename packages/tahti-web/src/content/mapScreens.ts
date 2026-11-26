@@ -1653,7 +1653,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         id: 'artist-channel-design',
         title: 'Channel design',
         viewName: 'Channel design',
-        caption: 'Look, presets, accent — Studio → Profile → Channel design.',
+        caption: 'Look, presets, accent — Studio → Channel → Design.',
         actions: [
           'Pick a visual preset',
           'Pick a brand accent',

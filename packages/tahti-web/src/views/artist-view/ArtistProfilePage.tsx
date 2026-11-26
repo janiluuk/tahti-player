@@ -1,18 +1,4 @@
-import {
-  CirclePlayIcon,
-  DiscAlbumIcon,
-  DownloadIcon,
-  HeadphonesIcon,
-  HeartIcon,
-  ImagesIcon,
-  ListMusicIcon,
-  MonitorPlayIcon,
-  MusicIcon,
-  PaintbrushIcon,
-  UserPlusIcon,
-  UsersIcon,
-} from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -54,7 +40,6 @@ import { ArtistGalleryPanel } from '../../components/ArtistGalleryPanel';
 import { ArtistStoryFeed } from '../../components/ArtistStoryFeed';
 import { CHANNEL_SCHEME_TEXT_CLASS } from '../../components/channel-view/channelSchemeText';
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
-import { type EntitySocialStat } from '../../components/EntitySocialHeader';
 import { ImageLightbox } from '../../components/ImageLightbox';
 import {
   ContentReveal,
@@ -83,8 +68,6 @@ import { resolveStorefront } from '../../lib/channelStore';
 import { collectionsOfKind } from '../../lib/collectionKind';
 import { colorSchemeCssVars } from '../../lib/colorScheme';
 import { countryName } from '../../lib/countries';
-import { entityStatLabel, type EntityStatKey } from '../../lib/entityStatLabel';
-import { isPinned } from '../../lib/pinnedTracks';
 import { useArtistFollow } from '../../lib/useArtistFollow';
 import { useAuthStore } from '../../stores/authStore';
 import {
@@ -92,13 +75,14 @@ import {
   usePlayerStore,
 } from '../../stores/playerStore';
 import { ArtistFollowListDialog } from './ArtistFollowListDialog';
+import { artistProfileHeaderStats } from './artistProfileHeaderStats';
 import {
   ArtistDesignTab,
   ArtistProfileTabRow,
   type ArtistProfileTab,
-  type ArtistProfileTabItem,
 } from './ArtistProfileTabs';
 import { useArtistProfileLoad } from './useArtistProfileLoad';
+import { useArtistProfileTabs } from './useArtistProfileTabs';
 
 const RELATED_ARTIST_LIMIT = 5;
 
@@ -194,57 +178,14 @@ export function ArtistProfilePage({ username }: { username: string }) {
   const hasGallery =
     galleryImages.length > 0 && lookVisibility.gallery !== false;
 
-  const tabs = useMemo(() => {
-    const list: ArtistProfileTabItem[] = [];
-    if (!profile) {
-      return list;
-    }
-    if (
-      profile.tracks.length > 0 &&
-      (lookVisibility.player || profile.tracks.some((t) => isPinned(t)))
-    ) {
-      list.push({
-        id: 'stage',
-        label: t('artistProfilePage.stage'),
-        icon: MonitorPlayIcon,
-      });
-    }
-    if (collectionsOfKind(profile.collections, 'album').length > 0) {
-      list.push({
-        id: 'albums',
-        label: t('artistProfilePage.albums'),
-        icon: DiscAlbumIcon,
-      });
-    }
-    if (collectionsOfKind(profile.collections, 'dj-set').length > 0) {
-      list.push({
-        id: 'dj-sets',
-        label: t('artistProfilePage.djSets'),
-        icon: HeadphonesIcon,
-      });
-    }
-    if (hasGallery) {
-      list.push({
-        id: 'gallery',
-        label: t('artistProfilePage.gallery'),
-        icon: ImagesIcon,
-      });
-    }
-    if (isOwner) {
-      list.push({
-        id: 'design',
-        label: t('artistProfilePage.design'),
-        icon: PaintbrushIcon,
-      });
-    }
-    return list;
-  }, [hasGallery, isOwner, lookVisibility, profile]);
-
-  useEffect(() => {
-    if (profile && !tabs.some((item) => item.id === tab)) {
-      setTab(tabs[0]?.id ?? 'stage');
-    }
-  }, [profile, tab, tabs]);
+  const tabs = useArtistProfileTabs({
+    profile,
+    lookVisibility,
+    hasGallery,
+    isOwner,
+    tab,
+    setTab,
+  });
 
   const { pinnedPlayables, pinnedTiles, catalogPlayables, releaseTiles } =
     useArtistCatalog(profile);
@@ -354,33 +295,12 @@ export function ArtistProfilePage({ username }: { username: string }) {
     play(featuredPlayable);
   };
 
-  const stat = (
-    key: EntityStatKey,
-    value: number | null | undefined,
-    icon: EntitySocialStat['icon'],
-    onClick?: () => void,
-  ): EntitySocialStat[] =>
-    value != null && value > 0
-      ? [{ key, label: entityStatLabel(key, value), value, icon, onClick }]
-      : [];
-  const headerStats: EntitySocialStat[] = [
-    ...stat(
-      'followers',
-      artist.followerCount != null
-        ? (follow.followerCount ?? artist.followerCount)
-        : null,
-      UsersIcon,
-      () => setFollowList('followers'),
-    ),
-    ...stat('following', artist.followingCount, UserPlusIcon, () =>
-      setFollowList('following'),
-    ),
-    ...stat('tracks', profile.tracks.length, MusicIcon),
-    ...stat('plays', profile.totals?.plays, CirclePlayIcon),
-    ...stat('likes', profile.totals?.likes, HeartIcon),
-    ...stat('downloads', profile.totals?.downloads, DownloadIcon),
-    ...stat('playlists', collections.length, ListMusicIcon),
-  ];
+  const headerStats = artistProfileHeaderStats({
+    profile,
+    followerCount: follow.followerCount,
+    onFollowers: () => setFollowList('followers'),
+    onFollowing: () => setFollowList('following'),
+  });
 
   const {
     headerScheme,

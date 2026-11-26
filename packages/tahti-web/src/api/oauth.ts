@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import { apiBase } from './http';
 import { isForceMock, withMockFallback, type FetchMeta } from './mode';
@@ -46,16 +48,6 @@ let mockAccounts: OAuthAccount[] = [
     linkedAt: '2026-10-02T09:30:00.000Z',
   },
 ];
-
-export function resetOAuthMockForTests(): void {
-  mockAccounts = [
-    {
-      provider: 'google',
-      email: 'demo.listener@gmail.com',
-      linkedAt: '2026-10-02T09:30:00.000Z',
-    },
-  ];
-}
 
 /** Providers the API has credentials for (`GET /api/auth/oauth/providers`);
  * empty when the request fails. */
@@ -160,7 +152,10 @@ export async function unlinkOAuthAccount(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not disconnect',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:accountStringsBatch39.couldNotDisconnect'),
     };
   }
 }

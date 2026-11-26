@@ -614,6 +614,94 @@
     }
   },
   "web": {
+    "adminStringsBatch40": {
+      "enterChannelSlug": "Enter a channel slug.",
+      "couldNotLoadRotation": "Could not load the rotation",
+      "couldNotSaveRotation": "Could not save the rotation",
+      "openRotationFirst": "Open the rotation first.",
+      "couldNotAddToRotation": "Could not add to the rotation",
+      "couldNotLoadTracks": "Could not load the tracks",
+      "soundNotFound": "Sound not found",
+      "couldNotDeleteTrack": "Could not delete the track",
+      "couldNotSaveTrack": "Could not save the track",
+      "couldNotLoadThemes": "Could not load the themes",
+      "couldNotApproveTheme": "Could not approve the theme",
+      "rejectReasonRequired": "Tell the author why the theme was rejected.",
+      "couldNotRejectTheme": "Could not reject the theme",
+      "topicNotFound": "Topic not found",
+      "postNotFound": "Post not found",
+      "topicClosedToReplies": "This topic is closed to replies",
+      "topicClosedRepliesKept": "This topic is closed; its replies are kept",
+      "couldNotPostReply": "Could not post your reply",
+      "couldNotMarkRead": "Could not mark them read",
+      "couldNotSaveReply": "Could not save your reply",
+      "couldNotOpenTopic": "Could not open the topic",
+      "correctionReasonRequired": "Say what the correction is about",
+      "tallyExceedsEligible": "The corrected tally has more votes than eligible members",
+      "couldNotSaveCorrection": "Could not save the correction",
+      "nominationsClosed": "Nominations for this election are closed",
+      "couldNotChangeMeeting": "Could not change the meeting",
+      "couldNotSaveDocument": "Could not save the document",
+      "couldNotSaveDetails": "Could not save the details"
+    },
+    "accountStringsBatch39": {
+      "passwordSetNoSession": "Password set, but the session did not start. Sign in with your new password.",
+      "forgotPasswordSent": "If an account exists for that email, we sent a link to reset your password.",
+      "passwordResetNoSession": "Password reset, but the session did not start. Sign in with your new password.",
+      "couldNotChangePassword": "Could not change the password",
+      "couldNotSetPassword": "Could not set the password",
+      "emailChangeLinkSent": "We sent a link to {{email}}. Open it to finish.",
+      "couldNotStartEmailChange": "Could not start the email change",
+      "couldNotLoadSetting": "Could not load the setting",
+      "couldNotSaveSetting": "Could not save the setting",
+      "couldNotUploadLogo": "Could not upload the logo",
+      "couldNotSavePlacement": "Could not save the placement",
+      "couldNotRemoveLogo": "Could not remove the logo",
+      "couldNotUploadBackdrop": "Could not upload the backdrop",
+      "couldNotRemoveBackdrop": "Could not remove the backdrop",
+      "gifFirstFrameFailed": "Could not read the first frame of that GIF",
+      "avatarUploadFailed": "Could not upload the profile picture",
+      "avatarRemovalFailed": "Could not remove the profile picture",
+      "accessTokenRequired": "Access token is required",
+      "appPasswordRequired": "App password is required",
+      "couldNotSaveSettings": "Could not save the settings",
+      "couldNotDisconnect": "Could not disconnect",
+      "userTokenRequired": "User token is required.",
+      "couldNotSaveChanges": "Could not save the changes",
+      "couldNotRemovePerson": "Could not remove the person",
+      "couldNotUploadPicture": "Could not upload the picture",
+      "couldNotRemovePicture": "Could not remove the picture",
+      "couldNotSaveOrder": "Could not save the order"
+    },
+    "studioStringsBatch38": {
+      "releaseNotFound": "Release not found",
+      "couldNotLoadRelease": "Could not load the release.",
+      "couldNotDeleteRelease": "Could not delete the release.",
+      "visualSettingsFailed": "Could not save the visual settings",
+      "trackAddFailed": "Could not add the track",
+      "trackOrderFailed": "Could not save the track order",
+      "trackRemovalFailed": "Could not remove the track",
+      "artworkUploadFailed": "Could not upload the artwork",
+      "artworkRemovalFailed": "Could not remove the artwork",
+      "stemRequestFailed": "Could not request the stems",
+      "couldNotSaveCredits": "Could not save the credits",
+      "couldNotBackfillCovers": "Could not fill in the missing covers",
+      "tooManyMatches": "Too many matches; refine the filter.",
+      "bulkDeleteFailed": "Could not delete the selected sounds",
+      "bulkEditFailed": "Could not edit the selected sounds",
+      "onlyFailedRetry": "Only a failed upload can be retried.",
+      "couldNotRetryProcessing": "Could not retry processing.",
+      "coverUploadFailed": "Could not upload the cover",
+      "couldNotSaveBackdrops": "Could not save the backdrop images",
+      "couldNotSuggestOrder": "Could not suggest an order",
+      "downloadUnavailable": "Download is not available",
+      "shareCreationFailed": "Could not create the share link",
+      "radioPreferenceFailed": "Could not update the Tahti Radio preference",
+      "uploadCancelled": "Upload cancelled",
+      "couldNotUploadAudio": "Could not upload the audio",
+      "archiveUnavailable": "The archive source is unavailable.",
+      "couldNotLoadStats": "Could not load your stats."
+    },
     "studioStringsBatch37": {
       "surfaceChannelPage": "Channel page",
       "surfaceArtistProfile": "Artist profile",
@@ -693,8 +781,6 @@
       "favorites": "Favorites",
       "studio": "Studio",
       "library": "Library",
-      "chat": "Chat",
-      "perform": "Perform",
       "admin": "Admin",
       "help": "Help center",
       "settings": "Settings",
@@ -761,44 +847,23 @@
       "tracks": "Tracks"
     },
     "settings": {
-      "signInPrompt": "Sign in for account, artist, and studio settings.",
       "logIn": "Log in",
       "github": "GitHub",
       "discord": "Discord",
       "apiDocs": "API docs",
       "about": "About",
       "account": "Account",
-      "accountDescription": "Session, membership, purchases, and privacy",
-      "artist": "Artist",
-      "artistDescription": "Profile, branding, social links, members, press kit",
-      "channel": "Channel & design",
-      "channelDescription": "Discovery, username, moderation",
-      "broadcast": "Broadcast",
-      "broadcastDescription": "Radio, green room, moderators, multistream",
-      "audience": "Audience",
-      "audienceDescription": "Fan tiers, subscriptions, grants",
-      "themes": "Themes",
-      "themesDescription": "App appearance",
       "appearance": "Appearance",
       "appearanceDescription": "Language, themes and the look of the app.",
       "pluginStore": "Add-ons",
-      "pluginStoreDescription": "Themes, visualizers, radio, embeds, discovery, channel widgets, export, import, multicast, fingerprinting, audio plugins — one browser",
-      "whatsNew": "What's new",
-      "whatsNewDescription": "What changed in each release",
       "aboutDescription": "What changed in each release.",
       "groupSettings": "Settings",
       "groupApp": "App",
-      "channelChat": "Channel & chat",
       "profile": "Profile",
       "playback": "Playback",
       "playbackDescription": "Playback and desktop integrations.",
       "integrations": "Integrations",
-      "integrationsDescription": "Scrobbling and desktop-app integrations",
       "addOnsDescription": "Listener, artist and admin tools in role-based lists",
-      "logs": "Logs",
-      "logsDescription": "Client warnings and errors from this tab, plus links to server container logs",
-      "language": "Language",
-      "languageDescription": "The language of menus, buttons and dates",
       "security": "Security",
       "securityDescription": "Password, devices, two-factor, and API tokens.",
       "notifications": "Notifications",
@@ -833,7 +898,6 @@
       "download": "Download",
       "follow": "Follow",
       "following": "Following",
-      "unfollow": "Unfollow",
       "favorite": "Favorite",
       "addToFavorites": "Add to favorites",
       "removeFromFavorites": "Remove from favorites",
@@ -851,13 +915,10 @@
       "preparingDownload": "Preparing download",
       "preparingDownloadOf": "Preparing download of {{title}}",
       "preparing": "Preparing…",
-      "love": "Love",
-      "loved": "Loved",
       "add": "Add",
       "back": "Back",
       "shareItem": "Share {{title}}",
       "backTo": "Back to {{name}}",
-      "showMore": "Show more",
       "editItem": "Edit {{title}}",
       "playAll": "Play all",
       "addAllToQueue": "Add all to queue",
@@ -882,7 +943,6 @@
       "reset": "Reset",
       "more": "More",
       "less": "Less",
-      "stats": "Stats",
       "manage": "Manage",
       "queueItem": "Queue {{title}}",
       "addToPlaylist": "Add to playlist",
@@ -1336,7 +1396,6 @@
       "hubPlatformCardDescription": "Add-ons, languages, vendors, storage, streams, the encoding queue and diagnostics."
     },
     "adminDiagnosticsView": {
-      "admin": "Admin",
       "toolsAria": "Diagnostics tools"
     },
     "channelShare": {
@@ -1374,11 +1433,7 @@
       "tabComments": "Comments",
       "tabChat": "Chat",
       "upcomingEmpty": "No upcoming shows booked.",
-      "scheduleLoadError": "Could not load the schedule",
-      "noBroadcastScheduled": "No broadcast currently scheduled.",
-      "followers": "Followers",
-      "offAirTitle": "Off air",
-      "offAirDescription": "This channel is not broadcasting right now. Browse the tracks below, or check back later."
+      "scheduleLoadError": "Could not load the schedule"
     },
     "downloadGate": {
       "title": "Unlock this download",
@@ -1444,7 +1499,6 @@
       "stationUnavailable": "Station unavailable",
       "backToPlayer": "Back to player",
       "minimize": "Minimize player",
-      "fullScreen": "Full screen",
       "exitFullScreen": "Exit full screen",
       "enterDrivingMode": "Driving mode (full screen)",
       "nowPlayingFullScreen": "Now playing, full screen",
@@ -1461,8 +1515,6 @@
       "history": "History",
       "recentlyPlayed": "Recently played",
       "newReleases": "New releases",
-      "liveNow": "Live now",
-      "replays": "Replays",
       "trending": "Trending",
       "newTracks": "New tracks",
       "radio": "Radio",
@@ -1479,7 +1531,6 @@
       "playingNow": "Playing now",
       "rank": "Rank {{rank}}",
       "nobodyLive": "Nobody is live right now",
-      "replayingBelow": "Recent broadcasts are replaying below.",
       "liveChannelsAppear": "Live channels show up here when an artist goes on air.",
       "noNewTracks": "No new tracks yet",
       "tahtiSelects": "Tahti Selects",
@@ -1512,7 +1563,7 @@
       "venueCapacity": "cap. {{capacity}}",
       "loadingFeed": "Loading feed…",
       "artistDirectoryError": "Could not load the artist directory",
-      "addWidget": "Add a widget",
+      "addWidget": "Add widget to Discover",
       "types": "Types",
       "emptyLoved": "No community-loved tracks yet.",
       "emptyPlaylists": "No public playlists match these filters yet.",
@@ -1622,30 +1673,11 @@
       "tabEmbeds": "Embeds",
       "tabSmartLinks": "Smart links",
       "tabLocal": "Local files",
-      "loadError": "Could not load your catalog",
-      "emptyCatalogTitle": "Your catalog is empty",
-      "emptyCatalogDescription": "Upload a track to start filling Library, or browse Discover for inspiration.",
-      "nothingSavedTitle": "Nothing saved yet",
-      "nothingSavedDescription": "Follow artists and save favorites from Discover — they show up here.",
-      "emptyLibraryTitle": "Your library is empty",
-      "emptyLibraryDescription": "Sign in to save music you like, or browse Discover.",
       "embedsLoadError": "Could not load your imported embeds",
       "embedsEmptyTitle": "No imported embeds yet",
       "embedsEmptyDescription": "Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import.",
-      "totalSounds": "Total sounds",
-      "storageUsed": "Storage used",
-      "unlimitedPlan": "Unlimited plan",
-      "storageOf": "of {{size}}",
-      "storageDefault": "Audio and files",
-      "topSound": "Top sound",
-      "noPlaysYet": "No plays yet",
-      "topSoundsAllTime": "Top sounds · all time",
       "plays_one": "{{n}} play",
       "plays_other": "{{n}} plays",
-      "followingSignIn": "Sign in to see who you follow",
-      "followingLoadError": "Couldn't load who you follow",
-      "followingEmptyTitle": "You don't follow anyone yet",
-      "followingEmptyDescription": "Follow artists and channels from their pages. They show up here and in your feed.",
       "soundsTitle": "Sounds",
       "soundsPanelSounds": "Sounds",
       "soundsPanelEmbeds": "Embeds",
@@ -1697,7 +1729,6 @@
       "sortOrder": "Sort order: {{order}}",
       "sortByField": "By {{field}}",
       "pinnedCount": "Pinned {{count}}",
-      "source": "Source",
       "uploadedFrom": "Uploaded from",
       "uploadedTo": "Uploaded to",
       "dayOfWeek": "Day of week",
@@ -1788,7 +1819,6 @@
       "soundsAddToRelease": "Add to release",
       "soundsAddToReleaseLoadError": "Could not load the selected sounds for a release.",
       "soundsAddToPlaylist": "Add to playlist",
-      "soundsClear": "Clear",
       "soundsBulkEditTitle_one": "Edit 1 sound",
       "soundsBulkEditTitle_other": "Edit {{count}} sounds",
       "soundsBulkEditDescription": "Only the fields you change are written. Titles stay as they are.",
@@ -1800,7 +1830,6 @@
       "soundsBulkVisibility": "Visibility",
       "soundsBulkPublic": "Public",
       "soundsBulkPrivate": "Private",
-      "soundsBulkApply": "Apply",
       "soundsBulkGenreCustom": "Custom genre",
       "soundsBulkGenreCustomPlaceholder": "e.g. IDM",
       "soundsBulkLicense": "License",
@@ -2102,8 +2131,6 @@
       "setupGreeting": "Welcome, {{name}} — finish setting up {{email}}.",
       "setupHint": "Open the invite link from your email, or one is already loaded below.",
       "setupSignedIn": "Signed in — taking you to your dashboard…",
-      "setupAskFresh": "Ask whoever invited you for a fresh link, or",
-      "setupIfHavePassword": "if you already have a password.",
       "setupSetting": "Setting password…",
       "setupSubmit": "Set password"
     },
@@ -2247,23 +2274,18 @@
       "pauseRadio": "Pause Radio",
       "memberSetsError": "Could not load member sets",
       "memberSetsEmpty": "No member sets relayed yet.",
-      "liveNowRelay": "Live now on the member relay:",
       "title": "Radio",
       "tagline": "24/7 community radio — always on. Fair rotation when nobody is booked.",
       "browseListen": "Browse listen",
       "liveNow": "Live now",
-      "liveNowOnRelay": "Live now on the member relay:",
       "liveSet": "Live set",
       "stationFetchFailed": "Station fetch failed",
-      "trackInfoFor": "Track info for {{title}}",
-      "queueItem": "Queue {{title}}",
       "agoJustNow": "just now",
       "agoMinutes": "{{count}}m ago",
       "agoHours": "{{count}}h ago",
       "agoDays": "{{count}}d ago",
       "memberSetOnAir": "A member set is on air",
       "memberSetOnAirDescription": "The rotation picks up again when the live set ends.",
-      "nextInRotation": "Next in rotation",
       "rotationRefreshError": "Could not refresh the rotation",
       "rotationLoadError": "Could not load the rotation",
       "rotationEmpty": "The rotation playlist is empty",
@@ -2314,9 +2336,6 @@
       "nonePlayable": "None of these tracks can be played.",
       "shareAccessRevoked": "Share access revoked.",
       "couldNotCreateCollection": "Could not create the collection.",
-      "artistInfoSaved": "Artist info saved.",
-      "connectionsSaved": "Connections saved.",
-      "visualizerSaved": "Release visualizer default saved.",
       "shareButtonSaved": "Share button setting saved.",
       "shareLinkRevoked": "Share link revoked.",
       "imageUpdated": "{{label}} updated.",
@@ -2334,8 +2353,6 @@
       "eventRemoved": "Removed “{{title}}”.",
       "groupCreated": "Created {{name}}",
       "partyCanceled": "Canceled the {{title}} listening party.",
-      "broadcastShowNameRequired": "Add a show name before saving.",
-      "broadcastShowSaved": "Show info saved.",
       "channelLinksInvalid": "Links must be http(s) or mailto: URLs",
       "channelLookSaveFailed": "Could not save your changes. Try again.",
       "reposted": "Reposted.",
@@ -2487,7 +2504,6 @@
       "couldNotSendSuggestion": "Could not send the suggestion.",
       "couldNotResolveStreamUrl": "Could not resolve that stream URL.",
       "updatedStationNamed": "Updated {{name}} in your stations.",
-      "removedThemeNamed": "Removed {{name}}",
       "discordBotRestarting": "Discord bot restarting",
       "discordBotSettingsSaved": "Discord bot settings saved",
       "lastFmConnected": "Last.fm scrobbling connected.",
@@ -2587,8 +2603,6 @@
     "settingsLogs": {
       "noLogs": "No log entries yet. Warnings, errors and player events from this tab show up here.",
       "alert": "These are browser-tab client logs only. For production container logs and Grafana vitals, open Admin.",
-      "containerLogs": "Container logs",
-      "monitoringHub": "Monitoring hub",
       "clear": "Clear",
       "export": "Export"
     },
@@ -2597,10 +2611,7 @@
       "emptyDiscographyDescription": "Add an album or a track to start building it out.",
       "addAlbum": "Add an album",
       "addTrack": "Add a track",
-      "governance": "Governance",
       "governanceLoadError": "Could not load governance",
-      "governanceEmptyVotes": "Nothing waiting for your vote.",
-      "governanceEmptyDiscussions": "No unresolved discussion updates.",
       "recentActivity": "Recent activity",
       "recentActivityLoadError": "Could not load recent activity",
       "recentActivityRefreshError": "Could not refresh recent activity",
@@ -2616,7 +2627,6 @@
     "adminModeration": {
       "inbox": "Inbox",
       "queuesAria": "Inbox queues",
-      "admin": "Admin",
       "support": "Support",
       "beta": "Beta applications",
       "radioSubmissions": "Radio submissions",
@@ -2918,11 +2928,6 @@
         "pageDescription": "What listeners can do when they open your channel.",
         "showShareLabel": "Show share button on my channel",
         "showShareDescription": "Let listeners copy or share your channel link from your channel page.",
-        "chatMovedTitle": "Chat moved to Fans",
-        "chatMovedDescription": "Turn chat on or off, and moderate access, messages, bans and moderators, on Studio → Fans.",
-        "moderatorsMovedTitle": "Moderators moved to Fans",
-        "moderatorsMovedDescription": "Add and remove chat moderators on Studio → Fans, under Chat.",
-        "openFansChat": "Open Fans chat",
         "slugLabel": "Channel slug / username",
         "checkAvailability": "Check availability",
         "rename": "Rename",
@@ -2942,8 +2947,6 @@
         "domainRequiresMembership": "Requires membership. Add DNS TXT then verify.",
         "verifyDomain": "Verify",
         "signInHint": "Sign in with a channel to edit design and discovery.",
-        "tabModerators": "Moderators",
-        "tabChat": "Chat",
         "domainCurrent": "Current domain: {{domain}}",
         "domainVerifiedBadge": "Verified",
         "domainPendingBadge": "Pending verification",
@@ -2951,12 +2954,6 @@
         "addressCurrent": "Your channel is at {{host}}."
       },
       "broadcast": {
-        "radioLoadError": "Could not load your radio settings",
-        "announcementsLabel": "Announcements enabled",
-        "announcementsDescription": "Allow platform/radio announcements on your channel programme.",
-        "fallbackLabel": "Play the automatic programme when I am not live",
-        "autoEnrollLabel": "Add new uploads to the automatic programme",
-        "openSchedule": "Open schedule / programme",
         "greenRoomLoadError": "Could not load your green room settings",
         "greenRoomDefaultLabel": "Open the green room when I go live",
         "greenRoomDefaultDescription": "Each new broadcast starts with its green room open, and invites the people below. You can still open or close it from Go Live.",
@@ -2964,14 +2961,12 @@
         "invitedHint": "Invited guests can listen before the stream goes public. You can invite anyone else by handle from Go Live.",
         "greenRoomTab": "Green room",
         "multistreamTab": "Multistream",
-        "radioTab": "Radio",
         "openGreenRoomSession": "Open green room session",
         "manageLiveDestinations": "Manage live destinations",
         "invitePoolModeratorsSubs": "Moderators and fan subscribers",
         "invitePoolSubsOnly": "Fan subscribers only",
         "invitePoolEveryone": "Everyone signed in",
-        "invitePoolManualOnly": "Only people I invite",
-        "programmeMoved": "Clips and the automatic 24/7 programme are managed in Studio → Channel → Settings."
+        "invitePoolManualOnly": "Only people I invite"
       },
       "artist": {
         "loadError": "Could not load your artist profile",
@@ -2979,7 +2974,6 @@
         "tabIdentity": "Identity",
         "tabStory": "Story",
         "tabPeople": "People",
-        "tabFollowing": "Following",
         "tabConnections": "Connections",
         "tabBranding": "Branding",
         "tabGallery": "Gallery",
@@ -2997,8 +2991,6 @@
         "creativeRoles": "Creative roles",
         "selectedRoles": "Selected:",
         "noneYet": "None yet",
-        "profileImageUpdated": "Profile image updated.",
-        "galleryImageAdded": "Image added to your gallery.",
         "shortBio": "Short bio",
         "shortBioPlaceholder": "The concise introduction shown on your profile.",
         "yourStory": "Your story",
@@ -3150,15 +3142,10 @@
       "noPublicTracks": "No public tracks yet",
       "noPublicTracksDescription": "When this channel publishes tracks, they show up here. Offline listening still works from Discover and Radio.",
       "noPublicTracksEmpty": "No public tracks for this channel yet.",
-      "liveChat": "Live chat",
-      "chatOpenDescription": "Open the live chat page to talk with the artist and other fans.",
-      "chatDisabled": "Chat is disabled for this channel.",
-      "openLiveChat": "Open live chat",
       "programming": "Programming",
       "nextUp": "Next up · {{when}}",
       "noBroadcastScheduled": "No broadcast currently scheduled.",
       "viewFullSchedule": "View full schedule →",
-      "followers": "Followers",
       "liveShows": "Live shows",
       "loadingShows": "Loading shows…",
       "showsError": "Shows couldn't load",
@@ -3203,8 +3190,6 @@
       "copySmartlink": "Copy smartlink for {{title}}",
       "openBandcamp": "Open on Bandcamp",
       "openBandcampItem": "Open {{title}} on Bandcamp",
-      "more": "More",
-      "less": "Less",
       "moreFor": "{{action}} for {{title}}",
       "pinnedToProfile": "pinned to profile",
       "createdToast": "Created {{title}}.",
@@ -3288,8 +3273,7 @@
     "releaseTrackStems": {
       "heading": "Stems",
       "playRole": "Play {{role}}",
-      "listAria": "Stems for {{title}}",
-      "stemOfTrack": "{{role}}"
+      "listAria": "Stems for {{title}}"
     },
     "releaseStems": {
       "heading": "Stems",
@@ -3337,8 +3321,7 @@
       "lockedTracksAria": "Locked tracks",
       "creditsAria": "Credits",
       "docTitle": "{{title}} by {{artist}} on Tahti",
-      "docDescription": "Listen to {{title}} and find its official links on Tahti.",
-      "loadErrorFallback": "Could not load this release."
+      "docDescription": "Listen to {{title}} and find its official links on Tahti."
     },
     "groupDetail": {
       "loading": "Loading group…",
@@ -3356,7 +3339,6 @@
       "youAre": "You are {{role}}",
       "collectivePlaylist": "Collective playlist",
       "listenTogether": "Listen together",
-      "manage": "Manage",
       "joinPolicyRequest": "Admins approve new members.",
       "joinPolicyOpen": "Anyone can join.",
       "submitApprove": "New sounds are approved by admins first.",
@@ -3368,7 +3350,6 @@
       "refreshError": "Could not refresh this group; showing the last loaded version."
     },
     "studioEvents": {
-      "title": "Events",
       "addEvent": "Add event",
       "upcoming": "Upcoming",
       "past": "Past",
@@ -3377,7 +3358,6 @@
       "pastTitle": "Past events",
       "pastDescription": "Your previous appearances and performances.",
       "empty": "No events listed yet",
-      "ticketsLink": "Tickets / event link",
       "remove": "Remove",
       "removeConfirmTitle": "Remove event?",
       "removeConfirmTitleNamed": "Remove “{{title}}”?",
@@ -3473,7 +3453,6 @@
       "refreshError": "Could not refresh this group; showing the last loaded version."
     },
     "studioListeningParties": {
-      "title": "Listening parties",
       "schedule": "Schedule listening party",
       "upcoming": "Upcoming",
       "past": "Past",
@@ -3637,9 +3616,6 @@
       "loadingAccount": "Loading your account…"
     },
     "studioRevenue": {
-      "fanSubsTitle": "Fan subscriptions",
-      "emptyFanSubsTitle": "No fan subscriptions yet",
-      "emptyFanSubsDescription": "Set up subscription tiers so fans can support you directly.",
       "openTiers": "Open tiers editor",
       "emptyDisbursements": "No disbursements yet"
     },
@@ -3726,8 +3702,7 @@
       "emptyTitle": "No releases yet",
       "emptyDescription": "Create one under Releases first.",
       "royaltiesError": "Could not load your royalty reports.",
-      "royaltiesTitle": "All royalty reports",
-      "toastLoadFailed": "Could not load your releases."
+      "royaltiesTitle": "All royalty reports"
     },
     "studioEditorList": {
       "title": "Editor",
@@ -3783,19 +3758,10 @@
       "removeTitle": "Remove destination?",
       "removeDescription": "This deletes the saved stream key."
     },
-    "rotationSource": {
-      "title": "Rotation source",
-      "description": "Play the 24/7 rotation from one of your collections instead of the tracks you marked for rotation.",
-      "playFrom": "Play from",
-      "markedTracks": "Tracks marked for rotation",
-      "tracks_one": "{{count}} track",
-      "tracks_other": "{{count}} tracks"
-    },
     "studioFans": {
       "title": "Fans",
       "subtitle": "Everything between you and the people who support you: posts, the newsletter, memberships, the store, chat and what you earn.",
       "ariaLabel": "Fans tools",
-      "tabTools": "Tools",
       "tabChat": "Chat",
       "postsTitle": "Posts",
       "postsDescription": "Updates on your channel page and in your followers’ feeds.",
@@ -3809,9 +3775,6 @@
       "earningsDescription": "Subscribers, orders, payouts, grants and the Stripe account."
     },
     "studioSchedule": {
-      "title": "Schedule",
-      "panelTitle": "Scheduled show episodes",
-      "panelDescription": "One-off and recurring episodes generated from your shows.",
       "cancelTitleNamed": "Cancel \"{{title}}\"?",
       "cancelTitle": "Cancel \"this show\"?",
       "cancelDescription": "The scheduled episode is removed from your schedule and the public channel.",
@@ -3898,7 +3861,6 @@
       "deleteTitleNamed": "Delete \"{{headline}}\"?",
       "deleteTitle": "Delete news post?",
       "deleteDescription": "This can't be undone.",
-      "admin": "Admin",
       "news": "News",
       "cancel": "Cancel",
       "includesImage": "Includes image",
@@ -3919,7 +3881,6 @@
     "adminAnnouncements": {
       "deleteTitleNamed": "Delete \"{{title}}\"?",
       "deleteDescription": "This announcement clip will be removed from the schedule for everyone.",
-      "admin": "Admin",
       "announcements": "Announcements",
       "turningThisOffStopsAll": "Turning this off stops all system announcements everywhere, instantly — each clip below still keeps its own on/off and schedule.",
       "rendering": "Rendering",
@@ -4177,7 +4138,6 @@
       "loadingUserDetails": "Loading user details…",
       "loadingStories": "Loading stories…",
       "loadingBlockedAccounts": "Loading blocked accounts…",
-      "loadingShowInfo": "Loading show info…",
       "loadingAnnouncements": "Loading announcements…",
       "loadingPlaylist": "Loading playlist…",
       "loadingYourTracks": "Loading your tracks…",
@@ -4256,9 +4216,7 @@
       "loadingRuns": "Loading runs…",
       "loadingStorage": "Loading storage…",
       "loadingArtist": "Loading artist…",
-      "loadingStatistics": "Loading statistics…",
       "loadingProject": "Loading project…",
-      "loadingGovernance": "Loading governance…",
       "loadingEditor": "Loading editor…",
       "openingChannelSetup": "Opening channel setup…",
       "loadingPlays": "Loading plays…",
@@ -4286,7 +4244,7 @@
       "hint": "Features that are off stay faded on the page while you edit. Visitors don't see them."
     },
     "addListenWidget": {
-      "open": "Add new listen widget",
+      "open": "Add widget to Listen",
       "title": "Add a listen widget",
       "chooseService": "Choose the service to add a playlist from.",
       "allAddons": "Browse all add-ons (news feeds, radio, charts)",
@@ -4339,8 +4297,7 @@
       "previewNamed": "Preview: {{name}}",
       "configureNamed": "Configure {{name}}",
       "audioReactive": "Audio reactive",
-      "preview": "Preview",
-      "playOnShiftQueue": "Play on {{provider}} · Shift+click to queue"
+      "preview": "Preview"
     },
     "tiers": {
       "newTier": "New tier",
@@ -4413,7 +4370,6 @@
       "addStation": "Add station",
       "registerAddon": "Register add-on",
       "addContent": "Add content",
-      "addToSelects": "Add to Tahti Selects",
       "proposeIdea": "Propose an idea",
       "addFeed": "Add feed",
       "newSupportRequest": "New request",
@@ -4444,7 +4400,6 @@
       "chooseAVenueOrEnter": "Choose a venue or enter one below",
       "location": "Location",
       "helsinkiFinland": "Helsinki, Finland",
-      "ticketsEventLinkOptional": "Tickets / event link (optional)",
       "description": "Description",
       "whatShouldPeopleExpectSet": "What should people expect — set details, door time, ticketing…",
       "start": "Start"
@@ -4573,9 +4528,6 @@
       "refreshError": "Could not refresh governance activity; showing the last loaded data."
     },
     "themesCategory": {
-      "dynamic": "Dynamic",
-      "customThemeEditor": "Custom theme editor",
-      "clickAColorToExpand": "Click a color to expand its sliders. Appearance uses the row above.",
       "noAnimatedBackground": "No animated background",
       "audioReactive": "Audio reactive",
       "audioReactivity": "Audio reactivity",
@@ -4585,14 +4537,11 @@
       "growsOrShrinksTheWhole": "Grows or shrinks the whole scene.",
       "resetToDefault": "Reset to default",
       "done": "Done",
-      "dynamicTheme": "Dynamic theme",
-      "darkFrom7pmTo7am": "Dark from 7pm to 7am, light the rest of the day.",
-      "whatDynamicDoes": "What Dynamic does",
       "speed": "Speed",
       "intensity": "Intensity",
       "scale": "Scale",
       "channelDesignHint": "Header style, colour scheme and whether the visualizer shows are set in",
-      "channelDesignLink": "Studio → Profile → Channel design"
+      "channelDesignLink": "Studio → Channel → Design"
     },
     "transparencyPage": {
       "category": "Category",
@@ -4635,8 +4584,6 @@
       "saveChanges": "Save changes"
     },
     "grantCycle": {
-      "admin": "Admin",
-      "governance": "Governance",
       "grants": "Grants",
       "boardCsv": "Board CSV",
       "allCycles": "All cycles",
@@ -4834,7 +4781,6 @@
     },
     "adminVendors": {
       "dpaRequired": "DPA required",
-      "admin": "Admin",
       "vendors": "Vendors",
       "aVendorIsNotConsidered": "A vendor is not considered live until its credentials, contract, callback/webhook, DPA, and operational test are confirmed.",
       "distributionStatus": "Distribution status",
@@ -4846,8 +4792,6 @@
       "openQuestionsForTheBoard": "Open questions for the board/legal counsel — not legal advice, and not something this tool has verified or completed."
     },
     "adminMonitoring": {
-      "admin": "Admin",
-      "monitoring": "Monitoring",
       "grafanaEmbedsNeedYouSigned": "Grafana embeds need you signed in at grafana.tahti.live in this browser. If the panel is blank, open Grafana in a new tab and sign in, then reload this page.",
       "grafanaEmbedDidNotLoad": "The Grafana panel did not load in this frame. Sign in at grafana.tahti.live in another tab, allow cookies for that host, then reload this page or use Open full vital services dashboard below.",
       "grafanaExploreLoki": "Grafana Explore (Loki)",
@@ -5257,30 +5201,11 @@
     },
     "studioHomeGrid": {
       "broadcast": "Broadcast",
-      "goLive": "Go live",
-      "keysSignalOnAir": "Keys, signal, on-air",
-      "schedule": "Schedule",
-      "nextShowProgramme": "Next show & programme",
-      "music": "Music",
-      "shows": "Shows",
-      "episodesSlots": "Episodes & slots",
       "upload": "Upload",
-      "addAudio": "Add audio",
-      "collections": "Collections",
       "releases": "Releases",
-      "distribution": "Distribution",
-      "deliveryStatusRoyalties": "Delivery status & royalties",
-      "audienceChannel": "Audience & channel",
       "posts": "Posts",
-      "updatesNewsletter": "Updates & newsletter",
-      "stats": "Stats",
       "playsDownloads": "Plays & downloads",
-      "earnings": "Earnings",
-      "ordersGrants": "Orders & grants",
-      "stripe": "Stripe",
-      "payoutAccount": "Payout account",
-      "channelLook": "Channel look",
-      "designDomain": "Design & domain"
+      "channelLook": "Channel look"
     },
     "waveformToolbar": {
       "editorTools": "Editor tools",
@@ -5468,13 +5393,9 @@
       "intensity": "Intensity"
     },
     "studioRevenue2": {
-      "dismiss": "Dismiss",
       "earningsGuide": "Earnings guide",
       "openStripeSetup": "Open Stripe setup",
-      "stripeDashboard": "Stripe dashboard",
       "openStripeDashboard": "Open Stripe dashboard",
-      "thisPageHasMoved": "This page has moved",
-      "help": "Help",
       "helpTakeAGuidedTour": "Help — take a guided tour of order management",
       "moreActions": "More earnings actions",
       "fanSubscriptionTiers": "Fan subscription tiers",
@@ -5484,15 +5405,11 @@
       "trackSales": "Track sales",
       "paidOneTimePurchasesNewest": "Paid one-time purchases, newest first.",
       "payments": "Payments",
-      "fanSubscriptions": "Fan subscriptions",
       "orderManagement": "Order management",
       "subscribersNetRevenuePayoutHealth": "Subscribers, net revenue, payout health, and recent fan-sub plus distribution payouts.",
-      "orderFlow": "Order flow",
-      "whatHappensToATypical": "What happens to a typical €5 monthly order.",
       "stripe": "Stripe",
       "payoutAccountAndExpressDashboard": "Payout account and Express dashboard — only listed in Studio when Stripe is enabled.",
-      "pastGrants": "Past grants",
-      "connectWarning": "Stripe is not connected yet — fan-sub payouts cannot reach you until Connect shows payments ready. Finish onboarding on the {{link}}."
+      "pastGrants": "Past grants"
     },
     "smartLinks": {
       "addTracksFromLibrary": "Add tracks from library",
@@ -5595,7 +5512,6 @@
       "subtitle": "Chat volume and outbound mail for the platform."
     },
     "adminDashboard": {
-      "admin": "Admin",
       "dashboard": "Dashboard",
       "subtitle": "Platform health and the work that needs a board eye.",
       "tabHealth": "Health",
@@ -5604,12 +5520,6 @@
       "viewLogs": "View logs",
       "viewDetails": "View details",
       "close": "Close",
-      "grafanaVitalsInfrastructureAndContainer": "Grafana vitals, infrastructure, and container logs for the production stack.",
-      "operationsHub": "Operations hub",
-      "containerLogs": "Container logs",
-      "grafanaLoki": "Grafana Loki",
-      "grafana": "Grafana",
-      "logs": "Logs",
       "systemHealth": "System health",
       "needsAction": "Needs action",
       "financeYtd": "Finance YTD",
@@ -6110,15 +6020,6 @@
       "done": "Done",
       "addATag": "Add a tag"
     },
-    "imagePurpose": {
-      "addProfileImages": "Add profile images",
-      "dropOneOrMoreImages": "Drop one or more images here. You’ll choose what each image is for before anything is uploaded.",
-      "chooseWhatEachImageIs": "Choose what each image is for",
-      "setAPurposeForEvery": "Set a purpose for every image. Only one image can be the profile image; selecting another moves the previous one to Gallery.",
-      "cancel": "Cancel",
-      "changeProfileImage": "Change profile image",
-      "removeImage": "Remove image"
-    },
     "discoverWidgetCard": {
       "listenToTheirMusic": "Listen to their music",
       "adjustHowThisWidgetBehaves": "Adjust how this widget behaves on the Discover page.",
@@ -6277,7 +6178,7 @@
       "openTheGreenRoom": "Open the green room",
       "nobodyIsInvitedYet": "Nobody is invited yet.",
       "greenRoom": "Green room",
-      "letInvitedGuestsHearYour": "Let invited guests hear your stream before it goes public. Default invite rules live in Studio → Broadcast → Channel.",
+      "letInvitedGuestsHearYour": "Let invited guests hear your stream before it goes public. Default invite rules live in Studio → Channel → Settings.",
       "copyLink": "Copy link"
     },
     "electionResult": {
@@ -6764,9 +6665,7 @@
     "profilePicture": {
       "jpegPngWebpOrGif": "JPEG, PNG, WebP, or GIF. An animated GIF shows its first frame and plays when someone hovers it. The original is kept for full-size use.",
       "theAvatarColourShowsOnly": "The avatar colour shows only when there is no profile picture.",
-      "profilePicture": "Profile picture",
-      "useAClearSquarePortrait": "Use a clear square portrait or mark. Click the picture to upload one, pick from your gallery or paste an image link.",
-      "acceptedImageFormats": "Accepted image formats"
+      "profilePicture": "Profile picture"
     },
     "addonPublish": {
       "uploadTheWidgetAposS": "Upload the widget's JavaScript bundle (an ES module, up to 2 MB). Publishing sends the add-on back to review, even if it was approved.",
@@ -7044,8 +6943,7 @@
       "grantProgress": "Progress toward {{year}} grant eligibility",
       "units_one": "1 unit",
       "units_other": "{{count}} units",
-      "payoutsUnder": "Fan subscription payouts and grant history remain under",
-      "geographyNote": ". Listener geography is aggregated and does not identify individual listeners."
+      "payoutsUnder": "Fan subscription payouts and grant history remain under"
     },
     "hourlyDialog": {
       "distributionOfPlaysAcrossThe": "Distribution of plays across the day. Click another day on the chart to compare.",
@@ -7065,7 +6963,6 @@
       "result": "Created {{created}}, skipped {{skipped}}."
     },
     "waveformEditor": {
-      "showingTheBasicWaveformThe": "Showing the basic waveform: the detailed editor couldn’t start in this browser. Editing, zoom and shortcuts still work.",
       "effectsArenTHeardIn": "Effects aren’t heard in this preview yet: the file’s host doesn’t allow the browser to process it. You’re hearing it unprocessed until the editor has its own copy; renders still apply every effect.",
       "wavesurferFailed": "Couldn’t start the detailed waveform in this browser. Try reloading the editor."
     },
@@ -7169,7 +7066,6 @@
       "releaseCredits": "Release credits"
     },
     "listenerWidgetEmbed": {
-      "couldnAposTLoadThis": "Couldn't load this Spotify playlist — remove it and try a public playlist link again.",
       "loadingPlaylist": "Loading playlist…",
       "thisPlaylistHasNoTracks": "This playlist has no tracks."
     },
@@ -7259,27 +7155,22 @@
       "download": "Download"
     },
     "adminStreamsView": {
-      "admin": "Admin",
       "streams": "Streams",
       "liveNow": "Live now",
       "ingestSettings": "Ingest settings"
     },
     "adminStorageView": {
-      "admin": "Admin",
       "storage": "Storage"
     },
     "adminSelectsView": {
-      "admin": "Admin",
       "tahtiSelects": "Tahti Selects"
     },
     "adminGovernanceView": {
-      "admin": "Admin",
       "governance": "Governance"
     },
     "adminGovernanceHub": {
       "subtitle": "Co-op governance tools — pick an area.",
       "toolsAria": "Governance areas",
-      "backToGovernance": "Back to Governance",
       "overviewDescription": "Member activity and board resolutions.",
       "reportsDescription": "Generate, approve and publish annual reports.",
       "grantsDescription": "Grant cycles and disbursement history.",
@@ -7371,8 +7262,6 @@
       "acknowledge": "Acknowledge"
     },
     "helpView": {
-      "quickStart": "Quick start",
-      "guideIndex": "Guide index",
       "clearSearch": "Clear search",
       "openTahtiLiveHelp": "Open tahti.live/help",
       "backToHelpHub": "Back to help hub",
@@ -7405,7 +7294,6 @@
       "delete": "Delete"
     },
     "adminRadioView": {
-      "admin": "Admin",
       "radio": "Radio",
       "moveToFront": "Move to front",
       "optOut": "Opt out",
@@ -7630,7 +7518,6 @@
       "refreshError": "Could not refresh this show; showing the last loaded schedule."
     },
     "adminI18nView": {
-      "admin": "Admin",
       "languages": "Languages",
       "notAvailableYetThisServer": "Not available yet. This server has no translation management, so languages cannot be added or imported here. The app's translations ship with each release.",
       "base": "Base",
@@ -7718,10 +7605,7 @@
       "searchVenues2": "Search venues"
     },
     "adminStorageUserView": {
-      "admin": "Admin",
-      "storage": "Storage",
       "files": "Files",
-      "backToStorage": "Back to Storage",
       "subtitle": "Storage used by this account and every file it uploaded.",
       "used": "Used",
       "quota": "Quota",
@@ -7752,15 +7636,12 @@
       "loadingPlaylist": "Loading playlist…"
     },
     "studioGovernanceView": {
-      "theActiveSubtabAlwaysFollows": "The active subtab always follows the page you opened, so you can use browser back and shared links without losing your place.",
       "replyingFollowsATopicSo": "Replying follows a topic, so new replies notify you; mute it to keep following without notifications. You can remove your own reply while the topic is open. A discussion is not a vote: decisions go through motions.",
       "advisoryDiscussionsAndVotesCollect": "Advisory discussions and votes collect member input. They are clearly separate from binding association decisions.",
       "doNotTreatAnAdvisory": "Do not treat an advisory result as an official AGM ballot. Official records are published when the association’s eligibility, quorum, ballot, minutes, and result contracts are in place.",
-      "governanceDocuments": "Governance documents",
       "whereGovernanceLives": "Where governance lives",
       "discussions": "Discussions",
-      "advisoryConsultationAndOfficialVotes": "Advisory consultation and official votes",
-      "governance": "Governance"
+      "advisoryConsultationAndOfficialVotes": "Advisory consultation and official votes"
     },
     "studioGate": {
       "logIn": "Log in",
@@ -8025,7 +7906,6 @@
       "topListOrder": "Top list order"
     },
     "adminContentView": {
-      "admin": "Admin",
       "catalog": "Catalog",
       "topLists": "Top lists",
       "latestContent": "Latest content",
@@ -8078,10 +7958,6 @@
       "wideJpegPngWebpOr": "Wide JPEG, PNG, WebP, or GIF"
     },
     "studioEventView": {
-      "start": "Start",
-      "place": "Place",
-      "description": "Description",
-      "ticketsEventLink": "Tickets / event link",
       "backToEvents": "Back to Events",
       "eventDetails": "Event details"
     },
@@ -8111,7 +7987,6 @@
     "multistreamPanel": {
       "addMultistreamDestination": "Add multistream destination",
       "chooseAPlatformToConfigure": "Choose a platform to configure.",
-      "multistream": "Destinations",
       "destinationsForThisSessionAdd": "Destinations for this session. Add or edit targets here; saved destinations live under Studio → Channel.",
       "addDestination": "Add destination",
       "removeDestination": "Remove destination"
@@ -8172,7 +8047,6 @@
       "whatTheMeetingDecided": "What the meeting decided"
     },
     "adminVenuesView": {
-      "admin": "Admin",
       "venues": "Venues",
       "verifyingAVenueOrTaking": "Verifying a venue, or taking the verification back, notifies the person who registered it.",
       "clearSearch": "Clear search",
@@ -8180,7 +8054,6 @@
       "nameCitySlugOrSubmitter": "Name, city, slug, or submitter"
     },
     "adminFinancialView": {
-      "admin": "Admin",
       "financial": "Financial",
       "activeSubscriptions": "Active subscriptions",
       "pendingPayouts": "Pending payouts",
@@ -8228,11 +8101,7 @@
     },
     "studioStatsView": {
       "stats": "Stats",
-      "subtitle": "Plays, audience, and rankings for the period you pick.",
-      "statsSections": "Stats sections",
-      "overview": "Overview",
-      "playsAndListeners": "Plays and listeners",
-      "topLists": "Top lists"
+      "subtitle": "Plays, audience, and rankings for the period you pick."
     },
     "studioStatsDetailView": {
       "stats": "Stats",
@@ -8248,8 +8117,6 @@
       "addNextBroadcast": "Add next broadcast",
       "scheduledShowEpisodes": "Scheduled show episodes",
       "oneOffAndRecurringEpisodes": "One-off and recurring episodes generated from your shows.",
-      "channelProgramme": "Channel programme",
-      "channelProgrammeDescription": "What your channel plays around live shows: the 24/7 rotation, the offline fallback and announcements.",
       "filterBroadcasts": "Broadcasts",
       "filterLabel": "Show on the schedule"
     },
@@ -8283,7 +8150,6 @@
     "adminLogsView": {
       "openInGrafanaExplore": "Open in Grafana Explore",
       "dockerMetrics": "Docker metrics",
-      "admin": "Admin",
       "logs": "Logs",
       "recentAuditEntries": "Recent audit entries"
     },
@@ -8295,13 +8161,10 @@
       "listenedOn": "Listened on"
     },
     "adminAddonsView": {
-      "admin": "Admin",
       "addOns": "Add-ons",
       "registerANewAddOn": "Register a new add-on",
       "addOnTypes": "Add-on types",
-      "addOnReviewStatus": "Add-on review status",
       "intro": "Covers the sandboxed widget-bundle store behind two of the 13 Settings → Add-ons categories: Discovery (Listen page) and Channel (artist page). The other 11 are fixed code registries or private per-user connections with nothing to moderate here.",
-      "needsReview": "Needs review",
       "needsReviewCount": "Needs review ({{count}})",
       "review": "Review",
       "catalogue": "Catalogue"
@@ -8402,16 +8265,6 @@
       "transparency": "Transparency",
       "year": "Year"
     },
-    "governanceSection": {
-      "haveYourSay": "Have your say",
-      "reviewOpenVotesAndFollow": "Review open votes and follow discussions that are still unresolved.",
-      "needsYourOpinion": "Needs your opinion",
-      "ongoingDiscussions": "Ongoing discussions",
-      "openMotion": "Open motion",
-      "openTopic": "Open topic",
-      "openCoop": "Open Co-op →",
-      "nothingToDo": "Nothing waiting for your vote and no open discussions."
-    },
     "spotifyImportPanel": {
       "addFromSpotify": "Add from Spotify",
       "tracksAreEmbeddedFromSpotify": "Tracks are embedded from Spotify; Tahti never copies the audio.",
@@ -8459,12 +8312,6 @@
       "loading": "Loading…",
       "findAMember": "Find a member",
       "nameUsernameOrMemberNumber": "Name, username or member number"
-    },
-    "adminStatusView": {
-      "admin": "Admin",
-      "status": "Status",
-      "queueHealth": "Queue health",
-      "cronJobs": "Cron jobs"
     },
     "adminQueues": {
       "title": "Media queue jobs",
@@ -8564,11 +8411,6 @@
       "downloadOriginal": "Download original",
       "stats": "Stats"
     },
-    "soundRow": {
-      "playShiftClickToQueue": "Play · Shift+click to queue",
-      "downloadOriginal": "Download original",
-      "stats": "Stats"
-    },
     "recordingsTab": {
       "playRecording": "Play recording",
       "recordingsFromThisShow": "Recordings from this show",
@@ -8638,7 +8480,6 @@
       "show": "Show"
     },
     "adminArtworkPresetsView": {
-      "admin": "Admin",
       "artworkPresets": "Artwork presets",
       "enabledArtworkBecomesTheCover": "Enabled artwork becomes the cover of tracks, playlists and channels that have none, and is offered in every cover picker."
     },
@@ -8751,7 +8592,6 @@
       "saveCredits": "Save credits"
     },
     "upcomingShowsSection": {
-      "viewAmpEdit": "View & edit",
       "upcomingShows": "Upcoming shows",
       "nextUp": "Next: {{title}}",
       "moreComingUp_one": "{{count}} more coming up",
@@ -8779,8 +8619,7 @@
       "chatMessages24H": "Chat messages, 24 h"
     },
     "adminActivityView": {
-      "auditTopics": "Audit topics",
-      "activity": "Activity"
+      "auditTopics": "Audit topics"
     },
     "soundCloudEmbedsPanel": {
       "soundcloudTracks": "SoundCloud tracks",
@@ -9234,7 +9073,6 @@
       "allCountries": "All countries"
     },
     "listenerWidgetsSectionMore": {
-      "savedStations": "Saved stations",
       "latestNews": "Latest News",
       "favorites": "Favorites"
     },
@@ -9247,10 +9085,6 @@
       "aFewQuickStepsTo": "A few quick steps to personalize your channel.",
       "setUpProfile": "Set up profile",
       "notNow": "Not now"
-    },
-    "artistImagePurposePicker": {
-      "artistImages": "Artist images",
-      "jpegPngOrWebp": "JPEG, PNG, or WebP"
     },
     "studioMasteringView": {
       "referenceTrack": "Reference track",
@@ -9289,8 +9123,7 @@
       "files": "Files"
     },
     "adminAddonsViewMore": {
-      "allAddOns": "All add-ons",
-      "allStatuses": "All statuses"
+      "allAddOns": "All add-ons"
     },
     "useQueueBarActions": {
       "saveQueueAsLocalPlaylist": "Save queue as local playlist",
@@ -9388,21 +9221,8 @@
     },
     "settingsNav": {
       "account": "Account",
-      "artist": "Artist",
-      "channelChat": "Channel & chat",
-      "broadcast": "Broadcast",
-      "playback": "Playback",
-      "volumeShuffleRepeatAndSkip": "Volume, shuffle, repeat and skip duration",
-      "integrations": "Integrations",
-      "scrobblingAndDesktopAppIntegrations": "Scrobbling and desktop-app integrations",
-      "language": "Language",
-      "theLanguageOfMenusButtons": "The language of menus, buttons and dates",
-      "themes": "Themes",
-      "appAppearance": "App appearance",
       "addOns": "Add-ons",
       "listenerArtistAndAdminTools": "Listener, artist and admin tools in role-based lists",
-      "logs": "Logs",
-      "whatChangedInEachRelease": "What changed in each release",
       "profile": "Profile"
     },
     "themeEditorMore": {
@@ -9658,13 +9478,11 @@
       "liveSet": "Live set",
       "talk": "Talk",
       "public": "Public",
-      "private": "Private",
-      "fans": "Fans"
+      "private": "Private"
     },
     "studioStatsViewMore": {
       "overview": "Overview",
       "plays": "Plays",
-      "playsAndListeners": "Plays and listeners",
       "audience": "Audience",
       "topLists": "Top lists",
       "insights": "Insights"
@@ -9912,11 +9730,6 @@
       "couldNotLoadTheYear": "Could not load the {{year}} grant report",
       "noGrantReportIsAvailable": "No grant report is available for {{year}}."
     },
-    "soundRowLabels": {
-      "selectTitle": "Select {{title}}",
-      "playTitle": "Play {{title}}",
-      "showStatsForTitle": "Show stats for {{title}}"
-    },
     "releaseTrackRowLabels": {
       "playTitle": "Play {{title}}",
       "openTitleOnBandcamp": "Open {{title}} on Bandcamp"
@@ -10091,9 +9904,6 @@
       "removeMessageFromHandle": "Remove message from {{handle}}"
     },
     "radioRowCardLabels": {
-      "removeName": "Remove {{name}}"
-    },
-    "listenerWidgetsSectionLabels": {
       "removeName": "Remove {{name}}"
     },
     "discoWidgetManagerPanelLabels": {
@@ -10341,7 +10151,6 @@
     },
     "helpHub": {
       "hubHeading": "How can we help?",
-      "hubIntro": "Short guides for listening, broadcasting, add-ons, your account and getting in touch.",
       "guidesCount_one": "{{count}} guide",
       "guidesCount_other": "{{count}} guides",
       "noMatchDescription": "Try another search instead of “{{query}}”.",
@@ -10392,7 +10201,6 @@
       "headlineOnlyHost": "This feed only shares the headline, or the article text could not be read. Read the full story on {{host}}.",
       "headlineOnly": "This feed only shares the headline, and the article text could not be read.",
       "openRelease": "Open release",
-      "openLink": "Open link",
       "postedUpdate": "{{name}} posted an update",
       "sharedTrack": "{{name}} shared a new track, “{{title}}”.",
       "releasedSomething": "{{name}} released “{{title}}”.",
@@ -10449,7 +10257,6 @@
       "documents": "Documents"
     },
     "adminOrphanPagesViewText": {
-      "admin": "Admin",
       "orphanPages": "Orphan pages",
       "pagesWithNoMenuEntry": "Pages with no menu entry."
     },
@@ -10618,9 +10425,6 @@
     "visualizerModeMenuText": {
       "visualizer": "Visualizer"
     },
-    "proMinimapText": {
-      "trackOverviewClickOrDrag": "Track overview. Click or drag to move the zoomed view; from the keyboard, use the waveform's zoom and arrow keys"
-    },
     "listeningPartyViewText": {
       "listeningParty": "Listening party"
     },
@@ -10635,9 +10439,6 @@
     },
     "venueRecordingsText": {
       "recordedHere": "Recorded here"
-    },
-    "adminMapViewText": {
-      "admin": "Admin"
     },
     "soundHeaderText": {
       "master": "Master"
@@ -10836,9 +10637,6 @@
     "recordedAtVenuePickerFields": {
       "noVenue": "No venue"
     },
-    "themesCategoryFields": {
-      "builtInTheme": "Built-in theme"
-    },
     "playHistoryDialogFields": {
       "playCountsOnTracksAre": "Play counts on tracks are unchanged."
     },
@@ -10969,10 +10767,6 @@
     "artistBlockButtonLabels": {
       "blockDisplayname": "Block {{displayName}}?"
     },
-    "artistImagePurposePickerLabels": {
-      "chooseImages": "Choose images",
-      "removeName": "Remove {{name}}"
-    },
     "broadcastControlsLabels": {
       "openLivePanelLabel": "Open live panel — {{label}}"
     },
@@ -11015,7 +10809,6 @@
       "untitled": "Untitled event",
       "eventPageLinkOptional": "Event page link (optional)",
       "ticketLinkOptional": "Ticket link (optional)",
-      "coverImageLinkOptional": "Cover image link (optional)",
       "endOptional": "End (optional)",
       "endAfterStart": "End must be after the start.",
       "timezone": "Time zone",
@@ -11052,7 +10845,6 @@
       "openPublicPage": "Open public page",
       "notFound": "Event not found",
       "notFoundDescription": "It may be a draft, or the link is wrong.",
-      "backToCalendar": "Back to the calendar",
       "calendar": "Calendar",
       "stories": "Stories",
       "feedView": "Feed view",
@@ -11068,7 +10860,6 @@
       "agenda": "List",
       "calendarLayout": "Calendar layout",
       "loading": "Loading events…",
-      "status": "Status",
       "shareOnPublish": "Announce when published",
       "shareConnectHint": "Connect Mastodon or Bluesky to announce events there.",
       "shareConnectLink": "Studio → Profile → Links",
@@ -11180,8 +10971,6 @@
       "liveBroadcast": "Live broadcast"
     },
     "channelAnnouncementsPanelStates": {
-      "closeRecorder": "Close recorder",
-      "recordVoice": "Record voice",
       "uploadingClip": "Uploading clip…",
       "uploadAudio": "Upload audio",
       "uploading": "Uploading…",
@@ -11277,11 +11066,7 @@
       "tahtiRadioIsBroadcastingThe": "Tahti Radio is broadcasting the member rotation or a live guest channel.",
       "theTahtiRadioStreamIs": "The Tahti Radio stream is currently unavailable.",
       "pauseTahtiRadioStream": "Pause Tahti Radio stream",
-      "playTahtiRadioStream": "Play Tahti Radio stream",
-      "pause": "Pause",
-      "listen": "Listen",
-      "liveGuestOnAir": "Live guest on air",
-      "rotationOnAir": "Rotation on air"
+      "playTahtiRadioStream": "Play Tahti Radio stream"
     },
     "announcementTrimDialogStates": {
       "rendering": "Rendering…",
@@ -11626,9 +11411,7 @@
       "musicbrainzPrefillCopied": "MusicBrainz prefill copied.",
       "discogsPrefillCopied": "Discogs prefill copied.",
       "cLine": "C-line",
-      "labelImprint": "Label imprint",
-      "hide": "Hide",
-      "releaseOps": "Release ops"
+      "labelImprint": "Label imprint"
     },
     "recordingRowStates": {
       "processing": "Processing",
@@ -11723,21 +11506,12 @@
       "noAddOnsNeedReview": "No add-ons need review right now.",
       "noAddOnsRegisteredFor": "No add-ons registered for this type yet."
     },
-    "adminDashboardViewStates": {
-      "hideMore": "Hide more",
-      "financeStreamsQueuesAudit": "Finance, streams, queues & audit",
-      "financeStreamsAudit": "Finance, streams and audit"
-    },
     "adminI18nViewStates": {
       "adding": "Adding…",
       "addLanguage": "Add language",
       "importing": "Importing…",
       "translationCsv": "Translation CSV",
       "chooseCsv": "Choose CSV"
-    },
-    "adminMonitoringViewStates": {
-      "clearFilter": "Clear filter",
-      "filterBelow": "Filter below"
     },
     "adminNewsViewStates": {
       "unpublish": "Unpublish",
@@ -11749,10 +11523,6 @@
       "tracks": "Tracks",
       "public": "Public",
       "private": "Private"
-    },
-    "adminStorageViewStates": {
-      "files": "Files",
-      "storage": "Storage"
     },
     "adminTestNotificationPanelStates": {
       "sending": "Sending…",
@@ -12115,10 +11885,6 @@
       "selectPhoto": "Select photo",
       "uploading": "Uploading…",
       "addGalleryImages": "Add gallery images"
-    },
-    "artistImagePurposePickerStates": {
-      "uploading": "Uploading…",
-      "uploadImages": "Upload images"
     },
     "artworkPresetUploadDialogStates": {
       "chooseAnotherImage": "Choose another image",
@@ -12570,7 +12336,6 @@
       "hide": "Hide {{name}}",
       "remove": "Remove {{name}}",
       "removeQuestion": "Remove {{name}}?",
-      "select": "Select {{name}}",
       "edit": "Edit {{name}}",
       "add": "Add {{name}}",
       "addToQueue": "Add {{name}} to queue",
@@ -12578,8 +12343,6 @@
       "addContentTo": "Add content to {{name}}",
       "editCover": "Edit {{name}} cover",
       "removeCredit": "Remove credit {{name}}",
-      "share": "Share {{name}}",
-      "report": "Report {{name}}",
       "thisGuest": "this guest",
       "aMember": "a member",
       "removeFromJam": "Remove {{name}} from the Jam?",
@@ -12707,12 +12470,6 @@
       "relinkFailed": "Relink failed.",
       "stoppedTracking": "Stopped tracking “{{folder}}”. Its tracks stay in your library.",
       "couldNotRemoveFolder": "Could not remove folder."
-    },
-    "libraryStoreStates": {
-      "followingNotSynced": "Following could not be synced. Your saved artists remain available on this device.",
-      "savedOnDevice": "Listening history stays on this device.",
-      "followingSynced": "Following is synced. Listening history stays on this device.",
-      "followingOffline": "Following is available offline. Listening history stays on this device."
     },
     "tuningSliders": {
       "speed": "Speed",
@@ -13022,12 +12779,10 @@
       },
       "caption": {
         "required": "Required",
-        "optional": "Optional",
         "connected": "Connected",
         "reconnecting": "Signal lost, reconnecting",
         "couldNotLoad": "Couldn't load",
         "recordingOn": "Recording on",
-        "recordingOff": "Recording off",
         "destinations_one": "{{count}} destination",
         "destinations_other": "{{count}} destinations"
       },
@@ -13263,7 +13018,6 @@
       "couldNotRemoveMember": "Could not remove member",
       "couldNotChangeRole": "Could not change the role",
       "couldNotHandOverGroup": "Could not hand over the group",
-      "couldNotSwitchRotation": "Could not switch the rotation",
       "couldNotLoadSetting": "Could not load the setting",
       "couldNotSaveSetting": "Could not save the setting",
       "couldNotSaveAutoplay": "Could not save autoplay",
@@ -13428,14 +13182,6 @@
       "website": "Website",
       "businessIdFormat": "Business ID must look like 1234567-8."
     },
-    "artistImagePurposePickerLeftovers": {
-      "profileImage": "Profile image",
-      "profileImageHint": "The main artist image shown with your identity.",
-      "gallery": "Gallery",
-      "galleryHint": "A public image for your artist page gallery.",
-      "pressKit": "Press kit",
-      "pressKitHint": "Include this image in your downloadable press kit."
-    },
     "fanSubOrderBreakdownLeftovers": {
       "fanPays": "Fan pays",
       "stripeFees": "Stripe fees",
@@ -13499,8 +13245,7 @@
       "couldNotSave": "Could not save."
     },
     "backupRestoreDialogLeftovers": {
-      "couldNotRestore": "Could not restore.",
-      "notFoundExample": "Not found, for example:"
+      "couldNotRestore": "Could not restore."
     },
     "localLibraryAnalysisLeftovers": {
       "couldNotAnalyze": "Could not analyze.",
@@ -13787,7 +13532,6 @@
       "unrecognized": "Couldn't recognize this URL. Remove it and try pasting the link again."
     },
     "listenerWidgetsSectionText": {
-      "play": "Play {{name}}",
       "internetRadio": "Internet radio"
     },
     "addListenWidgetSpotify": {
@@ -13830,14 +13574,10 @@
       "rangeToday": "Today"
     },
     "studioChannelText": {
-      "lastDays_one": "Last {{count}} day",
-      "lastDays_other": "Last {{count}} days",
-      "playsAndDownloads": "plays · {{downloads}} downloads",
       "createToUnlock": "Create {{host}} to unlock broadcasting, uploads and your public channel.",
       "createHost": "Create {{host}}"
     },
     "studioMoneyText": {
-      "movedNotice": "Settings › {{from}} is now Studio › Fans › {{page}}. Update any bookmark that pointed to the old address.",
       "movedAudience": "Audience",
       "movedMoney": "Money",
       "movedFanSubs": "Fan subscriptions",
@@ -13875,11 +13615,6 @@
       "radioStationSuggestions": "Radio station suggestions",
       "featureRequestsGated": "Feature requests are open to active Tahti ry members. Signed in as @{{username}}.",
       "couldNotRefreshList": "Could not refresh this list: {{message}}"
-    },
-    "tahtiJamSearchBar": {
-      "search": "Search",
-      "clear": "Clear search",
-      "placeholder": "Search for music"
     },
     "discussionsViewBatch30": {
       "newReplyCount_one": "{{count}} new reply",
@@ -14080,7 +13815,6 @@
       "tooSoon": "Start at least 5 minutes from now."
     },
     "channelAnnouncementsPanelBatch30": {
-      "intro": "Station IDs, voice links, and announcements for your 24/7 rotation. Turn on “Play clips between programs” in the settings above.",
       "durationPending": "Duration pending",
       "durationSeconds": "{{seconds}} s",
       "previewStatus": "Preview {{status}}",

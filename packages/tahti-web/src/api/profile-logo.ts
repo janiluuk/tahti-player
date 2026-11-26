@@ -62,7 +62,13 @@ export async function uploadProfileLogo(
     }
     return { ok: true, data: { logoUrl: data.logoUrl } };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not upload the logo') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotUploadLogo'),
+      ),
+    };
   }
 }
 
@@ -76,7 +82,13 @@ export async function setProfileLogoPlacement(
     await patchProfile({ logoPlacement });
     return { ok: true };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not save the placement') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotSavePlacement'),
+      ),
+    };
   }
 }
 
@@ -90,7 +102,13 @@ export async function removeProfileLogo(): Promise<
     await patchProfile({ logoUrl: null });
     return { ok: true };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not remove the logo') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotRemoveLogo'),
+      ),
+    };
   }
 }
 

@@ -1,5 +1,5 @@
 import { ArrowRightIcon } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, StoryCard, StoryRow } from '@tahti-player/ui';
@@ -8,10 +8,16 @@ import { fetchAnnouncements } from '../../api/client';
 import { isForceMock } from '../../api/mode';
 import type { Announcement } from '../../api/types';
 import { storyDate } from '../../lib/storyDate';
-import { PlatformNewsDialog } from '../PlatformNewsDialog';
 import { StoryTitleButton } from '../StoryTitleButton';
 import { ListenSection } from './ListenSection';
 import type { ListenSectionStatus } from './useListenSections';
+
+/** The article view and its editor load when a post is opened, not with Listen. */
+const PlatformNewsDialog = lazy(() =>
+  import('../PlatformNewsDialog').then((m) => ({
+    default: m.PlatformNewsDialog,
+  })),
+);
 
 /** The latest Tahti news posts on Discover, linking to /news. */
 export function HomeNews({ limit = 3 }: { limit?: number }) {
@@ -54,21 +60,25 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
       onRetry={retry}
     >
       {selected ? (
-        <PlatformNewsDialog
-          key={selected.id}
-          post={selected}
-          onClose={() => setSelected(null)}
-          onUpdated={(updated) => {
-            setSelected(updated);
-            setPosts((current) =>
-              current.map((post) => (post.id === updated.id ? updated : post)),
-            );
-          }}
-          onRemoved={(id) => {
-            setSelected(null);
-            setPosts((current) => current.filter((post) => post.id !== id));
-          }}
-        />
+        <Suspense fallback={null}>
+          <PlatformNewsDialog
+            key={selected.id}
+            post={selected}
+            onClose={() => setSelected(null)}
+            onUpdated={(updated) => {
+              setSelected(updated);
+              setPosts((current) =>
+                current.map((post) =>
+                  post.id === updated.id ? updated : post,
+                ),
+              );
+            }}
+            onRemoved={(id) => {
+              setSelected(null);
+              setPosts((current) => current.filter((post) => post.id !== id));
+            }}
+          />
+        </Suspense>
       ) : null}
       <StoryRow
         title={t('homeNews.fromTahti')}

@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
@@ -137,7 +139,10 @@ export async function fetchAdminChannelProgramme(
 ): Promise<{ ok: true; data: ProgrammeView } | { ok: false; error: string }> {
   const key = slug.trim().toLowerCase();
   if (!key) {
-    return { ok: false, error: 'Enter a channel slug.' };
+    return {
+      ok: false,
+      error: i18n.t('web:adminStringsBatch40.enterChannelSlug'),
+    };
   }
   if (isForceMock()) {
     const existing = mockChannelProgrammes.get(key) ?? {
@@ -193,7 +198,10 @@ export async function fetchAdminChannelProgramme(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not load the rotation',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotLoadRotation'),
     };
   }
 }
@@ -227,7 +235,10 @@ export async function saveAdminChannelProgramme(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not save the rotation',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotSaveRotation'),
     };
   }
 }
@@ -241,7 +252,10 @@ export async function addAdminReleaseTrackToRotation(
   if (isForceMock()) {
     const existing = mockChannelProgrammes.get(key);
     if (!existing) {
-      return { ok: false, error: 'Open the rotation first.' };
+      return {
+        ok: false,
+        error: i18n.t('web:adminStringsBatch40.openRotationFirst'),
+      };
     }
     const track = existing.library?.find(
       (row) => row.releaseTrackId === releaseTrackId,
@@ -278,7 +292,9 @@ export async function addAdminReleaseTrackToRotation(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not add to the rotation',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotAddToRotation'),
     };
   }
 }
@@ -369,7 +385,10 @@ export async function fetchAdminChannelSounds(
 > {
   const key = slug.trim().toLowerCase();
   if (!key) {
-    return { ok: false, error: 'Enter a channel slug.' };
+    return {
+      ok: false,
+      error: i18n.t('web:adminStringsBatch40.enterChannelSlug'),
+    };
   }
   const limit = query.limit ?? 50;
   const offset = query.offset ?? 0;
@@ -413,7 +432,10 @@ export async function fetchAdminChannelSounds(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not load the tracks',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotLoadTracks'),
     };
   }
 }
@@ -427,7 +449,10 @@ export async function deleteAdminChannelSound(
     const rows = mockSoundsFor(key);
     const index = rows.findIndex((row) => row.id === soundId);
     if (index < 0) {
-      return { ok: false, error: 'Sound item not found' };
+      return {
+        ok: false,
+        error: i18n.t('web:adminStringsBatch40.soundNotFound'),
+      };
     }
     rows.splice(index, 1);
     return { ok: true };
@@ -441,7 +466,10 @@ export async function deleteAdminChannelSound(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not delete the track',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotDeleteTrack'),
     };
   }
 }
@@ -458,7 +486,10 @@ export async function patchAdminChannelSound(
     const rows = mockSoundsFor(key);
     const index = rows.findIndex((row) => row.id === soundId);
     if (index < 0) {
-      return { ok: false, error: 'Sound item not found' };
+      return {
+        ok: false,
+        error: i18n.t('web:adminStringsBatch40.soundNotFound'),
+      };
     }
     const updated: AdminChannelSound = {
       ...rows[index]!,
@@ -486,7 +517,10 @@ export async function patchAdminChannelSound(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not save the track',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotSaveTrack'),
     };
   }
 }

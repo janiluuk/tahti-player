@@ -448,10 +448,19 @@ const PHONE_ITEMS: AmbientTrackListItem[] = ITEMS.map((item, index) => ({
 
 /** One date per row (the clock in the stats), the same artwork width on
  * every row including the playing one, and nothing spilling out of a row.
- * At phone width the actions and stats run under the artwork. */
+ * At phone width the list drops its panel so every row spans the content
+ * width, and the actions and stats run under the artwork. */
 async function verifyPhoneRows(canvasElement: HTMLElement) {
   const rows = within(canvasElement).getAllByTestId('ambient-track-row');
   await expect(rows).toHaveLength(3);
+  const list = within(canvasElement).getByTestId('ambient-track-list');
+  await expect(list).toHaveAttribute('data-flush');
+  const content = list.parentElement!.getBoundingClientRect();
+  for (const row of rows) {
+    const box = row.getBoundingClientRect();
+    await expect(Math.abs(box.left - content.left)).toBeLessThanOrEqual(1);
+    await expect(Math.abs(box.right - content.right)).toBeLessThanOrEqual(1);
+  }
   const artworkWidths = rows.map((row) =>
     Math.round(
       within(row)

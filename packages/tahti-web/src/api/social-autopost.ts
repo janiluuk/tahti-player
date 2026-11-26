@@ -115,7 +115,10 @@ export async function saveMastodon(
 ): Promise<Result> {
   if (isForceMock()) {
     if (!mockSettings.mastodon.connected && !input.accessToken) {
-      return { ok: false, error: 'Access token is required' };
+      return {
+        ok: false,
+        error: i18n.t('web:accountStringsBatch39.accessTokenRequired'),
+      };
     }
     return {
       ok: true,
@@ -139,7 +142,10 @@ export async function saveMastodon(
 export async function saveBluesky(input: BlueskyConnectInput): Promise<Result> {
   if (isForceMock()) {
     if (!mockSettings.bluesky.connected && !input.appPassword) {
-      return { ok: false, error: 'App password is required' };
+      return {
+        ok: false,
+        error: i18n.t('web:accountStringsBatch39.appPasswordRequired'),
+      };
     }
     return { ok: true, data: applyMock('bluesky', input.handle, input) };
   }
@@ -186,7 +192,13 @@ export async function patchSocialOAuth(
     );
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: errorMessage(err, 'Could not save settings') };
+    return {
+      ok: false,
+      error: errorMessage(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotSaveSettings'),
+      ),
+    };
   }
 }
 
@@ -207,7 +219,13 @@ export async function disconnectSocial(
     await requestJson(`/api/me/social/${platform}`, { method: 'DELETE' });
     return { ok: true };
   } catch (err) {
-    return { ok: false, error: errorMessage(err, 'Could not disconnect') };
+    return {
+      ok: false,
+      error: errorMessage(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotDisconnect'),
+      ),
+    };
   }
 }
 

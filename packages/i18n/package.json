@@ -21,6 +21,7 @@
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "type-check": "tsc --noEmit",
+    "unused-web-keys": "node scripts/report-unused-web-keys.mjs",
     "clean": "rm -rf dist build .turbo node_modules/.vite"
   },
   "dependencies": {

@@ -23,8 +23,8 @@ describe('generateAdvancedThemeCSS', () => {
     });
 
     expect(css).toMatchInlineSnapshot(`
-      "html:root{--background: oklch(98% 0 0); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background); --primary-foreground: oklch(0 0 0); --focus-ring: oklch(0 0 0); color-scheme: light;}
-      html[data-theme='dark']{--background: oklch(40% 0.03 277); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background); --primary-foreground: oklch(0 0 0); --focus-ring: var(--primary); color-scheme: dark;}"
+      "html:root{--background: oklch(98% 0 0); --primary: oklch(70% 0.1 250); --background-input: var(--background); --primary-foreground: oklch(0 0 0); --primary-strong: color-mix(in oklch, var(--primary) 75%, oklch(0 0 0)); --focus-ring: oklch(0 0 0); color-scheme: light;}
+      html[data-theme='dark']{--background: oklch(40% 0.03 277); --primary: oklch(70% 0.1 250); --background-input: var(--background); --primary-foreground: oklch(0 0 0); --primary-strong: color-mix(in oklch, var(--primary) 70%, oklch(1 0 0)); --focus-ring: var(--primary); color-scheme: dark;}"
     `);
   });
 
@@ -48,7 +48,8 @@ describe('generateAdvancedThemeCSS', () => {
     });
 
     expect(vars).toMatchObject({
-      'primary-strong': 'var(--primary)',
+      'primary-strong':
+        'color-mix(in oklch, var(--primary) 50%, var(--foreground))',
       secondary: 'var(--background-secondary)',
       'secondary-foreground': 'var(--foreground)',
       'background-input': 'var(--background)',
@@ -56,6 +57,30 @@ describe('generateAdvancedThemeCSS', () => {
       'border-input': 'var(--border)',
       'primary-foreground': 'oklch(0 0 0)',
     });
+  });
+
+  it('keeps the primary as the strong tone when it already reads as text', () => {
+    const vars = withDerivedTokens({
+      background: 'oklch(1 0 0)',
+      foreground: 'oklch(0.2 0 0)',
+      primary: 'oklch(0.45 0.15 260)',
+    });
+
+    expect(vars['primary-strong']).toBe('var(--primary)');
+  });
+
+  it('darkens an accent for text only when the theme sets that accent', () => {
+    const vars = withDerivedTokens({
+      background: 'oklch(0.96 0.055 96)',
+      'background-secondary': 'oklch(0.89 0.057 89)',
+      foreground: 'oklch(0.34 0.007 48)',
+      'accent-blue': 'oklch(0.58 0.066 200)',
+    });
+
+    expect(vars['accent-blue-strong']).toMatch(
+      /^color-mix\(in oklch, var\(--accent-blue\) \d+%, var\(--foreground\)\)$/,
+    );
+    expect(vars['accent-red-strong']).toBeUndefined();
   });
 
   it('never overrides a token the theme sets', () => {

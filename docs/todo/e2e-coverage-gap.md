@@ -162,41 +162,7 @@ All 176 tests passed on the first full run except `use-cases-coverage-gap-3` "mo
 
 ### Specs outside CI
 
-| Spec | In CI? | Status | Action |
-| --- | --- | --- | --- |
-| `a11y-play-controls.spec.ts` | no | current | add to CI |
-| `artist-site-chrome.spec.ts` | yes (2026-11-23) | fixed | guard accepts localhost; the subdomain artist page publishes the channel chrome again (0.0.441) |
-| `channel-clips.spec.ts` | no | current | add to CI |
-| `channel-designer-artist-look.spec.ts` | no | current | add to CI |
-| `channel-designer-elements.spec.ts` | no | stale | fixed: shared `signIn`, `acknowledgeGuidelines` instead of a hard Acknowledge click; add to CI |
-| `channel-designer-parity.spec.ts` | yes (2026-11-23) | fixed | mock Studio profile follows the mock session user |
-| `cutover-vital.spec.ts` | no | stale | fixed: track Playlists tab is an inline Sets picker (no "Choose playlists" dialog); hearthis opens the import wizard (choose, review, finish); `/listen/feed` redirects to Discover → Feed. Add to CI |
-| `event-calendar.spec.ts` | no | current | add to CI |
-| `fan-sub-and-track-purchase.spec.ts` | yes (2026-11-23) | fixed | sound id from the pathname, named Download button, order title from the uploaded file |
-| `fullscreen-player-minimize.spec.ts` | no | current | add to CI |
-| `layout-stability.spec.ts` | no | current | add to CI |
-| `library-playlists.spec.ts` | no | current | add to CI |
-| `library-sounds-bulk.spec.ts` | no | stale | fixed: List view is Track size → List; dialogs asserted by heading. Add to CI |
-| `library-sounds-embeds.spec.ts` | no | current | add to CI |
-| `listener-purchase-flow.spec.ts` | yes (2026-11-23) | fixed | sound id from the pathname |
-| `listings-news.spec.ts` | yes (2026-11-23) | fixed | phone row waveform asserted against the two-column phone grid |
-| `mastering.spec.ts` | no | current | add to CI |
-| `nav-chrome.spec.ts` | no | current | add to CI |
-| `plugin-store.spec.ts` | no | stale | fixed: Channel → Multicast now only links to Go live destinations; the Radio Browser card's button is "Configure Radio Browser directory". Add to CI |
-| `radio-cover.spec.ts` | no | stale | fixed: Configure button name. Add to CI |
-| `real-user-journeys.spec.ts` | no | stale | fixed: registration ends on "Check your email"; Library highlight via `aria-current`; History tab name is exact; Stats sections are radios ("Plays and listeners"). Add to CI |
-| `routes-admin-deep.spec.ts` | no | stale | fixed: Support is the idle default Inbox chip (by design, `inboxChipSelected`); `/admin/reports` lands on "Annual reports". Add to CI |
-| `routes-discover-radio.spec.ts` | no | stale | fixed: `/themes` lands on Appearance; deleted "a radio show is reachable from the Radio page" (no Shows tab, see findings). Add to CI |
-| `routes-governance.spec.ts` | no | current | add to CI |
-| `routes-library.spec.ts` | no | current | folded in the old `/listen/*` links from `routes-listen`. Add to CI |
-| `routes-listen.spec.ts` | no | dead | deleted: `/listen/feed` is Discover → Feed; its routes moved into `routes-library`, feed content is covered by `use-cases-listener-2` |
-| `routes-public-reader.spec.ts` | no | current | add to CI |
-| `routes-settings-redirects.spec.ts` | no | current | add to CI |
-| `routes-studio-content.spec.ts` | no | stale | fixed: the mock artist's Schedule → Events has no rows, so the edit form opens `evt-mock-1` directly; the episode review page has no "Public show details" section. Add to CI |
-| `routes-studio-stats.spec.ts` | no | current | add to CI |
-| `stash-and-subscriber-access.spec.ts` | no | current | add to CI |
-| `studio-release-detail-chrome.spec.ts` | no | current | add to CI |
-| `viewport-studio-sounds.spec.ts` | no | stale | fixed: at 768 px there is no sidebar or bottom nav; check the Library tabs instead. Add to CI |
+Checked 2026-11-26 against the `Role journeys` command in `.github/workflows/ci.yml`: every spec in `packages/tahti-web/e2e/` is in a CI glob except `studio-dashboard-contrast.spec.ts` (mock app, signed in; Studio action contrast at 390 and 1440 px across themes). Add it to the command. `routes-listen.spec.ts` was deleted (its routes live in `routes-library`).
 
 ### Findings
 

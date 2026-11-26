@@ -33,8 +33,6 @@ export function adminGovernanceTabs(
   ];
 }
 
-export const DEFAULT_ADMIN_GOVERNANCE_TAB: AdminGovernanceTabId = 'overview';
-
 export function isAdminGovernanceTabId(
   value: string | undefined,
 ): value is AdminGovernanceTabId {

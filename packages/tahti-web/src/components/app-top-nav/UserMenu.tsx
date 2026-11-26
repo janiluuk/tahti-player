@@ -105,11 +105,13 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
             aria-hidden
           />
         ) : null}
+        {/* The initial is drawn with CSS so it is not text in the button: the
+            name "Signed in as ..." would not contain it (WCAG 2.5.3). */}
         <span
-          className="bg-primary/20 text-primary-strong font-display relative flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+          data-initial={initial}
+          className="bg-primary/20 text-primary-strong font-display relative flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold before:content-[attr(data-initial)]"
           aria-hidden
         >
-          {initial}
           {hasUnreadNotifications || hasUnreadMessages ? (
             <span
               data-testid="account-unread-pill"

@@ -245,9 +245,6 @@ export function HelpHubView() {
             <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-4xl">
               {t('helpHub.hubHeading')}
             </h2>
-            <p className="text-foreground-secondary mt-2 max-w-xl text-sm leading-relaxed sm:text-base">
-              {t('helpHub.hubIntro')}
-            </p>
           </div>
           <div className="flex items-center gap-2">
             <ContentLanguageToggle />

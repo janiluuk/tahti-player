@@ -53,6 +53,20 @@ describe('Finnish catalog', () => {
     expect(englishKeys.filter((key) => !finnishKeys.has(key))).toEqual([]);
   });
 
+  it('has no web key that English lacks', () => {
+    const englishWeb = new Set(collectKeys(en_US.web));
+    expect(
+      collectKeys(fi_FI.web).filter((key) => !englishWeb.has(key)),
+    ).toEqual([]);
+  });
+
+  it('has a web key for every English web key', () => {
+    const finnishWeb = new Set(collectKeys(fi_FI.web));
+    expect(
+      collectKeys(en_US.web).filter((key) => !finnishWeb.has(key)),
+    ).toEqual([]);
+  });
+
   it('does not leave Finnish strings identical to German Crowdin leftovers', () => {
     expect(fi_FI.common.app.name).toBe('Tahti Player');
     expect(fi_FI.web.nav.listen).toBe('Kuuntele');

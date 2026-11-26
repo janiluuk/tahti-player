@@ -55,7 +55,6 @@ import { AppSidebarNav } from './AppSidebarNav';
 import { AppTopNav } from './AppTopNav';
 import { ArtistSiteHeader } from './ArtistSiteHeader';
 import { AudioEngine } from './AudioEngine';
-import { AuthDialog } from './AuthDialog';
 import { ConnectedPlayerBar } from './ConnectedPlayerBar';
 import { ConnectedStatusBar } from './ConnectedStatusBar';
 import { HearthisEmbedHostProvider } from './HearthisEmbedHost';
@@ -64,7 +63,6 @@ import { MobileBottomNav, MobileDrawer } from './MobileChrome';
 import { NotificationToasts } from './NotificationToasts';
 import { OAuthReturnHandler } from './OAuthReturnHandler';
 import { RouteChunkSkeleton } from './PageStates';
-import { PageTourSpotlight } from './PageTourSpotlight';
 import { RightRailHeaderActions } from './RightRailHeaderActions';
 import { RightRailPanel } from './RightRailPanel';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
@@ -86,14 +84,23 @@ const ConnectedSettingsModal = lazy(() =>
     default: m.ConnectedSettingsModal,
   })),
 );
+const AuthDialog = lazy(() =>
+  import('./AuthDialog').then((m) => ({ default: m.AuthDialog })),
+);
+const PageTourSpotlight = lazy(() =>
+  import('./PageTourSpotlight').then((m) => ({
+    default: m.PageTourSpotlight,
+  })),
+);
 const FullScreenPlayer = lazy(() =>
   import('./FullScreenPlayer').then((m) => ({
     default: m.FullScreenPlayer,
   })),
 );
 
-/** Both dialogs pull large editors (channel designer, every settings panel),
- * so they load on first open rather than with the shell. */
+/** Settings and channel setup pull large editors (channel designer, every
+ * settings panel); sign-in and the page tour are never on screen at first
+ * paint. All load on first open rather than with the shell. */
 function DeferredDialogs() {
   const settingsOpened = useOpenedOnce(
     useSettingsModalStore((state) => state.isOpen),
@@ -101,8 +108,20 @@ function DeferredDialogs() {
   const channelSetupOpened = useOpenedOnce(
     useChannelSetupModalStore((state) => state.isOpen),
   );
+  const authOpened = useOpenedOnce(useAuthModalStore((state) => state.isOpen));
+  const tourOpened = useOpenedOnce(useTourStore((state) => state.open));
   return (
     <>
+      {authOpened && (
+        <Suspense fallback={null}>
+          <AuthDialog />
+        </Suspense>
+      )}
+      {tourOpened && (
+        <Suspense fallback={null}>
+          <PageTourSpotlight />
+        </Suspense>
+      )}
       {channelSetupOpened && (
         <Suspense fallback={null}>
           <ChannelSetupDialog />
@@ -619,10 +638,8 @@ export function AppShell() {
         )}
         {!isMobile && !hideSiteBottomBar && <ConnectedStatusBar />}
         <DeferredFullScreenPlayer open={fullScreenPlayerOpen} />
-        <AuthDialog />
         <OAuthReturnHandler />
         <DeferredDialogs />
-        <PageTourSpotlight />
         <Toaster position="bottom-right" richColors closeButton />
 
         <MobileDrawer

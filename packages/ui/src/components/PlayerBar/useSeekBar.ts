@@ -147,5 +147,3 @@ export const useSeekBar = ({
     isInteractive,
   } as const;
 };
-
-export type UseSeekBarReturn = ReturnType<typeof useSeekBar>;

@@ -25,7 +25,13 @@ export async function linkMotionMeeting(
     );
     return { ok: true };
   } catch (err) {
-    return { ok: false, error: errorText(err, 'Could not change the meeting') };
+    return {
+      ok: false,
+      error: errorText(
+        err,
+        i18n.t('web:adminStringsBatch40.couldNotChangeMeeting'),
+      ),
+    };
   }
 }
 

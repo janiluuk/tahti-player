@@ -95,7 +95,10 @@ export async function installMeIntegration(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (isForceMock()) {
     if (slug === 'listenbrainz' && !fields.userToken?.trim()) {
-      return { ok: false, error: 'User token is required.' };
+      return {
+        ok: false,
+        error: i18n.t('web:accountStringsBatch39.userTokenRequired'),
+      };
     }
     if (slug === 'listenbrainz' && fields.userToken.trim() === 'bad') {
       return { ok: false, error: 'ListenBrainz token is invalid.' };

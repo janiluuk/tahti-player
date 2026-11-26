@@ -63,6 +63,47 @@ Changes: each journey shard builds `vite build --mode e2e-mock` (about 30 s loca
 
 Watch on the next master runs: the bundle build time on the runner (log of "Serve the mock bundle"), per-shard spread, and any spec that relied on dev-only behaviour (`import.meta.env.DEV` is false in the bundle).
 
+## Bundle and cache (2026-11-26)
+
+### tahti-web initial JS for `/`
+
+Measured with the `web-dist` env (`TAHTI_WEB_DEPLOY_PROFILE=prod`, no mock/diagnostics) plus `--manifest --sourcemap`; gzip level 6 (nginx). "Initial" is the HTML entry, the two chunks `main.tsx` awaits at boot (`TahtiApp` shell, `languageStore`) and their static imports: 5 chunks.
+
+| Chunk | Raw KB | Gzip KB | What is in it |
+| ----- | ------ | ------- | ------------- |
+| `TahtiApp` | 1282.0 | 395.7 | react-dom 128, app components 214, ui components 115, headlessui 97, motion 122, app api 88, tanstack router 65, theme presets 41 (Gruvbox default lives here), sonner 34, tailwind-merge 27, virtual-core 23 |
+| `languageStore` | 645.6 | 207.4 | `en_US.json` 574 KB, of which the `web` namespace is 569 KB / 181 KB gzip; i18next 43 |
+| entry + `channelSubdomain` + preload helper | 3.9 | 2.2 | |
+| **Total** | **1931.5** | **605.2** | |
+
+Largest chunks overall (raw): `TahtiApp` 1313 KB, `cynefin` (mermaid diagram) 688, `languageStore` 661, `mermaid.core` 655, `fi_FI` 636, `hls` 593, `three.module` 537, `cytoscape` 443, `index` (mermaid deps) 403, `MoreView` 362. Mermaid, three.js, hls, cytoscape, katex and the other locales are already lazy; none reach `/`.
+
+Cuts (each verified with related vitest, Storybook plays and e2e journeys against the mock bundle):
+
+| Change | `TahtiApp` gzip | Out of the shell |
+| ------ | --------------- | ---------------- |
+| Before | 395.7 KB | |
+| 1. Listen add-ons on demand: `ListenAddonsPanel` lazy inside the Add widget dialog; the opt-in add-on blocks (`LatestNewsWidget`, `ListenerWidgetEmbed`, `FavoritesView`) lazy in `ListenerWidgetsSection` behind a `CardsRowSkeleton`; `PlatformNewsDialog` lazy in `HomeNews` | 377.1 KB (-18.6) | ~67 KB raw: add-on store, news dialogs/editor, image upload, admin-addons/admin-news API, StoryCard/StoryRow |
+| 2. `AuthDialog` and `PageTourSpotlight` mount on first open (`DeferredDialogs` in `AppShell`); the idle prefetch warms `AuthDialog`; the tour's close-on-route-change skips its own mount | 372.6 KB (-4.5) | ~16 KB raw |
+
+Initial JS for `/`: 605.2 -> 578.0 KB gzip (1931.5 -> 1833.1 KB raw). 23.1 KB of that is the shell; the rest is the language chunk shrinking from concurrent i18n work in the same tree. Other agents' edits moved the shell by under 1 KB.
+
+Biggest remaining lever: the English `web` namespace (181 KB gzip, 30% of initial JS) ships whole. Splitting it (admin/studio strings into lazy namespaces) needs a catalog restructure; not done here because the catalog was being edited in parallel.
+
+### Budget check
+
+`packages/tahti-web/scripts/check-bundle-budget.mjs` reads `dist/.vite/manifest.json`, prints every initial chunk (raw/gzip), writes a step-summary table and exits 1 with a `::warning` annotation past `DEFAULT_BUDGET_KB` (600 KB gzip: 578 today + ~4% headroom). The `web-dist` job builds with `--manifest`, runs it with `continue-on-error: true`, then deletes `dist/.vite` so the artifact deploys never ship the manifest. It only runs on master pushes (where `web-dist` runs). Tighten by lowering the constant, then drop `continue-on-error`.
+
+### Actions cache
+
+`actions/cache/usage` on 2026-11-26: 9.69 GB of 10 GB in 14 entries: turbo `build-player` 4 x ~1.1 GB, `coverage` 3 x ~0.94 GB, `test-core` 5 x ~0.29 GB (two of the build/test-core entries from PR refs), pnpm store 249 MB, Playwright 271 MB. Every commit wrote ~2.35 GB of turbo cache (plus ~1.4 GB per PR push).
+
+Turbo hit rates on the last three master runs: build+lint lint 15-17/18, `build:frontend` 0-4/5 (restore ~13 s for 1.1 GB); test-core 2-13/14; coverage 1-6/7. The cache pays when a commit leaves a package alone, so it stays.
+
+Change (`.github/actions/setup/action.yml`): only `push` events save turbo caches; pull requests and manual runs restore master's latest with `actions/cache/restore`. The generic `Linux-turbo-` fallback is gone, so a job no longer restores another job's 1 GB cache on a miss. Expected: no PR turbo entries; ~2.35 GB per master commit, so about 3 commits of turbo history beside pnpm and Playwright (both read on every run, so LRU eviction reaches them last).
+
+Not done: pruning `.turbo/cache` entries before the save (needs a save step in each job; the composite action cannot run a post step of its own), and finding why `build:frontend` misses on CI-only commits.
+
 ## Left
 
 

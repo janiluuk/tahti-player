@@ -538,7 +538,7 @@ const GRUVBOX_VARS: Record<string, string> = {
   'accent-blue': 'oklch(0.58 0.066 200)',
   'accent-orange': 'oklch(0.62 0.171 46)',
   'accent-cyan': 'oklch(0.65 0.094 145)',
-  'accent-red': 'oklch(0.55 0.203 29)',
+  'accent-red': 'oklch(0.6 0.203 29)',
   'shadow-color': 'oklch(0.41 0.011 52)',
   'shadow-x': '2px',
   'shadow-y': '2px',

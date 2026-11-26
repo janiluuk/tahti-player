@@ -140,6 +140,11 @@ jobs:
       - name: File size guard
         run: pnpm check:file-size
 
+      # Report only: dynamic keys the scan misses would make a hard gate flaky.
+      - name: Unused web i18n keys (report)
+        continue-on-error: true
+        run: pnpm check:i18n-unused
+
       # On pull requests only the packages the change affects (and their
       # dependents) are linted; master runs every package.
       - name: Lint
@@ -474,7 +479,7 @@ jobs:
 
       - name: Role journeys
         working-directory: packages/tahti-web
-        run: pnpm exec playwright test e2e/roles-*.spec.ts e2e/use-cases-*.spec.ts e2e/routes-*.spec.ts e2e/view-before-edit.spec.ts e2e/batch-fixes*.spec.ts e2e/nav-chrome.spec.ts e2e/layout-stability.spec.ts e2e/studio-release-detail-chrome.spec.ts e2e/library-*.spec.ts e2e/viewport-studio-sounds.spec.ts e2e/a11y-play-controls.spec.ts e2e/event-calendar.spec.ts e2e/cutover-vital.spec.ts e2e/real-user-journeys.spec.ts e2e/plugin-store.spec.ts e2e/radio-cover.spec.ts e2e/channel-designer-elements.spec.ts e2e/channel-designer-artist-look.spec.ts e2e/channel-clips.spec.ts e2e/fullscreen-player-minimize.spec.ts e2e/mastering.spec.ts e2e/stash-and-subscriber-access.spec.ts e2e/listings-news.spec.ts e2e/channel-designer-parity.spec.ts e2e/listener-purchase-flow.spec.ts e2e/fan-sub-and-track-purchase.spec.ts e2e/artist-site-chrome.spec.ts e2e/phone-*.spec.ts --fully-parallel --workers=2 --retries=1 --shard=${{ matrix.shard }}/6 --reporter=list,json
+        run: pnpm exec playwright test e2e/roles-*.spec.ts e2e/use-cases-*.spec.ts e2e/routes-*.spec.ts e2e/view-before-edit.spec.ts e2e/batch-fixes*.spec.ts e2e/nav-chrome.spec.ts e2e/layout-stability.spec.ts e2e/studio-release-detail-chrome.spec.ts e2e/library-*.spec.ts e2e/viewport-studio-sounds.spec.ts e2e/a11y-play-controls.spec.ts e2e/a11y-axe-*.spec.ts e2e/event-calendar.spec.ts e2e/cutover-vital.spec.ts e2e/real-user-journeys.spec.ts e2e/plugin-store.spec.ts e2e/radio-cover.spec.ts e2e/channel-designer-elements.spec.ts e2e/channel-designer-artist-look.spec.ts e2e/channel-clips.spec.ts e2e/fullscreen-player-minimize.spec.ts e2e/mastering.spec.ts e2e/stash-and-subscriber-access.spec.ts e2e/listings-news.spec.ts e2e/channel-designer-parity.spec.ts e2e/listener-purchase-flow.spec.ts e2e/fan-sub-and-track-purchase.spec.ts e2e/artist-site-chrome.spec.ts e2e/phone-*.spec.ts e2e/studio-dashboard-contrast.spec.ts --fully-parallel --workers=2 --retries=1 --shard=${{ matrix.shard }}/6 --reporter=list,json
         env:
           PLAYWRIGHT_BASE_URL: http://localhost:5196
           PLAYWRIGHT_JSON_OUTPUT_NAME: e2e-timings.json
@@ -522,7 +527,7 @@ jobs:
             TAHTI_WEB_DEPLOY_PROFILE=prod \
             VITE_CENTRIFUGO_WS="${VITE_CENTRIFUGO_WS:-wss://chat.tahti.live/connection/websocket}" \
             VITE_HCAPTCHA_SITEKEY="${{ vars.HCAPTCHA_SITEKEY }}" \
-            pnpm --filter @tahti-player/tahti-web build
+            pnpm --filter @tahti-player/tahti-web build --manifest
 
       - name: Verify build output
         run: |
@@ -536,6 +541,17 @@ jobs:
           bundle_files=$(find packages/tahti-web/dist -type f | wc -l)
           echo "### tahti-web production bundle" >> "$GITHUB_STEP_SUMMARY"
           echo "${bundle_bytes} bytes across ${bundle_files} files; diagnostics atlas excluded." >> "$GITHUB_STEP_SUMMARY"
+
+      # Reports the JS a first visit to / downloads (gzip). Over the budget in
+      # scripts/check-bundle-budget.mjs it adds a warning annotation; it does
+      # not fail the build.
+      - name: Initial JS budget for /
+        continue-on-error: true
+        run: node packages/tahti-web/scripts/check-bundle-budget.mjs packages/tahti-web/dist
+
+      # The manifest only feeds the budget check; deploys never serve it.
+      - name: Drop the Vite manifest
+        run: rm -rf packages/tahti-web/dist/.vite
 
       - name: Upload production bundle
         uses: actions/upload-artifact@v4

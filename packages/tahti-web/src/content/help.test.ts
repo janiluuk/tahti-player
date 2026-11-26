@@ -45,7 +45,9 @@ describe('shared jam help', () => {
       (section) => section.heading === 'Not the desktop remote',
     );
     expect(
-      remote?.body.some((line) => line.includes('Settings → Integrations')),
+      remote?.body.some((line) =>
+        line.includes('Settings → Playback → Integrations'),
+      ),
     ).toBe(true);
   });
 });
@@ -171,5 +173,44 @@ describe('studio notices help', () => {
     const text = article?.sections.flatMap((section) => section.body).join(' ');
     expect(text).toContain('Settings → Notifications → Studio work');
     expect(text).toContain('could not be processed');
+  });
+});
+
+describe('current navigation in help', () => {
+  const text = (slug: string) =>
+    getHelpArticle(slug)
+      ?.sections.flatMap((section) => section.body)
+      .join(' ') ?? '';
+
+  it('puts the Channel designer under Studio → Channel', () => {
+    expect(text('channel-design')).toContain('Studio → Channel → Design');
+    expect(text('studio-channel')).toContain('Manage clips');
+    expect(text('getting-around')).not.toContain('Profile → Channel design');
+  });
+
+  it('describes the Profile tabs with branding as logo and release visuals', () => {
+    const profile = text('artist-profile');
+    expect(profile).toContain('Change backdrop');
+    expect(profile).toContain('Release visuals');
+  });
+
+  it('documents the phone mini player and the full-screen title setting', () => {
+    const player = text('player');
+    expect(player).toContain('Minimize player');
+    expect(player).toContain(
+      'Settings → Appearance → Full-screen title change',
+    );
+  });
+
+  it('documents event browsing and comments', () => {
+    const events = text('events-and-parties');
+    expect(events).toContain('previous or next event');
+    expect(events).toContain('Comments');
+  });
+
+  it('keeps Go live under Studio → Broadcast with the Studio nav', () => {
+    const broadcast = text('broadcast');
+    expect(broadcast).toContain('Studio → Broadcast → Go live');
+    expect(broadcast).toContain('Studio navigation stays on screen');
   });
 });

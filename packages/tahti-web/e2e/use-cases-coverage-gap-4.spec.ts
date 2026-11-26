@@ -21,7 +21,7 @@ test('listener: adds a Spotify artist to Listen after an album link is refused',
     localStorage.removeItem('tahti-web-listener-widgets');
   });
   await page.reload();
-  await page.getByRole('button', { name: 'Add new listen widget' }).click();
+  await page.getByRole('button', { name: 'Add widget to Listen' }).click();
   const dialog = page.getByRole('dialog');
   await dialog.getByTestId('add-listen-widget-service-spotify').click();
   await expect(

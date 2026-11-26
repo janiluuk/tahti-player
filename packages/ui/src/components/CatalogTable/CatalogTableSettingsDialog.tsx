@@ -40,7 +40,7 @@ export type CatalogTableSettingsLabels = {
   cancel: string;
 };
 
-export const DEFAULT_SETTINGS_LABELS: CatalogTableSettingsLabels = {
+const DEFAULT_SETTINGS_LABELS: CatalogTableSettingsLabels = {
   title: 'Table settings',
   description:
     'Choose which fields the table shows and in what order. Saved on this device.',

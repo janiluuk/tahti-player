@@ -8,8 +8,6 @@ export const ACCOUNT_TAB_IDS = [
   'privacy',
 ] as const;
 
-export type AccountTabId = (typeof ACCOUNT_TAB_IDS)[number];
-
 /** The tab a deep link to Account opens. Purchases share the
  * subscriptions tab. */
 export function accountTabIndex(tabId: string | null | undefined): number {

@@ -299,7 +299,10 @@ export async function submitSetupPassword(
     // fetch the full session user the same way login/register do.
     const me = await fetchAuthMe();
     if (!me.data) {
-      return { ok: false, error: 'Password set, but session did not start' };
+      return {
+        ok: false,
+        error: i18n.t('web:accountStringsBatch39.passwordSetNoSession'),
+      };
     }
     return { ok: true, user: me.data };
   } catch (err) {
@@ -316,8 +319,7 @@ export async function submitSetupPassword(
 /** POST /api/auth/forgot-password — always returns a generic message, even
  * for unknown emails, so the endpoint can't be used to enumerate accounts. */
 export async function submitForgotPassword(email: string): Promise<string> {
-  const fallback =
-    'If an account exists for that email, we sent a link to reset your password.';
+  const fallback = i18n.t('web:accountStringsBatch39.forgotPasswordSent');
   if (isForceMock()) {
     return fallback;
   }
@@ -384,7 +386,10 @@ export async function submitResetPassword(
     );
     const me = await fetchAuthMe();
     if (!me.data) {
-      return { ok: false, error: 'Password reset, but session did not start' };
+      return {
+        ok: false,
+        error: i18n.t('web:accountStringsBatch39.passwordResetNoSession'),
+      };
     }
     return { ok: true, user: me.data };
   } catch (err) {

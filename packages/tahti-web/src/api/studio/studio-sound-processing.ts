@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from '../mode';
 import { mockSoundStore } from './studio-mock';
 import { requestJson } from './studio-request';
@@ -9,7 +11,10 @@ export async function retrySoundProcessing(
   if (isForceMock()) {
     const item = mockSoundStore.find((sound) => sound.id === id);
     if (!item || item.status !== 'ERROR') {
-      return { ok: false, error: 'Only a failed upload can be retried.' };
+      return {
+        ok: false,
+        error: i18n.t('web:studioStringsBatch38.onlyFailedRetry'),
+      };
     }
     item.status = 'PENDING';
     item.processingError = null;
@@ -24,7 +29,10 @@ export async function retrySoundProcessing(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not retry processing.',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.couldNotRetryProcessing'),
     };
   }
 }

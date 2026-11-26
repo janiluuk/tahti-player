@@ -76,7 +76,6 @@ function primaryForeground(vars: Record<string, string>): string | null {
  * fall through to the stock theme and the theme "doesn't reach" buttons,
  * inputs and secondary surfaces. */
 const DERIVED: Array<[token: string, from: string, value: string]> = [
-  ['primary-strong', 'primary', 'var(--primary)'],
   ['secondary', 'background-secondary', 'var(--background-secondary)'],
   ['secondary-foreground', 'foreground', 'var(--foreground)'],
   ['background-input', 'background', 'var(--background)'],
@@ -94,6 +93,10 @@ const DERIVED: Array<[token: string, from: string, value: string]> = [
  * color-mix never lands them under it. */
 const NON_TEXT_CONTRAST = 3;
 const MIX_TARGET = 3.2;
+
+/** WCAG 1.4.3 minimum for small text, with the same rounding margin. */
+const TEXT_CONTRAST = 4.5;
+const TEXT_MIX_TARGET = 4.7;
 
 /** Wcag luminance where black and white text contrast equally; darker
  * backgrounds want dark native controls. */
@@ -163,6 +166,37 @@ function blackOrWhite(vars: Record<string, string>): string | null {
     : 'oklch(0 0 0)';
 }
 
+/** Small-text tone of `token`: the colour itself when it reads at 4.5:1 on
+ * the page and raised surface, else the least foreground mixed in that does. */
+function strongTone(
+  vars: Record<string, string>,
+  token: string,
+): string | null {
+  const primary = resolveColour(vars, token);
+  if (!primary) {
+    return null;
+  }
+  const on = surfaces(vars);
+  if (standsOut(primary, on, TEXT_CONTRAST)) {
+    return `var(--${token})`;
+  }
+  const foreground = resolveColour(vars, 'foreground');
+  const ink = foreground ? 'var(--foreground)' : blackOrWhite(vars);
+  const inkColour = foreground ?? (ink ? parse(ink) : undefined);
+  if (!ink || !inkColour) {
+    return `var(--${token})`;
+  }
+  const mix = interpolate([primary, inkColour], 'oklch');
+  for (let percent = 10; percent < 100; percent += 5) {
+    if (standsOut(mix(percent / 100), on, TEXT_MIX_TARGET)) {
+      return `color-mix(in oklch, var(--${token}) ${100 - percent}%, ${ink})`;
+    }
+  }
+  return ink;
+}
+
+const ACCENTS = ['green', 'yellow', 'purple', 'blue', 'orange', 'cyan', 'red'];
+
 const COMPUTED_INPUTS = [
   'primary',
   'foreground',
@@ -173,9 +207,15 @@ const COMPUTED_INPUTS = [
 
 /** Tokens that must stay legible on the theme's surfaces, so they are picked
  * by contrast rather than mapped one-to-one. */
-const COMPUTED: Array<
-  [token: string, derive: (vars: Record<string, string>) => string | null]
-> = [
+type Derive = (vars: Record<string, string>) => string | null;
+
+const COMPUTED: Array<[token: string, derive: Derive]> = [
+  ...['primary', ...ACCENTS.map((accent) => `accent-${accent}`)].map(
+    (token): [string, Derive] => [
+      `${token}-strong`,
+      (vars) => strongTone(vars, token),
+    ],
+  ),
   [
     'focus-ring',
     (vars) =>

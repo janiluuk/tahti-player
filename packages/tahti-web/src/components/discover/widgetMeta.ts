@@ -46,7 +46,7 @@ export const WIDGET_LABEL_KEYS: Record<DiscoverWidgetId, ParseKeys<'web'>> = {
   'upcoming-events': 'discover.widgets.upcomingEvents',
 };
 
-/** What each widget shows, for the Add a widget menu. */
+/** What each widget shows, for the Add widget menu. */
 export const WIDGET_MENU: Record<
   DiscoverWidgetId,
   { icon: typeof CompassIcon; descriptionKey: ParseKeys<'web'> }
