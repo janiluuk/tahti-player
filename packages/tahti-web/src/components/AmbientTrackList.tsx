@@ -60,9 +60,9 @@ export type AmbientTrackListProps = {
    * paint their own colours behind the list. */
   surfaceClassName?: string;
   /** Phones drop the panel (border, padding and surface) so the rows sit
-   * straight on the page. The surface class goes with it rather than being
-   * overridden, because the channel colour scheme keys the theme's text
-   * colours off that class. */
+   * straight on the page and use its full width; pass `false` to keep it.
+   * The surface class goes with it rather than being overridden, because
+   * the channel colour scheme keys the theme's text colours off that class. */
   flushOnPhone?: boolean;
   className?: string;
 };
@@ -83,7 +83,7 @@ export function AmbientTrackList({
   initialView,
   heading,
   surfaceClassName,
-  flushOnPhone = false,
+  flushOnPhone = true,
   className,
 }: AmbientTrackListProps) {
   const { t } = useTranslation('web');
@@ -252,7 +252,7 @@ export function AmbientTrackList({
           ))}
         </CardGrid>
       ) : (
-        <ul className="flex flex-col gap-2">
+        <ul className="flex flex-col gap-1 sm:gap-2">
           {items.map((item) => {
             const { id, ...row } = item;
             return (

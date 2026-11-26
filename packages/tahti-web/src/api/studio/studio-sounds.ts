@@ -160,7 +160,9 @@ export async function fetchStudioSoundDownload(id: string): Promise<
     return {
       ok: false,
       error:
-        error instanceof Error ? error.message : 'Download is not available',
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:studioStringsBatch38.downloadUnavailable'),
     };
   }
 }
@@ -353,7 +355,10 @@ export async function createSoundShare(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Share creation failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.shareCreationFailed'),
     };
   }
 }
@@ -491,7 +496,7 @@ export async function patchMetaStreamPreference(optOut: boolean): Promise<
       error:
         error instanceof Error
           ? error.message
-          : 'Could not update Tahti Radio preference',
+          : i18n.t('web:studioStringsBatch38.radioPreferenceFailed'),
     };
   }
 }
@@ -533,7 +538,10 @@ export async function uploadSoundBanner(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Artwork upload failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.artworkUploadFailed'),
     };
   }
 }

@@ -3,6 +3,7 @@ import { getMockSessionUser, setMockSessionUser } from '../api/mock-session';
 import { fetchPublicSoundDownload } from '../api/public-sound-download';
 import { createPurchaseTier, setSoundAccess } from '../api/purchase-tiers';
 import { fetchMeProfile } from '../api/studio-extras';
+import { useThemeStore } from '../plugins/themes/store';
 
 /**
  * App internals the Playwright journeys drive from `page.evaluate`. A built
@@ -17,6 +18,10 @@ export const tahtiE2eHooks = {
   fetchMeProfile,
   getMockSessionUser,
   setMockSessionUser,
+  setTheme: (theme: string, mode: 'light' | 'dark') => {
+    useThemeStore.getState().setTheme(theme);
+    useThemeStore.getState().setColorMode(mode);
+  },
 };
 
 export type TahtiE2eHooks = typeof tahtiE2eHooks;

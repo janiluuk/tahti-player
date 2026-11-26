@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { signIn } from './helpers/auth';
+import { waitForE2eHooks, type TahtiE2eHooks } from './helpers/e2eHooks';
 
 for (const width of [390, 1440]) {
   test(`Studio actions remain readable at ${width}px across themes`, async ({
@@ -35,15 +36,15 @@ for (const width of [390, 1440]) {
       'nuclear:tahti-dark',
       'custom:gruvbox',
     ];
+    await waitForE2eHooks(page);
     for (const theme of themes) {
       for (const mode of ['light', 'dark']) {
         await page.evaluate(
-          async ({ theme, mode }) => {
-            const modulePath = '/src/plugins/themes/store.ts';
-            const { useThemeStore } = await import(modulePath);
-            useThemeStore.getState().setTheme(theme);
-            useThemeStore.getState().setColorMode(mode);
-          },
+          ({ theme, mode }) =>
+            (window as { __tahtiE2e?: TahtiE2eHooks }).__tahtiE2e!.setTheme(
+              theme,
+              mode as 'light' | 'dark',
+            ),
           { theme, mode },
         );
         for (const button of [upload, create]) {

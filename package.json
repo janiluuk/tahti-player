@@ -32,6 +32,7 @@
     "build:android:release": "pnpm tahti-ops desktop android release",
     "lint": "turbo lint",
     "check:file-size": "pnpm tahti-ops check size",
+    "check:i18n-unused": "node packages/i18n/scripts/report-unused-web-keys.mjs",
     "check:guards": "node scripts/generate-storybook-surfaces.mjs --check && pnpm check:file-size",
     "storybook:surfaces": "node scripts/generate-storybook-surfaces.mjs",
     "lint:fix": "turbo lint:fix",

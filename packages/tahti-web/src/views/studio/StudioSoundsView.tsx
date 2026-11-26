@@ -175,7 +175,7 @@ export function StudioSoundsView() {
             </div>
           }
         >
-          <StudioPanel>
+          <StudioPanel className="max-sm:rounded-none max-sm:border-0 max-sm:bg-transparent max-sm:p-0 max-sm:shadow-none">
             <Tabs
               className="min-w-0"
               listClassName="border-border mb-4 flex-wrap gap-1 border-b pb-2"

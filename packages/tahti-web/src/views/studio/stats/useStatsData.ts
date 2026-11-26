@@ -193,7 +193,10 @@ export function useStatsData() {
             (result) => result.meta.source === 'api' && result.meta.reason,
           );
           if (failed) {
-            setLoadError(failed.meta.reason ?? 'Could not load your stats.');
+            setLoadError(
+              failed.meta.reason ??
+                i18n.t('web:studioStringsBatch38.couldNotLoadStats'),
+            );
             return;
           }
           setSummary(summaryResult.data);
@@ -209,7 +212,7 @@ export function useStatsData() {
       )
       .catch(() => {
         if (!cancelled) {
-          setLoadError('Could not load your stats.');
+          setLoadError(i18n.t('web:studioStringsBatch38.couldNotLoadStats'));
         }
       })
       .finally(() => {

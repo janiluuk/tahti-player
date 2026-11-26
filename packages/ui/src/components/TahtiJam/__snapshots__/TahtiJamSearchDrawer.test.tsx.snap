@@ -60,7 +60,7 @@ exports[`TahtiJamSearchDrawer > (Snapshot) renders the empty state 1`] = `
             No results
           </h2>
           <p
-            class="text-foreground text-sm opacity-60"
+            class="text-foreground-secondary text-sm"
           >
             Try a different search
           </p>
@@ -124,7 +124,7 @@ exports[`TahtiJamSearchDrawer > (Snapshot) renders the error state 1`] = `
             Search failed
           </h2>
           <p
-            class="text-foreground text-sm opacity-60"
+            class="text-foreground-secondary text-sm"
           >
             Check the player and try again
           </p>

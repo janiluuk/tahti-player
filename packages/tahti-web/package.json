@@ -1,6 +1,6 @@
 {
   "name": "@tahti-player/tahti-web",
-  "version": "0.0.493",
+  "version": "0.0.494",
   "private": true,
   "type": "module",
   "description": "Tahti listening, artist, and governance web client",
@@ -53,6 +53,7 @@
     "zustand": "^5.0.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.1",
     "@playwright/test": "^1.55.0",
     "@tahti-player/eslint-config": "workspace:*",
     "@tailwindcss/vite": "^4.1.11",

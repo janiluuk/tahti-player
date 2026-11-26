@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, ListMusicIcon, PlusIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
@@ -23,7 +23,6 @@ import {
   listenBlockLabel,
   useListenerWidgetsStore,
 } from '../stores/listenerWidgetsStore';
-import { ListenAddonsPanel } from './ListenAddonsPanel';
 import { SourceServiceIcon } from './SourceServiceIcon';
 
 type OwnPlaylist = {
@@ -32,6 +31,14 @@ type OwnPlaylist = {
   url: string;
   count?: number;
 };
+
+/** The full add-on store (embeds, feed suggestions, image uploads) only shows
+ * after "Browse all add-ons", so it stays out of the Listen page's chunk. */
+const ListenAddonsPanel = lazy(() =>
+  import('./ListenAddonsPanel').then((m) => ({
+    default: m.ListenAddonsPanel,
+  })),
+);
 
 const ICON_ID: Record<string, IntegrationId> = {
   soundcloud: 'soundcloud',
@@ -276,7 +283,9 @@ export function AddListenWidgetDialog() {
               {t('addListenWidget.back')}
             </Button>
             <div className="mt-2 flex flex-col gap-3">
-              <ListenAddonsPanel initialTab="available" compact />
+              <Suspense fallback={null}>
+                <ListenAddonsPanel initialTab="available" compact />
+              </Suspense>
             </div>
           </>
         ) : type ? (

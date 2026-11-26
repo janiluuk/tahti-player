@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { HelpArticleView, HelpHubView } from '@tahti-web/views/HelpView';
+import { expect, within } from 'storybook/test';
 
 import {
   withMockAuth,
@@ -35,6 +36,18 @@ export const Hub: Story = {
   },
   decorators: [withTahtiRouter('/help')],
   render: () => <HelpHubView />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const heading = await canvas.findByRole('heading', {
+      name: 'How can we help?',
+    });
+    await expect(heading.parentElement?.querySelector('p')).toBeNull();
+    await expect(canvas.queryByText(/Short guides for listening/)).toBeNull();
+    await expect(
+      canvas.getByRole('searchbox', { name: 'Search help guides' }),
+    ).toBeVisible();
+    await expect(canvas.getByTestId('help-guide-index')).toBeVisible();
+  },
 };
 
 export const ArtistGuide: Story = {

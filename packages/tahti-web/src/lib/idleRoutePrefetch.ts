@@ -17,6 +17,7 @@ export function prefetchCommonRoutes(): void {
   void import('../views/studio/StudioHomeView');
   void import('../views/LibraryView');
   void import('../views/RadioView');
+  void import('../components/AuthDialog');
 }
 
 export function scheduleIdleRoutePrefetch(): () => void {

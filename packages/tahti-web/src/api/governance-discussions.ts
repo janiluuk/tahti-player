@@ -181,10 +181,16 @@ export async function replyToDiscussion(
   if (isForceMock()) {
     const topic = mockTopics.find((t) => t.id === id);
     if (!topic) {
-      return { ok: false, error: 'Topic not found' };
+      return {
+        ok: false,
+        error: i18n.t('web:adminStringsBatch40.topicNotFound'),
+      };
     }
     if (topic.status === 'CLOSED') {
-      return { ok: false, error: 'This topic is closed to replies' };
+      return {
+        ok: false,
+        error: i18n.t('web:adminStringsBatch40.topicClosedToReplies'),
+      };
     }
     const post: DiscussionPost = {
       id: String(Date.now()),
@@ -209,7 +215,13 @@ export async function replyToDiscussion(
     );
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: errorMessage(err, 'Could not post your reply') };
+    return {
+      ok: false,
+      error: errorMessage(
+        err,
+        i18n.t('web:adminStringsBatch40.couldNotPostReply'),
+      ),
+    };
   }
 }
 
@@ -225,7 +237,7 @@ export async function setDiscussionFollow(
     }));
     return topic
       ? { ok: true, data: { following: topic.following, muted: topic.muted } }
-      : { ok: false, error: 'Topic not found' };
+      : { ok: false, error: i18n.t('web:adminStringsBatch40.topicNotFound') };
   }
   try {
     const { data } = await requestJson<DiscussionParticipation>(
@@ -253,7 +265,7 @@ export async function setDiscussionMute(
     }));
     return topic
       ? { ok: true, data: { following: true, muted } }
-      : { ok: false, error: 'Topic not found' };
+      : { ok: false, error: i18n.t('web:adminStringsBatch40.topicNotFound') };
   }
   try {
     const { data } = await requestJson<DiscussionParticipation>(
@@ -276,7 +288,10 @@ export async function removeDiscussionPost(
   if (isForceMock()) {
     const topic = mockTopics.find((t) => t.id === id);
     if (!topic?.posts.some((p) => p.id === postId)) {
-      return { ok: false, error: 'Post not found' };
+      return {
+        ok: false,
+        error: i18n.t('web:adminStringsBatch40.postNotFound'),
+      };
     }
     updateMockTopic(id, (t) => ({
       ...t,
@@ -349,7 +364,13 @@ export async function markAllDiscussionsRead(): Promise<
     );
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: errorMessage(err, 'Could not mark them read') };
+    return {
+      ok: false,
+      error: errorMessage(
+        err,
+        i18n.t('web:adminStringsBatch40.couldNotMarkRead'),
+      ),
+    };
   }
 }
 
@@ -363,10 +384,16 @@ export async function editDiscussionPost(
     const topic = mockTopics.find((t) => t.id === id);
     const post = topic?.posts.find((p) => p.id === postId);
     if (!topic || !post) {
-      return { ok: false, error: 'Post not found' };
+      return {
+        ok: false,
+        error: i18n.t('web:adminStringsBatch40.postNotFound'),
+      };
     }
     if (topic.status === 'CLOSED') {
-      return { ok: false, error: 'This topic is closed; its replies are kept' };
+      return {
+        ok: false,
+        error: i18n.t('web:adminStringsBatch40.topicClosedRepliesKept'),
+      };
     }
     const edited = {
       ...post,
@@ -386,7 +413,13 @@ export async function editDiscussionPost(
     );
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: errorMessage(err, 'Could not save your reply') };
+    return {
+      ok: false,
+      error: errorMessage(
+        err,
+        i18n.t('web:adminStringsBatch40.couldNotSaveReply'),
+      ),
+    };
   }
 }
 
@@ -429,7 +462,13 @@ export async function createDiscussionTopic(
     );
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: errorMessage(err, 'Could not open the topic') };
+    return {
+      ok: false,
+      error: errorMessage(
+        err,
+        i18n.t('web:adminStringsBatch40.couldNotOpenTopic'),
+      ),
+    };
   }
 }
 
@@ -441,7 +480,7 @@ export async function updateDiscussionTopic(
     const topic = updateMockTopic(id, (t) => ({ ...t, ...input }));
     return topic
       ? { ok: true, data: summary(topic) }
-      : { ok: false, error: 'Topic not found' };
+      : { ok: false, error: i18n.t('web:adminStringsBatch40.topicNotFound') };
   }
   try {
     const { data } = await requestJson<DiscussionTopic>(

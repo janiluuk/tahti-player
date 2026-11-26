@@ -2,8 +2,6 @@ export const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 export const DEFAULT_BROADCAST_HOUR = 20;
 export const DAYS_PER_WEEK = 7;
 export const FREQUENCY_DAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
-export const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
 export type LocalDateTime = {
   date: string;
   time: string;

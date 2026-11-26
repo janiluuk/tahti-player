@@ -59,7 +59,13 @@ export async function updateChannelMember(
     );
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not save the changes') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotSaveChanges'),
+      ),
+    };
   }
 }
 
@@ -79,7 +85,13 @@ export async function removeChannelMember(
     });
     return { ok: true };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not remove the person') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotRemovePerson'),
+      ),
+    };
   }
 }
 
@@ -124,7 +136,13 @@ export async function uploadChannelMemberPicture(
     });
     return { ok: true, data: { url: data.url } };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not upload the picture') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotUploadPicture'),
+      ),
+    };
   }
 }
 
@@ -147,7 +165,13 @@ export async function clearChannelMemberPicture(
     );
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not remove the picture') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotRemovePicture'),
+      ),
+    };
   }
 }
 
@@ -169,7 +193,13 @@ export async function reorderChannelMembers(
     });
     return { ok: true };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not save the order') };
+    return {
+      ok: false,
+      error: message(
+        err,
+        i18n.t('web:accountStringsBatch39.couldNotSaveOrder'),
+      ),
+    };
   }
 }
 

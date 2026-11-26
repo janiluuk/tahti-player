@@ -27,6 +27,7 @@ import {
 import type { StudioChannelSection } from '../../lib/studioProfileSections';
 import { useAuthStore } from '../../stores/authStore';
 import { useChannelSetupModalStore } from '../../stores/channelSetupModalStore';
+import { BroadcastPanel } from '../settings/panels/BroadcastPanel';
 import { ChannelPanel } from '../settings/panels/ChannelPanel';
 import { StudioSectionPage } from './StudioSectionPage';
 
@@ -200,7 +201,12 @@ function ChannelSectionBody({ section }: { section: StudioChannelSection }) {
     );
   }
   if (section === 'settings') {
-    return <ChannelRadioPlaylistPanel />;
+    return (
+      <>
+        <ChannelRadioPlaylistPanel />
+        <BroadcastPanel section="green-room" />
+      </>
+    );
   }
   return <ChannelPanel section={section} />;
 }

@@ -160,7 +160,7 @@ describe('DiscoverView', () => {
   it('does not render the hero tile', async () => {
     const { container } = await renderDiscover('/discover');
 
-    expect(container.textContent).not.toContain('Add a widget');
+    expect(container.textContent).not.toContain('Add widget to Discover');
     expect(container.textContent).toContain('This week: most played');
     expect(
       container.querySelector('[data-testid="discover-tab-venues"]'),

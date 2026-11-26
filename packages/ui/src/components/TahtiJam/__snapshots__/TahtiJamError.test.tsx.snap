@@ -54,7 +54,7 @@ exports[`TahtiJamError > (Snapshot) renders with labels 1`] = `
         Could not connect
       </h2>
       <p
-        class="text-foreground text-sm opacity-60"
+        class="text-foreground-secondary text-sm"
       >
         Make sure Nuclear is running
       </p>

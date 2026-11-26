@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { getJson, sendJson } from '../http';
 import { isForceMock } from '../mode';
 
@@ -78,7 +80,10 @@ export async function fetchAdminThemes(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not load themes',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotLoadThemes'),
     };
   }
 }
@@ -102,7 +107,10 @@ export async function approveAdminTheme(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not approve the theme',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotApproveTheme'),
     };
   }
 }
@@ -113,7 +121,10 @@ export async function rejectAdminTheme(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const note = moderationNote.trim();
   if (!note) {
-    return { ok: false, error: 'Tell the author why the theme was rejected.' };
+    return {
+      ok: false,
+      error: i18n.t('web:adminStringsBatch40.rejectReasonRequired'),
+    };
   }
   if (isForceMock()) {
     const theme = themeState().find((item) => item.id === id);
@@ -135,7 +146,10 @@ export async function rejectAdminTheme(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not reject the theme',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:adminStringsBatch40.couldNotRejectTheme'),
     };
   }
 }

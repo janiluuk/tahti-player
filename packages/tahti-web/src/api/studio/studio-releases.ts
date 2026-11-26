@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import { DEMO_MP3, mockProfile } from '../mock';
 import { mockFixture } from '../mock-overrides';
@@ -194,7 +196,10 @@ export async function fetchStudioRelease(
       data.releases.find((r) => r.id === id) ?? mockStudioReleaseById(id);
     return release
       ? { ok: true, data: release }
-      : { ok: false, error: 'Release not found' };
+      : {
+          ok: false,
+          error: i18n.t('web:studioStringsBatch38.releaseNotFound'),
+        };
   }
   try {
     const { data } = await requestJson<StudioRelease>(
@@ -204,7 +209,10 @@ export async function fetchStudioRelease(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not load the release.',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.couldNotLoadRelease'),
     };
   }
 }
@@ -272,7 +280,9 @@ export async function deleteStudioRelease(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not delete the release.',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.couldNotDeleteRelease'),
     };
   }
 }
@@ -300,7 +310,9 @@ export async function patchStudioReleaseVisual(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Visual settings update failed',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.visualSettingsFailed'),
     };
   }
 }
@@ -335,7 +347,10 @@ export async function addStudioReleaseTrack(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Track add failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.trackAddFailed'),
     };
   }
 }
@@ -359,7 +374,10 @@ export async function reorderStudioReleaseTracks(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Track order save failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.trackOrderFailed'),
     };
   }
 }
@@ -380,7 +398,10 @@ export async function removeStudioReleaseTrack(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Track removal failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.trackRemovalFailed'),
     };
   }
 }
@@ -454,7 +475,10 @@ export async function uploadReleaseArtwork(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Artwork upload failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.artworkUploadFailed'),
     };
   }
 }
@@ -476,7 +500,10 @@ export async function removeReleaseArtwork(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Artwork removal failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.artworkRemovalFailed'),
     };
   }
 }
@@ -615,7 +642,10 @@ export async function requestSoundStems(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Stem request failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.stemRequestFailed'),
     };
   }
 }
@@ -653,7 +683,10 @@ export async function patchReleaseTrackCredits(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not save the credits',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.couldNotSaveCredits'),
     };
   }
 }

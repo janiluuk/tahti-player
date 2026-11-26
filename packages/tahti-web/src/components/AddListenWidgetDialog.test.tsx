@@ -19,7 +19,7 @@ vi.mock('./ListenAddonsPanel', () => ({ ListenAddonsPanel: () => null }));
 async function openService(id: string) {
   await act(async () => {
     fireEvent.click(
-      screen.getByRole('button', { name: 'Add new listen widget' }),
+      screen.getByRole('button', { name: 'Add widget to Listen' }),
     );
   });
   await act(async () => {

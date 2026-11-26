@@ -32,9 +32,9 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'What is tahti.live?',
         body: [
-          'tahti.live is a nonprofit broadcasting platform for independent artists — built to support artists, not algorithms. Listening is free and lossless on member channels. Artist membership funds your own channel, releases, and live shows — see Settings → Membership for current terms.',
+          'tahti.live is a nonprofit broadcasting platform for independent artists — built to support artists, not algorithms. Listening is free and lossless on member channels. Artist membership funds your own channel, releases, and live shows — see Settings → Account → Membership for current terms.',
           'One member, one vote: proposals and the AGM govern the platform, not a company board. Nearly all fan-support money goes to the artist, and the code is open source under AGPL.',
-          'See the full pitch — plans, funding, and governance — at /what-is-it.',
+          'See the full pitch — plans, funding, and governance — at /what-is-it. Where the money goes is public at /transparency.',
         ],
       },
       {
@@ -42,18 +42,18 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Listen is the starting point for finding music, channels, radio, and public pages. It is available without an account.',
           'Radio and Discover sit next to Listen in the sidebar. Favorites is its own sidebar item for saved channels and tracks.',
-          'Library (signed in) holds sounds, collections, recordings, uploads, and related catalogue work under Studio.',
-          'Studio is for artists: overview, stats, posts, audience, go live, broadcast schedule, and channel controls.',
-          'Help center and Settings live at the bottom of the sidebar. Settings covers account, themes, add-ons, and preferences.',
-          'The right rail is queue, chat, and notifications. Local audio from disk is desktop-only (Library → Local files in the Tahti Player app). The player appears only after a track is loaded.',
+          'Library (signed in) has Favorites, Playlists, History, Following, and Files. Your own uploads, releases and collections live in Studio → Music.',
+          'Studio is for artists. Its top row is Home, Music, Broadcast, Channel, Fans, Stats, and Profile.',
+          'Help center and Settings live at the bottom of the sidebar. Settings covers account, security, notifications, playback, appearance, and add-ons.',
+          'The right rail is the queue (Show queue in the player). Notifications and messages open from your avatar, top right. Local audio from disk is desktop-only (Library → Files → Local files in the Tahti Player app). The player appears only after a track is loaded.',
         ],
       },
       {
         heading: 'What each area is for',
         body: [
-          'Listen is home for continue-listening, community radio, and who’s on air. Feed shows posts from artists you follow; History is what you played recently.',
-          'Discover has widgets, an artists directory (search and filters), and venues. Favorites holds saved channels, radio, and tracks.',
-          'Studio section tabs (Overview, Stats, …) stay under the Studio nav. On pages with their own subtabs — Stats, Tracks, Updates, Channel, and similar — those subtabs sit directly under Studio’s nav row, above the page title. Branding, gallery, and press kit live under Studio → Profile; so does the Channel Designer (Channel design).',
+          'Listen is home for continue-listening, community radio, and who’s on air. History is what you played recently.',
+          'Discover has tabs for widgets, Feed (posts from artists you follow), Events, Parties, Artists, Groups, and Venues. Favorites holds saved channels, radio, and tracks.',
+          'Studio’s top row stays on screen on every Studio page, Go live included. Music, Broadcast, Channel, and Profile have their own sub-tabs right under it, above the page title. The Channel designer is Studio → Channel → Design; logo, gallery, and press kit are under Studio → Profile.',
           'Press H for a guided tour of the controls on the current page. Longer how-tos live in this Help center.',
         ],
       },
@@ -79,7 +79,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
           'Browse who’s on air from Listen, or open a channel at /channel/$slug.',
           'When an artist is offline, their channel still plays archive items.',
           'Tahti Radio (/radio) is a fair-rotation stream across the community. Open the calendar on Radio for the full programme schedule (/schedule), or book a slot when you are signed in.',
-          'Discover has widgets, artists, and venues. Open Discover → Venues to browse verified venues, or Discover → Artists for the directory.',
+          'Discover has widgets, the Feed, Events, listening Parties, Artists, Groups, and Venues. Open Discover → Venues to browse verified venues, or Discover → Artists for the directory.',
           'Run a venue? Register it from Discover → Venues. My venues (/venues/mine) shows whether the board has verified it, and lets you edit its details and book or cancel shows there.',
           'Signed-in listeners can install Disco-widgets on Listen from Settings → Add-ons → Discovery.',
         ],
@@ -88,14 +88,14 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'Support an artist',
         body: [
           'Open /u/$username and choose Subscribe — fan tiers are set by the artist.',
-          'Most of what you pay goes to the artist; cancel any time from your account.',
+          'Most of what you pay goes to the artist. Your subscriptions and purchases are listed in Settings → Account → Subs & purchases, where you can cancel any time.',
         ],
       },
       {
         heading: 'Chat',
         body: [
           'Live chat lives on each channel page (and at /chat/$slug for that channel). Open a channel that is on air or has chat enabled.',
-          'Messages (under Library) are private direct messages between accounts, not channel chat.',
+          'Messages (/messages) are private direct messages between accounts, not channel chat.',
           'Anonymous joining on a live channel may require hCaptcha. Moderators can mute or remove disruptive messages.',
         ],
       },
@@ -103,7 +103,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'Listen together',
         body: [
           'On a public playlist or collection page, choose Start a Jam to open a shared listening session and invite others with the link.',
-          'This is different from the desktop Tahti Jam remote (Settings → Integrations), which controls the desktop player from your phone.',
+          'This is different from the desktop Tahti Jam remote (Settings → Playback → Integrations in the desktop app), which controls the desktop player from your phone.',
         ],
       },
     ],
@@ -119,13 +119,21 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Select a track or choose Play on a channel, release, playlist, or radio station. The current item appears in the player at the bottom of the app.',
           'When nothing is loaded, the player stays hidden so it does not take space from the page. Load a track to show the controls.',
-          'On mobile, the compact player sits above the bottom navigation so you can change sections without hiding the controls. Expand it for the full-screen player.',
+          'On a phone, the player sits above the bottom navigation. Minimize player shrinks it to a slim strip that still plays and pauses; tap the strip to bring the full bar back. Tahti remembers your choice.',
+        ],
+      },
+      {
+        heading: 'Full-screen player',
+        body: [
+          'Choose Open full-screen player (or press V) for a large view with artwork and the visualizer. Swipe left or right to change track; Minimize player closes it.',
+          'Driving mode gives big, simple controls. Settings → Playback → Keep the screen on in full screen stops a phone from dimming while it plays.',
+          'Settings → Appearance → Full-screen title change picks how the track name changes: Fade, Slide up, Soft scale, or Slide sideways. With reduced motion on, it changes without movement.',
         ],
       },
       {
         heading: 'Queue and visualizations',
         body: [
-          'Use the queue control to see what is next, reorder your listening, or clear the queue. Previous and next move through the queue.',
+          'Show queue opens the queue in the right rail: see what is next, reorder, remove, clear, or save it as a playlist. Previous and next move through the queue. Shuffle and Repeat are in Settings → Playback.',
           'Choose a visualization in Settings → Add-ons → Visualizers, or use the channel visualizer selected by an artist. Visualizations can be turned off when you want a quieter screen.',
         ],
       },
@@ -156,7 +164,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Create a playlist',
         body: [
-          'Open Library → Collections (or Studio → Collections) and create a playlist collection. Give it a name, add tracks, and choose whether it is public.',
+          'Open Library → Playlists and choose Create playlist, or use Add to playlist on any track. Give it a name, add tracks, and choose whether it is public. Artists also keep collections in Studio → Music → Collections.',
           'A public playlist can be discovered, subscribed to, played, and embedded. Private playlists remain visible only to you.',
         ],
       },
@@ -188,7 +196,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Start a Jam',
         body: [
-          'Open a public playlist or collection (Library → Collections, or someone else’s public collection page). Choose Start a Jam.',
+          'Open a public playlist or collection (Library → Playlists, or someone else’s public collection page). Choose Start a Jam.',
           'Share the /jam/$code link. Guests join in the browser; the host keeps control of play, pause, and the queue unless co-control is enabled for a guest.',
           'When the Jam ends, everyone returns to Listen. Invalid or ended codes show a clear error on the Jam page.',
         ],
@@ -196,7 +204,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Not the desktop remote',
         body: [
-          'Desktop Tahti Jam (Settings → Integrations → Tahti Jam) is a phone remote for the desktop player on your LAN. Shared listening Jams are separate web sessions on beta.tahti.live / tahti.live.',
+          'Desktop Tahti Jam (Settings → Playback → Integrations → Tahti Jam, desktop app only) is a phone remote for the desktop player on your LAN. Shared listening Jams are separate web sessions on beta.tahti.live / tahti.live.',
         ],
       },
     ],
@@ -218,25 +226,26 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Broadcast & publish',
         body: [
-          'Copy RTMP or Icecast credentials from the broadcast studio, then stream from OBS, Mixxx, or Traktor.',
-          'Upload archive sets and releases from the studio; they appear on your channel and profile.',
-          'Distribution is a Studio tab next to Releases — delivery status and royalties. Studio home and the Releases page also link there when you have releases.',
+          'Open Studio → Broadcast → Go live, copy the RTMP or Icecast credentials, then stream from OBS, Mixxx, or Traktor.',
+          'Upload archive sets and releases from Studio → Music; they appear on your channel and profile.',
+          'Distribution is a Studio → Music tab next to Releases — delivery status and royalties. Studio home and the Releases page also link there when you have releases.',
         ],
       },
       {
         heading: 'Artist gallery',
         body: [
-          'Open Studio → Profile → Gallery to add photos to your public artist page. Use the plus icon in the gallery header to upload — there is no separate Add images button.',
+          'Open Studio → Profile → Gallery & press kit to add photos to your public artist page. Use the plus icon in the gallery header to upload — there is no separate Add images button.',
           'Turn Public on so the gallery appears on your profile, or leave it off while you arrange photos.',
           'Drag a photo to reorder it, or use the arrows on hover. Check photos to select them, then remove the ones you do not want.',
-          'Photos you include can also appear in your press kit. Channel backdrops and slideshows are covered in Design your channel.',
+          'Photos you mark Include in press kit appear in the press kit, which promoters download as a ZIP. Channel backdrops and slideshows are covered in Design your channel.',
         ],
       },
       {
         heading: 'Studio pages',
         body: [
-          'Subtabs for a Studio page sit under the Studio navigation row and above the page title — the same layout as Stats (Overview / Plays / Top lists).',
-          'Tracks holds your archive and files. Studio → Profile → Identity holds the profile picture and backdrop; Branding (logo), gallery, and press kit are the other Studio → Profile tabs, next to the Channel Designer (Channel design). Updates is posts and newsletter. Channel covers stream keys, radio settings, and multicast.',
+          'Home shows your account status, quick Upload, Create release and Go live buttons, and recent activity.',
+          'Music: Tracks, Releases, Collections, Distribution, Editor, Groups. Broadcast: Go live, Schedule, Shows, plus events, listening parties and recordings. Channel: Design, Radio, Settings, Visibility, Address. Profile: Identity, Links, Link page, Branding, Gallery & press kit.',
+          'Fans gathers Posts, Newsletter, Chat, Memberships, Store and Earnings. Stats has Overview, Plays, Audience and Top lists, with Insights per track.',
           'Admin Moderation queues (support, beta, radio, reports) use the same pattern under Admin nav.',
         ],
       },
@@ -258,7 +267,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Choose a look',
         body: [
-          'Open Studio → Profile → Channel design. The preview shows what listeners see on your public channel and artist page.',
+          'Open Studio → Channel → Design. The preview shows what listeners see on your public channel and artist page.',
           'Pick a block from the element menu: releases, tracks, latest, feed, news, player, or backdrop. Hide a block with the eye button.',
           'Player controls the stage, visualizer, gradient, and overlay. Backdrop controls header style, slideshow, and page colors.',
         ],
@@ -276,12 +285,12 @@ export const HELP_ARTICLES: HelpArticle[] = [
     slug: 'desktop-library',
     title: 'Local files and Soulseek',
     description:
-      'Import local audio from Library → Local files, and how Soulseek will connect later.',
+      'Import local audio from Library → Files → Local files, and how Soulseek will connect later.',
     sections: [
       {
         heading: 'Local files',
         body: [
-          'Library → Local files is part of the Tahti Player desktop app. It indexes folders on your machine and plays them in the shared Tahti player.',
+          'Library → Files → Local files is part of the Tahti Player desktop app. It indexes folders on your machine and plays them in the shared Tahti player.',
           'On the website (tahti.live) that tab is hidden — use Studio → Upload to put audio into your Tahti archive instead.',
         ],
       },
@@ -334,7 +343,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'OBS / Streamlabs (RTMP)',
         body: [
-          'Studio → Go live → Stream credentials: copy Server and Stream Key.',
+          'Studio → Broadcast → Go live → Stream credentials: copy Server and Stream key.',
           'OBS → Settings → Stream: Service Custom, paste server and key.',
           'Audio bitrate 128–192 kbps AAC. Start Streaming — channel shows Live when ingest connects.',
           'Stream credentials has a "Ready-made OBS setup" download that bundles a scene preset with this channel\'s current server and stream key already filled in, if you would rather import a profile than type the values in by hand.',
@@ -343,7 +352,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Traktor, Mixxx, and other Icecast-compatible apps',
         body: [
-          'Studio → Go live → Stream credentials → choose Traktor or Icecast to see the matching Server, Mount, and Password fields for that app.',
+          'Studio → Broadcast → Go live → Stream credentials → choose Traktor or Icecast to see the matching Server, Mount, and Password fields for that app.',
           'Paste those values into the broadcasting section of your audio app, then enable its On Air / broadcast control the same way you would in OBS.',
         ],
       },
@@ -351,6 +360,14 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'Phone',
         body: [
           'Same RTMP credentials work in Larix Broadcaster and similar apps.',
+        ],
+      },
+      {
+        heading: 'Go live step by step',
+        body: [
+          'Go live walks through Show info (name, type, visibility), Stream credentials, Encoder signal, Recording, Destinations, and Green room. Show info and Encoder signal are required; the rest are optional.',
+          'Choose Start broadcast when the encoder signal is in, and End broadcast when you are done. The Studio navigation stays on screen the whole time.',
+          'Turn on Record broadcast to keep the show as a track. Green room lets invited guests listen in before you go on air.',
         ],
       },
     ],
@@ -417,7 +434,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'How it works',
         body: [
-          'Stream once to Tahti. Multistream targets are configured in the studio — do not point OBS at YouTube/Twitch keys directly if Tahti is already mirroring.',
+          'Stream once to Tahti. Add multistream targets in Studio → Broadcast → Go live → Destinations — do not point OBS at YouTube/Twitch keys directly if Tahti is already mirroring.',
           'Supported destinations include YouTube Live, Twitch, Facebook Live, Kick, Mixcloud, and others when RTMP keys are available.',
         ],
       },
@@ -463,7 +480,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'Tahti ry member',
         body: [
           'Unlimited live time and cooperative support through membership.',
-          'Membership is support for the org, not a consumer “plan”. Current terms live under Settings → Membership.',
+          'Membership is support for the org, not a consumer “plan”. Current terms live under Settings → Account → Membership.',
           'Members see more on Governance (/governance): the current board, board elections (stand for election or withdraw while nominations are open), the published annual reports, and the association’s registered details and auditors.',
           'Something wrong in your member details or a published record? Use Request a correction on Governance; the board’s answer appears there, and you can withdraw a request while it waits.',
         ],
@@ -537,7 +554,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Where add-ons live',
         body: [
-          'Open Settings → Add-ons. Categories match the table below: Themes, Visualizers, Import, Multicast, Fingerprinting, Audio tools, Radio, Embed, Discovery, Channel, and Playback. Scrobbling lives in Settings → Integrations.',
+          'Open Settings → Add-ons. Categories match the table below: Themes, Visualizers, Import, Multicast, Fingerprinting, Audio tools, Radio, Embed, Discovery, Channel, and Playback. Scrobbling lives in Settings → Playback → Integrations.',
           'Only integrations you can use now are listed. ListenBrainz and Last.fm scrobbling are ready (submit-listens / track.scrobble only). Planned Nuclear registry items such as ListenBrainz charts, OmniSource, KHInsider, and NetEase stay out of this guide until they have a Tahti contract.',
         ],
       },
@@ -574,7 +591,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Connect your Tahti account',
         body: [
-          'Create a token in Settings → Account → Sign-in & security → API tokens. A read-only token can search and list your likes and playlists; give it write access if the tool should also like tracks, follow artists and create or fill playlists.',
+          'Create a token in Settings → Security → API tokens. A read-only token can search and list your likes and playlists; give it write access if the tool should also like tracks, follow artists and create or fill playlists.',
           'Point your AI tool at the MCP server URL shown above the token list, with the Streamable HTTP transport, and send the token as a bearer token. For Claude Code: claude mcp add tahti-account --transport http <URL> --header "Authorization: Bearer <token>".',
           'Anything the tool does is done as you, with the same rules as the website. Revoke the token to cut it off at once.',
         ],
@@ -582,7 +599,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Turn it on in the desktop app',
         body: [
-          'Open the Tahti Player desktop app → Settings → Integrations and turn on MCP server. The switch is remembered, so the server starts again with the app.',
+          'Open the Tahti Player desktop app → Settings → Playback → Integrations and turn on MCP server. The switch is remembered, so the server starts again with the app.',
           'The server starts at http://127.0.0.1:8800/mcp. If that port is busy it tries the next one up to 8809; the row shows the exact URL with a copy button. It only answers requests from this computer.',
           'Point your AI tool at that URL with the Streamable HTTP transport, for example claude mcp add tahti --transport http http://127.0.0.1:8800/mcp. It can then play, pause and skip, change the queue, search and play your desktop library and its playlists, tune in to radio, and search Tahti.',
         ],
@@ -652,9 +669,9 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Admin areas',
         body: [
-          'Dashboard and Status show platform health. Logs show service activity. Moderation handles support, beta, radio, reports, and feature queues.',
-          'Users, Content, Radio, Streams, Storage, News, Venues, Top lists, and Announcements manage the everyday platform surfaces.',
-          'Governance and AGM hold member records. Disco-widgets manages approved add-ons. Artwork presets manages the abstract defaults used for artwork-free uploads.',
+          'The Admin menu has Overview (Dashboard), Inbox, People (Users, Community), Content, Co-op, and Platform. The Inbox handles support, beta, radio, reports, and feature queues.',
+          'Content holds News, Announcements, Tahti Selects, Top lists, Radio, Venues, Artwork presets (the abstract defaults for artwork-free uploads), and Catalog. Platform holds Add-ons, Languages, Vendors, Storage, Streams, the encoding queue, and Diagnostics, which opens Logs and the map.',
+          'Co-op holds Governance (with the AGM) and Financial. Disco-widgets manages approved add-ons.',
           'Governance → Annual reports takes a yearly report from draft to approved, published to members and filed with the register; an approved report is corrected (earlier versions are kept), and any report can be put on legal hold.',
           'Governance → Board records board terms (add one, end one early) and runs board elections: call one, edit or cancel it, see and nominate candidates, and record the result, which gives each elected member a board term.',
           'Governance → Records holds members’ correction requests (answer each with a note the member reads), the association’s registered details and auditors, and one list of everything on legal hold.',
@@ -751,9 +768,9 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Two-step sign-in, devices and tokens',
         body: [
-          'Turn on two-step sign-in in Settings → Account → Two-factor authentication, and keep the backup codes somewhere safe.',
-          'Settings → Account → Devices lists every signed-in device; sign out one, or all of them.',
-          'API tokens give scripts access to your account. Revoke any you no longer use.',
+          'Turn on two-step sign-in in Settings → Security, and keep the backup codes somewhere safe.',
+          'Settings → Security → Devices lists every signed-in device; sign out one, or all of them.',
+          'Settings → Security → API tokens give scripts access to your account. Revoke any you no longer use.',
         ],
       },
       {
@@ -778,6 +795,140 @@ export const HELP_ARTICLES: HelpArticle[] = [
           'Use the form below for account, billing, engagement, or technical issues.',
           'Include a short description so the team can help quickly. Signed-in requests use your account email automatically.',
           'Your earlier requests are listed with the replies. Mark resolved closes one once you are sorted; replying to a resolved request reopens it.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'discover',
+    title: 'Discover',
+    description:
+      'Widgets, the feed, events, parties, artists, groups, and venues in one place.',
+    sections: [
+      {
+        heading: 'The tabs',
+        body: [
+          'Discover (/discover) has seven tabs: Discover, Feed, Events, Parties, Artists, Groups, and Venues.',
+          'The Discover tab is a page of widgets you choose, such as Latest releases, Artist of the week, or Upcoming events. Add widget to Discover adds one; each widget can be moved, configured, or removed. Filter by Genres and Content types.',
+          'Feed shows posts from artists you follow, as Stories or as a Calendar.',
+          'Artists is the directory with search and filters. Groups are artist collectives with a shared playlist. Venues lists verified venues; Register a venue and My venues are there too.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'events-and-parties',
+    title: 'Events and listening parties',
+    description:
+      'Find gigs and live listening parties, comment on events, and join a party.',
+    sections: [
+      {
+        heading: 'Find events',
+        body: [
+          'Open Discover → Events. Pick a date range, search, or filter by city or venue, and switch between List and Calendar. Past events shows earlier ones.',
+          'Post event adds your own event. Artists also manage their events from Studio → Broadcast → Events.',
+        ],
+      },
+      {
+        heading: 'An event page',
+        body: [
+          'The arrows at the top move to the previous or next event, with a counter such as 3 of 12. Back to events returns to the list.',
+          'The side panel has Add to Google Calendar, Subscribe (.ics), and Share, and the event’s Comments below them. Sign in to post a comment. Cancelled events have no comments.',
+        ],
+      },
+      {
+        heading: 'Listening parties',
+        body: [
+          'A listening party plays a release for everyone at the same time. Discover → Parties lists live and upcoming ones.',
+          'On a party page choose Remind me before it starts, then Join the party. Follow the Tracklist and Party chat, read the liner notes, and choose Leave when you are done. After it ends, Open the release plays it on your own.',
+          'Artists start a party from Discover → Parties (Start a party) or Studio → Broadcast → Listening parties.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'radio',
+    title: 'Tahti Radio',
+    description:
+      'Listen to community radio, read the schedule, and book a slot.',
+    sections: [
+      {
+        heading: 'Listen',
+        body: [
+          'Radio (/radio) is 24/7 community radio. Its tabs show Up next, Shows, Just played, and Featured.',
+          'A show page lists what is on air, upcoming episodes, and past episodes. Other stations open from the station list on Radio.',
+        ],
+      },
+      {
+        heading: 'Schedule and booking',
+        body: [
+          'The Schedule (/schedule) is a week view; move with Previous week and Next week.',
+          'Signed in, you can book a slot from the schedule.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'studio-channel',
+    title: 'Your channel in Studio',
+    description:
+      'Design, 24/7 radio, auto-play settings, clips, visibility, and address.',
+    sections: [
+      {
+        heading: 'Channel tabs',
+        body: [
+          'Studio → Channel has five tabs: Design, Radio, Settings, Visibility, and Address.',
+          'Design is the Channel designer: layout, blocks, and colours of your channel page.',
+          'Radio is your channel’s 24/7 stream, with Stream and Pinned (messages pinned on the stream).',
+          'Visibility sets how fans find your channel and what visitors see. Address holds your channel address and a custom domain.',
+        ],
+      },
+      {
+        heading: 'Settings and clips',
+        body: [
+          'Settings chooses what your channel plays when you are not live: Rotation mode, Auto-add uploads, and Play clips between programs.',
+          'Manage clips opens Clips between programs: station IDs, voice links, and announcements played between programme items. Back to Channel settings returns.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'artist-profile',
+    title: 'Your artist profile',
+    description:
+      'Identity, links, link page, branding, gallery, and press kit in Studio → Profile.',
+    sections: [
+      {
+        heading: 'Profile tabs',
+        body: [
+          'Identity starts with your profile header: Change backdrop and Change profile picture. Below are Basics, Story, and People.',
+          'Links holds your website, socials, and streaming profiles. Link page builds one page with all your links, ready to share in your bio.',
+          'Branding holds your logo (on the avatar, the cover, or both) and Release visuals, the default artwork style for new releases.',
+          'Gallery & press kit holds public photos and the press kit promoters download as a ZIP.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'settings',
+    title: 'Settings',
+    description:
+      'Account, security, notifications, playback, appearance, and add-ons.',
+    sections: [
+      {
+        heading: 'Settings sections',
+        body: [
+          'Account: Overview, Membership, Storage, Subs & purchases, and Privacy & data. Your fan subscriptions and purchases are under Subs & purchases.',
+          'Security: password and email, two-step sign-in, Devices, and API tokens. Notifications: what you are told about, and Mentions.',
+          'Profile appears for accounts without a channel. Artists edit their profile in Studio → Profile.',
+        ],
+      },
+      {
+        heading: 'Playback and appearance',
+        body: [
+          'Playback: volume, shuffle, repeat, volume normalization, skip duration, keep the screen on in full screen, and your radio stations. Its Integrations tab has scrobbling to ListenBrainz and Last.fm.',
+          'Appearance: language, Full-screen title change, and themes.',
+          'Add-ons lists ready add-ons. About shows what changed in each release.',
         ],
       },
     ],

@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from '../mode';
 import { requestJson } from '../request-json';
 
@@ -61,7 +63,10 @@ export async function suggestSoundMixOrder(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not suggest an order',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.couldNotSuggestOrder'),
     };
   }
 }

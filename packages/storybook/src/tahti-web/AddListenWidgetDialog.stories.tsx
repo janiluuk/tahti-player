@@ -18,7 +18,7 @@ const meta: Meta<typeof AddListenWidgetDialog> = {
     docs: {
       description: {
         component:
-          "The Listen header's **Add new listen widget** button: choose a service, paste a playlist link (an example is shown; Spotify also takes an artist link) or pick one of your own playlists when signed in, and the playlist becomes its own Listen row. **Browse all add-ons** opens the full add-on store.",
+          "The Listen header's **Add widget to Listen** button: choose a service, paste a playlist link (an example is shown; Spotify also takes an artist link) or pick one of your own playlists when signed in, and the playlist becomes its own Listen row. **Browse all add-ons** opens the full add-on store.",
       },
     },
   },
@@ -34,7 +34,7 @@ export const AddFromLink: Story = {
   play: async ({ canvasElement }) => {
     await userEvent.click(
       within(canvasElement).getByRole('button', {
-        name: 'Add new listen widget',
+        name: 'Add widget to Listen',
       }),
     );
     const body = withinBody(canvasElement);
@@ -61,7 +61,7 @@ export const SpotifyArtistAndAlbumError: Story = {
   play: async ({ canvasElement }) => {
     await userEvent.click(
       within(canvasElement).getByRole('button', {
-        name: 'Add new listen widget',
+        name: 'Add widget to Listen',
       }),
     );
     const body = withinBody(canvasElement);
@@ -103,7 +103,7 @@ export const LinkedSpotifyArtist: Story = {
   play: async ({ canvasElement }) => {
     await userEvent.click(
       within(canvasElement).getByRole('button', {
-        name: 'Add new listen widget',
+        name: 'Add widget to Listen',
       }),
     );
     const body = withinBody(canvasElement);

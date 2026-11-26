@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { lazy, Suspense, useState, type ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, type SortableBlock } from '@tahti-player/ui';
@@ -12,10 +12,34 @@ import {
   widgetBlockId,
 } from '../stores/listenerWidgetsStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
-import { FavoritesView } from '../views/FavoritesView';
-import { LatestNewsWidget } from './LatestNewsWidget';
-import { ListenerWidgetEmbed } from './ListenerWidgetEmbed';
+import { CardsRowSkeleton } from './PageStates';
 import { RemoveWidgetDialog } from './RemoveWidgetDialog';
+
+/** Add-ons are opt-in (none by default), so their blocks and the news
+ * dialogs behind them load only for listeners who installed one. */
+const FavoritesView = lazy(() =>
+  import('../views/FavoritesView').then((m) => ({
+    default: m.FavoritesView,
+  })),
+);
+const LatestNewsWidget = lazy(() =>
+  import('./LatestNewsWidget').then((m) => ({
+    default: m.LatestNewsWidget,
+  })),
+);
+const ListenerWidgetEmbed = lazy(() =>
+  import('./ListenerWidgetEmbed').then((m) => ({
+    default: m.ListenerWidgetEmbed,
+  })),
+);
+
+function AddonBlock({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={<CardsRowSkeleton chrome={false} />}>
+      {children}
+    </Suspense>
+  );
+}
 
 type PendingRemoval = { id: string; label: string };
 
@@ -61,7 +85,11 @@ export function useListenerWidgetBlocks(): {
         blocks.push({
           id: LATEST_NEWS_BLOCK_ID,
           label: t('listenerWidgetsSectionMore.latestNews'),
-          content: <LatestNewsWidget surface="listen" />,
+          content: (
+            <AddonBlock>
+              <LatestNewsWidget surface="listen" />
+            </AddonBlock>
+          ),
         });
       }
     } else if (embedInstances.includes(instance)) {
@@ -69,7 +97,9 @@ export function useListenerWidgetBlocks(): {
         id: widgetBlockId(instance.id),
         label: instance.label,
         content: (
-          <ListenerWidgetEmbed instance={instance} onRemove={onRemove} />
+          <AddonBlock>
+            <ListenerWidgetEmbed instance={instance} onRemove={onRemove} />
+          </AddonBlock>
         ),
       });
     }
@@ -79,7 +109,11 @@ export function useListenerWidgetBlocks(): {
     blocks.push({
       id: FAVORITES_BLOCK_ID,
       label: t('listenerWidgetsSectionMore.favorites'),
-      content: <FavoritesView embedded />,
+      content: (
+        <AddonBlock>
+          <FavoritesView embedded />
+        </AddonBlock>
+      ),
     });
   }
 

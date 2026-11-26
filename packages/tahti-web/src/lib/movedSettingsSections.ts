@@ -2,7 +2,6 @@ import type { ParseKeys } from '@tahti-player/i18n';
 
 import { channelRadioPath } from './channelSections';
 import { movedProfileSettingsPath } from './studioProfileSections';
-import { webT } from './webT';
 
 const MOVED_SETTINGS_SECTIONS = {
   audience: 'studioMoneyText.movedAudience',
@@ -20,12 +19,6 @@ export function movedSettingsSection(
     Object.prototype.hasOwnProperty.call(MOVED_SETTINGS_SECTIONS, value)
     ? (value as MovedSettingsSection)
     : undefined;
-}
-
-export function movedSettingsSectionLabel(
-  section: MovedSettingsSection,
-): string {
-  return webT()(MOVED_SETTINGS_SECTIONS[section]);
 }
 
 /** Where a bookmark to a former Settings section lands in Studio. */

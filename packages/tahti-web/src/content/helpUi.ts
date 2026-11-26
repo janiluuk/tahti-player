@@ -28,6 +28,9 @@ export const HELP_GROUPS: Array<{
     slugs: [
       'favorites-playlists',
       'comments-and-timeline',
+      'discover',
+      'events-and-parties',
+      'radio',
       'shared-jam',
       'notifications',
       'embed-and-share',
@@ -36,7 +39,13 @@ export const HELP_GROUPS: Array<{
   {
     id: 'artist-tools',
     tone: 'purple',
-    slugs: ['channel-design', 'uploads-and-processing', 'earnings'],
+    slugs: [
+      'artist-profile',
+      'studio-channel',
+      'channel-design',
+      'uploads-and-processing',
+      'earnings',
+    ],
   },
   { id: 'broadcasting', tone: 'red', slugs: ['broadcast', 'multistream'] },
   { id: 'releasing', tone: 'orange', slugs: ['releasing'] },
@@ -44,6 +53,7 @@ export const HELP_GROUPS: Array<{
     id: 'account-support',
     tone: 'green',
     slugs: [
+      'settings',
       'tier-limits',
       'governance',
       'account-security',

@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import { mockFixture } from '../mock-overrides';
 import {
@@ -301,7 +303,10 @@ export async function backfillStudioSoundCovers(): Promise<
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not backfill covers',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.couldNotBackfillCovers'),
     };
   }
 }
@@ -378,7 +383,8 @@ export async function fetchStudioSoundIds(
           error:
             typeof body?.error === 'string'
               ? body.error
-              : err.message || 'Too many matches; refine the filter.',
+              : err.message ||
+                i18n.t('web:studioStringsBatch38.tooManyMatches'),
         },
       };
     }
@@ -599,7 +605,10 @@ export async function bulkDeleteStudioSounds(
     );
     return { ok: true, data };
   } catch (err) {
-    return bulkOpFailure(err, 'Bulk delete failed');
+    return bulkOpFailure(
+      err,
+      i18n.t('web:studioStringsBatch38.bulkDeleteFailed'),
+    );
   }
 }
 
@@ -649,6 +658,9 @@ export async function bulkPatchStudioSounds(
     );
     return { ok: true, data };
   } catch (err) {
-    return bulkOpFailure(err, 'Bulk edit failed');
+    return bulkOpFailure(
+      err,
+      i18n.t('web:studioStringsBatch38.bulkEditFailed'),
+    );
   }
 }

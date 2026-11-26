@@ -78,3 +78,12 @@ async function requestJsonUncached<T>(
     headers: res.headers,
   };
 }
+
+export async function getJson<T>(path: string): Promise<T> {
+  const { data } = await requestJson<T>(path);
+  return data;
+}
+
+export function errorOr(err: unknown, message: string): Error {
+  return err instanceof Error ? err : new Error(message);
+}

@@ -23,13 +23,6 @@ export type EventsSearch = {
   view?: 'calendar';
 };
 
-export const EVENTS_RANGES: readonly EventsRange[] = [
-  'upcoming',
-  'week',
-  'month',
-  'next3months',
-];
-
 export const DEFAULT_EVENTS_FILTERS: EventsFilters = {
   range: 'upcoming',
   past: false,

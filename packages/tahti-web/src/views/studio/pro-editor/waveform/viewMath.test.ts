@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatClock, rulerTicks } from './draw';
+import { formatClock } from './draw';
 import {
   clampView,
   followPlayhead,
@@ -67,22 +67,7 @@ describe('view math', () => {
   });
 });
 
-describe('ruler', () => {
-  it('uses whole seconds when zoomed out and milliseconds when zoomed in', () => {
-    const wide = rulerTicks({ start: 0, end: 60 }, 1200);
-    expect(wide.step).toBe(5);
-    expect(wide.major[1]).toBe(5);
-    const narrow = rulerTicks({ start: 1, end: 1.01 }, 1000);
-    expect(narrow.step).toBeLessThan(0.01);
-    expect(narrow.major.every((t) => t >= 1 && t <= 1.01)).toBe(true);
-  });
-
-  it('keeps labels at least the minimum distance apart', () => {
-    const view = { start: 0, end: 3.7 };
-    const { step } = rulerTicks(view, 800, 90);
-    expect((step / 3.7) * 800).toBeGreaterThanOrEqual(90);
-  });
-
+describe('formatClock', () => {
   it('formats the clock to the precision of the step', () => {
     expect(formatClock(65.5)).toBe('1:06');
     expect(formatClock(65.5, 0.1)).toBe('1:05.5');

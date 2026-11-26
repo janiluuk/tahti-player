@@ -208,3 +208,7 @@ Stays English on purpose (do not translate):
 - Grouping keys that double as data, e.g. `Untitled recordings` (`views/studio/recordings/helpers.ts`).
 
 Batch convention: put a batch of new keys under one `web.<area>StringsBatchNN` block (next free `NN` after the highest existing one) in `en_US.json` and `fi_FI.json` only. The other locales have no `web` namespace.
+
+#### Finding unused keys
+
+`pnpm check:i18n-unused` lists `web.*` keys that no file under `packages/*/src` mentions as a quoted key (`'nav.listen'`, `'web:nav.listen'`). Plural suffixes (`_one`, `_other`) count as their base key. Keys built at runtime are kept when the source has a template-literal prefix (`` `sortSounds.mode.${m}` `` keeps `sortSounds.mode.*`) or the prefix is in `DYNAMIC_KEY_ALLOWLIST` (`packages/i18n/scripts/unusedWebKeys.mjs`, e.g. the `lib/seo.ts` page titles). Before you delete a listed key, grep for its last segment to rule out other dynamic lookups. Remove it from `en_US.json` and `fi_FI.json` together: `locales.test.ts` fails when the two `web` trees differ. CI runs the report without failing the build (`Build + lint` job); `--strict` makes it exit 1.

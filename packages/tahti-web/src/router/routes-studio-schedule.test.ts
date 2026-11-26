@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { studioEventsRoute, studioScheduleRoute } from './routes-studio';
+import { studioScheduleRoute } from './routes-studio';
+import { studioEventsRoute } from './routes-studio-community';
 
 type Validate = (search: Record<string, unknown>) => unknown;
 

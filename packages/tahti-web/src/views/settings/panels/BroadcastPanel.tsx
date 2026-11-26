@@ -22,8 +22,8 @@ import { SettingsHint, SettingsToggle } from '../SettingsFields';
 
 export type BroadcastSection = 'green-room' | 'multistream';
 
-/** Green room and multistream defaults, shown as sections of Studio →
- * Broadcast → Channel. */
+/** Green room and multistream defaults; the green room section sits on
+ * Studio → Channel → Settings. */
 export function BroadcastPanel({ section }: { section: BroadcastSection }) {
   const { t } = useTranslation('web');
   const greenRoomPoolOptions: SelectableTile[] = [

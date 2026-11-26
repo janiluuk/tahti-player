@@ -16,9 +16,9 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Mikä tahti.live on?',
         body: [
-          'tahti.live on voittoa tavoittelematon lähetysalusta itsenäisille artisteille. Se on tehty tukemaan artisteja, ei algoritmeja. Kuuntelu on ilmaista ja jäsenkanavilla häviötöntä. Artistijäsenyys rahoittaa oman kanavasi, julkaisusi ja livelähetyksesi — ajantasaiset ehdot ovat Asetukset → Jäsenyys -sivulla.',
+          'tahti.live on voittoa tavoittelematon lähetysalusta itsenäisille artisteille. Se on tehty tukemaan artisteja, ei algoritmeja. Kuuntelu on ilmaista ja jäsenkanavilla häviötöntä. Artistijäsenyys rahoittaa oman kanavasi, julkaisusi ja livelähetyksesi — ajantasaiset ehdot ovat kohdassa Asetukset → Tili → Jäsenyys.',
           'Yksi jäsen, yksi ääni: alustaa ohjaavat jäsenten aloitteet ja vuosikokous, ei yrityksen hallitus. Lähes kaikki fanien tuki menee artistille, ja koodi on avointa AGPL-lisenssillä.',
-          'Koko esittely, suunnitelmat, rahoitus ja hallinto: /what-is-it.',
+          'Koko esittely, suunnitelmat, rahoitus ja hallinto: /what-is-it. Rahojen käyttö on julkista osoitteessa /transparency.',
         ],
       },
       {
@@ -26,18 +26,18 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
         body: [
           'Kuuntele on aloituspaikka musiikin, kanavien, radion ja julkisten sivujen löytämiseen. Se toimii ilman tiliä.',
           'Radio ja Löydä ovat sivupalkissa Kuuntelen vieressä. Suosikit on oma kohtansa tallennetuille kanaville ja kappaleille.',
-          'Kirjasto (kirjautuneena) sisältää äänet, kokoelmat, tallenteet, lataukset ja muun Studion luettelotyön.',
-          'Studio on artisteille: yleiskatsaus, tilastot, julkaisut, yleisö, live-lähetys, lähetysaikataulu ja kanavan asetukset.',
-          'Ohjekeskus ja Asetukset ovat sivupalkin alaosassa. Asetuksissa ovat tili, teemat, lisäosat ja valinnat.',
-          'Oikea reunapalkki sisältää jonon, chatin ja ilmoitukset. Omalta koneelta soitettavat tiedostot toimivat vain työpöytäsovelluksessa (Kirjasto → Paikalliset tiedostot). Soitin näkyy vasta, kun jokin kappale on ladattu.',
+          'Kirjastossa (kirjautuneena) ovat Suosikit, Soittolistat, Historia, Seuratut ja Tiedostot. Omat latauksesi, julkaisusi ja kokoelmasi ovat kohdassa Studio → Musiikki.',
+          'Studio on artisteille. Sen ylärivillä ovat Koti, Musiikki, Lähetys, Kanava, Fanit, Tilastot ja Profiili.',
+          'Ohjekeskus ja Asetukset ovat sivupalkin alaosassa. Asetuksissa ovat tili, turvallisuus, ilmoitukset, toisto, ulkoasu ja lisäosat.',
+          'Oikea reunapalkki on jono (Näytä jono soittimessa). Ilmoitukset ja viestit aukeavat avatarista oikeasta yläkulmasta. Omalta koneelta soitettavat tiedostot toimivat vain työpöytäsovelluksessa (Kirjasto → Tiedostot → Paikalliset tiedostot). Soitin näkyy vasta, kun jokin kappale on ladattu.',
         ],
       },
       {
         heading: 'Mihin kukin alue on',
         body: [
-          'Kuuntele on koti: jatka kuuntelua, yhteisöradio ja kuka on nyt lähetyksessä. Syöte näyttää seuraamiesi artistien julkaisut, Historia viimeksi soitetut.',
-          'Löydä sisältää widgetit, artistihakemiston (haku ja suodattimet) ja tapahtumapaikat. Suosikeissa ovat tallennetut kanavat, radiot ja kappaleet.',
-          'Studion välilehdet (Yleiskatsaus, Tilastot, …) ovat Studion valikossa. Sivujen omat alivälilehdet ovat suoraan Studion valikkorivin alla, sivun otsikon yläpuolella. Brändäys, galleria ja lehdistöpaketti ovat kohdassa Studio → Profiili; niin on myös Kanavasuunnittelija (Kanavan ulkoasu).',
+          'Kuuntele on koti: jatka kuuntelua, yhteisöradio ja kuka on nyt lähetyksessä. Historia näyttää viimeksi soitetut.',
+          'Löydä-sivun välilehdet ovat widgetit, Syöte (seuraamiesi artistien julkaisut), Tapahtumat, Kuuntelubileet, Artistit, Ryhmät ja Tapahtumapaikat. Suosikeissa ovat tallennetut kanavat, radiot ja kappaleet.',
+          'Studion ylärivi pysyy näkyvissä kaikilla Studion sivuilla, myös Mene liveen -sivulla. Musiikilla, Lähetyksellä, Kanavalla ja Profiililla on omat alivälilehtensä heti sen alla, sivun otsikon yläpuolella. Kanavasuunnittelija on kohdassa Studio → Kanava → Ulkoasu; logo, galleria ja lehdistöpaketti ovat kohdassa Studio → Profiili.',
           'Paina H, niin saat opastetun kierroksen nykyisen sivun säätimiin. Pidemmät ohjeet ovat tässä ohjekeskuksessa.',
         ],
       },
@@ -61,7 +61,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
           'Katso Kuuntele-sivulta, kuka on lähetyksessä, tai avaa kanava osoitteessa /channel/$slug.',
           'Kun artisti ei ole livenä, kanava soittaa arkistoa.',
           'Tahti Radio (/radio) on reilusti vuorotteleva lähetys koko yhteisöltä. Avaa Radion kalenteri nähdäksesi koko ohjelmiston (/schedule), tai varaa lähetysvuoro kirjautuneena.',
-          'Löydä-sivulla ovat widgetit, artistit ja tapahtumapaikat. Löydä → Paikat näyttää vahvistetut paikat, Löydä → Artistit hakemiston.',
+          'Löydä-sivulla ovat widgetit, Syöte, Tapahtumat, Kuuntelubileet, Artistit, Ryhmät ja tapahtumapaikat. Löydä → Paikat näyttää vahvistetut paikat, Löydä → Artistit hakemiston.',
           'Pyöritätkö tapahtumapaikkaa? Rekisteröi se kohdasta Löydä → Paikat. Omat paikat (/venues/mine) näyttää, onko hallitus vahvistanut sen; siellä voit myös muokata tietoja ja lisätä tai perua keikkoja.',
           'Kirjautuneet kuuntelijat voivat asentaa Disco-widgetejä Kuuntele-sivulle kohdasta Asetukset → Lisäosat → Löytäminen.',
         ],
@@ -70,14 +70,14 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
         heading: 'Tue artistia',
         body: [
           'Avaa /u/$username ja valitse Tilaa. Artisti päättää tilaustasot.',
-          'Suurin osa maksustasi menee artistille. Voit perua milloin tahansa tililtäsi.',
+          'Suurin osa maksustasi menee artistille. Tilauksesi ja ostosi näkyvät kohdassa Asetukset → Tili → Tilaukset ja ostot, jossa voit perua milloin tahansa.',
         ],
       },
       {
         heading: 'Chat',
         body: [
           'Livechat on jokaisen kanavan sivulla (ja osoitteessa /chat/$slug). Avaa kanava, joka on lähetyksessä tai jossa chat on päällä.',
-          'Viestit (Kirjastossa) ovat yksityisviestejä tilien välillä, eivät kanavan chat.',
+          'Viestit (/messages) ovat yksityisviestejä tilien välillä, eivät kanavan chat.',
           'Kirjautumaton liittyminen livekanavalle voi vaatia hCaptcha-tarkistuksen. Moderaattorit voivat hiljentää tai poistaa häiritseviä viestejä.',
         ],
       },
@@ -85,7 +85,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
         heading: 'Kuunnelkaa yhdessä',
         body: [
           'Valitse julkisella soittolistalla tai kokoelmalla Aloita Jam. Se avaa yhteisen kuuntelusession, johon voit kutsua muita linkillä.',
-          'Tämä on eri asia kuin työpöytäsovelluksen Tahti Jam -kaukosäädin (Asetukset → Integraatiot), jolla ohjaat työpöytäsoitinta puhelimesta.',
+          'Tämä on eri asia kuin työpöytäsovelluksen Tahti Jam -kaukosäädin (työpöytäsovelluksen Asetukset → Toisto → Integraatiot), jolla ohjaat työpöytäsoitinta puhelimesta.',
         ],
       },
     ],
@@ -100,13 +100,21 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
         body: [
           'Valitse kappale tai paina Toista kanavalla, julkaisulla, soittolistalla tai radioasemalla. Soiva kohde näkyy sovelluksen alareunan soittimessa.',
           'Kun mitään ei ole ladattu, soitin pysyy piilossa eikä vie tilaa sivulta. Lataa kappale, niin säätimet tulevat näkyviin.',
-          'Mobiilissa pieni soitin on alavalikon yläpuolella, joten voit vaihtaa osiota ilman että säätimet katoavat. Laajenna se koko näytön soittimeksi.',
+          'Puhelimessa soitin on alavalikon yläpuolella. Pienennä soitin kutistaa sen kapeaksi palkiksi, josta voi yhä toistaa ja keskeyttää; napauta palkkia, niin koko soitin palaa. Tahti muistaa valintasi.',
+        ],
+      },
+      {
+        heading: 'Koko näytön soitin',
+        body: [
+          'Valitse Avaa koko näytön soitin (tai paina V), niin saat suuren näkymän kansikuvalla ja visualisoinnilla. Pyyhkäise vasemmalle tai oikealle vaihtaaksesi kappaletta; Pienennä soitin sulkee sen.',
+          'Ajotilassa on isot, yksinkertaiset säätimet. Asetukset → Toisto → Pidä näyttö päällä koko näytön tilassa estää puhelinta himmenemästä toiston aikana.',
+          'Asetukset → Ulkoasu → Koko näytön nimen vaihtuminen valitsee, miten kappaleen nimi vaihtuu: Häivytys, Liuku ylös, Pehmeä skaalaus tai Liuku sivulle. Kun vähennetty liike on päällä, nimi vaihtuu ilman liikettä.',
         ],
       },
       {
         heading: 'Jono ja visualisoinnit',
         body: [
-          'Jonopainikkeesta näet, mitä soi seuraavaksi, voit järjestää kuuntelua uudelleen tai tyhjentää jonon. Edellinen ja seuraava liikkuvat jonossa.',
+          'Näytä jono avaa jonon oikeaan reunapalkkiin: näet, mitä soi seuraavaksi, voit järjestää, poistaa, tyhjentää tai tallentaa sen soittolistaksi. Edellinen ja seuraava liikkuvat jonossa. Sekoitus ja toisto ovat kohdassa Asetukset → Toisto.',
           'Valitse visualisointi kohdasta Asetukset → Lisäosat → Visualisoinnit, tai käytä artistin valitsemaa kanavan visualisointia. Visualisoinnit voi kytkeä pois, kun haluat rauhallisemman näytön.',
         ],
       },
@@ -136,7 +144,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Tee soittolista',
         body: [
-          'Avaa Kirjasto → Kokoelmat (tai Studio → Kokoelmat) ja luo soittolistakokoelma. Anna nimi, lisää kappaleet ja valitse, onko se julkinen.',
+          'Avaa Kirjasto → Soittolistat ja valitse Luo soittolista, tai käytä kappaleen Lisää soittolistaan -toimintoa. Anna nimi, lisää kappaleet ja valitse, onko se julkinen. Artisteilla on lisäksi kokoelmat kohdassa Studio → Musiikki → Kokoelmat.',
           'Julkisen soittolistan voi löytää, tilata, soittaa ja upottaa. Yksityiset soittolistat näkyvät vain sinulle.',
         ],
       },
@@ -165,7 +173,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Aloita Jam',
         body: [
-          'Avaa julkinen soittolista tai kokoelma (Kirjasto → Kokoelmat, tai jonkun muun julkinen kokoelmasivu). Valitse Aloita Jam.',
+          'Avaa julkinen soittolista tai kokoelma (Kirjasto → Soittolistat, tai jonkun muun julkinen kokoelmasivu). Valitse Aloita Jam.',
           'Jaa /jam/$code-linkki. Vieraat liittyvät selaimessa; isäntä ohjaa toistoa, taukoa ja jonoa, ellei vieraalle ole annettu yhteisohjausta.',
           'Kun Jam päättyy, kaikki palaavat Kuuntele-sivulle. Virheellinen tai päättynyt koodi näyttää selkeän virheen Jam-sivulla.',
         ],
@@ -173,7 +181,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Ei työpöydän kaukosäädin',
         body: [
-          'Työpöydän Tahti Jam (Asetukset → Integraatiot → Tahti Jam) on puhelinkaukosäädin lähiverkon työpöytäsoittimelle. Yhteiskuuntelun Jamit ovat erillisiä verkkosessioita osoitteissa beta.tahti.live / tahti.live.',
+          'Työpöydän Tahti Jam (Asetukset → Toisto → Integraatiot → Tahti Jam, vain työpöytäsovelluksessa) on puhelinkaukosäädin lähiverkon työpöytäsoittimelle. Yhteiskuuntelun Jamit ovat erillisiä verkkosessioita osoitteissa beta.tahti.live / tahti.live.',
         ],
       },
     ],
@@ -193,25 +201,26 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Lähetä ja julkaise',
         body: [
-          'Kopioi RTMP- tai Icecast-tunnukset lähetysstudiosta ja lähetä OBS:llä, Mixxxillä tai Traktorilla.',
-          'Lataa arkistosettejä ja julkaisuja Studiossa; ne näkyvät kanavallasi ja profiilissasi.',
-          'Jakelu on Studion välilehti Julkaisujen vieressä: toimitusten tila ja rojaltit. Studion etusivu ja Julkaisut-sivu linkittävät sinne, kun sinulla on julkaisuja.',
+          'Avaa Studio → Lähetys → Mene liveen, kopioi RTMP- tai Icecast-tunnukset ja lähetä OBS:llä, Mixxxillä tai Traktorilla.',
+          'Lataa arkistosettejä ja julkaisuja kohdassa Studio → Musiikki; ne näkyvät kanavallasi ja profiilissasi.',
+          'Jakelu on Studio → Musiikki -välilehti Julkaisujen vieressä: toimitusten tila ja rojaltit. Studion etusivu ja Julkaisut-sivu linkittävät sinne, kun sinulla on julkaisuja.',
         ],
       },
       {
         heading: 'Artistigalleria',
         body: [
-          'Avaa Studio → Profiili → Galleria lisätäksesi kuvia julkiselle artistisivullesi. Lataa kuvia gallerian otsikon plus-ikonista; erillistä Lisää kuvia -painiketta ei ole.',
+          'Avaa Studio → Profiili → Galleria ja pressikitti lisätäksesi kuvia julkiselle artistisivullesi. Lataa kuvia gallerian otsikon plus-ikonista; erillistä Lisää kuvia -painiketta ei ole.',
           'Kytke Julkinen päälle, niin galleria näkyy profiilissasi, tai pidä se pois päältä, kun järjestelet kuvia.',
           'Vedä kuvaa muuttaaksesi järjestystä, tai käytä nuolia hiiren ollessa kuvan päällä. Valitse kuvat ruksilla ja poista ne, joita et halua.',
-          'Mukaan valitsemasi kuvat voivat näkyä myös lehdistöpaketissasi. Kanavan taustat ja diaesitykset kerrotaan oppaassa Suunnittele kanavasi.',
+          'Kuvat, joissa on Mukaan lehdistöpakettiin, näkyvät lehdistöpaketissa, jonka promoottorit lataavat ZIP-tiedostona. Kanavan taustat ja diaesitykset kerrotaan oppaassa Suunnittele kanavasi.',
         ],
       },
       {
         heading: 'Studion sivut',
         body: [
-          'Studion sivun alivälilehdet ovat Studion valikkorivin alla ja sivun otsikon yläpuolella, samoin kuin Tilastoissa (Yleiskatsaus / Soitot / Kärkilistat).',
-          'Kappaleet sisältää arkistosi ja tiedostosi. Brändäys (profiilikuva, galleria, lehdistöpaketti) on kohdassa Studio → Profiili, Kanavasuunnittelijan (Kanavan ulkoasu) vieressä. Päivitykset ovat julkaisut ja uutiskirje. Kanava sisältää lähetysavaimet, radioasetukset ja monilähetyksen.',
+          'Koti näyttää tilin tilan, pikapainikkeet Lataa, Luo julkaisu ja Mene liveen sekä viimeaikaiset tapahtumat.',
+          'Musiikki: Kappaleet, Julkaisut, Kokoelmat, Jakelu, Muokkain, Ryhmät. Lähetys: Mene liveen, Aikataulu, Ohjelmat sekä tapahtumat, kuuntelubileet ja tallenteet. Kanava: Ulkoasu, Radio, Asetukset, Näkyvyys, Osoite. Profiili: Identiteetti, Linkit, Linkkisivu, Brändi, Galleria ja pressikitti.',
+          'Fanit kokoaa julkaisut, uutiskirjeen, chatin, jäsenyydet, kaupan ja tulot. Tilastoissa ovat Yleiskatsaus, Soitot, Yleisö ja Kärkilistat sekä kappalekohtaiset katsaukset.',
           'Ylläpidon moderointijonot (tuki, beta, radio, ilmoitukset) toimivat samalla tavalla Ylläpidon valikossa.',
         ],
       },
@@ -232,7 +241,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Valitse ulkoasu',
         body: [
-          'Avaa Studio → Profiili → Kanavan ulkoasu. Esikatselu näyttää, mitä kuuntelijat näkevät julkisella kanavallasi ja artistisivullasi.',
+          'Avaa Studio → Kanava → Ulkoasu. Esikatselu näyttää, mitä kuuntelijat näkevät julkisella kanavallasi ja artistisivullasi.',
           'Valitse lohko elementtivalikosta: julkaisut, kappaleet, uusimmat, syöte, uutiset, soitin tai tausta. Piilota lohko silmäpainikkeella.',
           'Soitin säätää lavaa, visualisointia, liukuväriä ja peitettä. Tausta säätää otsikon tyyliä, diaesitystä ja sivun värejä.',
         ],
@@ -249,12 +258,12 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
   'desktop-library': {
     title: 'Paikalliset tiedostot ja Soulseek',
     description:
-      'Tuo omia äänitiedostoja kohdasta Kirjasto → Paikalliset tiedostot, ja miten Soulseek liitetään myöhemmin.',
+      'Tuo omia äänitiedostoja kohdasta Kirjasto → Tiedostot → Paikalliset tiedostot, ja miten Soulseek liitetään myöhemmin.',
     sections: [
       {
         heading: 'Paikalliset tiedostot',
         body: [
-          'Kirjasto → Paikalliset tiedostot kuuluu Tahti Player -työpöytäsovellukseen. Se indeksoi koneesi kansiot ja soittaa ne yhteisessä Tahti-soittimessa.',
+          'Kirjasto → Tiedostot → Paikalliset tiedostot kuuluu Tahti Player -työpöytäsovellukseen. Se indeksoi koneesi kansiot ja soittaa ne yhteisessä Tahti-soittimessa.',
           'Verkkosivulla (tahti.live) välilehti on piilossa. Käytä sen sijaan Studio → Lataa viedäksesi ääntä Tahti-arkistoosi.',
         ],
       },
@@ -304,7 +313,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'OBS / Streamlabs (RTMP)',
         body: [
-          'Kojelauta → Lähetys → kopioi Palvelin ja Lähetysavain.',
+          'Studio → Lähetys → Mene liveen → Lähetystunnukset: kopioi Palvelin ja Lähetysavain.',
           'OBS → Asetukset → Lähetys: palveluksi Mukautettu, liitä palvelin ja avain.',
           'Äänen bittinopeus 128–192 kbps AAC. Aloita lähetys; kanava näyttää Live, kun yhteys syntyy.',
           'Lähetyssivulla on "Valmis OBS-asetus" -lataus, jossa on kohtausasetus ja tämän kanavan palvelin ja avain valmiiksi täytettyinä, jos haluat tuoda profiilin kirjoittamatta arvoja käsin.',
@@ -313,7 +322,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Traktor, Mixxx ja muut Icecast-yhteensopivat',
         body: [
-          'Lähetys → Yhdistä lähetysohjelma → valitse Traktor tai Icecast nähdäksesi ohjelmaan sopivat Palvelin-, Mount- ja Salasana-kentät.',
+          'Studio → Lähetys → Mene liveen → Lähetystunnukset → valitse Traktor tai Icecast nähdäksesi ohjelmaan sopivat Palvelin-, Mount- ja Salasana-kentät.',
           'Liitä arvot ääniohjelmasi lähetysasetuksiin ja kytke sen On Air -lähetys päälle samaan tapaan kuin OBS:ssä.',
         ],
       },
@@ -321,6 +330,14 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
         heading: 'Puhelin',
         body: [
           'Samat RTMP-tunnukset toimivat Larix Broadcasterissa ja vastaavissa sovelluksissa.',
+        ],
+      },
+      {
+        heading: 'Mene liveen vaihe vaiheelta',
+        body: [
+          'Mene liveen etenee vaiheittain: Ohjelman tiedot (nimi, tyyppi, näkyvyys), Lähetystunnukset, Enkooderin signaali, Tallennus, Kohteet ja Green room. Ohjelman tiedot ja enkooderin signaali ovat pakollisia, muut vapaaehtoisia.',
+          'Valitse Aloita lähetys, kun enkooderin signaali tulee perille, ja Lopeta lähetys, kun olet valmis. Studion valikko pysyy näkyvissä koko ajan.',
+          'Kytke Tallenna lähetys päälle, niin ohjelma jää talteen kappaleeksi. Green roomissa kutsutut vieraat voivat kuunnella ennen kuin menet ilmaan.',
         ],
       },
     ],
@@ -383,7 +400,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Miten se toimii',
         body: [
-          'Lähetä kerran Tahtiin. Monilähetyksen kohteet asetetaan Studiossa; älä ohjaa OBS:ää suoraan YouTube- tai Twitch-avaimiin, jos Tahti jo peilaa.',
+          'Lähetä kerran Tahtiin. Lisää monilähetyksen kohteet kohdassa Studio → Lähetys → Mene liveen → Kohteet; älä ohjaa OBS:ää suoraan YouTube- tai Twitch-avaimiin, jos Tahti jo peilaa.',
           'Tuettuja kohteita ovat YouTube Live, Twitch, Facebook Live, Kick, Mixcloud ja muut, kun RTMP-avaimet ovat saatavilla.',
         ],
       },
@@ -425,7 +442,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Tahti ry:n jäsen',
         body: [
-          'Rajaton liveaika ja osuuskunnan tukeminen jäsenyyden kautta. Ajantasaiset ehdot ovat Asetukset → Jäsenyys -sivulla.',
+          'Rajaton liveaika ja osuuskunnan tukeminen jäsenyyden kautta. Ajantasaiset ehdot ovat kohdassa Asetukset → Tili → Jäsenyys.',
           'Jäsenyys on yhdistyksen tukemista, ei kuluttajan "tilaus".',
           'Jäsenet näkevät Hallinto-sivulla (/governance) enemmän: nykyisen hallituksen, hallitusvaalit (asetu ehdolle tai vetäydy ehdokasasettelun aikana), julkaistut vuosikertomukset sekä yhdistyksen rekisteritiedot ja tilintarkastajat.',
           'Onko jäsentiedoissasi tai julkaistussa tiedossa virhe? Käytä Hallinto-sivun Pyydä korjausta -toimintoa; hallituksen vastaus näkyy siellä, ja voit perua pyynnön sen odottaessa.',
@@ -485,7 +502,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Missä lisäosat ovat',
         body: [
-          'Avaa Asetukset → Lisäosat. Luokat vastaavat alla olevaa taulukkoa: Teemat, Visualisoinnit, Tuonti, Monilähetys, Tunnistus, Äänityökalut, Radio, Upotus, Löytäminen, Kanava ja Toisto. Scrobblaus on kohdassa Asetukset → Integraatiot.',
+          'Avaa Asetukset → Lisäosat. Luokat vastaavat alla olevaa taulukkoa: Teemat, Visualisoinnit, Tuonti, Monilähetys, Tunnistus, Äänityökalut, Radio, Upotus, Löytäminen, Kanava ja Toisto. Scrobblaus on kohdassa Asetukset → Toisto → Integraatiot.',
           'Listalla ovat vain integraatiot, joita voit käyttää nyt. ListenBrainz- ja Last.fm-scrobblaus ovat valmiita (vain kuuntelujen lähetys). Suunnitellut Nuclear-rekisterin kohteet, kuten ListenBrainz-listat, OmniSource, KHInsider ja NetEase, lisätään oppaaseen vasta, kun niillä on Tahti-sopimus.',
         ],
       },
@@ -521,7 +538,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Yhdistä Tahti-tilisi',
         body: [
-          'Luo tunniste kohdassa Asetukset → Tili → Kirjautuminen ja turvallisuus → API-tunnisteet. Vain luku -tunniste voi hakea ja listata tykkäyksesi ja soittolistasi; anna kirjoitusoikeus, jos työkalun pitää myös tykätä kappaleista, seurata artisteja ja luoda tai täyttää soittolistoja.',
+          'Luo tunniste kohdassa Asetukset → Turvallisuus → API-avaimet. Vain luku -tunniste voi hakea ja listata tykkäyksesi ja soittolistasi; anna kirjoitusoikeus, jos työkalun pitää myös tykätä kappaleista, seurata artisteja ja luoda tai täyttää soittolistoja.',
           'Ohjaa tekoälytyökalu tunnistelistan yläpuolella näkyvään MCP-palvelimen osoitteeseen Streamable HTTP -yhteydellä ja lähetä tunniste bearer-tunnisteena. Claude Codessa: claude mcp add tahti-account --transport http <URL> --header "Authorization: Bearer <token>".',
           'Kaikki, mitä työkalu tekee, tehdään sinun nimissäsi samoin säännöin kuin sivustolla. Peru tunniste, niin pääsy katkeaa heti.',
         ],
@@ -529,7 +546,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Kytke päälle työpöytäsovelluksessa',
         body: [
-          'Avaa Tahti Player -työpöytäsovellus → Asetukset → Integraatiot ja kytke MCP-palvelin päälle. Valinta muistetaan, joten palvelin käynnistyy uudelleen sovelluksen mukana.',
+          'Avaa Tahti Player -työpöytäsovellus → Asetukset → Toisto → Integraatiot ja kytke MCP-palvelin päälle. Valinta muistetaan, joten palvelin käynnistyy uudelleen sovelluksen mukana.',
           'Palvelin käynnistyy osoitteessa http://127.0.0.1:8800/mcp. Jos portti on varattu, se kokeilee seuraavia porttiin 8809 asti; rivi näyttää tarkan osoitteen kopiointipainikkeen kanssa. Se vastaa vain tältä koneelta tuleviin pyyntöihin.',
           'Ohjaa tekoälytyökalu tähän osoitteeseen Streamable HTTP -yhteydellä, esimerkiksi claude mcp add tahti --transport http http://127.0.0.1:8800/mcp. Sen jälkeen se voi soittaa, pysäyttää ja ohittaa, muuttaa jonoa, hakea ja soittaa työpöytäkirjastoasi ja sen soittolistoja, virittää radion ja hakea Tahdista.',
         ],
@@ -595,9 +612,9 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Ylläpidon alueet',
         body: [
-          'Kojelauta ja Tila näyttävät alustan kunnon. Lokit näyttävät palvelujen toiminnan. Moderointi käsittelee tuki-, beta-, radio-, ilmoitus- ja kehitysehdotusjonot.',
-          'Käyttäjät, Sisältö, Radio, Lähetykset, Tallennustila, Uutiset, Paikat, Kärkilistat ja Tiedotteet hallitsevat alustan arkisia osia.',
-          'Hallinto ja Vuosikokous sisältävät jäsentiedot. Disco-widgetit hallitsee hyväksyttyjä lisäosia. Kansikuvapohjat hallitsee abstrakteja oletuskuvia kansikuvattomille latauksille.',
+          'Ylläpidon valikossa ovat Yleiskatsaus (Kojelauta), Saapuneet, Ihmiset (Käyttäjät, Yhteisö), Sisältö, Osuuskunta ja Alusta. Saapuneet käsittelee tuki-, beta-, radio-, ilmoitus- ja kehitysehdotusjonot.',
+          'Sisällössä ovat Uutiset, Tiedotteet, Tahti Selects, Kärkilistat, Radio, Paikat, Kansikuvapohjat (abstraktit oletuskuvat kansikuvattomille latauksille) ja Katalogi. Alustassa ovat Lisäosat, Kielet, Toimittajat, Tallennustila, Lähetykset, koodausjono ja Diagnostiikka, josta aukeavat lokit ja kartta.',
+          'Osuuskunnassa ovat Hallinto (vuosikokouksineen) ja Talous. Disco-widgetit hallitsee hyväksyttyjä lisäosia.',
           'Hallinto → Vuosikertomukset vie vuosikertomuksen luonnoksesta hyväksytyksi, jäsenille julkaistuksi ja rekisteriin toimitetuksi; hyväksyttyä kertomusta korjataan (aiemmat versiot säilyvät), ja minkä tahansa kertomuksen voi asettaa oikeudelliseen säilytykseen.',
           'Hallinto → Hallitus kirjaa hallituskaudet (lisää tai päätä ennenaikaisesti) ja hoitaa hallitusvaalit: järjestä vaali, muokkaa tai peru se, näe ja aseta ehdokkaita ja kirjaa tulos, joka antaa jokaiselle valitulle hallituskauden.',
           'Hallinto → Tietueet sisältää jäsenten korjauspyynnöt (vastaa kuhunkin jäsenen luettavalla huomautuksella), yhdistyksen rekisteritiedot ja tilintarkastajat sekä yhden listan kaikesta oikeudellisessa säilytyksessä olevasta.',
@@ -688,9 +705,9 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Kaksivaiheinen kirjautuminen, laitteet ja tunnisteet',
         body: [
-          'Kytke kaksivaiheinen kirjautuminen päälle kohdassa Asetukset → Tili → Kaksivaiheinen tunnistautuminen ja säilytä varakoodit turvallisessa paikassa.',
-          'Asetukset → Tili → Laitteet listaa kaikki kirjautuneet laitteet; kirjaa ulos yksi tai kaikki.',
-          'API-tunnisteet antavat skripteille pääsyn tiliisi. Peru ne, joita et enää käytä.',
+          'Kytke kaksivaiheinen kirjautuminen päälle kohdassa Asetukset → Turvallisuus ja säilytä varakoodit turvallisessa paikassa.',
+          'Asetukset → Turvallisuus → Laitteet listaa kaikki kirjautuneet laitteet; kirjaa ulos yksi tai kaikki.',
+          'Asetukset → Turvallisuus → API-avaimet antavat skripteille pääsyn tiliisi. Peru ne, joita et enää käytä.',
         ],
       },
       {
@@ -713,6 +730,134 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
           'Käytä alla olevaa lomaketta tiliin, laskutukseen, osallistumiseen tai tekniikkaan liittyvissä asioissa.',
           'Kirjoita lyhyt kuvaus, jotta tiimi voi auttaa nopeasti. Kirjautuneena pyynnöt käyttävät tilisi sähköpostia automaattisesti.',
           'Aiemmat pyyntösi näkyvät vastauksineen. Merkitse ratkaistuksi sulkee pyynnön, kun asia on hoidettu; ratkaistuun pyyntöön vastaaminen avaa sen uudelleen.',
+        ],
+      },
+    ],
+  },
+  discover: {
+    title: 'Löydä',
+    description:
+      'Widgetit, syöte, tapahtumat, kuuntelubileet, artistit, ryhmät ja tapahtumapaikat yhdessä paikassa.',
+    sections: [
+      {
+        heading: 'Välilehdet',
+        body: [
+          'Löydä-sivulla (/discover) on seitsemän välilehteä: Löydä, Syöte, Tapahtumat, Kuuntelubileet, Artistit, Ryhmät ja Tapahtumapaikat.',
+          'Löydä-välilehti on valitsemiesi widgetien sivu, esimerkiksi uusimmat julkaisut, viikon artisti tai tulevat tapahtumat. Lisää widget lisää uuden; jokaista widgetiä voi siirtää, säätää tai poistaa. Suodata tyylilajin ja sisältötyypin mukaan.',
+          'Syöte näyttää seuraamiesi artistien julkaisut Tarinoina tai Kalenterina.',
+          'Artistit on hakemisto hakuineen ja suodattimineen. Ryhmät ovat artistikollektiiveja, joilla on yhteinen soittolista. Tapahtumapaikoissa ovat vahvistetut paikat sekä Rekisteröi tapahtumapaikka ja Omat tapahtumapaikat.',
+        ],
+      },
+    ],
+  },
+  'events-and-parties': {
+    title: 'Tapahtumat ja kuuntelubileet',
+    description:
+      'Löydä keikat ja kuuntelubileet, kommentoi tapahtumia ja liity bileisiin.',
+    sections: [
+      {
+        heading: 'Löydä tapahtumat',
+        body: [
+          'Avaa Löydä → Tapahtumat. Valitse aikaväli, hae tai suodata kaupungin tai paikan mukaan, ja vaihda Listan ja Kalenterin välillä. Menneet tapahtumat näyttää aiemmat.',
+          'Lisää tapahtuma lisää oman tapahtumasi. Artistit hallitsevat tapahtumiaan myös kohdassa Studio → Lähetys → Tapahtumat.',
+        ],
+      },
+      {
+        heading: 'Tapahtumasivu',
+        body: [
+          'Yläreunan nuolet siirtävät edelliseen tai seuraavaan tapahtumaan, ja laskuri näyttää esimerkiksi 3/12. Takaisin tapahtumiin palaa listaan.',
+          'Sivupaneelissa ovat Lisää Google-kalenteriin, Tilaa (.ics) ja Jaa, ja niiden alla tapahtuman Kommentit. Kommentointi vaatii kirjautumisen. Peruttuja tapahtumia ei voi kommentoida.',
+        ],
+      },
+      {
+        heading: 'Kuuntelubileet',
+        body: [
+          'Kuuntelubileissä julkaisu soi kaikille samaan aikaan. Löydä → Kuuntelubileet listaa käynnissä olevat ja tulevat bileet.',
+          'Valitse bilesivulla Muistuta minua ennen alkua ja sitten Liity juhlaan. Seuraa kappalelistaa ja juhlien chattia, lue esittelytekstit ja valitse Poistu, kun olet valmis. Bileiden jälkeen Avaa julkaisu soittaa sen omaan tahtiisi.',
+          'Artistit järjestävät bileet kohdasta Löydä → Kuuntelubileet (Järjestä bileet) tai Studio → Lähetys → Kuuntelubileet.',
+        ],
+      },
+    ],
+  },
+  radio: {
+    title: 'Tahti Radio',
+    description:
+      'Kuuntele yhteisöradiota, katso ohjelmakartta ja varaa lähetysvuoro.',
+    sections: [
+      {
+        heading: 'Kuuntele',
+        body: [
+          'Radio (/radio) on ympärivuorokautinen yhteisöradio. Sen välilehdet ovat Seuraavaksi, Ohjelmat, Juuri soitettu ja Esillä.',
+          'Ohjelmasivulla näkyy, mikä on nyt ilmassa, tulevat jaksot ja menneet jaksot. Muut asemat aukeavat Radion asemalistasta.',
+        ],
+      },
+      {
+        heading: 'Ohjelmakartta ja varaus',
+        body: [
+          'Aikataulu (/schedule) on viikkonäkymä; siirry Edellinen viikko- ja Seuraava viikko -painikkeilla.',
+          'Kirjautuneena voit varata lähetysvuoron aikataulusta.',
+        ],
+      },
+    ],
+  },
+  'studio-channel': {
+    title: 'Kanavasi Studiossa',
+    description:
+      'Ulkoasu, 24/7-radio, automaattisoiton asetukset, klipit, näkyvyys ja osoite.',
+    sections: [
+      {
+        heading: 'Kanavan välilehdet',
+        body: [
+          'Studio → Kanava -kohdassa on viisi välilehteä: Ulkoasu, Radio, Asetukset, Näkyvyys ja Osoite.',
+          'Ulkoasu on Kanavasuunnittelija: kanavasivusi asettelu, lohkot ja värit.',
+          'Radio on kanavasi ympärivuorokautinen lähetys välilehdillä Striimi ja Kiinnitetyt (lähetykseen kiinnitetyt viestit).',
+          'Näkyvyys määrää, miten fanit löytävät kanavasi ja mitä vierailijat näkevät. Osoitteessa ovat kanavasi osoite ja oma verkkotunnus.',
+        ],
+      },
+      {
+        heading: 'Asetukset ja klipit',
+        body: [
+          'Asetukset valitsee, mitä kanavasi soittaa, kun et ole livenä: Kiertotila, Lisää lataukset automaattisesti ja Soita klippejä ohjelmien välissä.',
+          'Hallitse klippejä avaa sivun Klipit ohjelmien välissä: asematunnukset, puheosuudet ja tiedotteet, jotka soivat ohjelmien välissä. Takaisin Kanavan asetuksiin palaa.',
+        ],
+      },
+    ],
+  },
+  'artist-profile': {
+    title: 'Artistiprofiilisi',
+    description:
+      'Identiteetti, linkit, linkkisivu, brändi, galleria ja pressikitti kohdassa Studio → Profiili.',
+    sections: [
+      {
+        heading: 'Profiilin välilehdet',
+        body: [
+          'Identiteetti alkaa profiilisi otsakkeesta: Vaihda taustakuva ja Vaihda profiilikuva. Niiden alla ovat Perustiedot, Tarina ja Ihmiset.',
+          'Linkeissä ovat verkkosivusi, somekanavasi ja suoratoistoprofiilisi. Linkkisivu kokoaa kaikki linkkisi yhdelle sivulle, jonka voit jakaa biossasi.',
+          'Brändissä ovat logosi (avatarissa, kansikuvassa tai molemmissa) ja Julkaisujen visuaalit, uusien julkaisujen oletustyyli.',
+          'Galleria ja pressikitti sisältää julkiset kuvat ja lehdistöpaketin, jonka promoottorit lataavat ZIP-tiedostona.',
+        ],
+      },
+    ],
+  },
+  settings: {
+    title: 'Asetukset',
+    description:
+      'Tili, turvallisuus, ilmoitukset, toisto, ulkoasu ja lisäosat.',
+    sections: [
+      {
+        heading: 'Asetusten osiot',
+        body: [
+          'Tili: Yhteenveto, Jäsenyys, Tallennustila, Tilaukset ja ostot sekä Yksityisyys ja data. Fanitilauksesi ja ostosi ovat kohdassa Tilaukset ja ostot.',
+          'Turvallisuus: salasana ja sähköposti, kaksivaiheinen kirjautuminen, Laitteet ja API-avaimet. Ilmoitukset: mistä sinulle kerrotaan, ja Maininnat.',
+          'Profiili näkyy tileillä, joilla ei ole kanavaa. Artistit muokkaavat profiiliaan kohdassa Studio → Profiili.',
+        ],
+      },
+      {
+        heading: 'Toisto ja ulkoasu',
+        body: [
+          'Toisto: äänenvoimakkuus, sekoitus, toisto, äänenvoimakkuuden tasoitus, ohitusaika, näytön pitäminen päällä koko näytön tilassa ja omat radioasemasi. Integraatiot-välilehdellä on scrobblaus ListenBrainziin ja Last.fm:ään.',
+          'Ulkoasu: kieli, koko näytön nimen vaihtuminen ja teemat.',
+          'Lisäosissa ovat valmiit lisäosat. Tietoa kertoo, mitä kussakin versiossa muuttui.',
         ],
       },
     ],

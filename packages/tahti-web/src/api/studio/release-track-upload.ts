@@ -96,10 +96,10 @@ export async function uploadReleaseTrackAudio(
       ok: false,
       cancelled,
       error: cancelled
-        ? 'Upload cancelled'
+        ? i18n.t('web:studioStringsBatch38.uploadCancelled')
         : err instanceof Error
           ? err.message
-          : 'Could not upload the audio',
+          : i18n.t('web:studioStringsBatch38.couldNotUploadAudio'),
     };
   }
 }

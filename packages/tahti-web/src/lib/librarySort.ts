@@ -6,9 +6,6 @@ export const LIBRARY_SORT_OPTIONS: { id: LibrarySort; label: string }[] = [
   { id: 'name', label: 'Name A–Z' },
 ];
 
-export const isLibrarySort = (value: unknown): value is LibrarySort =>
-  LIBRARY_SORT_OPTIONS.some((option) => option.id === value);
-
 const byText = (a: string, b: string) =>
   a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true });
 

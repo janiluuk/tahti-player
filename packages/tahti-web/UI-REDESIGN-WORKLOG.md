@@ -7173,3 +7173,10 @@ Desktop main-pane padding is four pixels tighter at each breakpoint, full-bleed 
 
 - Collection, album, DJ set and release cards show the default artwork when a cover is missing or its link has expired, never an empty cassette thumbnail.
 - A collection named like "2026 sets" now shows on the artist page's DJ sets tab.
+
+## 2026-11-26 — Next 30: a11y, phone, bundle, help (0.0.494)
+
+- a11y: `e2e/helpers/axe.ts` + `a11y-axe-*` specs; themes `advanced/generator.ts` strong tokens meet 4.5:1; `UserMenu` initial via `data-initial`; EmptyState secondary text.
+- Phone: `e2e/helpers/phoneOverflow.ts` + `phone-overflow-*`; `AmbientTrackList` `flushOnPhone` default true; `E2eRunGallery` strip positioned.
+- Bundle: lazy Listen add-ons/store/news dialog, deferred sign-in dialog + page tour; `scripts/check-bundle-budget.mjs`.
+- Help: `HelpView` intro removed, `helpLinks.test.ts`, six new articles; Channel → Settings shows `BroadcastPanel` green room defaults.

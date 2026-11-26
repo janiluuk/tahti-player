@@ -614,6 +614,94 @@
     }
   },
   "web": {
+    "adminStringsBatch40": {
+      "enterChannelSlug": "Anna kanavan tunniste.",
+      "couldNotLoadRotation": "Rotaatiota ei voitu ladata",
+      "couldNotSaveRotation": "Rotaatiota ei voitu tallentaa",
+      "openRotationFirst": "Avaa rotaatio ensin.",
+      "couldNotAddToRotation": "Rotaatioon ei voitu lisätä",
+      "couldNotLoadTracks": "Kappaleita ei voitu ladata",
+      "soundNotFound": "Ääntä ei löytynyt",
+      "couldNotDeleteTrack": "Kappaletta ei voitu poistaa",
+      "couldNotSaveTrack": "Kappaletta ei voitu tallentaa",
+      "couldNotLoadThemes": "Teemoja ei voitu ladata",
+      "couldNotApproveTheme": "Teemaa ei voitu hyväksyä",
+      "rejectReasonRequired": "Kerro tekijälle, miksi teema hylättiin.",
+      "couldNotRejectTheme": "Teemaa ei voitu hylätä",
+      "topicNotFound": "Aihetta ei löytynyt",
+      "postNotFound": "Viestiä ei löytynyt",
+      "topicClosedToReplies": "Tähän aiheeseen ei voi enää vastata",
+      "topicClosedRepliesKept": "Aihe on suljettu; sen vastaukset säilytetään",
+      "couldNotPostReply": "Vastaustasi ei voitu lähettää",
+      "couldNotMarkRead": "Niitä ei voitu merkitä luetuiksi",
+      "couldNotSaveReply": "Vastaustasi ei voitu tallentaa",
+      "couldNotOpenTopic": "Aihetta ei voitu avata",
+      "correctionReasonRequired": "Kerro, mitä korjaus koskee",
+      "tallyExceedsEligible": "Korjatussa ääntenlaskussa on enemmän ääniä kuin äänioikeutettuja jäseniä",
+      "couldNotSaveCorrection": "Korjausta ei voitu tallentaa",
+      "nominationsClosed": "Tämän vaalin ehdokasasettelu on päättynyt",
+      "couldNotChangeMeeting": "Kokousta ei voitu vaihtaa",
+      "couldNotSaveDocument": "Asiakirjaa ei voitu tallentaa",
+      "couldNotSaveDetails": "Tietoja ei voitu tallentaa"
+    },
+    "accountStringsBatch39": {
+      "passwordSetNoSession": "Salasana asetettiin, mutta istunto ei alkanut. Kirjaudu sisään uudella salasanalla.",
+      "forgotPasswordSent": "Jos sähköpostiosoitteella on tili, lähetimme siihen linkin salasanan vaihtamiseen.",
+      "passwordResetNoSession": "Salasana vaihdettiin, mutta istunto ei alkanut. Kirjaudu sisään uudella salasanalla.",
+      "couldNotChangePassword": "Salasanaa ei voitu vaihtaa",
+      "couldNotSetPassword": "Salasanaa ei voitu asettaa",
+      "emailChangeLinkSent": "Lähetimme linkin osoitteeseen {{email}}. Viimeistele muutos avaamalla se.",
+      "couldNotStartEmailChange": "Sähköpostiosoitteen vaihtoa ei voitu aloittaa",
+      "couldNotLoadSetting": "Asetusta ei voitu ladata",
+      "couldNotSaveSetting": "Asetusta ei voitu tallentaa",
+      "couldNotUploadLogo": "Logoa ei voitu ladata",
+      "couldNotSavePlacement": "Sijoittelua ei voitu tallentaa",
+      "couldNotRemoveLogo": "Logoa ei voitu poistaa",
+      "couldNotUploadBackdrop": "Taustakuvaa ei voitu ladata",
+      "couldNotRemoveBackdrop": "Taustakuvaa ei voitu poistaa",
+      "gifFirstFrameFailed": "GIF-kuvan ensimmäistä ruutua ei voitu lukea",
+      "avatarUploadFailed": "Profiilikuvaa ei voitu ladata",
+      "avatarRemovalFailed": "Profiilikuvaa ei voitu poistaa",
+      "accessTokenRequired": "Käyttöoikeustunnus vaaditaan",
+      "appPasswordRequired": "Sovellussalasana vaaditaan",
+      "couldNotSaveSettings": "Asetuksia ei voitu tallentaa",
+      "couldNotDisconnect": "Yhteyttä ei voitu katkaista",
+      "userTokenRequired": "Käyttäjätunniste vaaditaan.",
+      "couldNotSaveChanges": "Muutoksia ei voitu tallentaa",
+      "couldNotRemovePerson": "Henkilöä ei voitu poistaa",
+      "couldNotUploadPicture": "Kuvaa ei voitu ladata",
+      "couldNotRemovePicture": "Kuvaa ei voitu poistaa",
+      "couldNotSaveOrder": "Järjestystä ei voitu tallentaa"
+    },
+    "studioStringsBatch38": {
+      "releaseNotFound": "Julkaisua ei löytynyt",
+      "couldNotLoadRelease": "Julkaisua ei voitu ladata.",
+      "couldNotDeleteRelease": "Julkaisua ei voitu poistaa.",
+      "visualSettingsFailed": "Visuaalisia asetuksia ei voitu tallentaa",
+      "trackAddFailed": "Kappaletta ei voitu lisätä",
+      "trackOrderFailed": "Kappalejärjestystä ei voitu tallentaa",
+      "trackRemovalFailed": "Kappaletta ei voitu poistaa",
+      "artworkUploadFailed": "Kansikuvaa ei voitu ladata",
+      "artworkRemovalFailed": "Kansikuvaa ei voitu poistaa",
+      "stemRequestFailed": "Stemmejä ei voitu pyytää",
+      "couldNotSaveCredits": "Tekijätietoja ei voitu tallentaa",
+      "couldNotBackfillCovers": "Puuttuvia kansikuvia ei voitu täydentää",
+      "tooManyMatches": "Liian monta osumaa. Tarkenna suodatinta.",
+      "bulkDeleteFailed": "Valittuja ääniä ei voitu poistaa",
+      "bulkEditFailed": "Valittuja ääniä ei voitu muokata",
+      "onlyFailedRetry": "Uudelleen voi yrittää vain epäonnistunutta latausta.",
+      "couldNotRetryProcessing": "Käsittelyä ei voitu käynnistää uudelleen.",
+      "coverUploadFailed": "Kantta ei voitu ladata",
+      "couldNotSaveBackdrops": "Taustakuvia ei voitu tallentaa",
+      "couldNotSuggestOrder": "Järjestystä ei voitu ehdottaa",
+      "downloadUnavailable": "Lataus ei ole saatavilla",
+      "shareCreationFailed": "Jakolinkkiä ei voitu luoda",
+      "radioPreferenceFailed": "Tahti Radio -asetusta ei voitu päivittää",
+      "uploadCancelled": "Lataus peruttu",
+      "couldNotUploadAudio": "Ääntä ei voitu ladata",
+      "archiveUnavailable": "Arkiston lähde ei ole saatavilla.",
+      "couldNotLoadStats": "Tilastojasi ei voitu ladata."
+    },
     "studioStringsBatch37": {
       "surfaceChannelPage": "Kanavasivu",
       "surfaceArtistProfile": "Artistiprofiili",
@@ -693,8 +781,6 @@
       "favorites": "Suosikit",
       "studio": "Studio",
       "library": "Kirjasto",
-      "chat": "Chat",
-      "perform": "Esiinny",
       "admin": "Hallinta",
       "help": "Ohjekeskus",
       "settings": "Asetukset",
@@ -761,44 +847,23 @@
       "tracks": "Kappaleet"
     },
     "settings": {
-      "signInPrompt": "Kirjaudu sisään tili-, artisti- ja studioasetuksia varten.",
       "logIn": "Kirjaudu",
       "github": "GitHub",
       "discord": "Discord",
       "apiDocs": "API-ohjeet",
       "about": "Tietoa",
       "account": "Tili",
-      "accountDescription": "Istunto, jäsenyys, ostokset ja yksityisyys",
-      "artist": "Artisti",
-      "artistDescription": "Profiili, ilme, some-linkit, jäsenet, pressikitti",
-      "channel": "Kanava ja ilme",
-      "channelDescription": "Löydettävyys, käyttäjätunnus, moderointi",
-      "broadcast": "Lähetys",
-      "broadcastDescription": "Radio, green room, moderaattorit, multicast",
-      "audience": "Yleisö",
-      "audienceDescription": "Fanitasot, tilaukset, apurahat",
-      "themes": "Teemat",
-      "themesDescription": "Sovelluksen ulkoasu",
       "appearance": "Ulkoasu",
       "appearanceDescription": "Kieli, teemat ja sovelluksen ilme.",
       "pluginStore": "Lisäosat",
-      "pluginStoreDescription": "Teemat, visualisoinnit, radio, upotukset, löytäminen, kanavawidgetit, vienti, tuonti, multicast, sormenjäljet, äänilisäosat — yksi selain",
-      "whatsNew": "Mitä uutta",
-      "whatsNewDescription": "Mitä kussakin julkaisussa muuttui",
       "aboutDescription": "Mitä kussakin julkaisussa muuttui.",
       "groupSettings": "Asetukset",
       "groupApp": "Sovellus",
-      "channelChat": "Kanava ja chat",
       "profile": "Profiili",
       "playback": "Toisto",
       "playbackDescription": "Toisto ja työpöytäintegraatiot.",
       "integrations": "Integraatiot",
-      "integrationsDescription": "Scrobblaus ja työpöytäsovelluksen integraatiot",
       "addOnsDescription": "Kuuntelijan, artistin ja ylläpidon työkalut roolin mukaan",
-      "logs": "Lokit",
-      "logsDescription": "Tämän välilehden varoitukset ja virheet sekä linkit palvelimen konttilokeihin",
-      "language": "Kieli",
-      "languageDescription": "Valikoiden, painikkeiden ja päivämäärien kieli",
       "security": "Turvallisuus",
       "securityDescription": "Salasana, laitteet, kaksivaiheinen tunnistus ja API-tunnukset.",
       "notifications": "Ilmoitukset",
@@ -833,7 +898,6 @@
       "download": "Lataa",
       "follow": "Seuraa",
       "following": "Seurataan",
-      "unfollow": "Lopeta seuraaminen",
       "favorite": "Suosikki",
       "addToFavorites": "Lisää suosikkeihin",
       "removeFromFavorites": "Poista suosikeista",
@@ -851,13 +915,10 @@
       "preparingDownload": "Valmistellaan latausta",
       "preparingDownloadOf": "Valmistellaan kohteen {{title}} latausta",
       "preparing": "Valmistellaan…",
-      "love": "Tykkää",
-      "loved": "Tykätty",
       "add": "Lisää",
       "back": "Takaisin",
       "shareItem": "Jaa {{title}}",
       "backTo": "Takaisin: {{name}}",
-      "showMore": "Näytä lisää",
       "editItem": "Muokkaa: {{title}}",
       "playAll": "Toista kaikki",
       "addAllToQueue": "Lisää kaikki jonoon",
@@ -882,7 +943,6 @@
       "reset": "Nollaa",
       "more": "Lisää",
       "less": "Vähemmän",
-      "stats": "Tilastot",
       "manage": "Hallitse",
       "queueItem": "Lisää jonoon {{title}}",
       "addToPlaylist": "Lisää soittolistalle",
@@ -1336,7 +1396,6 @@
       "communityDescription": "Chatin määrä ja postin toimitus viimeisen vuorokauden ajalta."
     },
     "adminDiagnosticsView": {
-      "admin": "Ylläpito",
       "toolsAria": "Diagnostiikan työkalut"
     },
     "channelShare": {
@@ -1374,11 +1433,7 @@
       "tabComments": "Kommentit",
       "tabChat": "Chat",
       "upcomingEmpty": "Ei tulevia show'ta varattuna.",
-      "scheduleLoadError": "Aikataulua ei voitu ladata",
-      "noBroadcastScheduled": "Ei tällä hetkellä aikataulutettua lähetystä.",
-      "followers": "Seuraajat",
-      "offAirTitle": "Ei lähetyksessä",
-      "offAirDescription": "Tämä kanava ei lähetä juuri nyt. Selaa kappaleita alla tai palaa myöhemmin."
+      "scheduleLoadError": "Aikataulua ei voitu ladata"
     },
     "downloadGate": {
       "title": "Avaa tämä lataus",
@@ -1444,7 +1499,6 @@
       "stationUnavailable": "Asema ei ole saatavilla",
       "backToPlayer": "Takaisin soittimeen",
       "minimize": "Pienennä soitin",
-      "fullScreen": "Koko näyttö",
       "exitFullScreen": "Poistu koko näytöstä",
       "enterDrivingMode": "Ajotila (koko näyttö)",
       "nowPlayingFullScreen": "Nyt soi, koko näyttö",
@@ -1461,8 +1515,6 @@
       "history": "Historia",
       "recentlyPlayed": "Viimeksi kuunnellut",
       "newReleases": "Uudet julkaisut",
-      "liveNow": "Nyt livenä",
-      "replays": "Uusinnat",
       "trending": "Nousussa",
       "newTracks": "Uudet kappaleet",
       "radio": "Radio",
@@ -1479,7 +1531,6 @@
       "playingNow": "Soi nyt",
       "rank": "Sija {{rank}}",
       "nobodyLive": "Kukaan ei ole nyt livenä",
-      "replayingBelow": "Viimeisimmät lähetykset uusitaan alla.",
       "liveChannelsAppear": "Livekanavat näkyvät täällä, kun artisti aloittaa lähetyksen.",
       "noNewTracks": "Ei vielä uusia kappaleita",
       "tahtiSelects": "Tahti Selects",
@@ -1622,30 +1673,11 @@
       "tabEmbeds": "Upotukset",
       "tabSmartLinks": "Älylinkit",
       "tabLocal": "Paikalliset tiedostot",
-      "loadError": "Katalogin lataus epäonnistui",
-      "emptyCatalogTitle": "Katalogisi on tyhjä",
-      "emptyCatalogDescription": "Lähetä kappale aloittaaksesi kirjaston täyttämisen, tai hae inspiraatiota Löydä-sivulta.",
-      "nothingSavedTitle": "Ei vielä tallennettua",
-      "nothingSavedDescription": "Seuraa artisteja ja tallenna suosikkeja Löydä-sivulta - ne näkyvät täällä.",
-      "emptyLibraryTitle": "Kirjastosi on tyhjä",
-      "emptyLibraryDescription": "Kirjaudu sisään tallentaaksesi musiikkia, josta pidät, tai selaa Löydä-sivua.",
       "embedsLoadError": "Tuotuja upotuksia ei voitu ladata",
       "embedsEmptyTitle": "Ei tuotuja upotuksia vielä",
       "embedsEmptyDescription": "Hearthis.at-, Mixcloud-, Spotify- ja Bandcamp-tuonnit näkyvät täällä palveluntarjoajan mukaan, kun olet tuonut niitä Asetukset → Lisäosat → Tuonti.",
-      "totalSounds": "Äänet yhteensä",
-      "storageUsed": "Tallennustila käytössä",
-      "unlimitedPlan": "Rajoittamaton paketti",
-      "storageOf": "kiintiö {{size}}",
-      "storageDefault": "Äänet ja tiedostot",
-      "topSound": "Suosituin ääni",
-      "noPlaysYet": "Ei kuuntelukertoja vielä",
-      "topSoundsAllTime": "Suosituimmat äänet · koko ajalta",
       "plays_one": "{{n}} kuuntelu",
       "plays_other": "{{n}} kuuntelua",
-      "followingSignIn": "Kirjaudu sisään nähdäksesi, ketä seuraat",
-      "followingLoadError": "Seuraamiasi ei voitu ladata",
-      "followingEmptyTitle": "Et seuraa vielä ketään",
-      "followingEmptyDescription": "Seuraa artisteja ja kanavia heidän sivuiltaan. He näkyvät täällä ja syötteessäsi.",
       "soundsTitle": "Äänet",
       "soundsPanelSounds": "Äänet",
       "soundsPanelEmbeds": "Upotukset",
@@ -1697,7 +1729,6 @@
       "sortOrder": "Lajittelujärjestys: {{order}}",
       "sortByField": "{{field}} mukaan",
       "pinnedCount": "Kiinnitetty {{count}}",
-      "source": "Lähde",
       "uploadedFrom": "Ladattu alkaen",
       "uploadedTo": "Ladattu asti",
       "dayOfWeek": "Viikonpäivä",
@@ -1788,7 +1819,6 @@
       "soundsAddToRelease": "Lisää julkaisuun",
       "soundsAddToReleaseLoadError": "Valittuja ääniä ei voitu ladata julkaisua varten.",
       "soundsAddToPlaylist": "Lisää soittolistaan",
-      "soundsClear": "Tyhjennä",
       "soundsBulkEditTitle_one": "Muokkaa 1 ääntä",
       "soundsBulkEditTitle_other": "Muokkaa {{count}} ääntä",
       "soundsBulkEditDescription": "Vain muuttamasi kentät tallennetaan. Otsikot säilyvät.",
@@ -1800,7 +1830,6 @@
       "soundsBulkVisibility": "Näkyvyys",
       "soundsBulkPublic": "Julkinen",
       "soundsBulkPrivate": "Yksityinen",
-      "soundsBulkApply": "Käytä",
       "soundsBulkGenreCustom": "Oma genre",
       "soundsBulkGenreCustomPlaceholder": "esim. IDM",
       "soundsBulkLicense": "Lisenssi",
@@ -2102,8 +2131,6 @@
       "setupGreeting": "Tervetuloa, {{name}} — viimeistele tilin {{email}} asetukset.",
       "setupHint": "Avaa sähköpostin kutsulinkki, tai se on jo ladattu alle.",
       "setupSignedIn": "Kirjautunut sisään — siirrytään hallintaan…",
-      "setupAskFresh": "Pyydä kutsujalta uusi linkki, tai",
-      "setupIfHavePassword": "jos sinulla on jo salasana.",
       "setupSetting": "Asetetaan salasanaa…",
       "setupSubmit": "Aseta salasana"
     },
@@ -2247,23 +2274,18 @@
       "pauseRadio": "Keskeytä radio",
       "memberSetsError": "Jäsenten setejä ei voitu ladata",
       "memberSetsEmpty": "Ei vielä jäsenvälitettyjä settejä.",
-      "liveNowRelay": "Live nyt jäsenvälityksessä:",
       "title": "Radio",
       "tagline": "Yhteisöradio 24/7 — aina päällä. Tasainen rotaatio kun kukaan ei ole varannut.",
       "browseListen": "Selaa kuuntelua",
       "liveNow": "Suorana nyt",
-      "liveNowOnRelay": "Suorana jäsenvälityksessä:",
       "liveSet": "Live-setti",
       "stationFetchFailed": "Aseman haku epäonnistui",
-      "trackInfoFor": "Kappaleen tiedot: {{title}}",
-      "queueItem": "Lisää jonoon {{title}}",
       "agoJustNow": "juuri nyt",
       "agoMinutes": "{{count}} min sitten",
       "agoHours": "{{count}} t sitten",
       "agoDays": "{{count}} pv sitten",
       "memberSetOnAir": "Jäsenen setti on livenä",
       "memberSetOnAirDescription": "Rotaatio jatkuu, kun livesetti päättyy.",
-      "nextInRotation": "Seuraavaksi rotaatiossa",
       "rotationRefreshError": "Rotaatiota ei voitu päivittää",
       "rotationLoadError": "Rotaatiota ei voitu ladata",
       "rotationEmpty": "Rotaation soittolista on tyhjä",
@@ -2314,9 +2336,6 @@
       "nonePlayable": "Yhtäkään näistä kappaleista ei voi toistaa.",
       "shareAccessRevoked": "Jakamis­oikeus peruttu.",
       "couldNotCreateCollection": "Kokoelmaa ei voitu luoda.",
-      "artistInfoSaved": "Artistin tiedot tallennettu.",
-      "connectionsSaved": "Yhteydet tallennettu.",
-      "visualizerSaved": "Julkaisun visualisoijan oletus tallennettu.",
       "shareButtonSaved": "Jakopainikkeen asetus tallennettu.",
       "shareLinkRevoked": "Jakolinkki kumottu.",
       "imageUpdated": "{{label}} päivitetty.",
@@ -2334,8 +2353,6 @@
       "eventRemoved": "Poistettu “{{title}}”.",
       "groupCreated": "Luotu {{name}}",
       "partyCanceled": "Kuuntelujuhla “{{title}}” peruutettu.",
-      "broadcastShowNameRequired": "Lisää ohjelman nimi ennen tallennusta.",
-      "broadcastShowSaved": "Ohjelman tiedot tallennettu.",
       "channelLinksInvalid": "Linkkien on oltava http(s)- tai mailto:-osoitteita",
       "channelLookSaveFailed": "Muutoksia ei voitu tallentaa. Yritä uudelleen.",
       "reposted": "Uudelleenjulkaistu.",
@@ -2487,7 +2504,6 @@
       "couldNotSendSuggestion": "Ehdotusta ei voitu lähettää.",
       "couldNotResolveStreamUrl": "Virta-URL:ia ei voitu selvittää.",
       "updatedStationNamed": "Päivitetty {{name}} asemisiisi.",
-      "removedThemeNamed": "Poistettu {{name}}",
       "discordBotRestarting": "Discord-botti käynnistyy uudelleen",
       "discordBotSettingsSaved": "Discord-botin asetukset tallennettu",
       "lastFmConnected": "Last.fm-scrobble yhdistetty.",
@@ -2587,8 +2603,6 @@
     "settingsLogs": {
       "noLogs": "Ei lokimerkintöjä vielä. Tämän välilehden varoitukset, virheet ja soittimen tapahtumat näkyvät täällä.",
       "alert": "Nämä ovat vain tämän selainvälilehden asiakaslokit. Tuotannon konttilokit ja Grafana-mittarit löytyvät Administa.",
-      "containerLogs": "Konttilokit",
-      "monitoringHub": "Valvontakeskus",
       "clear": "Tyhjennä",
       "export": "Vie"
     },
@@ -2597,10 +2611,7 @@
       "emptyDiscographyDescription": "Lisää albumi tai kappale aloittaaksesi.",
       "addAlbum": "Lisää albumi",
       "addTrack": "Lisää kappale",
-      "governance": "Hallinto",
       "governanceLoadError": "Hallintoa ei voitu ladata",
-      "governanceEmptyVotes": "Ei äänestyksiä odottamassa.",
-      "governanceEmptyDiscussions": "Ei ratkaisemattomia keskustelupäivityksiä.",
       "recentActivity": "Viimeisin toiminta",
       "recentActivityLoadError": "Viimeisintä toimintaa ei voitu ladata",
       "recentActivityRefreshError": "Viimeisintä toimintaa ei voitu päivittää",
@@ -2616,7 +2627,6 @@
     "adminModeration": {
       "inbox": "Postilaatikko",
       "queuesAria": "Postilaatikon jonot",
-      "admin": "Admin",
       "support": "Tuki",
       "beta": "Beta-hakemukset",
       "radioSubmissions": "Radiolähetykset",
@@ -2918,11 +2928,6 @@
         "pageDescription": "Mitä kuuntelijat voivat tehdä avatessaan kanavasi.",
         "showShareLabel": "Näytä jakopainike kanavallani",
         "showShareDescription": "Anna kuuntelijoiden kopioida tai jakaa kanavasi linkki kanavasivulta.",
-        "chatMovedTitle": "Chat siirtyi Fanit-näkymään",
-        "chatMovedDescription": "Chatin voi ottaa käyttöön tai poistaa, ja käyttöoikeuksia, viestejä, porttikieltoja ja moderaattoreita hallitaan kohdassa Studio → Fanit.",
-        "moderatorsMovedTitle": "Moderaattorit siirtyivät Fanit-näkymään",
-        "moderatorsMovedDescription": "Lisää ja poista chatin moderaattoreita kohdassa Studio → Fanit, Chatin alla.",
-        "openFansChat": "Avaa Fanien chat",
         "slugLabel": "Kanavan slug / käyttäjänimi",
         "checkAvailability": "Tarkista saatavuus",
         "rename": "Nimeä uudelleen",
@@ -2942,8 +2947,6 @@
         "domainRequiresMembership": "Vaatii jäsenyyden. Lisää DNS TXT ja vahvista.",
         "verifyDomain": "Vahvista",
         "signInHint": "Kirjaudu kanavalla muokataksesi ulkoasua ja löydettävyyttä.",
-        "tabModerators": "Moderaattorit",
-        "tabChat": "Chat",
         "domainCurrent": "Nykyinen verkkotunnus: {{domain}}",
         "domainVerifiedBadge": "Vahvistettu",
         "domainPendingBadge": "Odottaa vahvistusta",
@@ -2951,12 +2954,6 @@
         "addressCurrent": "Kanavasi osoite on {{host}}."
       },
       "broadcast": {
-        "radioLoadError": "Radioasetuksia ei voitu ladata",
-        "announcementsLabel": "Tiedotteet käytössä",
-        "announcementsDescription": "Salli alustan ja radion tiedotteet kanavasi ohjelmassa.",
-        "fallbackLabel": "Soita automaattiohjelmaa, kun en ole livessä",
-        "autoEnrollLabel": "Lisää uudet lataukset automaattiohjelmaan",
-        "openSchedule": "Avaa aikataulu / ohjelma",
         "greenRoomLoadError": "Green room -asetuksia ei voitu ladata",
         "greenRoomDefaultLabel": "Avaa green room, kun menen liveen",
         "greenRoomDefaultDescription": "Jokainen uusi lähetys alkaa green room auki ja kutsuu alla valitut henkilöt. Voit silti avata tai sulkea sen Mene liveen -näkymästä.",
@@ -2964,14 +2961,12 @@
         "invitedHint": "Kutsutut vieraat voivat kuunnella ennen kuin lähetys julkaistaan. Voit kutsua muita käyttäjätunnuksella Mene liveen -näkymästä.",
         "greenRoomTab": "Green room",
         "multistreamTab": "Monilähetys",
-        "radioTab": "Radio",
         "openGreenRoomSession": "Avaa green room -sessio",
         "manageLiveDestinations": "Hallitse live-kohteita",
         "invitePoolModeratorsSubs": "Moderaattorit ja fanitilaajat",
         "invitePoolSubsOnly": "Vain fanitilaajat",
         "invitePoolEveryone": "Kaikki kirjautuneet",
-        "invitePoolManualOnly": "Vain kutsumani henkilöt",
-        "programmeMoved": "Klippejä ja automaattista 24/7-ohjelmaa hallitaan kohdassa Studio → Kanava → Asetukset."
+        "invitePoolManualOnly": "Vain kutsumani henkilöt"
       },
       "artist": {
         "loadError": "Artistiprofiilia ei voitu ladata",
@@ -2979,7 +2974,6 @@
         "tabIdentity": "Henkilöllisyys",
         "tabStory": "Tarina",
         "tabPeople": "Ihmiset",
-        "tabFollowing": "Seurataan",
         "tabConnections": "Yhteydet",
         "tabBranding": "Ilme",
         "tabGallery": "Galleria",
@@ -2997,8 +2991,6 @@
         "creativeRoles": "Luovat roolit",
         "selectedRoles": "Valittu:",
         "noneYet": "Ei vielä",
-        "profileImageUpdated": "Profiilikuva päivitetty.",
-        "galleryImageAdded": "Kuva lisätty galleriaasi.",
         "shortBio": "Lyhyt bio",
         "shortBioPlaceholder": "Tiivis esittely, joka näkyy profiilissasi.",
         "yourStory": "Tarinasi",
@@ -3150,15 +3142,10 @@
       "noPublicTracks": "Ei vielä julkisia kappaleita",
       "noPublicTracksDescription": "Kun tämä kanava julkaisee kappaleita, ne näkyvät täällä. Offline-kuuntelu toimii edelleen Discoverista ja Radiosta.",
       "noPublicTracksEmpty": "Ei vielä julkisia kappaleita tälle kanavalle.",
-      "liveChat": "Live-chat",
-      "chatOpenDescription": "Avaa live-chat-sivu jutellaksesi artistin ja muiden fanien kanssa.",
-      "chatDisabled": "Chat on pois käytöstä tällä kanavalla.",
-      "openLiveChat": "Avaa live-chat",
       "programming": "Ohjelmisto",
       "nextUp": "Seuraavaksi · {{when}}",
       "noBroadcastScheduled": "Ei lähetystä aikataulussa juuri nyt.",
       "viewFullSchedule": "Näytä koko aikataulu →",
-      "followers": "Seuraajat",
       "liveShows": "Live-lähetykset",
       "loadingShows": "Ladataan lähetyksiä…",
       "showsError": "Lähetyksiä ei voitu ladata",
@@ -3203,8 +3190,6 @@
       "copySmartlink": "Kopioi smartlink: {{title}}",
       "openBandcamp": "Avaa Bandcampissa",
       "openBandcampItem": "Avaa {{title}} Bandcampissa",
-      "more": "Lisää",
-      "less": "Vähemmän",
       "moreFor": "{{action}}: {{title}}",
       "pinnedToProfile": "kiinnitetty profiiliin",
       "createdToast": "Luotu {{title}}.",
@@ -3288,8 +3273,7 @@
     "releaseTrackStems": {
       "heading": "Stemmit",
       "playRole": "Soita {{role}}",
-      "listAria": "Stemmit kappaleelle {{title}}",
-      "stemOfTrack": "{{role}}"
+      "listAria": "Stemmit kappaleelle {{title}}"
     },
     "releaseStems": {
       "heading": "Stemmit",
@@ -3337,8 +3321,7 @@
       "lockedTracksAria": "Lukitut kappaleet",
       "creditsAria": "Tekijät",
       "docTitle": "{{title}} — {{artist}} Tahtissa",
-      "docDescription": "Kuuntele {{title}} ja löydä sen viralliset linkit Tahtista.",
-      "loadErrorFallback": "Julkaisua ei voitu ladata."
+      "docDescription": "Kuuntele {{title}} ja löydä sen viralliset linkit Tahtista."
     },
     "groupDetail": {
       "loading": "Ladataan ryhmää…",
@@ -3356,7 +3339,6 @@
       "youAre": "Olet {{role}}",
       "collectivePlaylist": "Yhteinen soittolista",
       "listenTogether": "Kuunnelkaa yhdessä",
-      "manage": "Hallitse",
       "joinPolicyRequest": "Ylläpitäjät hyväksyvät uudet jäsenet.",
       "joinPolicyOpen": "Kuka tahansa voi liittyä.",
       "submitApprove": "Uudet äänet hyväksytään ensin ylläpitäjillä.",
@@ -3368,7 +3350,6 @@
       "refreshError": "Ryhmää ei voitu päivittää. Näytetään viimeksi ladattu versio."
     },
     "studioEvents": {
-      "title": "Tapahtumat",
       "addEvent": "Lisää tapahtuma",
       "upcoming": "Tulossa",
       "past": "Menneet",
@@ -3377,7 +3358,6 @@
       "pastTitle": "Menneet tapahtumat",
       "pastDescription": "Aiemmat esiintymisesi ja esityksesi.",
       "empty": "Ei tapahtumia vielä",
-      "ticketsLink": "Liput / tapahtuman linkki",
       "remove": "Poista",
       "removeConfirmTitle": "Poistetaanko tapahtuma?",
       "removeConfirmTitleNamed": "Poistetaanko “{{title}}”?",
@@ -3473,7 +3453,6 @@
       "refreshError": "Ryhmää ei voitu päivittää. Näytetään viimeksi ladattu versio."
     },
     "studioListeningParties": {
-      "title": "Kuuntelujuhlat",
       "schedule": "Aikatauluta kuuntelujuhla",
       "upcoming": "Tulossa",
       "past": "Menneet",
@@ -3637,9 +3616,6 @@
       "loadingAccount": "Ladataan tiliäsi…"
     },
     "studioRevenue": {
-      "fanSubsTitle": "Fanitilaukset",
-      "emptyFanSubsTitle": "Ei vielä fanitilauksia",
-      "emptyFanSubsDescription": "Luo tilaustasot, jotta fanit voivat tukea sinua suoraan.",
       "openTiers": "Avaa tasoeditori",
       "emptyDisbursements": "Ei vielä maksuja"
     },
@@ -3726,8 +3702,7 @@
       "emptyTitle": "Ei julkaisuja vielä",
       "emptyDescription": "Luo ensin yksi Julkaisut-osiossa.",
       "royaltiesError": "Tekijänoikeusraportteja ei voitu ladata.",
-      "royaltiesTitle": "Kaikki tekijänoikeusraportit",
-      "toastLoadFailed": "Julkaisuja ei voitu ladata."
+      "royaltiesTitle": "Kaikki tekijänoikeusraportit"
     },
     "studioEditorList": {
       "title": "Editori",
@@ -3783,19 +3758,10 @@
       "removeTitle": "Poistetaanko kohde?",
       "removeDescription": "Tämä poistaa tallennetun stream-avaimen."
     },
-    "rotationSource": {
-      "title": "Rotointilähde",
-      "description": "Toista 24/7-rotaatio yhdestä kokoelmastasi sen sijaan, että käytät rotaatioon merkittyjä kappaleita.",
-      "playFrom": "Toista lähteestä",
-      "markedTracks": "Rotaatioon merkityt kappaleet",
-      "tracks_one": "{{count}} kappale",
-      "tracks_other": "{{count}} kappaletta"
-    },
     "studioFans": {
       "title": "Fanit",
       "subtitle": "Kaikki sinun ja tukijoidesi välillä: julkaisut, uutiskirje, jäsenyydet, kauppa, chat ja tulot.",
       "ariaLabel": "Fanityökalut",
-      "tabTools": "Työkalut",
       "tabChat": "Chat",
       "postsTitle": "Julkaisut",
       "postsDescription": "Päivitykset kanavasivullasi ja seuraajien syötteissä.",
@@ -3809,9 +3775,6 @@
       "earningsDescription": "Tilaajat, tilaukset, maksut, apurahat ja Stripe-tili."
     },
     "studioSchedule": {
-      "title": "Aikataulu",
-      "panelTitle": "Ajastetut ohjelmajaksot",
-      "panelDescription": "Yksittäiset ja toistuvat jaksot ohjelmistasi.",
       "cancelTitleNamed": "Peruutetaanko \"{{title}}\"?",
       "cancelTitle": "Peruutetaanko \"tämä ohjelma\"?",
       "cancelDescription": "Ajastettu jakso poistetaan aikataulustasi ja julkiselta kanavalta.",
@@ -3898,7 +3861,6 @@
       "deleteTitleNamed": "Poistetaanko \"{{headline}}\"?",
       "deleteTitle": "Poistetaanko uutinen?",
       "deleteDescription": "Tätä ei voi perua.",
-      "admin": "Ylläpito",
       "news": "Uutiset",
       "cancel": "Peruuta",
       "includesImage": "Sisältää kuvan",
@@ -3919,7 +3881,6 @@
     "adminAnnouncements": {
       "deleteTitleNamed": "Poistetaanko \"{{title}}\"?",
       "deleteDescription": "Tämä ilmoitusclippi poistetaan aikataulusta kaikilta.",
-      "admin": "Ylläpito",
       "announcements": "Kuulutukset",
       "turningThisOffStopsAll": "Tämän poistaminen käytöstä pysäyttää kaikki järjestelmäkuulutukset kaikkialla heti — jokainen alla oleva klippi säilyttää silti oman päälle/pois-tilansa ja aikataulunsa.",
       "rendering": "Renderöidään",
@@ -4177,7 +4138,6 @@
       "loadingUserDetails": "Ladataan käyttäjän tietoja…",
       "loadingStories": "Ladataan tarinoita…",
       "loadingBlockedAccounts": "Ladataan estettyjä tilejä…",
-      "loadingShowInfo": "Ladataan ohjelman tietoja…",
       "loadingAnnouncements": "Ladataan ilmoituksia…",
       "loadingPlaylist": "Ladataan soittolistaa…",
       "loadingYourTracks": "Ladataan kappaleitasi…",
@@ -4256,9 +4216,7 @@
       "loadingRuns": "Ladataan ajoja…",
       "loadingStorage": "Ladataan tallennustilaa…",
       "loadingArtist": "Ladataan artistia…",
-      "loadingStatistics": "Ladataan tilastoja…",
       "loadingProject": "Ladataan projektia…",
-      "loadingGovernance": "Ladataan hallintoa…",
       "loadingEditor": "Ladataan editoria…",
       "openingChannelSetup": "Avataan kanavan asetuksia…",
       "loadingPlays": "Ladataan kuunteluja…",
@@ -4286,7 +4244,7 @@
       "hint": "Pois päältä olevat ominaisuudet näkyvät sivulla himmeinä muokatessa. Vierailijat eivät näe niitä."
     },
     "addListenWidget": {
-      "open": "Lisää uusi kuuntelu-widget",
+      "open": "Lisää widget Kuuntele-sivulle",
       "title": "Lisää kuuntelu-widget",
       "chooseService": "Valitse palvelu, josta soittolista lisätään.",
       "allAddons": "Selaa kaikkia lisäosia (uutissyötteet, radio, listat)",
@@ -4339,8 +4297,7 @@
       "previewNamed": "Esikatsele: {{name}}",
       "configureNamed": "Määritä: {{name}}",
       "audioReactive": "Reagoi ääneen",
-      "preview": "Esikatselu",
-      "playOnShiftQueue": "Toista palvelussa {{provider}} · Vaihto+klikkaus lisää jonoon"
+      "preview": "Esikatselu"
     },
     "tiers": {
       "newTier": "Uusi taso",
@@ -4413,7 +4370,6 @@
       "addStation": "Lisää asema",
       "registerAddon": "Rekisteröi lisäosa",
       "addContent": "Lisää sisältöä",
-      "addToSelects": "Lisää Tahti Selectsiin",
       "proposeIdea": "Ehdota ideaa",
       "addFeed": "Lisää syöte",
       "newSupportRequest": "Uusi pyyntö",
@@ -4444,7 +4400,6 @@
       "chooseAVenueOrEnter": "Valitse tapahtumapaikka tai kirjoita se alle",
       "location": "Sijainti",
       "helsinkiFinland": "Helsinki, Suomi",
-      "ticketsEventLinkOptional": "Liput / tapahtumalinkki (valinnainen)",
       "description": "Kuvaus",
       "whatShouldPeopleExpectSet": "Mitä ihmiset voivat odottaa — esiintymisen tiedot, ovien avaus, liput…",
       "start": "Alkaa"
@@ -4573,9 +4528,6 @@
       "refreshError": "Hallinnon tapahtumia ei voitu päivittää. Näytetään viimeksi ladatut tiedot."
     },
     "themesCategory": {
-      "dynamic": "Dynaaminen",
-      "customThemeEditor": "Oman teeman editori",
-      "clickAColorToExpand": "Napsauta väriä avataksesi sen liukusäätimet. Ulkoasu käyttää yllä olevaa riviä.",
       "noAnimatedBackground": "Ei animoitua taustaa",
       "audioReactive": "Reagoi ääneen",
       "audioReactivity": "Reagointi ääneen",
@@ -4585,14 +4537,11 @@
       "growsOrShrinksTheWhole": "Suurentaa tai pienentää koko näkymää.",
       "resetToDefault": "Palauta oletus",
       "done": "Valmis",
-      "dynamicTheme": "Dynaaminen teema",
-      "darkFrom7pmTo7am": "Tumma klo 19–7, vaalea muun päivän.",
-      "whatDynamicDoes": "Mitä Dynaaminen tekee",
       "speed": "Nopeus",
       "intensity": "Voimakkuus",
       "scale": "Koko",
       "channelDesignHint": "Otsikon tyyli, värimaailma ja visualisoinnin näkyvyys asetetaan kohdassa",
-      "channelDesignLink": "Studio → Profiili → Kanavan ulkoasu"
+      "channelDesignLink": "Studio → Kanava → Ulkoasu"
     },
     "transparencyPage": {
       "category": "Luokka",
@@ -4635,8 +4584,6 @@
       "saveChanges": "Tallenna muutokset"
     },
     "grantCycle": {
-      "admin": "Ylläpito",
-      "governance": "Hallinto",
       "grants": "Apurahat",
       "boardCsv": "Hallituksen CSV",
       "allCycles": "Kaikki kierrokset",
@@ -4834,7 +4781,6 @@
     },
     "adminVendors": {
       "dpaRequired": "Tietojenkäsittelysopimus vaaditaan",
-      "admin": "Ylläpito",
       "vendors": "Toimittajat",
       "aVendorIsNotConsidered": "Toimittajaa ei pidetä käytössä olevana, ennen kuin sen tunnukset, sopimus, takaisinkutsu/webhook, tietojenkäsittelysopimus ja toimintatesti on vahvistettu.",
       "distributionStatus": "Jakelun tila",
@@ -4846,8 +4792,6 @@
       "openQuestionsForTheBoard": "Avoimet kysymykset hallitukselle/lakimiehelle — ei oikeudellista neuvontaa, eikä tämä työkalu ole tarkistanut tai hoitanut niitä."
     },
     "adminMonitoring": {
-      "admin": "Ylläpito",
-      "monitoring": "Valvonta",
       "grafanaEmbedsNeedYouSigned": "Grafana-upotukset vaativat kirjautumisen osoitteeseen grafana.tahti.live tässä selaimessa. Jos paneeli on tyhjä, avaa Grafana uuteen välilehteen, kirjaudu ja lataa tämä sivu uudelleen.",
       "grafanaEmbedDidNotLoad": "Grafana-paneelia ei saatu ladattua tähän kehykseen. Kirjaudu grafana.tahti.live -sivulle toisessa välilehdessä, salli evästeet kyseiselle isännälle ja lataa tämä sivu uudelleen tai käytä alla olevaa linkkiä koko kojelautaan.",
       "grafanaExploreLoki": "Grafana Explore (Loki)",
@@ -5257,30 +5201,11 @@
     },
     "studioHomeGrid": {
       "broadcast": "Lähetys",
-      "goLive": "Mene liveen",
-      "keysSignalOnAir": "Avaimet, signaali, lähetys",
-      "schedule": "Aikataulu",
-      "nextShowProgramme": "Seuraava ohjelma ja ohjelmisto",
-      "music": "Musiikki",
-      "shows": "Ohjelmat",
-      "episodesSlots": "Jaksot ja ajat",
       "upload": "Lataa",
-      "addAudio": "Lisää ääntä",
-      "collections": "Kokoelmat",
       "releases": "Julkaisut",
-      "distribution": "Jakelu",
-      "deliveryStatusRoyalties": "Toimitustila ja rojaltit",
-      "audienceChannel": "Yleisö ja kanava",
       "posts": "Julkaisut",
-      "updatesNewsletter": "Päivitykset ja uutiskirje",
-      "stats": "Tilastot",
       "playsDownloads": "Soitot ja lataukset",
-      "earnings": "Tulot",
-      "ordersGrants": "Tilaukset ja apurahat",
-      "stripe": "Stripe",
-      "payoutAccount": "Tilitystili",
-      "channelLook": "Kanavan ulkoasu",
-      "designDomain": "Ulkoasu ja verkkotunnus"
+      "channelLook": "Kanavan ulkoasu"
     },
     "waveformToolbar": {
       "editorTools": "Editorin työkalut",
@@ -5468,13 +5393,9 @@
       "intensity": "Voimakkuus"
     },
     "studioRevenue2": {
-      "dismiss": "Sulje",
       "earningsGuide": "Tulo-opas",
       "openStripeSetup": "Avaa Stripen käyttöönotto",
-      "stripeDashboard": "Stripe-hallintapaneeli",
       "openStripeDashboard": "Avaa Stripe-hallintapaneeli",
-      "thisPageHasMoved": "Tämä sivu on siirtynyt",
-      "help": "Ohje",
       "helpTakeAGuidedTour": "Ohje — opastettu kierros tilausten hallintaan",
       "moreActions": "Lisää tulotoimintoja",
       "fanSubscriptionTiers": "Fanitilausten tasot",
@@ -5484,15 +5405,11 @@
       "trackSales": "Kappalemyynti",
       "paidOneTimePurchasesNewest": "Maksetut kertaostot, uusin ensin.",
       "payments": "Maksut",
-      "fanSubscriptions": "Fanitilaukset",
       "orderManagement": "Tilausten hallinta",
       "subscribersNetRevenuePayoutHealth": "Tilaajat, nettotulot, tilitysten tila sekä viimeisimmät fanitilaus- ja jakelutilitykset.",
-      "orderFlow": "Tilauksen kulku",
-      "whatHappensToATypical": "Mitä tyypilliselle 5 €:n kuukausitilaukselle tapahtuu.",
       "stripe": "Stripe",
       "payoutAccountAndExpressDashboard": "Tilitystili ja Express-hallintapaneeli — näkyy Studiossa vain, kun Stripe on käytössä.",
-      "pastGrants": "Aiemmat apurahat",
-      "connectWarning": "Stripeä ei ole vielä yhdistetty, joten fanitilausten tilitykset eivät tavoita sinua ennen kuin Connect näyttää maksut valmiiksi. Viimeistele käyttöönotto: {{link}}."
+      "pastGrants": "Aiemmat apurahat"
     },
     "smartLinks": {
       "addTracksFromLibrary": "Lisää kappaleita kirjastosta",
@@ -5591,18 +5508,11 @@
       "appearance": "Ulkoasu"
     },
     "adminDashboard": {
-      "admin": "Ylläpito",
       "dashboard": "Kojelauta",
       "statusChecks": "Tilatarkistukset",
       "viewLogs": "Näytä lokit",
       "viewDetails": "Näytä tiedot",
       "close": "Sulje",
-      "grafanaVitalsInfrastructureAndContainer": "Tuotantoympäristön Grafana-mittarit, infrastruktuuri ja konttien lokit.",
-      "operationsHub": "Ylläpitokeskus",
-      "containerLogs": "Konttien lokit",
-      "grafanaLoki": "Grafana Loki",
-      "grafana": "Grafana",
-      "logs": "Lokit",
       "systemHealth": "Järjestelmän tila",
       "needsAction": "Vaatii toimia",
       "financeYtd": "Talous vuoden alusta",
@@ -6106,15 +6016,6 @@
       "done": "Valmis",
       "addATag": "Lisää tunniste"
     },
-    "imagePurpose": {
-      "addProfileImages": "Lisää profiilikuvia",
-      "dropOneOrMoreImages": "Pudota tähän yksi tai useampi kuva. Valitset kunkin kuvan käyttötarkoituksen ennen kuin mitään ladataan.",
-      "chooseWhatEachImageIs": "Valitse kunkin kuvan käyttötarkoitus",
-      "setAPurposeForEvery": "Valitse jokaiselle kuvalle käyttötarkoitus. Vain yksi kuva voi olla profiilikuva; toisen valitseminen siirtää edellisen galleriaan.",
-      "cancel": "Peruuta",
-      "changeProfileImage": "Vaihda profiilikuva",
-      "removeImage": "Poista kuva"
-    },
     "discoverWidgetCard": {
       "listenToTheirMusic": "Kuuntele heidän musiikkiaan",
       "adjustHowThisWidgetBehaves": "Säädä, miten tämä pienoisohjelma toimii Löydä-sivulla.",
@@ -6273,7 +6174,7 @@
       "openTheGreenRoom": "Avaa green room",
       "nobodyIsInvitedYet": "Ketään ei ole vielä kutsuttu.",
       "greenRoom": "Green room",
-      "letInvitedGuestsHearYour": "Anna kutsuttujen vieraiden kuulla lähetyksesi ennen kuin se on julkinen. Kutsujen oletussäännöt ovat kohdassa Studio → Lähetys → Kanava.",
+      "letInvitedGuestsHearYour": "Anna kutsuttujen vieraiden kuulla lähetyksesi ennen kuin se on julkinen. Kutsujen oletussäännöt ovat kohdassa Studio → Kanava → Asetukset.",
       "copyLink": "Kopioi linkki"
     },
     "electionResult": {
@@ -6760,9 +6661,7 @@
     "profilePicture": {
       "jpegPngWebpOrGif": "JPEG, PNG, WebP tai GIF. Animoidusta GIFistä näkyy ensimmäinen kuva, ja se toistuu, kun osoitin viedään sen päälle. Alkuperäinen säilytetään täysikokoista käyttöä varten.",
       "theAvatarColourShowsOnly": "Avatarin väri näkyy vain, kun profiilikuvaa ei ole.",
-      "profilePicture": "Profiilikuva",
-      "useAClearSquarePortrait": "Käytä selkeää neliönmuotoista muotokuvaa tai merkkiä. Lataa kuva napsauttamalla, valitse galleriasta tai liitä kuvan linkki.",
-      "acceptedImageFormats": "Hyväksytyt kuvamuodot"
+      "profilePicture": "Profiilikuva"
     },
     "addonPublish": {
       "uploadTheWidgetAposS": "Lataa pienoisohjelman JavaScript-paketti (ES-moduuli, enintään 2 Mt). Julkaisu lähettää lisäosan takaisin tarkastukseen, vaikka se olisi hyväksytty.",
@@ -7040,7 +6939,6 @@
       "units_one": "1 yksikkö",
       "units_other": "{{count}} yksikköä",
       "payoutsUnder": "Fanitilausten maksut ja avustushistoria löytyvät kohdasta",
-      "geographyNote": ". Kuuntelijoiden sijainnit on koottu yhteen eivätkä yksilöi ketään kuuntelijaa.",
       "engagementDescription": "Miten ilmaiset lataukset, maksetut lataukset ja fanitilaukset kertyvät avustusosuuteesi."
     },
     "hourlyDialog": {
@@ -7061,7 +6959,6 @@
       "result": "Luotu {{created}}, ohitettu {{skipped}}."
     },
     "waveformEditor": {
-      "showingTheBasicWaveformThe": "Näytetään perusaaltomuoto: tarkempi editori ei käynnistynyt tässä selaimessa. Muokkaus, zoomaus ja pikanäppäimet toimivat silti.",
       "effectsArenTHeardIn": "Efektit eivät vielä kuulu tässä esikuuntelussa: tiedoston palvelin ei salli selaimen käsitellä sitä. Kuulet sen käsittelemättömänä, kunnes editorilla on oma kopio; renderöinnit käyttävät silti kaikkia efektejä.",
       "wavesurferFailed": "Yksityiskohtaista aaltomuotoa ei voitu käynnistää tässä selaimessa. Lataa editori uudelleen."
     },
@@ -7165,7 +7062,6 @@
       "releaseCredits": "Julkaisun tekijät"
     },
     "listenerWidgetEmbed": {
-      "couldnAposTLoadThis": "Tätä Spotify-soittolistaa ei voitu ladata. Poista se ja kokeile julkisen soittolistan linkkiä uudelleen.",
       "loadingPlaylist": "Ladataan soittolistaa…",
       "thisPlaylistHasNoTracks": "Tällä soittolistalla ei ole kappaleita."
     },
@@ -7255,27 +7151,22 @@
       "download": "Lataa"
     },
     "adminStreamsView": {
-      "admin": "Ylläpito",
       "streams": "Lähetykset",
       "liveNow": "Livenä nyt",
       "ingestSettings": "Vastaanottoasetukset"
     },
     "adminStorageView": {
-      "admin": "Ylläpito",
       "storage": "Tallennustila"
     },
     "adminSelectsView": {
-      "admin": "Ylläpito",
       "tahtiSelects": "Tahti Selects"
     },
     "adminGovernanceView": {
-      "admin": "Ylläpito",
       "governance": "Hallinto"
     },
     "adminGovernanceHub": {
       "subtitle": "Osuuskunnan hallinnon työkalut — valitse alue.",
       "toolsAria": "Hallinnon alueet",
-      "backToGovernance": "Takaisin hallintoon",
       "overviewDescription": "Jäsenten toiminta ja hallituksen päätökset.",
       "reportsDescription": "Vuosikertomusten luonti, hyväksyntä ja julkaisu.",
       "grantsDescription": "Avustuskierrokset ja maksuhistoria.",
@@ -7367,8 +7258,6 @@
       "acknowledge": "Kuittaa"
     },
     "helpView": {
-      "quickStart": "Pika-aloitus",
-      "guideIndex": "Oppaiden hakemisto",
       "clearSearch": "Tyhjennä haku",
       "openTahtiLiveHelp": "Avaa tahti.live/help",
       "backToHelpHub": "Takaisin ohjeiden etusivulle",
@@ -7401,7 +7290,6 @@
       "delete": "Poista"
     },
     "adminRadioView": {
-      "admin": "Ylläpito",
       "radio": "Radio",
       "moveToFront": "Siirrä alkuun",
       "optOut": "Jätä pois",
@@ -7626,7 +7514,6 @@
       "refreshError": "Ohjelmaa ei voitu päivittää. Näytetään viimeksi ladattu aikataulu."
     },
     "adminI18nView": {
-      "admin": "Ylläpito",
       "languages": "Kielet",
       "notAvailableYetThisServer": "Ei vielä käytettävissä. Tällä palvelimella ei ole käännösten hallintaa, joten kieliä ei voi lisätä tai tuoda täällä. Sovelluksen käännökset tulevat jokaisen julkaisun mukana.",
       "base": "Pohja",
@@ -7714,10 +7601,7 @@
       "searchVenues2": "Hae tapahtumapaikkoja"
     },
     "adminStorageUserView": {
-      "admin": "Ylläpito",
-      "storage": "Tallennustila",
       "files": "Tiedostot",
-      "backToStorage": "Takaisin tallennustilaan",
       "subtitle": "Tämän tilin käyttämä tallennustila ja kaikki sen lataamat tiedostot.",
       "used": "Käytetty",
       "quota": "Kiintiö",
@@ -7748,15 +7632,12 @@
       "loadingPlaylist": "Ladataan soittolistaa…"
     },
     "studioGovernanceView": {
-      "theActiveSubtabAlwaysFollows": "Aktiivinen alavälilehti seuraa aina avaamaasi sivua, joten voit käyttää selaimen takaisin-painiketta ja jaettuja linkkejä hukkaamatta paikkaasi.",
       "replyingFollowsATopicSo": "Vastaaminen seuraa aihetta, joten uusista vastauksista tulee ilmoitus; mykistä se, jos haluat seurata ilman ilmoituksia. Voit poistaa oman vastauksesi, kun aihe on auki. Keskustelu ei ole äänestys: päätökset tehdään aloitteilla.",
       "advisoryDiscussionsAndVotesCollect": "Neuvoa-antavat keskustelut ja äänestykset keräävät jäsenten näkemyksiä. Ne ovat selvästi erillään yhdistystä sitovista päätöksistä.",
       "doNotTreatAnAdvisory": "Älä pidä neuvoa-antavaa tulosta virallisena vuosikokouksen äänestyksenä. Viralliset tiedot julkaistaan, kun yhdistyksen äänioikeus-, päätösvaltaisuus-, äänestys-, pöytäkirja- ja tulossäännöt ovat voimassa.",
-      "governanceDocuments": "Hallinnon asiakirjat",
       "whereGovernanceLives": "Missä hallinto tapahtuu",
       "discussions": "Keskustelut",
-      "advisoryConsultationAndOfficialVotes": "Neuvoa-antava kuuleminen ja viralliset äänestykset",
-      "governance": "Hallinto"
+      "advisoryConsultationAndOfficialVotes": "Neuvoa-antava kuuleminen ja viralliset äänestykset"
     },
     "studioGate": {
       "logIn": "Kirjaudu sisään",
@@ -8021,7 +7902,6 @@
       "topListOrder": "Listan järjestys"
     },
     "adminContentView": {
-      "admin": "Ylläpito",
       "catalog": "Luettelo",
       "topLists": "Suosituimmat",
       "latestContent": "Uusin sisältö",
@@ -8074,10 +7954,6 @@
       "wideJpegPngWebpOr": "Leveä JPEG, PNG, WebP tai GIF"
     },
     "studioEventView": {
-      "start": "Alku",
-      "place": "Paikka",
-      "description": "Kuvaus",
-      "ticketsEventLink": "Liput / tapahtuman linkki",
       "backToEvents": "Takaisin tapahtumiin",
       "eventDetails": "Tapahtuman tiedot"
     },
@@ -8107,7 +7983,6 @@
     "multistreamPanel": {
       "addMultistreamDestination": "Lisää monilähetyksen kohde",
       "chooseAPlatformToConfigure": "Valitse määritettävä alusta.",
-      "multistream": "Kohteet",
       "destinationsForThisSessionAdd": "Tämän lähetyksen kohteet. Lisää tai muokkaa niitä täällä; tallennetut kohteet ovat Studiossa → Kanava.",
       "addDestination": "Lisää kohde",
       "removeDestination": "Poista kohde"
@@ -8168,7 +8043,6 @@
       "whatTheMeetingDecided": "Mitä kokous päätti"
     },
     "adminVenuesView": {
-      "admin": "Ylläpito",
       "venues": "Tapahtumapaikat",
       "verifyingAVenueOrTaking": "Tapahtumapaikan vahvistamisesta tai vahvistuksen perumisesta ilmoitetaan sen rekisteröijälle.",
       "clearSearch": "Tyhjennä haku",
@@ -8176,7 +8050,6 @@
       "nameCitySlugOrSubmitter": "Nimi, kaupunki, tunniste tai lähettäjä"
     },
     "adminFinancialView": {
-      "admin": "Ylläpito",
       "financial": "Talous",
       "activeSubscriptions": "Aktiiviset tilaukset",
       "pendingPayouts": "Odottavat maksut",
@@ -8224,10 +8097,6 @@
     },
     "studioStatsView": {
       "stats": "Tilastot",
-      "statsSections": "Tilastojen osiot",
-      "overview": "Yleiskatsaus",
-      "playsAndListeners": "Soitot ja kuuntelijat",
-      "topLists": "Suosituimmat",
       "subtitle": "Soitot, yleisö ja sijoitukset valitsemaltasi ajalta."
     },
     "studioStatsDetailView": {
@@ -8244,8 +8113,6 @@
       "addNextBroadcast": "Lisää seuraava lähetys",
       "scheduledShowEpisodes": "Ajastetut jaksot",
       "oneOffAndRecurringEpisodes": "Ohjelmistasi luodut kertaluontoiset ja toistuvat jaksot.",
-      "channelProgramme": "Kanavan ohjelma",
-      "channelProgrammeDescription": "Mitä kanavasi soittaa livelähetysten välissä: 24/7-rotaatio, offline-varaohjelma ja ilmoitukset.",
       "filterBroadcasts": "Lähetykset",
       "filterLabel": "Näytä aikataulussa"
     },
@@ -8279,7 +8146,6 @@
     "adminLogsView": {
       "openInGrafanaExplore": "Avaa Grafana Explore -näkymässä",
       "dockerMetrics": "Docker-mittarit",
-      "admin": "Ylläpito",
       "logs": "Lokit",
       "recentAuditEntries": "Viimeisimmät auditointimerkinnät"
     },
@@ -8291,13 +8157,10 @@
       "listenedOn": "Kuunneltu"
     },
     "adminAddonsView": {
-      "admin": "Ylläpito",
       "addOns": "Lisäosat",
       "registerANewAddOn": "Rekisteröi uusi lisäosa",
       "addOnTypes": "Lisäosien tyypit",
-      "addOnReviewStatus": "Lisäosan tarkastuksen tila",
       "intro": "Kattaa hiekkalaatikoidun widget-kaupan kahdesta 13:sta Asetukset → Lisäosat -kategoriasta: Löytäminen (Listen) ja Kanava (artistisivu). Muut 11 ovat kiinteitä rekistereitä tai yksityisiä käyttäjäyhteyksiä, joita ei moderoida täällä.",
-      "needsReview": "Tarkastettava",
       "needsReviewCount": "Tarkastettava ({{count}})",
       "review": "Tarkastus",
       "catalogue": "Luettelo"
@@ -8398,16 +8261,6 @@
       "transparency": "Läpinäkyvyys",
       "year": "Vuosi"
     },
-    "governanceSection": {
-      "haveYourSay": "Kerro mielipiteesi",
-      "reviewOpenVotesAndFollow": "Käy läpi avoimet äänestykset ja seuraa ratkaisemattomia keskusteluja.",
-      "needsYourOpinion": "Tarvitsee mielipiteesi",
-      "ongoingDiscussions": "Käynnissä olevat keskustelut",
-      "openMotion": "Avaa aloite",
-      "openTopic": "Avaa aihe",
-      "openCoop": "Avaa Osuuskunta →",
-      "nothingToDo": "Ei äänestyksiä odottamassa eikä avoimia keskusteluja."
-    },
     "spotifyImportPanel": {
       "addFromSpotify": "Lisää Spotifysta",
       "tracksAreEmbeddedFromSpotify": "Kappaleet upotetaan Spotifysta; Tahti ei koskaan kopioi ääntä.",
@@ -8455,12 +8308,6 @@
       "loading": "Ladataan…",
       "findAMember": "Etsi jäsen",
       "nameUsernameOrMemberNumber": "Nimi, käyttäjänimi tai jäsennumero"
-    },
-    "adminStatusView": {
-      "admin": "Ylläpito",
-      "status": "Tila",
-      "queueHealth": "Jonojen kunto",
-      "cronJobs": "Ajastetut tehtävät"
     },
     "adminQueues": {
       "title": "Mediajonon työt",
@@ -8560,11 +8407,6 @@
       "downloadOriginal": "Lataa alkuperäinen",
       "stats": "Tilastot"
     },
-    "soundRow": {
-      "playShiftClickToQueue": "Soita · Vaihto+napsautus lisää jonoon",
-      "downloadOriginal": "Lataa alkuperäinen",
-      "stats": "Tilastot"
-    },
     "recordingsTab": {
       "playRecording": "Soita tallenne",
       "recordingsFromThisShow": "Tämän ohjelman tallenteet",
@@ -8634,7 +8476,6 @@
       "show": "Näytä"
     },
     "adminArtworkPresetsView": {
-      "admin": "Ylläpito",
       "artworkPresets": "Kansikuvapohjat",
       "enabledArtworkBecomesTheCover": "Käytössä oleva kuva tulee kanneksi kappaleille, soittolistoille ja kanaville, joilla ei ole omaa, ja sitä tarjotaan jokaisessa kansikuvan valitsimessa."
     },
@@ -8747,7 +8588,6 @@
       "saveCredits": "Tallenna tekijät"
     },
     "upcomingShowsSection": {
-      "viewAmpEdit": "Näytä ja muokkaa",
       "upcomingShows": "Tulevat ohjelmat",
       "nextUp": "Seuraavaksi: {{title}}",
       "moreComingUp_one": "{{count}} muu tulossa",
@@ -8775,8 +8615,7 @@
       "chatMessages24H": "Keskusteluviestit, 24 h"
     },
     "adminActivityView": {
-      "auditTopics": "Auditoinnin aiheet",
-      "activity": "Toiminta"
+      "auditTopics": "Auditoinnin aiheet"
     },
     "soundCloudEmbedsPanel": {
       "soundcloudTracks": "SoundCloud-kappaleet",
@@ -9230,7 +9069,6 @@
       "allCountries": "Kaikki maat"
     },
     "listenerWidgetsSectionMore": {
-      "savedStations": "Tallennetut asemat",
       "latestNews": "Uusimmat uutiset",
       "favorites": "Suosikit"
     },
@@ -9243,10 +9081,6 @@
       "aFewQuickStepsTo": "Muutama nopea vaihe kanavasi mukauttamiseen.",
       "setUpProfile": "Määritä profiili",
       "notNow": "Ei nyt"
-    },
-    "artistImagePurposePicker": {
-      "artistImages": "Artistikuvat",
-      "jpegPngOrWebp": "JPEG, PNG tai WebP"
     },
     "studioMasteringView": {
       "referenceTrack": "Vertailukappale",
@@ -9285,8 +9119,7 @@
       "files": "Tiedostot"
     },
     "adminAddonsViewMore": {
-      "allAddOns": "Kaikki lisäosat",
-      "allStatuses": "Kaikki tilat"
+      "allAddOns": "Kaikki lisäosat"
     },
     "useQueueBarActions": {
       "saveQueueAsLocalPlaylist": "Tallenna jono paikalliseksi soittolistaksi",
@@ -9384,21 +9217,8 @@
     },
     "settingsNav": {
       "account": "Tili",
-      "artist": "Artisti",
-      "channelChat": "Kanava ja chat",
-      "broadcast": "Lähetys",
-      "playback": "Toisto",
-      "volumeShuffleRepeatAndSkip": "Äänenvoimakkuus, sekoitus, toisto ja ohituksen kesto",
-      "integrations": "Integraatiot",
-      "scrobblingAndDesktopAppIntegrations": "Scrobblaus ja työpöytäsovelluksen integraatiot",
-      "language": "Kieli",
-      "theLanguageOfMenusButtons": "Valikoiden, painikkeiden ja päivämäärien kieli",
-      "themes": "Teemat",
-      "appAppearance": "Sovelluksen ulkoasu",
       "addOns": "Lisäosat",
       "listenerArtistAndAdminTools": "Kuuntelijan, artistin ja ylläpitäjän työkalut roolin mukaan",
-      "logs": "Lokit",
-      "whatChangedInEachRelease": "Mitä kussakin versiossa muuttui",
       "profile": "Profiili"
     },
     "themeEditorMore": {
@@ -9654,12 +9474,10 @@
       "liveSet": "Livesetti",
       "talk": "Puhe",
       "public": "Julkinen",
-      "private": "Yksityinen",
-      "fans": "Fanit"
+      "private": "Yksityinen"
     },
     "studioStatsViewMore": {
       "overview": "Yleiskatsaus",
-      "playsAndListeners": "Soitot ja kuuntelijat",
       "topLists": "Listat",
       "insights": "Näkemykset",
       "plays": "Soitot",
@@ -9908,11 +9726,6 @@
       "couldNotLoadTheYear": "Vuoden {{year}} avustusraporttia ei voitu ladata",
       "noGrantReportIsAvailable": "Vuodelle {{year}} ei ole avustusraporttia."
     },
-    "soundRowLabels": {
-      "selectTitle": "Valitse: {{title}}",
-      "playTitle": "Soita: {{title}}",
-      "showStatsForTitle": "Näytä tilastot: {{title}}"
-    },
     "releaseTrackRowLabels": {
       "playTitle": "Soita: {{title}}",
       "openTitleOnBandcamp": "Avaa Bandcampissa: {{title}}"
@@ -10087,9 +9900,6 @@
       "removeMessageFromHandle": "Poista viesti käyttäjältä: {{handle}}"
     },
     "radioRowCardLabels": {
-      "removeName": "Poista: {{name}}"
-    },
-    "listenerWidgetsSectionLabels": {
       "removeName": "Poista: {{name}}"
     },
     "discoWidgetManagerPanelLabels": {
@@ -10337,7 +10147,6 @@
     },
     "helpHub": {
       "hubHeading": "Miten voimme auttaa?",
-      "hubIntro": "Lyhyet oppaat kuunteluun, lähettämiseen, lisäosiin, tiliisi ja yhteydenottoon.",
       "guidesCount_one": "{{count}} opas",
       "guidesCount_other": "{{count}} opasta",
       "noMatchDescription": "Kokeile toista hakua hakusanan ”{{query}}” sijaan.",
@@ -10388,7 +10197,6 @@
       "headlineOnlyHost": "Tämä syöte jakaa vain otsikon, tai artikkelin tekstiä ei voitu lukea. Lue koko juttu sivustolla {{host}}.",
       "headlineOnly": "Tämä syöte jakaa vain otsikon, eikä artikkelin tekstiä voitu lukea.",
       "openRelease": "Avaa julkaisu",
-      "openLink": "Avaa linkki",
       "postedUpdate": "{{name}} julkaisi päivityksen",
       "sharedTrack": "{{name}} jakoi uuden kappaleen ”{{title}}”.",
       "releasedSomething": "{{name}} julkaisi teoksen ”{{title}}”.",
@@ -10445,7 +10253,6 @@
       "documents": "Asiakirjat"
     },
     "adminOrphanPagesViewText": {
-      "admin": "Ylläpito",
       "orphanPages": "Orpot sivut",
       "pagesWithNoMenuEntry": "Sivut, joilla ei ole valikkokohtaa."
     },
@@ -10614,9 +10421,6 @@
     "visualizerModeMenuText": {
       "visualizer": "Visualisointi"
     },
-    "proMinimapText": {
-      "trackOverviewClickOrDrag": "Kappaleen yleiskuva. Napsauta tai vedä siirtääksesi zoomattua näkymää; näppäimistöllä käytä aaltomuodon zoomaus- ja nuolinäppäimiä"
-    },
     "listeningPartyViewText": {
       "listeningParty": "Kuuntelujuhlat"
     },
@@ -10631,9 +10435,6 @@
     },
     "venueRecordingsText": {
       "recordedHere": "Tallennettu täällä"
-    },
-    "adminMapViewText": {
-      "admin": "Ylläpito"
     },
     "soundHeaderText": {
       "master": "Master"
@@ -10832,9 +10633,6 @@
     "recordedAtVenuePickerFields": {
       "noVenue": "Ei tapahtumapaikkaa"
     },
-    "themesCategoryFields": {
-      "builtInTheme": "Sisäänrakennettu teema"
-    },
     "playHistoryDialogFields": {
       "playCountsOnTracksAre": "Kappaleiden soittomäärät eivät muutu."
     },
@@ -10965,10 +10763,6 @@
     "artistBlockButtonLabels": {
       "blockDisplayname": "Estetäänkö {{displayName}}?"
     },
-    "artistImagePurposePickerLabels": {
-      "chooseImages": "Valitse kuvat",
-      "removeName": "Poista: {{name}}"
-    },
     "broadcastControlsLabels": {
       "openLivePanelLabel": "Avaa livepaneeli — {{label}}"
     },
@@ -11011,7 +10805,6 @@
       "untitled": "Nimetön tapahtuma",
       "eventPageLinkOptional": "Tapahtumasivun linkki (valinnainen)",
       "ticketLinkOptional": "Lippulinkki (valinnainen)",
-      "coverImageLinkOptional": "Kansikuvan linkki (valinnainen)",
       "endOptional": "Päättyy (valinnainen)",
       "endAfterStart": "Päättymisen on oltava alun jälkeen.",
       "timezone": "Aikavyöhyke",
@@ -11048,7 +10841,6 @@
       "openPublicPage": "Avaa julkinen sivu",
       "notFound": "Tapahtumaa ei löytynyt",
       "notFoundDescription": "Se voi olla luonnos, tai linkki on väärä.",
-      "backToCalendar": "Takaisin kalenteriin",
       "calendar": "Kalenteri",
       "stories": "Tarinat",
       "feedView": "Syötteen näkymä",
@@ -11064,7 +10856,6 @@
       "agenda": "Lista",
       "calendarLayout": "Kalenterin asettelu",
       "loading": "Ladataan tapahtumia…",
-      "status": "Tila",
       "shareOnPublish": "Ilmoita julkaistaessa",
       "shareConnectHint": "Yhdistä Mastodon tai Bluesky, niin voit ilmoittaa tapahtumista niissä.",
       "shareConnectLink": "Studio → Profiili → Linkit",
@@ -11176,8 +10967,6 @@
       "liveBroadcast": "Livelähetys"
     },
     "channelAnnouncementsPanelStates": {
-      "closeRecorder": "Sulje tallennin",
-      "recordVoice": "Äänitä puhe",
       "uploadingClip": "Ladataan klippiä…",
       "uploadAudio": "Lataa ääni",
       "uploading": "Ladataan…",
@@ -11273,11 +11062,7 @@
       "tahtiRadioIsBroadcastingThe": "Tahti Radio lähettää jäsenrotaatiota tai vierailevaa livekanavaa.",
       "theTahtiRadioStreamIs": "Tahti Radion virta ei ole juuri nyt käytettävissä.",
       "pauseTahtiRadioStream": "Keskeytä Tahti Radion virta",
-      "playTahtiRadioStream": "Toista Tahti Radion virta",
-      "pause": "Tauko",
-      "listen": "Kuuntele",
-      "liveGuestOnAir": "Liveviera lähetyksessä",
-      "rotationOnAir": "Rotaatio lähetyksessä"
+      "playTahtiRadioStream": "Toista Tahti Radion virta"
     },
     "announcementTrimDialogStates": {
       "rendering": "Renderöidään…",
@@ -11622,9 +11407,7 @@
       "musicbrainzPrefillCopied": "MusicBrainz-esitäyttö kopioitu.",
       "discogsPrefillCopied": "Discogs-esitäyttö kopioitu.",
       "cLine": "C-rivi",
-      "labelImprint": "Levymerkki",
-      "hide": "Piilota",
-      "releaseOps": "Julkaisutehtävät"
+      "labelImprint": "Levymerkki"
     },
     "recordingRowStates": {
       "processing": "Käsitellään",
@@ -11719,21 +11502,12 @@
       "noAddOnsNeedReview": "Yksikään lisäosa ei odota tarkistusta juuri nyt.",
       "noAddOnsRegisteredFor": "Tälle tyypille ei ole vielä rekisteröity lisäosia."
     },
-    "adminDashboardViewStates": {
-      "hideMore": "Piilota lisää",
-      "financeStreamsQueuesAudit": "Talous, virrat, jonot ja tarkastus",
-      "financeStreamsAudit": "Rahoitus, streamit ja auditointi"
-    },
     "adminI18nViewStates": {
       "adding": "Lisätään…",
       "addLanguage": "Lisää kieli",
       "importing": "Tuodaan…",
       "translationCsv": "Käännös-CSV",
       "chooseCsv": "Valitse CSV"
-    },
-    "adminMonitoringViewStates": {
-      "clearFilter": "Tyhjennä suodatin",
-      "filterBelow": "Suodata alla"
     },
     "adminNewsViewStates": {
       "unpublish": "Peru julkaisu",
@@ -11745,10 +11519,6 @@
       "tracks": "Kappaleet",
       "public": "Julkinen",
       "private": "Yksityinen"
-    },
-    "adminStorageViewStates": {
-      "files": "Tiedostot",
-      "storage": "Tallennustila"
     },
     "adminTestNotificationPanelStates": {
       "sending": "Lähetetään…",
@@ -12111,10 +11881,6 @@
       "selectPhoto": "Valitse kuva",
       "uploading": "Ladataan…",
       "addGalleryImages": "Lisää gallerian kuvia"
-    },
-    "artistImagePurposePickerStates": {
-      "uploading": "Ladataan…",
-      "uploadImages": "Lataa kuvia"
     },
     "artworkPresetUploadDialogStates": {
       "chooseAnotherImage": "Valitse toinen kuva",
@@ -12566,7 +12332,6 @@
       "hide": "Piilota: {{name}}",
       "remove": "Poista: {{name}}",
       "removeQuestion": "Poistetaanko {{name}}?",
-      "select": "Valitse: {{name}}",
       "edit": "Muokkaa: {{name}}",
       "add": "Lisää: {{name}}",
       "addToQueue": "Lisää jonoon: {{name}}",
@@ -12574,8 +12339,6 @@
       "addContentTo": "Lisää sisältöä: {{name}}",
       "editCover": "Muokkaa kansikuvaa: {{name}}",
       "removeCredit": "Poista tekijätieto: {{name}}",
-      "share": "Jaa: {{name}}",
-      "report": "Ilmoita: {{name}}",
       "thisGuest": "tämä vieras",
       "aMember": "jäsen",
       "removeFromJam": "Poistetaanko {{name}} Jamista?",
@@ -12703,12 +12466,6 @@
       "relinkFailed": "Uudelleenlinkitys epäonnistui.",
       "stoppedTracking": "Kansion “{{folder}}” seuranta lopetettu. Sen kappaleet jäävät kirjastoosi.",
       "couldNotRemoveFolder": "Kansion poistaminen epäonnistui."
-    },
-    "libraryStoreStates": {
-      "followingNotSynced": "Seurattujen synkronointi epäonnistui. Tallentamasi artistit ovat yhä käytettävissä tällä laitteella.",
-      "savedOnDevice": "Kuunteluhistoria pysyy tällä laitteella.",
-      "followingSynced": "Seuratut on synkronoitu. Kuunteluhistoria pysyy tällä laitteella.",
-      "followingOffline": "Seuratut ovat käytettävissä offline-tilassa. Kuunteluhistoria pysyy tällä laitteella."
     },
     "tuningSliders": {
       "speed": "Nopeus",
@@ -13018,12 +12775,10 @@
       },
       "caption": {
         "required": "Pakollinen",
-        "optional": "Valinnainen",
         "connected": "Yhdistetty",
         "reconnecting": "Signaali katkesi, yhdistetään",
         "couldNotLoad": "Lataus epäonnistui",
         "recordingOn": "Tallennus päällä",
-        "recordingOff": "Tallennus pois",
         "destinations_one": "{{count}} kohde",
         "destinations_other": "{{count}} kohdetta"
       },
@@ -13259,7 +13014,6 @@
       "couldNotRemoveMember": "Jäsentä ei voitu poistaa",
       "couldNotChangeRole": "Roolia ei voitu muuttaa",
       "couldNotHandOverGroup": "Ryhmää ei voitu luovuttaa",
-      "couldNotSwitchRotation": "Kiertoa ei voitu vaihtaa",
       "couldNotLoadSetting": "Asetusta ei voitu ladata",
       "couldNotSaveSetting": "Asetusta ei voitu tallentaa",
       "couldNotSaveAutoplay": "Automaattitoistoa ei voitu tallentaa",
@@ -13424,14 +13178,6 @@
       "website": "Verkkosivusto",
       "businessIdFormat": "Y-tunnuksen on oltava muotoa 1234567-8."
     },
-    "artistImagePurposePickerLeftovers": {
-      "profileImage": "Profiilikuva",
-      "profileImageHint": "Pääasiallinen artistikuva, joka näkyy identiteettisi kanssa.",
-      "gallery": "Galleria",
-      "galleryHint": "Julkinen kuva artistisivusi galleriaan.",
-      "pressKit": "Lehdistökansio",
-      "pressKitHint": "Sisällytä tämä kuva ladattavaan lehdistökansioon."
-    },
     "fanSubOrderBreakdownLeftovers": {
       "fanPays": "Fani maksaa",
       "stripeFees": "Stripe-kulut",
@@ -13495,8 +13241,7 @@
       "couldNotSave": "Tallennus epäonnistui."
     },
     "backupRestoreDialogLeftovers": {
-      "couldNotRestore": "Palautus epäonnistui.",
-      "notFoundExample": "Ei löytynyt, esimerkiksi:"
+      "couldNotRestore": "Palautus epäonnistui."
     },
     "localLibraryAnalysisLeftovers": {
       "couldNotAnalyze": "Analyysi epäonnistui.",
@@ -13783,7 +13528,6 @@
       "unrecognized": "Osoitetta ei tunnistettu. Poista se ja liitä linkki uudelleen."
     },
     "listenerWidgetsSectionText": {
-      "play": "Soita: {{name}}",
       "internetRadio": "Nettiradio"
     },
     "addListenWidgetSpotify": {
@@ -13826,14 +13570,10 @@
       "rangeToday": "Tänään"
     },
     "studioChannelText": {
-      "lastDays_one": "Viimeinen {{count}} päivä",
-      "lastDays_other": "Viimeiset {{count}} päivää",
-      "playsAndDownloads": "kuuntelukertaa · {{downloads}} latausta",
       "createToUnlock": "Luo {{host}}, niin lähetykset, lataukset ja julkinen kanavasi avautuvat.",
       "createHost": "Luo {{host}}"
     },
     "studioMoneyText": {
-      "movedNotice": "Asetukset › {{from}} on nyt Studio › Fanit › {{page}}. Päivitä kirjanmerkit, jotka osoittivat vanhaan osoitteeseen.",
       "movedAudience": "Yleisö",
       "movedMoney": "Raha",
       "movedFanSubs": "Fanitilaukset",
@@ -13871,11 +13611,6 @@
       "radioStationSuggestions": "Radioasemaehdotukset",
       "featureRequestsGated": "Ominaisuustoiveet ovat Tahti ry:n aktiivisille jäsenille. Kirjautunut käyttäjänä @{{username}}.",
       "couldNotRefreshList": "Listaa ei voitu päivittää: {{message}}"
-    },
-    "tahtiJamSearchBar": {
-      "search": "Haku",
-      "clear": "Tyhjennä haku",
-      "placeholder": "Etsi musiikkia"
     },
     "discussionsViewBatch30": {
       "newReplyCount_one": "{{count}} uusi vastaus",
@@ -14076,7 +13811,6 @@
       "tooSoon": "Aloita aikaisintaan 5 minuutin päästä."
     },
     "channelAnnouncementsPanelBatch30": {
-      "intro": "Asematunnukset, puheosuudet ja kuulutukset 24/7-rotaatioosi. Ota “Soita klippejä ohjelmien välissä” käyttöön yllä olevista asetuksista.",
       "durationPending": "Kesto selviää pian",
       "durationSeconds": "{{seconds}} s",
       "previewStatus": "Esikuuntelu: {{status}}",

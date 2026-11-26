@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import { mockFixture, onMockOverridesReset } from '../mock-overrides';
 import { apiErrorMeta, isForceMock } from '../mode';
@@ -459,7 +461,10 @@ export async function uploadCollectionCover(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Cover upload failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.coverUploadFailed'),
     };
   }
 }
@@ -531,7 +536,9 @@ export async function patchCollectionGallery(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not save backdrop images',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:studioStringsBatch38.couldNotSaveBackdrops'),
     };
   }
 }

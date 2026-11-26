@@ -1,6 +1,12 @@
 import { useRouterState } from '@tanstack/react-router';
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from 'lucide-react';
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, KeyCombo, Tooltip } from '@tahti-player/ui';
@@ -31,9 +37,14 @@ export function PageTourSpotlight() {
   const [steps, setSteps] = useState<TourStep[]>([]);
   const [rect, setRect] = useState<DOMRect | null>(null);
 
-  // Close whenever the route changes so a stale highlight never lingers.
+  // Close whenever the route changes so a stale highlight never lingers. The
+  // shell mounts this on the first open, so mounting is not a route change.
+  const shownPathname = useRef(pathname);
   useEffect(() => {
-    close();
+    if (shownPathname.current !== pathname) {
+      shownPathname.current = pathname;
+      close();
+    }
   }, [pathname, close]);
 
   useEffect(() => {

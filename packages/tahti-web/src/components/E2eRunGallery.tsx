@@ -72,7 +72,7 @@ function StepStrip({ test }: { test: E2eTest }) {
     );
   }
   return (
-    <ol className="flex gap-3 overflow-x-auto px-4 pb-4">
+    <ol className="relative flex gap-3 overflow-x-auto px-4 pb-4">
       {test.steps.map((step, index) => (
         <li
           key={step.image}

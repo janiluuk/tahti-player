@@ -43,7 +43,7 @@ exports[`EmptyState > (Snapshot) renders all size variants 1`] = `
         Small size
       </h2>
       <p
-        class="text-foreground text-sm opacity-60"
+        class="text-foreground-secondary text-sm"
       >
         Compact empty state
       </p>
@@ -88,7 +88,7 @@ exports[`EmptyState > (Snapshot) renders all size variants 1`] = `
         Default size
       </h2>
       <p
-        class="text-foreground text-sm opacity-60"
+        class="text-foreground-secondary text-sm"
       >
         Standard empty state
       </p>
@@ -133,7 +133,7 @@ exports[`EmptyState > (Snapshot) renders all size variants 1`] = `
         Large size
       </h2>
       <p
-        class="text-foreground text-sm opacity-60"
+        class="text-foreground-secondary text-sm"
       >
         Spacious empty state
       </p>
@@ -195,7 +195,7 @@ exports[`EmptyState > (Snapshot) renders with action button 1`] = `
       Connection failed
     </h2>
     <p
-      class="text-foreground text-sm opacity-60"
+      class="text-foreground-secondary text-sm"
     >
       Could not reach the server.
     </p>
@@ -250,7 +250,7 @@ exports[`EmptyState > (Snapshot) renders with icon 1`] = `
       Your inbox is empty
     </h2>
     <p
-      class="text-foreground text-sm opacity-60"
+      class="text-foreground-secondary text-sm"
     >
       New messages will appear here.
     </p>
@@ -272,7 +272,7 @@ exports[`EmptyState > (Snapshot) renders with title and description 1`] = `
       No plugins installed
     </h2>
     <p
-      class="text-foreground text-sm opacity-60"
+      class="text-foreground-secondary text-sm"
     >
       Browse the store to find plugins for your music player.
     </p>

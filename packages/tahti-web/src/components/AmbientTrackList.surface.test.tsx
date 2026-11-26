@@ -62,12 +62,22 @@ describe('AmbientTrackList surface', () => {
     expect(list).not.toHaveClass('border');
   });
 
-  it('keeps the panel on phones unless asked to go flush', () => {
+  it('drops the panel on phones by default', () => {
+    phone.value = true;
+    render(<AmbientTrackList items={items} />);
+
+    const list = screen.getByTestId('ambient-track-list');
+    expect(list).toHaveAttribute('data-flush');
+    expect(list).not.toHaveClass('border');
+  });
+
+  it('keeps the panel on phones when flushOnPhone is off', () => {
     phone.value = true;
     render(
       <AmbientTrackList
         items={items}
         surfaceClassName="bg-background-secondary"
+        flushOnPhone={false}
       />,
     );
 

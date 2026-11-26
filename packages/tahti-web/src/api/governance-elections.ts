@@ -126,7 +126,10 @@ function mockCandidacy(
     return { ok: false, error: i18n.t('web:batch58.electionNotFound') };
   }
   if (standing && !election.nominationsOpen) {
-    return { ok: false, error: 'Nominations for this election are closed' };
+    return {
+      ok: false,
+      error: i18n.t('web:adminStringsBatch40.nominationsClosed'),
+    };
   }
   updateMockElection(id, (e) => {
     const others = e.candidates.filter(
