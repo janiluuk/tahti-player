@@ -8,7 +8,6 @@ import {
   type SetStateAction,
 } from 'react';
 
-import { TAHTI_RADIO_SLUG } from '../../api/client';
 import {
   fetchDiscoverDiscoWidgets,
   fetchHomepageDiscoWidgets,
@@ -23,8 +22,8 @@ import {
 } from '../../api/radio-public';
 import type { DiscoverTrackItem, TahtiPlayable } from '../../api/types';
 import { discoverTrackPlayable } from '../../lib/discoverTrackPlayable';
-import { isPlausiblePublicName } from '../../lib/publicDisplayName';
 import { peekSnapshot, saveSnapshot } from '../../lib/useSnapshotFetch';
+import { onAirListing } from './onAirChannels';
 
 export type ListenSectionStatus = 'loading' | 'ready' | 'error';
 
@@ -49,18 +48,7 @@ function unwrap<T>({ data, meta }: { data: T; meta: FetchMeta }): T {
 }
 
 async function loadOnAir(): Promise<OnAirChannel[]> {
-  const { live, replaying } = unwrap(await fetchOnAirChannels());
-  const liveSlugs = new Set(live.map((channel) => channel.slug));
-  return [...live, ...replaying]
-    .filter((channel) => channel.slug !== TAHTI_RADIO_SLUG)
-    .filter((channel) => {
-      const name = channel.user.displayName?.trim();
-      return !name || isPlausiblePublicName(name);
-    })
-    .map((channel) => ({
-      ...channel,
-      state: liveSlugs.has(channel.slug) ? 'LIVE' : 'REPLAY',
-    }));
+  return onAirListing(unwrap(await fetchOnAirChannels()));
 }
 
 async function loadPresets(): Promise<EnabledInternetRadioPreset[]> {

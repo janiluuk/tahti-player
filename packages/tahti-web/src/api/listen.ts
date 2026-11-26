@@ -1,8 +1,10 @@
 import { requestJson } from './client-request';
 import {
+  DEMO_HLS,
   mockDirectory,
   mockFeed,
   mockLatestTracks,
+  mockReplayingChannels,
   mockSearch,
   TAHTI_RADIO_SLUG,
 } from './mock';
@@ -54,6 +56,15 @@ export type OnAirChannel = {
   slug: string;
   state: string;
   fallbackEnabled: boolean;
+  /** Null when the channel is not airing (`state` is not LIVE). */
+  hlsUrl?: string | null;
+  /** The rotation's current track; null when nothing has played for two
+   * minutes, which for a replay means the stream is silent filler. */
+  nowPlaying?: {
+    title: string;
+    artistName: string;
+    artworkUrl: string | null;
+  } | null;
   user: {
     username: string;
     displayName: string;
@@ -179,13 +190,15 @@ export async function fetchOnAirChannels(): Promise<{
         slug: item.slug,
         state: 'LIVE',
         fallbackEnabled: false,
+        hlsUrl: DEMO_HLS,
+        nowPlaying: null,
         user: {
           username: item.username,
           displayName: item.displayName,
           avatarUrl: item.avatarUrl,
         },
       })),
-    replaying: [],
+    replaying: mockReplayingChannels(),
     recent: [],
   });
   if (isForceMock()) {

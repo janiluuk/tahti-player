@@ -6880,3 +6880,7 @@ longer raises the parent “Couldn't load integrations” message when listener
 status is unavailable, and the Last.fm own-key action uses the standard
 secondary button. About drops its duplicate shell explanation. Unit, type,
 lint and focused Storybook browser checks passed.
+
+## 2026-11-26 — Hide replay channels that cannot play (0.0.496)
+
+Production listed 7 replay channels on Listen; 2 played. The other 5 (FREE tier, no public sounds) stream silent filler from `master-free.m3u8`, whose `CODECS="mp3"` variant hls.js rejects (`manifestIncompatibleCodecsError`), so tapping them showed an error. `onAirChannels.ts` keeps a replay only when `hlsUrl` and `nowPlaying` are set, and `withoutFailedReplays` drops one whose stream the player marked unavailable in `stationHealthStore` (also when the channel detail has no stream). Mock app gains a playable (Tundra Static) and a silent (Metsänpeitto) replay; vitest + `e2e/use-cases-replay-channels.spec.ts`. API work (codec string, list/reconciler filters) in `docs/todo/replay-channels-playable.md`.

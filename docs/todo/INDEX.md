@@ -15,6 +15,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [final-season-hardening.md](final-season-hardening.md) | Batch A/B + CSP embed/sandbox + SR code-audit (next-30 pressed/Connecting/Jam/i18n); left: CSRF/CORS and API-edge CSP (tahti-org), real screen-reader run |
 | partial | [first-100-users-infra.md](first-100-users-infra.md) | Verified on vimage 2026-11-02: rate limits fail closed, disk fine; backup restore test + vimage6 push fixed in tahti-org#1042; left: leaked restore containers, MinIO mirror + DR alias |
 | open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
+| open    | [replay-channels-playable.md](replay-channels-playable.md) | tahti-org: `CODECS="mp3"` breaks FREE-tier `master-free.m3u8` in hls.js; stop listing/spawning replay rotations with no public sounds |
 | open    | [yaniho-sets-covers.md](yaniho-sets-covers.md) | Yaniho DJ sets: web cover fallback + DJ-set tab shipped; left: owner set style/add loose sets, tahti-org link-page cover presign, public collection covers |
 | blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
 

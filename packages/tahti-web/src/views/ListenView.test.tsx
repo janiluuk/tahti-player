@@ -37,6 +37,7 @@ import {
   NEWS_WIDGET_TYPE_ID,
   useListenerWidgetsStore,
 } from '../stores/listenerWidgetsStore';
+import { useStationHealthStore } from '../stores/stationHealthStore';
 import { ListenView } from './ListenView';
 
 beforeAll(async () => {
@@ -181,14 +182,23 @@ describe('ListenView sections', () => {
       ...live,
       slug: 'replay-channel',
       state: 'REPLAY' as typeof live.state,
+      hlsUrl: 'https://cdn.example/replay-channel/master.m3u8',
+      nowPlaying: { title: 'Rotation', artistName: 'Replay', artworkUrl: null },
       user: {
         ...live.user,
         displayName: 'Replay Channel',
         username: 'replay-channel',
       },
     };
+    const silent = {
+      ...replaying,
+      slug: 'silent-channel',
+      hlsUrl: 'https://cdn.example/silent-channel/master.m3u8',
+      nowPlaying: null,
+      user: { ...replaying.user, displayName: 'Silent Channel' },
+    };
     vi.spyOn(listen, 'fetchOnAirChannels').mockResolvedValue({
-      data: { live: [live], replaying: [replaying], recent: [] },
+      data: { live: [live], replaying: [replaying, silent], recent: [] },
       meta: { source: 'api' },
     });
     await renderListen();
@@ -197,12 +207,37 @@ describe('ListenView sections', () => {
     await waitFor(() =>
       expect(row.textContent).toContain(replaying.user.displayName),
     );
+    expect(row.textContent).not.toContain(silent.user.displayName);
     expect(screen.queryByTestId('listen-replays')).toBeNull();
     expect(within(row).getAllByTestId('on-air-live-marker')).toHaveLength(1);
     const text = row.textContent ?? '';
     expect(text.indexOf(live.user.displayName)).toBeLessThan(
       text.indexOf(replaying.user.displayName),
     );
+  });
+
+  it('hides a replay channel once its stream fails to play', async () => {
+    const { data } = await listen.fetchOnAirChannels();
+    const replay = data.replaying.find((c) => c.nowPlaying)!;
+    vi.spyOn(listen, 'fetchOnAirChannels').mockResolvedValue({
+      data: { live: [], replaying: [replay], recent: [] },
+      meta: { source: 'api' },
+    });
+    await renderListen();
+
+    const row = await screen.findByTestId('listen-on-air');
+    await waitFor(() =>
+      expect(row.textContent).toContain(replay.user.displayName),
+    );
+    act(() =>
+      useStationHealthStore
+        .getState()
+        .markUnavailable(replay.hlsUrl!, { reason: 'unreachable' }),
+    );
+    await waitFor(() =>
+      expect(screen.queryByText(replay.user.displayName)).toBeNull(),
+    );
+    useStationHealthStore.getState().reset();
   });
 });
 
