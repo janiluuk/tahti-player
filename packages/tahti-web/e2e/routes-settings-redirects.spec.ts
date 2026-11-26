@@ -51,15 +51,14 @@ const settingsSections: RouteVisit[] = [
   },
   {
     path: '/settings/language',
-    heading: /^Appearance$/,
-    url: /\/settings\/themes/,
+    heading: /^General$/,
   },
   {
     path: '/settings/playback?tab=language',
-    heading: /^Appearance$/,
-    url: /\/settings\/themes/,
+    heading: /^General$/,
+    url: /\/settings\/general/,
   },
-  { path: '/settings/themes', heading: /^Appearance$/ },
+  { path: '/settings/themes', heading: /^Themes$/ },
   { path: '/settings/plugin-store', heading: /^Add-ons$/ },
   { path: '/settings/whats-new', heading: /^About$/ },
   {
@@ -67,7 +66,7 @@ const settingsSections: RouteVisit[] = [
     heading: /^Account$/,
     url: /\/settings\/account$/,
   },
-  { path: '/themes', heading: /^Appearance$/, url: /\/settings\/themes$/ },
+  { path: '/themes', heading: /^Themes$/, url: /\/settings\/themes$/ },
 ];
 
 // Studio bookmarks for pages that now live in Library, Settings or Venues, plus the Studio catalog pages.

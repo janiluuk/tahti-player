@@ -30,7 +30,7 @@ test('discover, radio, schedule, show and search render for a signed-out visitor
   }
 });
 
-test('signed in, the same pages render and /themes lands on Appearance', async ({
+test('signed in, the same pages render and /themes lands on Themes', async ({
   page,
 }) => {
   const errors = collectPageErrors(page);
@@ -41,7 +41,7 @@ test('signed in, the same pages render and /themes lands on Appearance', async (
   }
   await expectRouteHealthy(page, errors, {
     path: '/themes',
-    heading: /^Appearance$/,
+    heading: /^Themes$/,
     url: /\/settings\/themes$/,
   });
 });

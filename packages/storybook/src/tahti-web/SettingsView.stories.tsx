@@ -17,7 +17,7 @@ const meta: Meta<typeof SettingsView> = {
     docs: {
       description: {
         component:
-          '`/settings` and `/settings/:section` have no page of their own: they open the settings modal on that section (Account by default), land on a Profile (listeners) or Account sub-tab from `?tab=`; for an artist `/settings/artist`, and every `/settings/channel` or `/settings/broadcast` link goes to Studio instead, and turn `?status=` / `?social=` from an OAuth connect into a toast. Signed out, the modal falls back to Appearance.',
+          '`/settings` and `/settings/:section` have no page of their own: they open the settings modal on that section (Account by default), land on a Profile (listeners) or Account sub-tab from `?tab=`; for an artist `/settings/artist`, and every `/settings/channel` or `/settings/broadcast` link goes to Studio instead, and turn `?status=` / `?social=` from an OAuth connect into a toast. Signed out, the modal falls back to Themes.',
       },
     },
   },
@@ -98,8 +98,7 @@ export const SignedOut: Story = {
   decorators: [withTahtiRouter('/settings'), withMockAuth(null)],
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
-    await expectSection(dialog, 'Appearance');
-    await expect(dialog.getByTestId('language-panel')).toBeVisible();
+    await expectSection(dialog, 'Themes');
     await expect(dialog.queryByText('Account')).toBeNull();
   },
 };
