@@ -108,12 +108,23 @@ export const ArrivesAfterFirstPaint: Story = {
 
     await step('it shows as a toast and the content stays put', async () => {
       const page = within(canvasElement.ownerDocument.body);
-      await waitFor(() => expect(page.getByText(NOTICE.title)).toBeVisible());
+      // Sonner's toast list outlives a story, so earlier stories in the same
+      // browser session can leave their own toasts on the page.
+      const toastElement = await waitFor(() => {
+        const titles = page.getAllByText(NOTICE.title);
+        const element = titles[titles.length - 1].closest<HTMLElement>(
+          '[data-sonner-toast]',
+        );
+        expect(element).not.toBeNull();
+        return element!;
+      });
+      const toast = within(toastElement);
+      await expect(toast.getByText(NOTICE.title)).toBeVisible();
       await expect(
-        page.getByRole('button', { name: 'Acknowledge' }),
+        toast.getByRole('button', { name: 'Acknowledge' }),
       ).toBeVisible();
       await expect(
-        page.getByRole('link', { name: 'Read guidelines' }),
+        toast.getByRole('link', { name: 'Read guidelines' }),
       ).toHaveAttribute('href', NOTICE.url);
       await expect(canvas.queryByTestId('guidelines-banner')).toBeNull();
       await expect(sections.getBoundingClientRect().top).toBe(topBefore);

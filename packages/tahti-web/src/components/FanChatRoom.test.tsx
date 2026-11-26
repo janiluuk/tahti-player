@@ -10,10 +10,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fetchFanChatHistory, requestFanChatToken } from '../api/fan-chat';
 import { FanChatRoom } from './FanChatRoom';
 
-vi.mock('../api/fan-chat', () => ({
-  MOCK_FAN_CHAT_TOKEN: 'mock-token',
+// Hoisted so the component and the test share one set of mock functions even
+// when the mocked module is evaluated again in a shared (isolate: false) worker.
+const fanChatMocks = vi.hoisted(() => ({
   fetchFanChatHistory: vi.fn(),
   requestFanChatToken: vi.fn(),
+}));
+
+vi.mock('../api/fan-chat', () => ({
+  MOCK_FAN_CHAT_TOKEN: 'mock-token',
+  ...fanChatMocks,
 }));
 
 class FakeSocket {
