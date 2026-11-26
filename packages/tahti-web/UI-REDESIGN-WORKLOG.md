@@ -7168,3 +7168,8 @@ Desktop main-pane padding is four pixels tighter at each breakpoint, full-bleed 
 
 - Library → Playlists has a Storybook story; filtering to nothing shows "No matching playlists" instead of the empty state.
 - Opening an event from a filtered Discover "Next events" row steps previous/next through the filtered events only.
+
+## 2026-11-26 — Yaniho sets: default artwork on cards (0.0.493)
+
+- Collection, album, DJ set and release cards show the default artwork when a cover is missing or its link has expired, never an empty cassette thumbnail.
+- A collection named like "2026 sets" now shows on the artist page's DJ sets tab.
